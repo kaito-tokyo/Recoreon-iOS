@@ -94,6 +94,7 @@
 		22C18B042AF2B18700C41B49 /* Matroska.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Matroska.h; sourceTree = "<group>"; };
 		22C18B052AF2C20800C41B49 /* Recoreon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Recoreon.entitlements; sourceTree = "<group>"; };
 		22C18B062AF2C23B00C41B49 /* RecoreonBroadcastUploadExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecoreonBroadcastUploadExtension.entitlements; sourceTree = "<group>"; };
+		22C18B072AF2CE1300C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecoreonBroadcastUploadExtensionSetupUI.entitlements; sourceTree = "<group>"; };
 		22C3CCF72AF240B30039750A /* Recoreon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Recoreon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C3CCFA2AF240B30039750A /* RecoreonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonApp.swift; sourceTree = "<group>"; };
 		22C3CCFC2AF240B30039750A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -186,6 +187,7 @@
 		22C18AEF2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI */ = {
 			isa = PBXGroup;
 			children = (
+				22C18B072AF2CE1300C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.entitlements */,
 				22C18AF02AF2B08C00C41B49 /* BroadcastSetupViewController.swift */,
 				22C18AF22AF2B08C00C41B49 /* Info.plist */,
 			);
@@ -707,6 +709,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D1409A3B78F24B76E0F23C62 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.debug.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtensionSetupUI/RecoreonBroadcastUploadExtensionSetupUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
@@ -734,6 +737,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 21494B872F6439D163F2B227 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtensionSetupUI/RecoreonBroadcastUploadExtensionSetupUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
@@ -765,11 +769,12 @@
 				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RecoreonBroadcastUploadExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = RecoreonBroadcastUploadExtension;
+				INFOPLIST_KEY_CFBundleDisplayName = Recoreon;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -797,11 +802,12 @@
 				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RecoreonBroadcastUploadExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = RecoreonBroadcastUploadExtension;
+				INFOPLIST_KEY_CFBundleDisplayName = Recoreon;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
