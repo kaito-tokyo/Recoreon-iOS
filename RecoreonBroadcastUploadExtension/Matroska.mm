@@ -132,7 +132,6 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc,
     case AVMEDIA_TYPE_AUDIO:
         c->sample_fmt  = (*codec)->sample_fmts ?
             (*codec)->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
-            printf("fmt: %d\n", c->sample_fmt);
         c->bit_rate    = 64000;
         c->sample_rate = 44100;
         if ((*codec)->supported_samplerates) {
@@ -471,11 +470,11 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
 
     /* Add the audio and video streams using the default format codecs
      * and initialize the codecs. */
-//    if (fmt->video_codec != AV_CODEC_ID_NONE) {
-//        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_H264);
-//        have_video = 1;
-//        encode_video = 1;
-//    }
+    if (fmt->video_codec != AV_CODEC_ID_NONE) {
+        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_H264);
+        have_video = 1;
+        encode_video = 1;
+    }
     if (fmt->audio_codec != AV_CODEC_ID_NONE) {
         add_stream(&audio_st, oc, &audio_codec, AV_CODEC_ID_AAC);
         have_audio = 1;
@@ -513,7 +512,6 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     return 0;
 }
 - (void)writeVideo:(CMSampleBufferRef)sampleBuffer {
-    return;
     AVFrame *frame = video_st.frame;
     if (av_frame_make_writable(frame) < 0) {
         NSLog(@"Could not make a frame writable!");
@@ -592,6 +590,11 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         return;
     }
     
+    if (!(desc->mFormatFlags & kAudioFormatFlagIsBigEndian)) {
+        NSLog(@"The sample format is not big endian!");
+        return;
+    }
+    
     CMBlockBufferRef blockBuffer;
     AudioBufferList audioBufferList;
     
@@ -615,15 +618,10 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     c = ost->enc;
 
     AVFrame *frame = ost->tmp_frame;
-    int j, i, v;
-    int16_t *q = (int16_t*)frame->data[0];
-
-    for (j = 0; j <frame->nb_samples; j++) {
-        v = (int)(sin(ost->t) * 10000);
-        for (i = 0; i < ost->enc->ch_layout.nb_channels; i++)
-            *q++ = v;
-        ost->t     += ost->tincr;
-        ost->tincr += ost->tincr2;
+    uint8_t *buf = (uint8_t *)audioBufferList.mBuffers[0].mData;
+    for (int i = 0; i < 4096; i += 2) {
+        frame->data[0][i] = buf[i + 1];
+        frame->data[0][i + 1] = buf[i];
     }
 
     frame->pts = ost->next_pts;
@@ -661,6 +659,7 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     write_frame(oc, c, ost->st, frame, ost->tmp_pkt);
     
     avio_flush(oc->pb);
+    CFRelease(blockBuffer);
 }
 - (int)close {
     av_write_trailer(oc);
