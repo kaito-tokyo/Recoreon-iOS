@@ -31,19 +31,10 @@ class SampleHandler: RPBroadcastSampleHandler {
     override func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
         switch sampleBufferType {
         case RPSampleBufferType.video:
-            guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-              return
-            }
-            CVPixelBufferLockBaseAddress(pixelBuffer, .readOnly)
-            let yPlane = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0)
-            let cbcrPlane = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 1)
-            let yBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0)
-            let cbcrBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1)
-            self.matroska?.writeVideo(yPlane, yLinesize: yBytesPerRow, cbcr: cbcrPlane, cbcrLinesize: cbcrBytesPerRow)
-            CVPixelBufferUnlockBaseAddress(pixelBuffer, .readOnly)
+            self.matroska?.writeVideo(sampleBuffer)
             break
         case RPSampleBufferType.audioApp:
-            // Handle audio sample buffer for app audio
+            self.matroska?.writeAudio(sampleBuffer)
             break
         case RPSampleBufferType.audioMic:
             // Handle audio sample buffer for mic audio

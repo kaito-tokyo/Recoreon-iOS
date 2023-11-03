@@ -31,10 +31,21 @@ class ScreenRecorder {
                     print(cbcrBytesPerRow)
                     self.matroska.writeVideo(yPlane, yLinesize: yBytesPerRow, cbcr: cbcrPlane, cbcrLinesize: cbcrBytesPerRow)
                     CVPixelBufferUnlockBaseAddress(pixelBuffer, .readOnly)
-                    print("a")
                 case .audioApp:
-                    self.matroska.writeAudio()
-                    print("b")
+                    let fmt = CMSampleBufferGetFormatDescription(sampleBuffer)!
+                    let desc = CMAudioFormatDescriptionGetStreamBasicDescription(fmt)
+                    var audioBufferList = AudioBufferList()
+                    var blockBuffer: CMBlockBuffer?
+                    CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
+                        sampleBuffer,
+                        bufferListSizeNeededOut: nil,
+                        bufferListOut: &audioBufferList,
+                        bufferListSize: MemoryLayout<AudioBufferList>.size,
+                        blockBufferAllocator: nil,
+                        blockBufferMemoryAllocator: nil,
+                        flags: 0,
+                        blockBufferOut: &blockBuffer)
+                    self.matroska.writeAudio(&audioBufferList)
                 case .audioMic:
                     print("c")
                 default:

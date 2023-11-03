@@ -132,6 +132,7 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc,
     case AVMEDIA_TYPE_AUDIO:
         c->sample_fmt  = (*codec)->sample_fmts ?
             (*codec)->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
+            printf("fmt: %d\n", c->sample_fmt);
         c->bit_rate    = 64000;
         c->sample_rate = 44100;
         if ((*codec)->supported_samplerates) {
@@ -418,81 +419,6 @@ static void open_video(AVFormatContext *oc, const AVCodec *codec,
     }
 }
 
-/* Prepare a dummy image. */
-static void fill_yuv_image(AVFrame *pict, int frame_index,
-                           int width, int height, uint8_t *yPlane, long yLinesize, uint8_t *cbcrPlane, long cbcrLinesize)
-{
-    int x, y, i;
-
-    i = frame_index;
-
-    /* Y */
-    for (y = 0; y < height; y++)
-        for (x = 0; x < width; x++)
-            //pict->data[0][y * pict->linesize[0] + x] = x + y + i * 3;
-            pict->data[0][y * pict->linesize[0] + x] = yPlane[y * yLinesize + x];
-
-    /* Cb and Cr */
-    for (y = 0; y < height / 2; y++) {
-        for (x = 0; x < width; x++) {
-//            pict->data[1][y * pict->linesize[1] + x] = 128 + y + i * 2;
-//            pict->data[2][y * pict->linesize[2] + x] = 64 + x + i * 5;
-            pict->data[1][y * pict->linesize[1] + x] = cbcrPlane[y * cbcrLinesize + x];
-        }
-    }
-}
-
-static AVFrame *get_video_frame(OutputStream *ost, uint8_t *y, long yLinesize, uint8_t *cbcr, long cbcrLinesize)
-{
-    AVCodecContext *c = ost->enc;
-
-    /* check if we want to generate more frames */
-//    if (av_compare_ts(ost->next_pts, c->time_base,
-//                      STREAM_DURATION, (AVRational){ 1, 1 }) > 0)
-//        return NULL;
-
-    /* when we pass a frame to the encoder, it may keep a reference to it
-     * internally; make sure we do not overwrite it here */
-    if (av_frame_make_writable(ost->frame) < 0)
-        exit(1);
-
-//    if (c->pix_fmt != AV_PIX_FMT_YUV420P) {
-//        /* as we only generate a YUV420P picture, we must convert it
-//         * to the codec pixel format if needed */
-//        if (!ost->sws_ctx) {
-//            ost->sws_ctx = sws_getContext(c->width, c->height,
-//                                          AV_PIX_FMT_YUV420P,
-//                                          c->width, c->height,
-//                                          c->pix_fmt,
-//                                          SCALE_FLAGS, NULL, NULL, NULL);
-//            if (!ost->sws_ctx) {
-//                fprintf(stderr,
-//                        "Could not initialize the conversion context\n");
-//                exit(1);
-//            }
-//        }
-//        fill_yuv_image(ost->tmp_frame, ost->next_pts, c->width, c->height, y, cbcr);
-//        sws_scale(ost->sws_ctx, (const uint8_t * const *) ost->tmp_frame->data,
-//                  ost->tmp_frame->linesize, 0, c->height, ost->frame->data,
-//                  ost->frame->linesize);
-//    } else {
-        fill_yuv_image(ost->frame, ost->next_pts, c->width, c->height, y, yLinesize, cbcr, cbcrLinesize);
-//    }
-
-    ost->frame->pts = ost->next_pts++;
-
-    return ost->frame;
-}
-
-/*
- * encode one video frame and send it to the muxer
- * return 1 when encoding is finished, 0 otherwise
- */
-//static int write_video_frame(AVFormatContext *oc, OutputStream *ost)
-//{
-//    return write_frame(oc, ost->enc, ost->st, get_video_frame(ost), ost->tmp_pkt);
-//}
-
 static void close_stream(AVFormatContext *oc, OutputStream *ost)
 {
     avcodec_free_context(&ost->enc);
@@ -515,6 +441,19 @@ AVDictionary *opt = NULL;
 int encode_video = 0, encode_audio = 0;
 int i;
 
+void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesize, size_t width, size_t height) {
+    assert(width <= dstLinesize);
+    assert(width <= srcLinesize);
+
+    if (dstLinesize == srcLinesize) {
+        memcpy(dst, src, dstLinesize * height);
+    } else {
+        for (int i = 0; i < height; i++) {
+            memcpy(&dst[dstLinesize * i], &src[srcLinesize * i], width);
+        }
+    }
+}
+
 @implementation Matroska : NSObject
 - (int)open:(NSString *)filename {
     std::string filenamestring = [filename UTF8String];
@@ -532,24 +471,24 @@ int i;
 
     /* Add the audio and video streams using the default format codecs
      * and initialize the codecs. */
-    if (fmt->video_codec != AV_CODEC_ID_NONE) {
-        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_H264);
-        have_video = 1;
-        encode_video = 1;
-    }
-//    if (fmt->audio_codec != AV_CODEC_ID_NONE) {
-//        add_stream(&audio_st, oc, &audio_codec, fmt->audio_codec);
-//        have_audio = 1;
-//        encode_audio = 1;
+//    if (fmt->video_codec != AV_CODEC_ID_NONE) {
+//        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_H264);
+//        have_video = 1;
+//        encode_video = 1;
 //    }
+    if (fmt->audio_codec != AV_CODEC_ID_NONE) {
+        add_stream(&audio_st, oc, &audio_codec, AV_CODEC_ID_AAC);
+        have_audio = 1;
+        encode_audio = 1;
+    }
 
     /* Now that all the parameters are set, we can open the audio and
      * video codecs and allocate the necessary encode buffers. */
-    if (have_video)
-        open_video(oc, video_codec, &video_st, opt);
+//    if (have_video)
+//        open_video(oc, video_codec, &video_st, opt);
 
-//    if (have_audio)
-//        open_audio(oc, audio_codec, &audio_st, opt);
+    if (have_audio)
+        open_audio(oc, audio_codec, &audio_st, opt);
 
     av_dump_format(oc, 0, filenamestring.c_str(), 1);
 
@@ -573,24 +512,170 @@ int i;
     
     return 0;
 }
-- (int)writeVideo:(uint8_t *)yPlane yLinesize:(long)yLinesize cbcr:(uint8_t*)cbcrPlane cbcrLinesize:(long)cbcrLinesize {
-    write_frame(oc, video_st.enc, video_st.st, get_video_frame(&video_st, yPlane, yLinesize, cbcrPlane, cbcrLinesize), video_st.tmp_pkt);
-//    write_audio_frame(oc, &audio_st);
-    avio_flush(oc->pb);
-    return 0;
+- (void)writeVideo:(CMSampleBufferRef)sampleBuffer {
+    return;
+    AVFrame *frame = video_st.frame;
+    if (av_frame_make_writable(frame) < 0) {
+        NSLog(@"Could not make a frame writable!");
+        return;
+    }
+
+    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    if (pixelBuffer == NULL) {
+        NSLog(@"Could not get a pixel buffer!");
+        return;
+    }
+    
+    OSType pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer);
+    if (pixelFormat != kCVPixelFormatType_420YpCbCr8BiPlanarFullRange) {
+        NSLog(@"The pixel format is not supported!");
+        return;
+    }
+
+    size_t width = CVPixelBufferGetWidth(pixelBuffer);
+    if (width != 888) {
+        NSLog(@"The width of video is not 888!");
+        return;
+    }
+    size_t height = CVPixelBufferGetHeight(pixelBuffer);
+    if (height != 1920) {
+        NSLog(@"The width of video is not 1920!");
+        return;
+    }
+
+    size_t yLinesize = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
+    size_t cbcrLinesize = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1);
+
+    CVPixelBufferLockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
+    uint8_t *yPlane = (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
+    uint8_t *cbcrPlane = (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 1);
+    copyPlane((uint8_t *)frame->data[0], frame->linesize[0], yPlane, yLinesize, width, height);
+    copyPlane((uint8_t *)frame->data[1], frame->linesize[1], cbcrPlane, cbcrLinesize, width, height / 2);
+    CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
+    
+    video_st.frame->pts = video_st.next_pts++;
+    
+    write_frame(oc, video_st.enc, video_st.st, video_st.frame, video_st.tmp_pkt);
 }
-- (int)writeAudio {
-    //write_audio_frame(oc, &audio_st);
-    return 0;
+- (void)writeAudio:(CMSampleBufferRef)sampleBuffer {
+    CMFormatDescriptionRef fmt = CMSampleBufferGetFormatDescription(sampleBuffer);
+    if (fmt == NULL) {
+        NSLog(@"Could not get the format description!");
+        return;
+    }
+    
+    const AudioStreamBasicDescription *desc = CMAudioFormatDescriptionGetStreamBasicDescription(fmt);
+    if (desc == NULL) {
+        NSLog(@"Could not get the audio stream basic description!");
+        return;
+    }
+    
+    if (desc->mFormatID != kAudioFormatLinearPCM) {
+        NSLog(@"The format is not supported!");
+        return;
+    }
+    
+    if (desc->mSampleRate != 44100) {
+        NSLog(@"The sample rate is not supported!");
+        return;
+    }
+    
+    if (desc->mBitsPerChannel != 16) {
+        NSLog(@"The bits per channel is not supported!");
+        return;
+    }
+    
+    if (desc->mChannelsPerFrame != 2) {
+        NSLog(@"The channels per frame is not supported!");
+        return;
+    }
+    
+    CMBlockBufferRef blockBuffer;
+    AudioBufferList audioBufferList;
+    
+    CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, NULL, &audioBufferList, sizeof(audioBufferList), NULL, NULL, 0, &blockBuffer);
+    
+    if (audioBufferList.mNumberBuffers != 1) {
+        NSLog(@"The audio buffer is not interleaved!");
+        return;
+    }
+    
+    if (audioBufferList.mBuffers[0].mDataByteSize != 4096) {
+        NSLog(@"The size of the audio buffer is not 4096!");
+        return;
+    }
+    
+
+    AVCodecContext *c;
+    int ret;
+    int dst_nb_samples;
+
+    c = audio_st.enc;
+    
+    
+    OutputStream *ost = &audio_st;
+    AVFrame *frame = audio_st.tmp_frame;
+    int16_t *q = (int16_t*)frame->data[0];
+    int j, i, v;
+    
+    for (j = 0; j <frame->nb_samples; j++) {
+        v = (int)(sin(ost->t) * 10000);
+        for (i = 0; i < ost->enc->ch_layout.nb_channels; i++)
+            *q++ = v;
+        ost->t     += ost->tincr;
+        ost->tincr += ost->tincr2;
+    }
+
+    //int16_t *srcBuf = (int16_t *)audioBufferList.mBuffers[0].mData;
+    int16_t *dstBuf = (int16_t *)frame->data[0];
+    for (int i = 0; i < 1024; i++) {
+        //dstBuf[i] = srcBuf[i];
+        printf("%d: %d\n", i, dstBuf[i]);
+    }
+
+    
+    frame->pts = audio_st.next_pts;
+    audio_st.next_pts += frame->nb_samples;
+    
+    if (frame) {
+        /* convert samples from native format to destination codec format, using the resampler */
+        /* compute destination number of samples */
+        dst_nb_samples = av_rescale_rnd(swr_get_delay(audio_st.swr_ctx, c->sample_rate) + frame->nb_samples,
+                                        c->sample_rate, c->sample_rate, AV_ROUND_UP);
+        av_assert0(dst_nb_samples == frame->nb_samples);
+
+        /* when we pass a frame to the encoder, it may keep a reference to it
+         * internally;
+         * make sure we do not overwrite it here
+         */
+        ret = av_frame_make_writable(audio_st.frame);
+        if (ret < 0)
+            exit(1);
+
+        /* convert to destination format */
+        ret = swr_convert(audio_st.swr_ctx,
+                          audio_st.frame->data, dst_nb_samples,
+                          (const uint8_t **)frame->data, frame->nb_samples);
+        if (ret < 0) {
+            fprintf(stderr, "Error while converting\n");
+            exit(1);
+        }
+        frame = audio_st.frame;
+
+        frame->pts = av_rescale_q(audio_st.samples_count, (AVRational){1, c->sample_rate}, c->time_base);
+        audio_st.samples_count += dst_nb_samples;
+    }
+
+    write_frame(oc, c, audio_st.st, frame, audio_st.tmp_pkt);
 }
 - (int)close {
     av_write_trailer(oc);
 
     /* Close each codec. */
-    if (have_video)
-        close_stream(oc, &video_st);
-//    if (have_audio)
-//        close_stream(oc, &audio_st);
+//    if (have_video)
+//        close_stream(oc, &video_st);
+    if (have_audio)
+        close_stream(oc, &audio_st);
 
     if (!(fmt->flags & AVFMT_NOFILE))
         /* Close the output file. */

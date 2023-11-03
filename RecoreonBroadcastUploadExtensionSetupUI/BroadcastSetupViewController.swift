@@ -13,7 +13,7 @@ class BroadcastSetupViewController: UIViewController {
     func userDidFinishSetup() {
         let appGroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.github.umireon.Recoreon")
         // URL of the resource where broadcast can be viewed that will be returned to the application
-        let broadcastURL = appGroupURL?.appendingPathComponent("aaa.mkv")
+        let broadcastURL = appGroupURL?.appendingPathComponent("aaa.mka")
         
         // Dictionary with setup information that will be provided to broadcast extension when broadcast is started
         let setupInfo: [String : NSCoding & NSObjectProtocol] = ["broadcastName": "example" as NSCoding & NSObjectProtocol]

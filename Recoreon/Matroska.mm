@@ -235,10 +235,12 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
     /* increment frequency by 110 Hz per second */
     ost->tincr2 = 2 * M_PI * 110.0 / c->sample_rate / c->sample_rate;
 
+    printf("cap: %d\n", c->frame_size);
     if (c->codec->capabilities & AV_CODEC_CAP_VARIABLE_FRAME_SIZE)
         nb_samples = 10000;
     else
         nb_samples = c->frame_size;
+    
 
     ost->frame     = alloc_audio_frame(c->sample_fmt, &c->ch_layout,
                                        c->sample_rate, nb_samples);
@@ -276,24 +278,25 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
 
 /* Prepare a 16 bit dummy audio frame of 'frame_size' samples and
  * 'nb_channels' channels. */
-static AVFrame *get_audio_frame(OutputStream *ost)
+static AVFrame *get_audio_frame(OutputStream *ost, AudioBufferList *audioBufferList)
 {
     AVFrame *frame = ost->tmp_frame;
     int j, i, v;
     int16_t *q = (int16_t*)frame->data[0];
 
     /* check if we want to generate more frames */
-    if (av_compare_ts(ost->next_pts, ost->enc->time_base,
-                      STREAM_DURATION, (AVRational){ 1, 1 }) > 0)
-        return NULL;
-
-    for (j = 0; j <frame->nb_samples; j++) {
-        v = (int)(sin(ost->t) * 10000);
-        for (i = 0; i < ost->enc->ch_layout.nb_channels; i++)
-            *q++ = v;
-        ost->t     += ost->tincr;
-        ost->tincr += ost->tincr2;
-    }
+//    if (av_compare_ts(ost->next_pts, ost->enc->time_base,
+//                      STREAM_DURATION, (AVRational){ 1, 1 }) > 0)
+//        return NULL;
+    memcpy(q, audioBufferList->mBuffers->mData, audioBufferList->mBuffers->mDataByteSize);
+    
+//    for (j = 0; j <frame->nb_samples; j++) {
+//        v = (int)(sin(ost->t) * 10000);
+//        for (i = 0; i < ost->enc->ch_layout.nb_channels; i++)
+//            *q++ = v;
+//        ost->t     += ost->tincr;
+//        ost->tincr += ost->tincr2;
+//    }
 
     frame->pts = ost->next_pts;
     ost->next_pts  += frame->nb_samples;
@@ -305,7 +308,7 @@ static AVFrame *get_audio_frame(OutputStream *ost)
  * encode one audio frame and send it to the muxer
  * return 1 when encoding is finished, 0 otherwise
  */
-static int write_audio_frame(AVFormatContext *oc, OutputStream *ost)
+static int write_audio_frame(AVFormatContext *oc, OutputStream *ost, AudioBufferList *audioBufferList)
 {
     AVCodecContext *c;
     AVFrame *frame;
@@ -314,7 +317,7 @@ static int write_audio_frame(AVFormatContext *oc, OutputStream *ost)
 
     c = ost->enc;
 
-    frame = get_audio_frame(ost);
+    frame = get_audio_frame(ost, audioBufferList);
 
     if (frame) {
         /* convert samples from native format to destination codec format, using the resampler */
@@ -537,19 +540,19 @@ int i;
         have_video = 1;
         encode_video = 1;
     }
-//    if (fmt->audio_codec != AV_CODEC_ID_NONE) {
-//        add_stream(&audio_st, oc, &audio_codec, fmt->audio_codec);
-//        have_audio = 1;
-//        encode_audio = 1;
-//    }
+    if (fmt->audio_codec != AV_CODEC_ID_NONE) {
+        add_stream(&audio_st, oc, &audio_codec, AV_CODEC_ID_AAC);
+        have_audio = 1;
+        encode_audio = 1;
+    }
 
     /* Now that all the parameters are set, we can open the audio and
      * video codecs and allocate the necessary encode buffers. */
     if (have_video)
         open_video(oc, video_codec, &video_st, opt);
 
-//    if (have_audio)
-//        open_audio(oc, audio_codec, &audio_st, opt);
+    if (have_audio)
+        open_audio(oc, audio_codec, &audio_st, opt);
 
     av_dump_format(oc, 0, filenamestring.c_str(), 1);
 
@@ -575,11 +578,10 @@ int i;
 }
 - (int)writeVideo:(uint8_t *)yPlane yLinesize:(long)yLinesize cbcr:(uint8_t*)cbcrPlane cbcrLinesize:(long)cbcrLinesize {
     write_frame(oc, video_st.enc, video_st.st, get_video_frame(&video_st, yPlane, yLinesize, cbcrPlane, cbcrLinesize), video_st.tmp_pkt);
-//    write_audio_frame(oc, &audio_st);
     return 0;
 }
-- (int)writeAudio {
-    //write_audio_frame(oc, &audio_st);
+- (int)writeAudio:(AudioBufferList *)audioBufferList {
+    write_audio_frame(oc, &audio_st, audioBufferList);
     return 0;
 }
 - (int)close {
@@ -588,8 +590,8 @@ int i;
     /* Close each codec. */
     if (have_video)
         close_stream(oc, &video_st);
-//    if (have_audio)
-//        close_stream(oc, &audio_st);
+    if (have_audio)
+        close_stream(oc, &audio_st);
 
     if (!(fmt->flags & AVFMT_NOFILE))
         /* Close the output file. */
