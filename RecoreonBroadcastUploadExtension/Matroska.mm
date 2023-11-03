@@ -14,7 +14,7 @@ extern "C" {
 
 
 #define STREAM_DURATION   10.0
-#define STREAM_FRAME_RATE 25 /* 25 images/s */
+#define STREAM_FRAME_RATE 60 /* 25 images/s */
 #define STREAM_PIX_FMT    AV_PIX_FMT_NV12 /* default pix_fmt */
 
 #define SCALE_FLAGS SWS_BICUBIC
@@ -27,6 +27,7 @@ typedef struct OutputStream {
 
     /* pts of the next frame that will be generated */
     int64_t next_pts;
+    int64_t pts_base;
     int samples_count;
 
     AVFrame *frame;
@@ -551,8 +552,14 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     copyPlane((uint8_t *)frame->data[1], frame->linesize[1], cbcrPlane, cbcrLinesize, width, height / 2);
     CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
     
-    video_st.frame->pts = video_st.next_pts++;
+    CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+    int64_t outputPts = pts.value * 60 / pts.timescale;
+    if (video_st.pts_base == 0) {
+        video_st.pts_base = outputPts;
+    }
     
+    video_st.frame->pts = outputPts - video_st.pts_base;
+
     write_frame(oc, video_st.enc, video_st.st, video_st.frame, video_st.tmp_pkt);
     
     avio_flush(oc->pb);
@@ -623,9 +630,13 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         frame->data[0][i] = buf[i + 1];
         frame->data[0][i + 1] = buf[i];
     }
-
-    frame->pts = ost->next_pts;
-    ost->next_pts  += frame->nb_samples;
+    
+    CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+    int64_t outputPts = pts.value * 1024 / pts.timescale;
+    if (ost->pts_base == 0) {
+        ost->pts_base = outputPts;
+    }
+    frame->pts = outputPts;
 
     if (frame) {
         /* convert samples from native format to destination codec format, using the resampler */
