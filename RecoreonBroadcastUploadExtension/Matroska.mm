@@ -484,8 +484,8 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
 
     /* Now that all the parameters are set, we can open the audio and
      * video codecs and allocate the necessary encode buffers. */
-//    if (have_video)
-//        open_video(oc, video_codec, &video_st, opt);
+    if (have_video)
+        open_video(oc, video_codec, &video_st, opt);
 
     if (have_audio)
         open_audio(oc, audio_codec, &audio_st, opt);
@@ -556,6 +556,8 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     video_st.frame->pts = video_st.next_pts++;
     
     write_frame(oc, video_st.enc, video_st.st, video_st.frame, video_st.tmp_pkt);
+    
+    avio_flush(oc->pb);
 }
 - (void)writeAudio:(CMSampleBufferRef)sampleBuffer {
     CMFormatDescriptionRef fmt = CMSampleBufferGetFormatDescription(sampleBuffer);
@@ -605,19 +607,17 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         return;
     }
     
-
+    OutputStream *ost = &audio_st;
     AVCodecContext *c;
     int ret;
     int dst_nb_samples;
 
-    c = audio_st.enc;
-    
-    
-    OutputStream *ost = &audio_st;
-    AVFrame *frame = audio_st.tmp_frame;
-    int16_t *q = (int16_t*)frame->data[0];
+    c = ost->enc;
+
+    AVFrame *frame = ost->tmp_frame;
     int j, i, v;
-    
+    int16_t *q = (int16_t*)frame->data[0];
+
     for (j = 0; j <frame->nb_samples; j++) {
         v = (int)(sin(ost->t) * 10000);
         for (i = 0; i < ost->enc->ch_layout.nb_channels; i++)
@@ -626,21 +626,13 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         ost->tincr += ost->tincr2;
     }
 
-    //int16_t *srcBuf = (int16_t *)audioBufferList.mBuffers[0].mData;
-    int16_t *dstBuf = (int16_t *)frame->data[0];
-    for (int i = 0; i < 1024; i++) {
-        //dstBuf[i] = srcBuf[i];
-        printf("%d: %d\n", i, dstBuf[i]);
-    }
+    frame->pts = ost->next_pts;
+    ost->next_pts  += frame->nb_samples;
 
-    
-    frame->pts = audio_st.next_pts;
-    audio_st.next_pts += frame->nb_samples;
-    
     if (frame) {
         /* convert samples from native format to destination codec format, using the resampler */
         /* compute destination number of samples */
-        dst_nb_samples = av_rescale_rnd(swr_get_delay(audio_st.swr_ctx, c->sample_rate) + frame->nb_samples,
+        dst_nb_samples = av_rescale_rnd(swr_get_delay(ost->swr_ctx, c->sample_rate) + frame->nb_samples,
                                         c->sample_rate, c->sample_rate, AV_ROUND_UP);
         av_assert0(dst_nb_samples == frame->nb_samples);
 
@@ -648,32 +640,34 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
          * internally;
          * make sure we do not overwrite it here
          */
-        ret = av_frame_make_writable(audio_st.frame);
+        ret = av_frame_make_writable(ost->frame);
         if (ret < 0)
             exit(1);
 
         /* convert to destination format */
-        ret = swr_convert(audio_st.swr_ctx,
-                          audio_st.frame->data, dst_nb_samples,
+        ret = swr_convert(ost->swr_ctx,
+                          ost->frame->data, dst_nb_samples,
                           (const uint8_t **)frame->data, frame->nb_samples);
         if (ret < 0) {
             fprintf(stderr, "Error while converting\n");
             exit(1);
         }
-        frame = audio_st.frame;
+        frame = ost->frame;
 
-        frame->pts = av_rescale_q(audio_st.samples_count, (AVRational){1, c->sample_rate}, c->time_base);
-        audio_st.samples_count += dst_nb_samples;
+        frame->pts = av_rescale_q(ost->samples_count, (AVRational){1, c->sample_rate}, c->time_base);
+        ost->samples_count += dst_nb_samples;
     }
 
-    write_frame(oc, c, audio_st.st, frame, audio_st.tmp_pkt);
+    write_frame(oc, c, ost->st, frame, ost->tmp_pkt);
+    
+    avio_flush(oc->pb);
 }
 - (int)close {
     av_write_trailer(oc);
 
     /* Close each codec. */
-//    if (have_video)
-//        close_stream(oc, &video_st);
+    if (have_video)
+        close_stream(oc, &video_st);
     if (have_audio)
         close_stream(oc, &audio_st);
 
