@@ -17,12 +17,14 @@ struct ContentView: View {
                 Text("Start Recording")
             })
             Button(action: {
-                let appGroupDir = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.github.umireon.Recoreon")
-                let mkv = appGroupDir!.appendingPathComponent("aaa.mkv")
                 let homeDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                let toMkv = homeDir.appendingPathComponent("aaa.mkv")
-                try? FileManager.default.removeItem(at: toMkv)
-                try? FileManager.default.copyItem(at: mkv, to: toMkv)
+                let appGroupDir = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.github.umireon.Recoreon")?.appendingPathComponent("Documents")
+                let fromURLs = try! FileManager.default.contentsOfDirectory(at: appGroupDir!, includingPropertiesForKeys: nil)
+                for fromURL in fromURLs {
+                    let filename = fromURL.pathComponents.last
+                    let toURL = homeDir.appendingPathComponent(filename!)
+                    try? FileManager.default.moveItem(at: fromURL, to: toURL)
+                }
             }, label: {
                 Text("Export all")
             })
