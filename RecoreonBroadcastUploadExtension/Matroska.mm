@@ -31,7 +31,6 @@ typedef struct OutputStream {
     int samples_count;
 
     AVFrame *frame;
-    AVFrame *tmp_frame;
 
     AVPacket *tmp_pkt;
 
@@ -240,9 +239,7 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
     else
         nb_samples = c->frame_size;
 
-    ost->frame     = alloc_audio_frame(c->sample_fmt, &c->ch_layout,
-                                       c->sample_rate, nb_samples);
-    ost->tmp_frame = alloc_audio_frame(AV_SAMPLE_FMT_S16, &c->ch_layout,
+    ost->frame     = alloc_audio_frame(AV_SAMPLE_FMT_FLTP, &c->ch_layout,
                                        c->sample_rate, nb_samples);
 
     /* copy the stream parameters to the muxer */
@@ -272,80 +269,6 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
         fprintf(stderr, "Failed to initialize the resampling context\n");
         exit(1);
     }
-}
-
-/* Prepare a 16 bit dummy audio frame of 'frame_size' samples and
- * 'nb_channels' channels. */
-static AVFrame *get_audio_frame(OutputStream *ost)
-{
-    AVFrame *frame = ost->tmp_frame;
-    int j, i, v;
-    int16_t *q = (int16_t*)frame->data[0];
-
-    /* check if we want to generate more frames */
-    if (av_compare_ts(ost->next_pts, ost->enc->time_base,
-                      STREAM_DURATION, (AVRational){ 1, 1 }) > 0)
-        return NULL;
-
-    for (j = 0; j <frame->nb_samples; j++) {
-        v = (int)(sin(ost->t) * 10000);
-        for (i = 0; i < ost->enc->ch_layout.nb_channels; i++)
-            *q++ = v;
-        ost->t     += ost->tincr;
-        ost->tincr += ost->tincr2;
-    }
-
-    frame->pts = ost->next_pts;
-    ost->next_pts  += frame->nb_samples;
-
-    return frame;
-}
-
-/*
- * encode one audio frame and send it to the muxer
- * return 1 when encoding is finished, 0 otherwise
- */
-static int write_audio_frame(AVFormatContext *oc, OutputStream *ost)
-{
-    AVCodecContext *c;
-    AVFrame *frame;
-    int ret;
-    int dst_nb_samples;
-
-    c = ost->enc;
-
-    frame = get_audio_frame(ost);
-
-    if (frame) {
-        /* convert samples from native format to destination codec format, using the resampler */
-        /* compute destination number of samples */
-        dst_nb_samples = av_rescale_rnd(swr_get_delay(ost->swr_ctx, c->sample_rate) + frame->nb_samples,
-                                        c->sample_rate, c->sample_rate, AV_ROUND_UP);
-        av_assert0(dst_nb_samples == frame->nb_samples);
-
-        /* when we pass a frame to the encoder, it may keep a reference to it
-         * internally;
-         * make sure we do not overwrite it here
-         */
-        ret = av_frame_make_writable(ost->frame);
-        if (ret < 0)
-            exit(1);
-
-        /* convert to destination format */
-        ret = swr_convert(ost->swr_ctx,
-                          ost->frame->data, dst_nb_samples,
-                          (const uint8_t **)frame->data, frame->nb_samples);
-        if (ret < 0) {
-            fprintf(stderr, "Error while converting\n");
-            exit(1);
-        }
-        frame = ost->frame;
-
-        frame->pts = av_rescale_q(ost->samples_count, (AVRational){1, c->sample_rate}, c->time_base);
-        ost->samples_count += dst_nb_samples;
-    }
-
-    return write_frame(oc, c, ost->st, frame, ost->tmp_pkt);
 }
 
 /**************************************************************/
@@ -398,18 +321,6 @@ static void open_video(AVFormatContext *oc, const AVCodec *codec,
         exit(1);
     }
 
-    /* If the output format is not YUV420P, then a temporary YUV420P
-     * picture is needed too. It is then converted to the required
-     * output format. */
-    ost->tmp_frame = NULL;
-//    if (c->pix_fmt != AV_PIX_FMT_YUV420P) {
-//        ost->tmp_frame = alloc_frame(AV_PIX_FMT_YUV420P, c->width, c->height);
-//        if (!ost->tmp_frame) {
-//            fprintf(stderr, "Could not allocate temporary video frame\n");
-//            exit(1);
-//        }
-//    }
-
     /* copy the stream parameters to the muxer */
     ret = avcodec_parameters_from_context(ost->st->codecpar, c);
     if (ret < 0) {
@@ -422,7 +333,6 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
 {
     avcodec_free_context(&ost->enc);
     av_frame_free(&ost->frame);
-    av_frame_free(&ost->tmp_frame);
     av_packet_free(&ost->tmp_pkt);
     sws_freeContext(ost->sws_ctx);
     swr_free(&ost->swr_ctx);
@@ -624,8 +534,6 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
 
     OutputStream *ost = &audio_st;
     AVCodecContext *c;
-    int ret;
-    int dst_nb_samples;
 
     c = ost->enc;
 
@@ -645,36 +553,6 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         baseSecondsInitialized = true;
     }
     frame->pts = (CMTimeGetSeconds(pts) - baseSeconds) * 44100.0;
-    NSLog(@"apts: %lf", (CMTimeGetSeconds(pts) - baseSeconds) * 44100.0);
-
-//    if (frame) {
-//        /* convert samples from native format to destination codec format, using the resampler */
-//        /* compute destination number of samples */
-//        dst_nb_samples = av_rescale_rnd(swr_get_delay(ost->swr_ctx, c->sample_rate) + frame->nb_samples,
-//                                        c->sample_rate, c->sample_rate, AV_ROUND_UP);
-//        av_assert0(dst_nb_samples == frame->nb_samples);
-//
-//        /* when we pass a frame to the encoder, it may keep a reference to it
-//         * internally;
-//         * make sure we do not overwrite it here
-//         */
-//        ret = av_frame_make_writable(ost->frame);
-//        if (ret < 0)
-//            exit(1);
-//
-//        /* convert to destination format */
-//        ret = swr_convert(ost->swr_ctx,
-//                          ost->frame->data, dst_nb_samples,
-//                          (const uint8_t **)frame->data, frame->nb_samples);
-//        if (ret < 0) {
-//            fprintf(stderr, "Error while converting\n");
-//            exit(1);
-//        }
-//        frame = ost->frame;
-//
-//        frame->pts = av_rescale_q(ost->samples_count, (AVRational){1, c->sample_rate}, c->time_base);
-//        ost->samples_count += dst_nb_samples;
-//    }
 
     write_frame(oc, c, ost->st, frame, ost->tmp_pkt);
 }
