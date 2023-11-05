@@ -131,8 +131,7 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc,
     AVChannelLayout layout = AV_CHANNEL_LAYOUT_STEREO;
     switch ((*codec)->type) {
     case AVMEDIA_TYPE_AUDIO:
-        c->sample_fmt  = (*codec)->sample_fmts ?
-            (*codec)->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
+        c->sample_fmt  = AV_SAMPLE_FMT_FLTP;
         c->bit_rate    = 64000;
         c->sample_rate = 44100;
         if ((*codec)->supported_samplerates) {
@@ -553,18 +552,24 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
     
     CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-    int64_t outputPts = pts.value * 60 / pts.timescale;
-    if (video_st.pts_base == 0) {
-        video_st.pts_base = outputPts;
+    if (!baseSecondsInitialized) {
+        baseSeconds = CMTimeGetSeconds(pts);
+        baseSecondsInitialized = true;
     }
-    
-    video_st.frame->pts = outputPts - video_st.pts_base;
+    video_st.frame->pts = (CMTimeGetSeconds(pts) - baseSeconds) * 60;
+    NSLog(@"vpts: %lf %lld", CMTimeGetSeconds(pts) - baseSeconds);
 
     write_frame(oc, video_st.enc, video_st.st, video_st.frame, video_st.tmp_pkt);
     
     avio_flush(oc->pb);
 }
 - (void)writeAudio:(CMSampleBufferRef)sampleBuffer {
+    AVFrame *frame = audio_st.frame;
+    if (av_frame_make_writable(frame) < 0) {
+        NSLog(@"Could not make a frame writable!");
+        return;
+    }
+
     CMFormatDescriptionRef fmt = CMSampleBufferGetFormatDescription(sampleBuffer);
     if (fmt == NULL) {
         NSLog(@"Could not get the format description!");
@@ -616,7 +621,7 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         NSLog(@"The size of the audio buffer is not 4096!");
         return;
     }
-    
+
     OutputStream *ost = &audio_st;
     AVCodecContext *c;
     int ret;
@@ -624,53 +629,54 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
 
     c = ost->enc;
 
-    AVFrame *frame = ost->tmp_frame;
-    uint8_t *buf = (uint8_t *)audioBufferList.mBuffers[0].mData;
-    for (int i = 0; i < 4096; i += 2) {
-        frame->data[0][i] = buf[i + 1];
-        frame->data[0][i + 1] = buf[i];
+    uint16_t *buf = (uint16_t *)audioBufferList.mBuffers[0].mData;
+    float **data = (float **)frame->data;
+    for (int i = 0; i < 1024; i++) {
+        for (int j = 0; j < 2; j++) {
+            uint16_t unsignedValue = buf[i * 2 + j] >> 8 | buf[i * 2 + j] << 8;
+            float floatValue = *(int16_t *)&unsignedValue / 32768.0;
+            data[j][i] = floatValue;
+        }
     }
     
     CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-    int64_t outputPts = pts.value * 1024 / pts.timescale;
-    if (ost->pts_base == 0) {
-        ost->pts_base = outputPts;
+    if (!baseSecondsInitialized) {
+        baseSeconds = CMTimeGetSeconds(pts);
+        baseSecondsInitialized = true;
     }
-    frame->pts = outputPts;
+    frame->pts = (CMTimeGetSeconds(pts) - baseSeconds) * 44100.0;
+    NSLog(@"apts: %lf", (CMTimeGetSeconds(pts) - baseSeconds) * 44100.0);
 
-    if (frame) {
-        /* convert samples from native format to destination codec format, using the resampler */
-        /* compute destination number of samples */
-        dst_nb_samples = av_rescale_rnd(swr_get_delay(ost->swr_ctx, c->sample_rate) + frame->nb_samples,
-                                        c->sample_rate, c->sample_rate, AV_ROUND_UP);
-        av_assert0(dst_nb_samples == frame->nb_samples);
-
-        /* when we pass a frame to the encoder, it may keep a reference to it
-         * internally;
-         * make sure we do not overwrite it here
-         */
-        ret = av_frame_make_writable(ost->frame);
-        if (ret < 0)
-            exit(1);
-
-        /* convert to destination format */
-        ret = swr_convert(ost->swr_ctx,
-                          ost->frame->data, dst_nb_samples,
-                          (const uint8_t **)frame->data, frame->nb_samples);
-        if (ret < 0) {
-            fprintf(stderr, "Error while converting\n");
-            exit(1);
-        }
-        frame = ost->frame;
-
-        frame->pts = av_rescale_q(ost->samples_count, (AVRational){1, c->sample_rate}, c->time_base);
-        ost->samples_count += dst_nb_samples;
-    }
+//    if (frame) {
+//        /* convert samples from native format to destination codec format, using the resampler */
+//        /* compute destination number of samples */
+//        dst_nb_samples = av_rescale_rnd(swr_get_delay(ost->swr_ctx, c->sample_rate) + frame->nb_samples,
+//                                        c->sample_rate, c->sample_rate, AV_ROUND_UP);
+//        av_assert0(dst_nb_samples == frame->nb_samples);
+//
+//        /* when we pass a frame to the encoder, it may keep a reference to it
+//         * internally;
+//         * make sure we do not overwrite it here
+//         */
+//        ret = av_frame_make_writable(ost->frame);
+//        if (ret < 0)
+//            exit(1);
+//
+//        /* convert to destination format */
+//        ret = swr_convert(ost->swr_ctx,
+//                          ost->frame->data, dst_nb_samples,
+//                          (const uint8_t **)frame->data, frame->nb_samples);
+//        if (ret < 0) {
+//            fprintf(stderr, "Error while converting\n");
+//            exit(1);
+//        }
+//        frame = ost->frame;
+//
+//        frame->pts = av_rescale_q(ost->samples_count, (AVRational){1, c->sample_rate}, c->time_base);
+//        ost->samples_count += dst_nb_samples;
+//    }
 
     write_frame(oc, c, ost->st, frame, ost->tmp_pkt);
-    
-    avio_flush(oc->pb);
-    CFRelease(blockBuffer);
 }
 - (int)close {
     av_write_trailer(oc);
