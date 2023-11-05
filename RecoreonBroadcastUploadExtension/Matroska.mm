@@ -60,7 +60,7 @@ static int write_frame(AVFormatContext *fmt_ctx, AVCodecContext *c,
     if (ret < 0) {
         fprintf(stderr, "Error sending a frame to the encoder: %s\n",
                 av_err2str(ret));
-        exit(1);
+        throw "a";
     }
 
     while (ret >= 0) {
@@ -69,7 +69,7 @@ static int write_frame(AVFormatContext *fmt_ctx, AVCodecContext *c,
             break;
         else if (ret < 0) {
             fprintf(stderr, "Error encoding a frame: %s\n", av_err2str(ret));
-            exit(1);
+            throw "a";
         }
 
         /* rescale output packet timestamp values from codec to stream timebase */
@@ -84,7 +84,7 @@ static int write_frame(AVFormatContext *fmt_ctx, AVCodecContext *c,
          * This would be different if one used av_write_frame(). */
         if (ret < 0) {
             fprintf(stderr, "Error while writing output packet: %s\n", av_err2str(ret));
-            exit(1);
+            throw "a";
         }
     }
 
@@ -94,41 +94,47 @@ static int write_frame(AVFormatContext *fmt_ctx, AVCodecContext *c,
 /* Add an output stream. */
 static void add_stream(OutputStream *ost, AVFormatContext *oc,
                        const AVCodec **codec,
-                       enum AVCodecID codec_id)
+                       enum AVCodecID codec_id,
+                       const char *codec_name)
 {
     AVCodecContext *c;
     int i;
 
     /* find the encoder */
-    *codec = avcodec_find_encoder(codec_id);
+    if (codec_name == NULL) {
+        *codec = avcodec_find_encoder(codec_id);
+    } else {
+        *codec = avcodec_find_encoder_by_name(codec_name);
+    }
     if (!(*codec)) {
         fprintf(stderr, "Could not find encoder for '%s'\n",
                 avcodec_get_name(codec_id));
-        exit(1);
+        throw "a";
     }
 
     ost->tmp_pkt = av_packet_alloc();
     if (!ost->tmp_pkt) {
         fprintf(stderr, "Could not allocate AVPacket\n");
-        exit(1);
+        throw "a";
     }
 
     ost->st = avformat_new_stream(oc, NULL);
     if (!ost->st) {
         fprintf(stderr, "Could not allocate stream\n");
-        exit(1);
+        throw "a";
     }
     ost->st->id = oc->nb_streams-1;
     c = avcodec_alloc_context3(*codec);
     if (!c) {
         fprintf(stderr, "Could not alloc an encoding context\n");
-        exit(1);
+        throw "a";
     }
     ost->enc = c;
     
     AVChannelLayout layout = AV_CHANNEL_LAYOUT_STEREO;
     switch ((*codec)->type) {
     case AVMEDIA_TYPE_AUDIO:
+            NSLog(@"%d", );
         c->sample_fmt  = AV_SAMPLE_FMT_FLTP;
         c->bit_rate    = 64000;
         c->sample_rate = 44100;
@@ -190,7 +196,7 @@ static AVFrame *alloc_audio_frame(enum AVSampleFormat sample_fmt,
     AVFrame *frame = av_frame_alloc();
     if (!frame) {
         fprintf(stderr, "Error allocating an audio frame\n");
-        exit(1);
+        throw "a";
     }
 
     frame->format = sample_fmt;
@@ -201,7 +207,7 @@ static AVFrame *alloc_audio_frame(enum AVSampleFormat sample_fmt,
     if (nb_samples) {
         if (av_frame_get_buffer(frame, 0) < 0) {
             fprintf(stderr, "Error allocating an audio buffer\n");
-            exit(1);
+            throw "a";
         }
     }
 
@@ -224,7 +230,7 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
     av_dict_free(&opt);
     if (ret < 0) {
         fprintf(stderr, "Could not open audio codec: %s\n", av_err2str(ret));
-        exit(1);
+        throw "a";
     }
 
     /* init signal generator */
@@ -245,14 +251,14 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
     ret = avcodec_parameters_from_context(ost->st->codecpar, c);
     if (ret < 0) {
         fprintf(stderr, "Could not copy the stream parameters\n");
-        exit(1);
+        throw "a";
     }
 
     /* create resampler context */
     ost->swr_ctx = swr_alloc();
     if (!ost->swr_ctx) {
         fprintf(stderr, "Could not allocate resampler context\n");
-        exit(1);
+        throw "a";
     }
 
     /* set options */
@@ -266,7 +272,7 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
     /* initialize the resampling context */
     if ((ret = swr_init(ost->swr_ctx)) < 0) {
         fprintf(stderr, "Failed to initialize the resampling context\n");
-        exit(1);
+        throw "a";
     }
 }
 
@@ -290,7 +296,7 @@ static AVFrame *alloc_frame(enum AVPixelFormat pix_fmt, int width, int height)
     ret = av_frame_get_buffer(frame, 0);
     if (ret < 0) {
         fprintf(stderr, "Could not allocate frame data.\n");
-        exit(1);
+        throw "a";
     }
 
     return frame;
@@ -310,21 +316,21 @@ static void open_video(AVFormatContext *oc, const AVCodec *codec,
     av_dict_free(&opt);
     if (ret < 0) {
         fprintf(stderr, "Could not open video codec: %s\n", av_err2str(ret));
-        exit(1);
+        throw "a";
     }
 
     /* allocate and init a re-usable frame */
     ost->frame = alloc_frame(c->pix_fmt, c->width, c->height);
     if (!ost->frame) {
         fprintf(stderr, "Could not allocate video frame\n");
-        exit(1);
+        throw "a";
     }
 
     /* copy the stream parameters to the muxer */
     ret = avcodec_parameters_from_context(ost->st->codecpar, c);
     if (ret < 0) {
         fprintf(stderr, "Could not copy the stream parameters\n");
-        exit(1);
+        throw "a";
     }
 }
 
@@ -380,12 +386,12 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     /* Add the audio and video streams using the default format codecs
      * and initialize the codecs. */
     if (fmt->video_codec != AV_CODEC_ID_NONE) {
-        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_H264);
+        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_NONE, "h264_videotoolbox");
         have_video = 1;
         encode_video = 1;
     }
     if (fmt->audio_codec != AV_CODEC_ID_NONE) {
-        add_stream(&audio_st, oc, &audio_codec, AV_CODEC_ID_AAC);
+        add_stream(&audio_st, oc, &audio_codec, AV_CODEC_ID_NONE, "aac_at");
         have_audio = 1;
         encode_audio = 1;
     }
