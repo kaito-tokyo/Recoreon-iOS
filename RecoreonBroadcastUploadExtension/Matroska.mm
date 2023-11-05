@@ -134,7 +134,6 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc,
     AVChannelLayout layout = AV_CHANNEL_LAYOUT_STEREO;
     switch ((*codec)->type) {
     case AVMEDIA_TYPE_AUDIO:
-            NSLog(@"%d", );
         c->sample_fmt  = AV_SAMPLE_FMT_FLTP;
         c->bit_rate    = 64000;
         c->sample_rate = 44100;
@@ -150,9 +149,9 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc,
         break;
 
     case AVMEDIA_TYPE_VIDEO:
-        c->codec_id = codec_id;
+        // c->codec_id = codec_id;
 
-        c->bit_rate = 400000;
+        c->bit_rate = 8000000;
         /* Resolution must be a multiple of two. */
         c->width    = 888;
         c->height   = 1920;
@@ -391,7 +390,7 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         encode_video = 1;
     }
     if (fmt->audio_codec != AV_CODEC_ID_NONE) {
-        add_stream(&audio_st, oc, &audio_codec, AV_CODEC_ID_NONE, "aac_at");
+        add_stream(&audio_st, oc, &audio_codec, AV_CODEC_ID_AAC, NULL);
         have_audio = 1;
         encode_audio = 1;
     }
@@ -472,7 +471,6 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         baseSecondsInitialized = true;
     }
     video_st.frame->pts = (CMTimeGetSeconds(pts) - baseSeconds) * 60;
-    NSLog(@"vpts: %lf %lld", CMTimeGetSeconds(pts) - baseSeconds);
 
     write_frame(oc, video_st.enc, video_st.st, video_st.frame, video_st.tmp_pkt);
     
