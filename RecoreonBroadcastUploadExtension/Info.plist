@@ -11,8 +11,6 @@
 		<key>RPBroadcastProcessMode</key>
 		<string>RPBroadcastProcessModeSampleBuffer</string>
 	</dict>
-	<key>UIFileSharingEnabled</key>
-	<true/>
 	<key>WKSupportsAlwaysOnDisplay</key>
 	<false/>
 </dict>
