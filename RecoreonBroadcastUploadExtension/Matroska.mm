@@ -12,7 +12,6 @@ extern "C" {
 #include <libswresample/swresample.h>
 }
 
-
 #define STREAM_DURATION   10.0
 #define STREAM_FRAME_RATE 60 /* 25 images/s */
 #define STREAM_PIX_FMT    AV_PIX_FMT_NV12 /* default pix_fmt */
