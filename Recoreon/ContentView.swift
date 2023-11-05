@@ -8,14 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    let recorder = ScreenRecorder()
     var body: some View {
         VStack {
-            Button(action: {
-                recorder.startRecording()
-            }, label: {
-                Text("Start Recording")
-            })
             Button(action: {
                 let homeDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
                 let appGroupDir = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.github.umireon.Recoreon")?.appendingPathComponent("Documents")
