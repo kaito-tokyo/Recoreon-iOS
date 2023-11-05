@@ -32,11 +32,6 @@ typedef struct OutputStream {
     AVFrame *frame;
 
     AVPacket *tmp_pkt;
-
-    float t, tincr, tincr2;
-
-    struct SwsContext *sws_ctx;
-    struct SwrContext *swr_ctx;
 } OutputStream;
 
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
@@ -135,7 +130,7 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc,
     switch ((*codec)->type) {
     case AVMEDIA_TYPE_AUDIO:
         c->sample_fmt  = AV_SAMPLE_FMT_FLTP;
-        c->bit_rate    = 64000;
+        c->bit_rate    = 320000;
         c->sample_rate = 44100;
         if ((*codec)->supported_samplerates) {
             c->sample_rate = (*codec)->supported_samplerates[0];
@@ -232,12 +227,6 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
         throw "a";
     }
 
-    /* init signal generator */
-    ost->t     = 0;
-    ost->tincr = 2 * M_PI * 110.0 / c->sample_rate;
-    /* increment frequency by 110 Hz per second */
-    ost->tincr2 = 2 * M_PI * 110.0 / c->sample_rate / c->sample_rate;
-
     if (c->codec->capabilities & AV_CODEC_CAP_VARIABLE_FRAME_SIZE)
         nb_samples = 10000;
     else
@@ -250,27 +239,6 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
     ret = avcodec_parameters_from_context(ost->st->codecpar, c);
     if (ret < 0) {
         fprintf(stderr, "Could not copy the stream parameters\n");
-        throw "a";
-    }
-
-    /* create resampler context */
-    ost->swr_ctx = swr_alloc();
-    if (!ost->swr_ctx) {
-        fprintf(stderr, "Could not allocate resampler context\n");
-        throw "a";
-    }
-
-    /* set options */
-    av_opt_set_chlayout  (ost->swr_ctx, "in_chlayout",       &c->ch_layout,      0);
-    av_opt_set_int       (ost->swr_ctx, "in_sample_rate",     c->sample_rate,    0);
-    av_opt_set_sample_fmt(ost->swr_ctx, "in_sample_fmt",      AV_SAMPLE_FMT_S16, 0);
-    av_opt_set_chlayout  (ost->swr_ctx, "out_chlayout",      &c->ch_layout,      0);
-    av_opt_set_int       (ost->swr_ctx, "out_sample_rate",    c->sample_rate,    0);
-    av_opt_set_sample_fmt(ost->swr_ctx, "out_sample_fmt",     c->sample_fmt,     0);
-
-    /* initialize the resampling context */
-    if ((ret = swr_init(ost->swr_ctx)) < 0) {
-        fprintf(stderr, "Failed to initialize the resampling context\n");
         throw "a";
     }
 }
@@ -338,8 +306,6 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
     avcodec_free_context(&ost->enc);
     av_frame_free(&ost->frame);
     av_packet_free(&ost->tmp_pkt);
-    sws_freeContext(ost->sws_ctx);
-    swr_free(&ost->swr_ctx);
 }
 
 OutputStream video_st = { 0 }, audio_st = { 0 };
