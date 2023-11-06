@@ -425,11 +425,11 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
     
     CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-    if (!baseSecondsInitialized) {
-        baseSeconds = CMTimeGetSeconds(pts);
-        baseSecondsInitialized = true;
+    if (!basePtsInitialized) {
+        basePts = pts.value;
+        basePtsInitialized = true;
     }
-    video_st.frame->pts = (CMTimeGetSeconds(pts) - baseSeconds) * STREAM_FRAME_RATE;
+    video_st.frame->pts = (pts.value - basePts) * STREAM_FRAME_RATE / pts.timescale;
 
     write_frame(oc, video_st.enc, video_st.st, video_st.frame, video_st.tmp_pkt);
 }
@@ -508,11 +508,11 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     }
     
     CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-    if (!baseSecondsInitialized) {
-        baseSeconds = CMTimeGetSeconds(pts);
-        baseSecondsInitialized = true;
+    if (!basePtsInitialized) {
+        basePts = pts.value;
+        basePtsInitialized = true;
     }
-    frame->pts = (CMTimeGetSeconds(pts) - baseSeconds) * 44100.0;
+    frame->pts = (pts.value - basePts) * 44100.0 / pts.timescale;
 
     write_frame(oc, c, ost->st, frame, ost->tmp_pkt);
 }
