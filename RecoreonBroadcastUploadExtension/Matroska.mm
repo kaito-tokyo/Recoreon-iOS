@@ -8,15 +8,11 @@ extern "C" {
 #include <libavutil/timestamp.h>
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <libswscale/swscale.h>
-#include <libswresample/swresample.h>
 }
 
 #define STREAM_DURATION   10.0
 #define STREAM_FRAME_RATE 120 /* 25 images/s */
 #define STREAM_PIX_FMT    AV_PIX_FMT_NV12 /* default pix_fmt */
-
-#define SCALE_FLAGS SWS_BICUBIC
 
 #import "Matroska.h"
 
@@ -169,7 +165,8 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc,
              * the motion of the chroma plane does not match the luma plane. */
             c->mb_decision = 2;
         }
-            c->color_range = AVCOL_RANGE_JPEG;
+        c->color_range = AVCOL_RANGE_JPEG;
+        c->color_primaries = AVCOL_PRI_BT709;
         break;
 
     default:
@@ -393,16 +390,10 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     
     return 0;
 }
-- (void)writeVideo:(CMSampleBufferRef)sampleBuffer {
+- (void)writeVideo:(CMSampleBufferRef)sampleBuffer pixelBuffer:(CVPixelBufferRef)pixelBuffer {
     AVFrame *frame = video_st.frame;
     if (av_frame_make_writable(frame) < 0) {
         NSLog(@"Could not make a frame writable!");
-        return;
-    }
-
-    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    if (pixelBuffer == NULL) {
-        NSLog(@"Could not get a pixel buffer!");
         return;
     }
     

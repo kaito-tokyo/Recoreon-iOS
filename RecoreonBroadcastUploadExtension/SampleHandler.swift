@@ -9,6 +9,8 @@ import ReplayKit
 
 class SampleHandler: RPBroadcastSampleHandler {
     var matroska: Matroska?
+    var newPixelBufferRef: CVPixelBuffer?
+    let ciContext = CIContext()
     
     let dateFormatter = {
         let formatter = ISO8601DateFormatter()
@@ -44,10 +46,37 @@ class SampleHandler: RPBroadcastSampleHandler {
         matroska?.close()
     }
     
+    func checkIfNewPixelBufferShouldBeRecreate(_ origWidth: Int, _ origHeight: Int) -> Bool {
+        guard let newPixelBuffer = newPixelBufferRef else { return true }
+        let newWidth = CVPixelBufferGetWidth(newPixelBuffer)
+        let newHeight = CVPixelBufferGetHeight(newPixelBuffer)
+        return newWidth != origWidth || newHeight != origHeight
+    }
+    
+    func renderToNewPixelBuffer(_ origPixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
+        let width = CVPixelBufferGetWidth(origPixelBuffer)
+        let height = CVPixelBufferGetHeight(origPixelBuffer)
+        if (checkIfNewPixelBufferShouldBeRecreate(width, height)) {
+            CVPixelBufferCreate(nil, width, height, kCVPixelFormatType_420YpCbCr8BiPlanarFullRange, nil, &newPixelBufferRef)
+        }
+        guard let newPixelBuffer = newPixelBufferRef else { return nil }
+        let ciImage = CIImage(cvPixelBuffer: origPixelBuffer)
+        ciContext.render(ciImage, to: newPixelBuffer)
+        return newPixelBuffer
+    }
+    
     override func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
         switch sampleBufferType {
         case RPSampleBufferType.video:
-            self.matroska?.writeVideo(sampleBuffer)
+            guard let origPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+                print("Could not obtain the pixel buffer!")
+                return
+            }
+            guard let newPixelBuffer = renderToNewPixelBuffer(origPixelBuffer) else {
+                print("Could not render to the pixel buffer!")
+                return
+            }
+            self.matroska?.writeVideo(sampleBuffer, pixelBuffer: newPixelBuffer)
             break
         case RPSampleBufferType.audioApp:
             self.matroska?.writeAudio(sampleBuffer)

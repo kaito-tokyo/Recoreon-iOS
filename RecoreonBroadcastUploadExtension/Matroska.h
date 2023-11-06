@@ -7,7 +7,7 @@
     double baseSeconds;
 }
 - (int)open:(NSString *)filename;
-- (void)writeVideo:(CMSampleBufferRef)sampleBuffer;
+- (void)writeVideo:(CMSampleBufferRef)sampleBuffer pixelBuffer:(CVPixelBufferRef)pixelBuffer;
 - (void)writeAudio:(CMSampleBufferRef)sampleBuffer;
 - (int)close;
 @end
