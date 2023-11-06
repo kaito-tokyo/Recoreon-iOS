@@ -13,7 +13,7 @@ extern "C" {
 }
 
 #define STREAM_DURATION   10.0
-#define STREAM_FRAME_RATE 60 /* 25 images/s */
+#define STREAM_FRAME_RATE 120 /* 25 images/s */
 #define STREAM_PIX_FMT    AV_PIX_FMT_NV12 /* default pix_fmt */
 
 #define SCALE_FLAGS SWS_BICUBIC
@@ -169,6 +169,7 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc,
              * the motion of the chroma plane does not match the luma plane. */
             c->mb_decision = 2;
         }
+            c->color_range = AVCOL_RANGE_JPEG;
         break;
 
     default:
@@ -258,6 +259,7 @@ static AVFrame *alloc_frame(enum AVPixelFormat pix_fmt, int width, int height)
     frame->format = pix_fmt;
     frame->width  = width;
     frame->height = height;
+    frame->color_range = AVCOL_RANGE_JPEG;
 
     /* allocate the buffers for the frame data */
     ret = av_frame_get_buffer(frame, 0);
@@ -351,7 +353,7 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     /* Add the audio and video streams using the default format codecs
      * and initialize the codecs. */
     if (fmt->video_codec != AV_CODEC_ID_NONE) {
-        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_NONE, "h264_videotoolbox");
+        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_H264, NULL);
         have_video = 1;
         encode_video = 1;
     }
@@ -436,11 +438,9 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         baseSeconds = CMTimeGetSeconds(pts);
         baseSecondsInitialized = true;
     }
-    video_st.frame->pts = (CMTimeGetSeconds(pts) - baseSeconds) * 60;
+    video_st.frame->pts = (CMTimeGetSeconds(pts) - baseSeconds) * STREAM_FRAME_RATE;
 
     write_frame(oc, video_st.enc, video_st.st, video_st.frame, video_st.tmp_pkt);
-    
-    avio_flush(oc->pb);
 }
 - (void)writeAudio:(CMSampleBufferRef)sampleBuffer {
     AVFrame *frame = audio_st.frame;
