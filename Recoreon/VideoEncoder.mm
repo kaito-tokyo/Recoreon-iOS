@@ -24,6 +24,8 @@ double getDuration(NSString *videoPath) {
         videoURL.path,
         @"-c:v",
         @"h264_videotoolbox",
+        @"-vb",
+        @"1000k",
         @"-vf",
         @"setpts=PTS/4",
         @"-af",

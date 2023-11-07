@@ -1,34 +1,13 @@
-#include <string>
-
-extern "C" {
 #include <libavutil/avassert.h>
 #include <libavutil/channel_layout.h>
 #include <libavutil/opt.h>
 #include <libavutil/mathematics.h>
 #include <libavutil/timestamp.h>
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-}
 
-#define STREAM_DURATION   10.0
 #define STREAM_FRAME_RATE 120 /* 25 images/s */
 #define STREAM_PIX_FMT    AV_PIX_FMT_NV12 /* default pix_fmt */
 
 #import "Matroska.h"
-
-typedef struct OutputStream {
-    AVStream *st;
-    AVCodecContext *enc;
-
-    /* pts of the next frame that will be generated */
-    int64_t next_pts;
-    int64_t pts_base;
-    int samples_count;
-
-    AVFrame *frame;
-
-    AVPacket *tmp_pkt;
-} OutputStream;
 
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {
@@ -49,9 +28,8 @@ static int write_frame(AVFormatContext *fmt_ctx, AVCodecContext *c,
     // send the frame to the encoder
     ret = avcodec_send_frame(c, frame);
     if (ret < 0) {
-        fprintf(stderr, "Error sending a frame to the encoder: %s\n",
-                av_err2str(ret));
-        throw "a";
+        NSLog(@"Error sending a frame to the encoder: %s", av_err2str(ret));
+        return ret;
     }
 
     while (ret >= 0) {
@@ -59,8 +37,8 @@ static int write_frame(AVFormatContext *fmt_ctx, AVCodecContext *c,
         if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
             break;
         else if (ret < 0) {
-            fprintf(stderr, "Error encoding a frame: %s\n", av_err2str(ret));
-            throw "a";
+            NSLog(@"Error encoding a frame: %s", av_err2str(ret));
+            return ret;
         }
 
         /* rescale output packet timestamp values from codec to stream timebase */
@@ -74,108 +52,12 @@ static int write_frame(AVFormatContext *fmt_ctx, AVCodecContext *c,
          * its contents and resets pkt), so that no unreferencing is necessary.
          * This would be different if one used av_write_frame(). */
         if (ret < 0) {
-            fprintf(stderr, "Error while writing output packet: %s\n", av_err2str(ret));
-            throw "a";
+            NSLog(@"Error while writing output packet: %s", av_err2str(ret));
+            return ret;
         }
     }
 
     return ret == AVERROR_EOF ? 1 : 0;
-}
-
-/* Add an output stream. */
-static void add_stream(OutputStream *ost, AVFormatContext *oc,
-                       const AVCodec **codec,
-                       enum AVCodecID codec_id,
-                       const char *codec_name)
-{
-    AVCodecContext *c;
-    int i;
-
-    /* find the encoder */
-    if (codec_name == NULL) {
-        *codec = avcodec_find_encoder(codec_id);
-    } else {
-        *codec = avcodec_find_encoder_by_name(codec_name);
-    }
-    if (!(*codec)) {
-        fprintf(stderr, "Could not find encoder for '%s'\n",
-                avcodec_get_name(codec_id));
-        throw "a";
-    }
-
-    ost->tmp_pkt = av_packet_alloc();
-    if (!ost->tmp_pkt) {
-        fprintf(stderr, "Could not allocate AVPacket\n");
-        throw "a";
-    }
-
-    ost->st = avformat_new_stream(oc, NULL);
-    if (!ost->st) {
-        fprintf(stderr, "Could not allocate stream\n");
-        throw "a";
-    }
-    ost->st->id = oc->nb_streams-1;
-    c = avcodec_alloc_context3(*codec);
-    if (!c) {
-        fprintf(stderr, "Could not alloc an encoding context\n");
-        throw "a";
-    }
-    ost->enc = c;
-    
-    AVChannelLayout layout = AV_CHANNEL_LAYOUT_STEREO;
-    switch ((*codec)->type) {
-    case AVMEDIA_TYPE_AUDIO:
-        c->sample_fmt  = AV_SAMPLE_FMT_U8;
-        c->bit_rate    = 320000;
-        c->sample_rate = 44100;
-        if ((*codec)->supported_samplerates) {
-            c->sample_rate = (*codec)->supported_samplerates[0];
-            for (i = 0; (*codec)->supported_samplerates[i]; i++) {
-                if ((*codec)->supported_samplerates[i] == 44100)
-                    c->sample_rate = 44100;
-            }
-        }
-        av_channel_layout_copy(&c->ch_layout, &layout);
-        ost->st->time_base = (AVRational){ 1, c->sample_rate };
-        break;
-
-    case AVMEDIA_TYPE_VIDEO:
-        // c->codec_id = codec_id;
-
-        c->bit_rate = 8000000;
-        /* Resolution must be a multiple of two. */
-        c->width    = 888;
-        c->height   = 1920;
-        /* timebase: This is the fundamental unit of time (in seconds) in terms
-         * of which frame timestamps are represented. For fixed-fps content,
-         * timebase should be 1/framerate and timestamp increments should be
-         * identical to 1. */
-        ost->st->time_base = (AVRational){ 1, STREAM_FRAME_RATE };
-        c->time_base       = ost->st->time_base;
-
-        c->gop_size      = 12; /* emit one intra frame every twelve frames at most */
-        c->pix_fmt       = STREAM_PIX_FMT;
-        if (c->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
-            /* just for testing, we also add B-frames */
-            c->max_b_frames = 2;
-        }
-        if (c->codec_id == AV_CODEC_ID_MPEG1VIDEO) {
-            /* Needed to avoid using macroblocks in which some coeffs overflow.
-             * This does not happen with normal video, it just happens here as
-             * the motion of the chroma plane does not match the luma plane. */
-            c->mb_decision = 2;
-        }
-        c->color_range = AVCOL_RANGE_JPEG;
-        c->color_primaries = AVCOL_PRI_BT709;
-        break;
-
-    default:
-        break;
-    }
-
-    /* Some formats want stream headers to be separate. */
-    if (oc->oformat->flags & AVFMT_GLOBALHEADER)
-        c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 }
 
 /**************************************************************/
@@ -187,8 +69,8 @@ static AVFrame *alloc_audio_frame(enum AVSampleFormat sample_fmt,
 {
     AVFrame *frame = av_frame_alloc();
     if (!frame) {
-        fprintf(stderr, "Error allocating an audio frame\n");
-        throw "a";
+        NSException *e = [NSException exceptionWithName:@"AudioFrameNotAllocatedException" reason:@"Error allocating an audio frame!" userInfo:nil];
+        @throw e;
     }
 
     frame->format = sample_fmt;
@@ -198,8 +80,8 @@ static AVFrame *alloc_audio_frame(enum AVSampleFormat sample_fmt,
 
     if (nb_samples) {
         if (av_frame_get_buffer(frame, 0) < 0) {
-            fprintf(stderr, "Error allocating an audio buffer\n");
-            throw "a";
+            NSException *e = [NSException exceptionWithName:@"AudioBufferNotAllocatedException" reason:@"Error allocating an audio buffer!" userInfo:nil];
+            @throw e;
         }
     }
 
@@ -221,8 +103,10 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
     ret = avcodec_open2(c, codec, &opt);
     av_dict_free(&opt);
     if (ret < 0) {
-        fprintf(stderr, "Could not open audio codec: %s\n", av_err2str(ret));
-        throw "a";
+        NSException *e = [NSException exceptionWithName:@"AudioCodecNotOpenedException" reason:@"Could not open audio codec!" userInfo:@{
+            @"String" : [NSString stringWithUTF8String:av_err2str(ret)]
+        }];
+        @throw e;
     }
 
     if (c->codec->capabilities & AV_CODEC_CAP_VARIABLE_FRAME_SIZE)
@@ -236,8 +120,8 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
     /* copy the stream parameters to the muxer */
     ret = avcodec_parameters_from_context(ost->st->codecpar, c);
     if (ret < 0) {
-        fprintf(stderr, "Could not copy the stream parameters\n");
-        throw "a";
+        NSException *e = [NSException exceptionWithName:@"StreamParameterNotCopiedException" reason:@"Could not copy the stream parameters!" userInfo:nil];
+        @throw e;
     }
 }
 
@@ -261,8 +145,8 @@ static AVFrame *alloc_frame(enum AVPixelFormat pix_fmt, int width, int height)
     /* allocate the buffers for the frame data */
     ret = av_frame_get_buffer(frame, 0);
     if (ret < 0) {
-        fprintf(stderr, "Could not allocate frame data.\n");
-        throw "a";
+        NSException *e = [NSException exceptionWithName:@"FrameDataNotAllocatedException" reason:@"Could not allocate frame data!" userInfo:nil];
+        @throw e;
     }
 
     return frame;
@@ -281,45 +165,28 @@ static void open_video(AVFormatContext *oc, const AVCodec *codec,
     ret = avcodec_open2(c, codec, &opt);
     av_dict_free(&opt);
     if (ret < 0) {
-        fprintf(stderr, "Could not open video codec: %s\n", av_err2str(ret));
-        throw "a";
+        NSException *e = [NSException exceptionWithName:@"VideoCodecNotOpenedException" reason:@"Could not open video codec!" userInfo:@{
+            @"String" : [NSString stringWithUTF8String:av_err2str(ret)]
+        }];
+        @throw e;
     }
 
     /* allocate and init a re-usable frame */
     ost->frame = alloc_frame(c->pix_fmt, c->width, c->height);
     if (!ost->frame) {
-        fprintf(stderr, "Could not allocate video frame\n");
-        throw "a";
+        NSException *e = [NSException exceptionWithName:@"VideoFrameNotAllocatedException" reason:@"Could not allocate video frame!" userInfo:nil];
+        @throw e;
     }
 
     /* copy the stream parameters to the muxer */
     ret = avcodec_parameters_from_context(ost->st->codecpar, c);
     if (ret < 0) {
-        fprintf(stderr, "Could not copy the stream parameters\n");
-        throw "a";
+        NSException *e = [NSException exceptionWithName:@"StreamParameterNotCopiedException" reason:@"Could not copy the stream parameters!" userInfo:nil];
+        @throw e;
     }
 }
 
-static void close_stream(AVFormatContext *oc, OutputStream *ost)
-{
-    avcodec_free_context(&ost->enc);
-    av_frame_free(&ost->frame);
-    av_packet_free(&ost->tmp_pkt);
-}
-
-OutputStream video_st = { 0 }, audio_st = { 0 };
-const AVOutputFormat *fmt;
-
-std::string filenamestring;
-AVFormatContext *oc;
-const AVCodec *audio_codec, *video_codec;
-int ret;
-int have_video = 0, have_audio = 0;
-AVDictionary *opt = NULL;
-int encode_video = 0, encode_audio = 0;
-int i;
-
-void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesize, size_t width, size_t height) {
+static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesize, size_t width, size_t height) {
     assert(width <= dstLinesize);
     assert(width <= srcLinesize);
 
@@ -332,66 +199,146 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     }
 }
 
+static void close_stream(AVFormatContext *oc, OutputStream *ost)
+{
+    avcodec_free_context(&ost->enc);
+    av_frame_free(&ost->frame);
+    av_packet_free(&ost->tmp_pkt);
+}
+
 @implementation Matroska : NSObject
-- (int)open:(NSString *)filename {
-    std::string filenamestring = [filename UTF8String];
+- (void)open:(NSString *)_filename {
+    filename = _filename;
 
-    /* allocate the output media context */
-    avformat_alloc_output_context2(&oc, NULL, NULL, filenamestring.c_str());
-    if (!oc) {
-        printf("Could not deduce output format from file extension: using MPEG.\n");
-        avformat_alloc_output_context2(&oc, NULL, "mpeg", filenamestring.c_str());
-    }
-    if (!oc)
-        return 1;
-
-    fmt = oc->oformat;
-
-    /* Add the audio and video streams using the default format codecs
-     * and initialize the codecs. */
-    if (fmt->video_codec != AV_CODEC_ID_NONE) {
-        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_H264, "h264_videotoolbox");
-        have_video = 1;
-        encode_video = 1;
-    }
-    if (fmt->audio_codec != AV_CODEC_ID_NONE) {
-        add_stream(&audio_st, oc, &audio_codec, AV_CODEC_ID_AAC, "aac_at");
-        have_audio = 1;
-        encode_audio = 1;
-    }
-
-    /* Now that all the parameters are set, we can open the audio and
-     * video codecs and allocate the necessary encode buffers. */
-    if (have_video)
-        open_video(oc, video_codec, &video_st, opt);
-
-    if (have_audio)
-        open_audio(oc, audio_codec, &audio_st, opt);
-
-    av_dump_format(oc, 0, filenamestring.c_str(), 1);
-
-    /* open the output file, if needed */
-    if (!(fmt->flags & AVFMT_NOFILE)) {
-        ret = avio_open(&oc->pb, filenamestring.c_str(), AVIO_FLAG_WRITE);
-        if (ret < 0) {
-            fprintf(stderr, "Could not open '%s': %s\n", filenamestring.c_str(),
-                    av_err2str(ret));
-            return 1;
-        }
-    }
-
-    /* Write the stream header, if any. */
-    ret = avformat_write_header(oc, &opt);
-    if (ret < 0) {
-        fprintf(stderr, "Error occurred when opening output file: %s\n",
-                av_err2str(ret));
-        return 1;
+    avformat_alloc_output_context2(&outputFormatContext, NULL, NULL, [filename UTF8String]);
+    if (!outputFormatContext) {
+        NSException *e = [NSException exceptionWithName:@"AVFormatContextNotAllocatedException" reason:@"Could not allocate AVFormatContext!" userInfo:nil];
+        @throw e;
     }
     
-    return 0;
+    const char *videoCodecName = "h264_videotoolbox";
+    videoCodec = avcodec_find_encoder_by_name(videoCodecName);
+    if (!videoCodec) {
+        NSException *e = [NSException exceptionWithName:@"VideoCodecNotFoundException" reason:@"Could not find the video codec!" userInfo:@{
+            @"EncoderName": [NSString stringWithUTF8String:videoCodecName]
+        }];
+        @throw e;
+    }
+    
+    const char *audioCodecName = "aac_at";
+    audioCodec = avcodec_find_encoder_by_name(audioCodecName);
+    if (!audioCodec) {
+        NSException *e = [NSException exceptionWithName:@"AudioCodecNotFoundException" reason:@"Could not find the audio codec!" userInfo:@{
+            @"EncoderName": [NSString stringWithUTF8String:audioCodecName]
+        }];
+        @throw e;
+    }
+}
+- (void)onFirstVideoFrame:(CMSampleBufferRef)sampleBuffer pixelBuffer:(CVPixelBufferRef)pixelBuffer {
+    int ret;
+
+    int width = (int)CVPixelBufferGetWidth(pixelBuffer);
+    int height = (int)CVPixelBufferGetHeight(pixelBuffer);
+    [self addVideoStream:&videoStreamScreen index:0 width:width height:height];
+    [self addAudioStream:&audioStreamScreen index:1];
+
+    open_video(outputFormatContext, videoCodec, &videoStreamScreen, NULL);
+    open_audio(outputFormatContext, audioCodec, &audioStreamScreen, NULL);
+
+    av_dump_format(outputFormatContext, 0, [filename UTF8String], 1);
+    
+    ret = avio_open(&outputFormatContext->pb, [filename UTF8String], AVIO_FLAG_WRITE);
+    if (ret < 0) {
+        NSException *e = [NSException exceptionWithName:@"FileNotOpenedException" reason:@"Could not open!" userInfo:@{
+            @"String" : [NSString stringWithUTF8String:av_err2str(ret)]
+        }];
+        @throw e;
+    }
+
+    ret = avformat_write_header(outputFormatContext, NULL);
+    if (ret < 0) {
+        NSException *e = [NSException exceptionWithName:@"FileNotOpenedException" reason:@"Error occurred when opening output file!" userInfo:@{
+            @"String" : [NSString stringWithUTF8String:av_err2str(ret)]
+        }];
+        @throw e;
+    }
+}
+- (void)addVideoStream:(struct OutputStream *)outputStream index:(int)index width:(int)width height:(int)height {
+    outputStream->tmp_pkt = av_packet_alloc();
+    if (!outputStream->tmp_pkt) {
+        NSException *e = [NSException exceptionWithName:@"AVPacketNotAllocatedException" reason:@"Could not allocate AVPacket!" userInfo:nil];
+        @throw e;
+    }
+
+    AVStream *stream = avformat_new_stream(outputFormatContext, NULL);
+    if (!stream) {
+        NSException *e = [NSException exceptionWithName:@"StreamNotAllocatedException" reason:@"Could not allocate stream!" userInfo:nil];
+        @throw e;
+    }
+    stream->id = index;
+    outputStream->st = stream;
+    
+    AVCodecContext *codecContext = avcodec_alloc_context3(videoCodec);
+    if (!codecContext) {
+        NSException *e = [NSException exceptionWithName:@"CodecContextNotAllocatedException" reason:@"Could not allocate an encoding context!" userInfo:nil];
+        @throw e;
+    }
+    outputStream->enc = codecContext;
+
+    codecContext->codec_id = AV_CODEC_ID_H264;
+    codecContext->bit_rate = 8000000;
+    codecContext->width = width;
+    codecContext->height = height;
+    codecContext->time_base = stream->time_base = (AVRational){ 1, STREAM_FRAME_RATE };
+    codecContext->gop_size = 12;
+    codecContext->pix_fmt = STREAM_PIX_FMT;
+    codecContext->color_range = AVCOL_RANGE_JPEG;
+    codecContext->color_primaries = AVCOL_PRI_BT709;
+
+    if (outputFormatContext->oformat->flags & AVFMT_GLOBALHEADER) {
+        codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    }
+}
+- (void)addAudioStream:(struct OutputStream *)outputStream index:(int)index {
+    outputStream->tmp_pkt = av_packet_alloc();
+    if (!outputStream->tmp_pkt) {
+        NSException *e = [NSException exceptionWithName:@"AVPacketNotAllocatedException" reason:@"Could not allocate AVPacket!" userInfo:nil];
+        @throw e;
+    }
+
+    AVStream *stream = avformat_new_stream(outputFormatContext, NULL);
+    if (!stream) {
+        NSException *e = [NSException exceptionWithName:@"StreamNotAllocatedException" reason:@"Could not allocate stream!" userInfo:nil];
+        @throw e;
+    }
+    stream->id = index;
+    outputStream->st = stream;
+    
+    AVCodecContext *codecContext = avcodec_alloc_context3(audioCodec);
+    if (!codecContext) {
+        NSException *e = [NSException exceptionWithName:@"CodecContextNotAllocatedException" reason:@"Could not allocate an encoding context!" userInfo:nil];
+        @throw e;
+    }
+    outputStream->enc = codecContext;
+
+    codecContext->sample_fmt = AV_SAMPLE_FMT_U8;
+    codecContext->bit_rate = 320000;
+    codecContext->sample_rate = 44100;
+    AVChannelLayout layout = AV_CHANNEL_LAYOUT_STEREO;
+    av_channel_layout_copy(&codecContext->ch_layout, &layout);
+    codecContext->time_base = stream->time_base = (AVRational){ 1, codecContext->sample_rate };
+
+    if (outputFormatContext->oformat->flags & AVFMT_GLOBALHEADER) {
+        codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    }
 }
 - (void)writeVideo:(CMSampleBufferRef)sampleBuffer pixelBuffer:(CVPixelBufferRef)pixelBuffer {
-    AVFrame *frame = video_st.frame;
+    if (!firstVideoFrameReceived) {
+        [self onFirstVideoFrame:sampleBuffer pixelBuffer:pixelBuffer];
+        firstVideoFrameReceived = true;
+    }
+
+    AVFrame *frame = videoStreamScreen.frame;
     if (av_frame_make_writable(frame) < 0) {
         NSLog(@"Could not make a frame writable!");
         return;
@@ -429,12 +376,16 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         basePts = pts.value;
         basePtsInitialized = true;
     }
-    video_st.frame->pts = (pts.value - basePts) * STREAM_FRAME_RATE / pts.timescale;
+    videoStreamScreen.frame->pts = (pts.value - basePts) * STREAM_FRAME_RATE / pts.timescale;
 
-    write_frame(oc, video_st.enc, video_st.st, video_st.frame, video_st.tmp_pkt);
+    write_frame(outputFormatContext, videoStreamScreen.enc, videoStreamScreen.st, videoStreamScreen.frame, videoStreamScreen.tmp_pkt);
 }
 - (void)writeAudio:(CMSampleBufferRef)sampleBuffer audioBufferList:(AudioBufferList *)audioBufferList {
-    AVFrame *frame = audio_st.frame;
+    if (!firstVideoFrameReceived) {
+        return;
+    }
+
+    AVFrame *frame = audioStreamScreen.frame;
     if (av_frame_make_writable(frame) < 0) {
         NSLog(@"Could not make a frame writable!");
         return;
@@ -487,7 +438,7 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         return;
     }
 
-    OutputStream *ost = &audio_st;
+    OutputStream *ost = &audioStreamScreen;
     AVCodecContext *c;
 
     c = ost->enc;
@@ -507,24 +458,14 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     }
     frame->pts = (pts.value - basePts) * 44100.0 / pts.timescale;
 
-    write_frame(oc, c, ost->st, frame, ost->tmp_pkt);
+    write_frame(outputFormatContext, c, ost->st, frame, ost->tmp_pkt);
 }
-- (int)close {
-    av_write_trailer(oc);
+- (void)close {
+    av_write_trailer(outputFormatContext);
 
-    /* Close each codec. */
-    if (have_video)
-        close_stream(oc, &video_st);
-    if (have_audio)
-        close_stream(oc, &audio_st);
-
-    if (!(fmt->flags & AVFMT_NOFILE))
-        /* Close the output file. */
-        avio_closep(&oc->pb);
-
-    /* free the stream */
-    avformat_free_context(oc);
-    
-    return 0;
+    close_stream(outputFormatContext, &videoStreamScreen);
+    close_stream(outputFormatContext, &audioStreamScreen);
+    avio_closep(&outputFormatContext->pb);
+    avformat_free_context(outputFormatContext);
 }
 @end

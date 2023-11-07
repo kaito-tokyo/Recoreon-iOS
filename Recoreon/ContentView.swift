@@ -40,9 +40,11 @@ struct ContentView: View {
     
     @State var encodingProgress: Double = 0.0
     @State var videoEntries: [VideoEntry] = []
+    @State var showingEncodeCompletedAlert = false
     
     var body: some View {
         VStack {
+            Text("Encoding progress")
             ProgressView(value: encodingProgress)
             List {
                 ForEach(videoEntries, id: \.id) { entry in
@@ -51,21 +53,21 @@ struct ContentView: View {
                             let outputURL = paths.getEncodedVideoURL(videoURL: entry.url, suffix: "discord")!
                             let isSuccessful = await videoEncoder.encode(entry.url, outputURL: outputURL, progressHandler: { progress in
                                 Task { @MainActor in
-                                    print(progress)
-                                    encodingProgress = progress
+                                    encodingProgress = min(progress, 1.0)
                                 }
                             })
                             if (isSuccessful) {
-                                let publicPath = NSHomeDirectory() + "/Documents/" + outputURL.lastPathComponent
-                                if (FileManager.default.fileExists(atPath: publicPath)) {
-                                    try? FileManager.default.removeItem(atPath: publicPath)
-                                }
-                                try? FileManager.default.copyItem(atPath: outputURL.path(), toPath: publicPath)
+                                UISaveVideoAtPathToSavedPhotosAlbum(outputURL.path(), nil, nil, nil)
+                                showingEncodeCompletedAlert = true
+                            } else {
+                                
                             }
                         }
                     } label: {
                         Image(uiImage: entry.uiImage).resizable().scaledToFit()
-                    }
+                    }.alert("Encoding completed", isPresented: $showingEncodeCompletedAlert, actions: {
+                        Button("OK") {}
+                    })
                 }
             }.onAppear {
                 videoEntries = listVideoEntries()
@@ -74,6 +76,6 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
-}
+//#Preview {
+//    ContentView()
+//}
