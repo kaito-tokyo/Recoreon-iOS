@@ -2,6 +2,7 @@ platform :ios, '16.0'
 
 target 'Recoreon' do
   use_frameworks!
+  inhibit_all_warnings!
 
   pod 'ffmpeg-kit-ios-full', '~> 6.0'
 
