@@ -28,10 +28,12 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     override func broadcastStarted(withSetupInfo setupInfo: [String : NSObject]?) {
         matroska = Matroska()
-        let dir = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.github.umireon.Recoreon")?.appendingPathComponent("Documents")
-        try? FileManager.default.createDirectory(at: dir!, withIntermediateDirectories: true)
+        let appGroupDir = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.github.umireon.Recoreon")!
+        let documentsDir = appGroupDir.appendingPathComponent("Documents")
+        let recordsDir = documentsDir.appendingPathComponent("Records")
+        try! FileManager.default.createDirectory(at: recordsDir, withIntermediateDirectories: true)
         let filename = generateFileName(date: Date())
-        matroska?.open(dir?.appending(component: filename).path())
+        matroska?.open(recordsDir.appendingPathComponent(filename).path())
     }
     
     override func broadcastPaused() {

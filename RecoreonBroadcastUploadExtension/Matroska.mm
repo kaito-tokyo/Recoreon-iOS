@@ -125,7 +125,7 @@ static void add_stream(OutputStream *ost, AVFormatContext *oc,
     AVChannelLayout layout = AV_CHANNEL_LAYOUT_STEREO;
     switch ((*codec)->type) {
     case AVMEDIA_TYPE_AUDIO:
-        c->sample_fmt  = AV_SAMPLE_FMT_FLTP;
+        c->sample_fmt  = AV_SAMPLE_FMT_U8;
         c->bit_rate    = 320000;
         c->sample_rate = 44100;
         if ((*codec)->supported_samplerates) {
@@ -350,12 +350,12 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     /* Add the audio and video streams using the default format codecs
      * and initialize the codecs. */
     if (fmt->video_codec != AV_CODEC_ID_NONE) {
-        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_HEVC, "h264_videotoolbox");
+        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_H264, "h264_videotoolbox");
         have_video = 1;
         encode_video = 1;
     }
     if (fmt->audio_codec != AV_CODEC_ID_NONE) {
-        add_stream(&audio_st, oc, &audio_codec, AV_CODEC_ID_AAC, NULL);
+        add_stream(&audio_st, oc, &audio_codec, AV_CODEC_ID_AAC, "aac_at");
         have_audio = 1;
         encode_audio = 1;
     }
@@ -493,13 +493,11 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     c = ost->enc;
 
     uint16_t *buf = (uint16_t *)audioBufferList->mBuffers[0].mData;
-    float **data = (float **)frame->data;
-    for (int i = 0; i < 1024; i++) {
-        for (int j = 0; j < 2; j++) {
-            uint16_t unsignedValue = buf[i * 2 + j] >> 8 | buf[i * 2 + j] << 8;
-            float floatValue = *(int16_t *)&unsignedValue / 32768.0;
-            data[j][i] = floatValue;
-        }
+    uint8_t *data = (uint8_t *)frame->data[0];
+    for (int i = 0; i < 2048; i++) {
+        uint16_t unsigned16Value = buf[i] >> 8 | buf[i] << 8;
+        uint8_t unsined8Value = (int32_t)*(int16_t *)&unsigned16Value * 127 / 32768 + 127;
+        data[i] = unsined8Value;
     }
     
     CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);

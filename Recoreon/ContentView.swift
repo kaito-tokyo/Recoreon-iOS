@@ -7,23 +7,49 @@
 
 import SwiftUI
 
+struct VideoEntry {
+    let id: String
+    let url: URL
+    let uiImage: UIImage
+}
+
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Button(action: {
-                let homeDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                let appGroupDir = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.github.umireon.Recoreon")?.appendingPathComponent("Documents")
-                let fromURLs = try! FileManager.default.contentsOfDirectory(at: appGroupDir!, includingPropertiesForKeys: nil)
-                for fromURL in fromURLs {
-                    let filename = fromURL.pathComponents.last
-                    let toURL = homeDir.appendingPathComponent(filename!)
-                    try? FileManager.default.moveItem(at: fromURL, to: toURL)
-                }
-            }, label: {
-                Text("Export all")
-            })
+    let paths = RecoreonPaths()
+    let thumbnailExtrator = ThumbnailExtractor()
+    let videoEncoder = VideoEncoder()
+    
+    func listVideoEntries() -> [VideoEntry] {
+        paths.ensureDirectoriesExists()
+        var entries: [VideoEntry] = []
+        for url in paths.listMkvRecordURLs() {
+            let thumbURL = paths.getThumbnailURL(videoURL: url)
+            guard let uiImage = thumbnailExtrator.extract(url, thumbnailURL: thumbURL) else { continue }
+            guard let cgImage = uiImage.cgImage else { continue }
+            var cropped: CGImage?
+            if (cgImage.width > cgImage.height) {
+                let x = (cgImage.width - cgImage.height) / 2
+                cropped = cgImage.cropping(to: CGRect(x: x, y: 0, width: cgImage.height, height: cgImage.height))
+            } else {
+                let y = (cgImage.height - cgImage.width) / 2
+                cropped = cgImage.cropping(to: CGRect(x: 0, y: y, width: cgImage.width, height: cgImage.width))
+            }
+            entries.append(VideoEntry(id: url.lastPathComponent, url: url, uiImage: UIImage(cgImage: cropped!)))
         }
-        .padding()
+        return entries
+    }
+    
+    var body: some View {
+        List {
+            ForEach(listVideoEntries(), id: \.id) { entry in
+                Button(action: {
+                    let outputURL = paths.getEncodedVideoURL(videoURL: entry.url, suffix: "discord")!
+                    videoEncoder.encode(entry.url, outputURL: outputURL)
+                    try? FileManager.default.copyItem(atPath: outputURL.path(), toPath:  NSHomeDirectory() + "/Documents/" + outputURL.lastPathComponent)
+                }, label: {
+                    Image(uiImage: entry.uiImage).resizable().scaledToFit()
+                })
+            }
+        }
     }
 }
 
