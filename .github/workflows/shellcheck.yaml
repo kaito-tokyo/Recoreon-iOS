@@ -20,5 +20,5 @@ jobs:
       - name: "Install zsh"
         run: "sudo apt-get -y install --no-install-recommends zsh"
 
-      - name: "Check newline at EOF"
+      - name: "Run shellcheck"
         run: ".github/scripts/check-shellcheck.sh"
