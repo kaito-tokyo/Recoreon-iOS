@@ -11,6 +11,7 @@
 		228B5AAB2AFA32C20016CAF2 /* ThumbnailExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.m */; };
 		228B5AAE2AFA3CDB0016CAF2 /* RecoreonPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */; };
 		228B5AB02AFA49D30016CAF2 /* VideoEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAF2AFA49D30016CAF2 /* VideoEncoder.m */; };
+		22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */; };
 		22C18AE32AF2B08B00C41B49 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */; };
 		22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */; };
 		22C18AED2AF2B08C00C41B49 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */; };
@@ -512,6 +513,7 @@
 		};
 		22BBF4EB2AFADDF00093AA57 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -661,6 +663,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
 				22C18B032AF2B17000C41B49 /* MediaWriter.m in Sources */,
 			);

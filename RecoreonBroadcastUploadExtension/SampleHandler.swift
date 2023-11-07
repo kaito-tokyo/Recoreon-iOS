@@ -7,7 +7,10 @@
 
 import ReplayKit
 
+private let paths = RecoreonPaths()
+
 class SampleHandler: RPBroadcastSampleHandler {
+  private let fileManager = FileManager.default
   var writer: MediaWriter?
   var newPixelBufferRef: CVPixelBuffer?
   let ciContext = CIContext()
@@ -28,13 +31,13 @@ class SampleHandler: RPBroadcastSampleHandler {
 
   override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
     writer = MediaWriter()
-    let appGroupDir = FileManager.default.containerURL(
-      forSecurityApplicationGroupIdentifier: "group.com.github.umireon.Recoreon")!
-    let documentsDir = appGroupDir.appendingPathComponent("Documents")
-    let recordsDir = documentsDir.appendingPathComponent("Records")
-    try! FileManager.default.createDirectory(at: recordsDir, withIntermediateDirectories: true)
-    let filename = generateFileName(date: Date())
-    writer?.open(recordsDir.appendingPathComponent(filename).path())
+    paths.ensureRecordsDirExists()
+    guard let recordsDir = paths.recordsDir() else {
+      fatalError("Could not obtain the records directory path!")
+    }
+    let url = recordsDir.appending(
+      path: generateFileName(date: Date()), directoryHint: .notDirectory)
+    writer?.open(url.path())
   }
 
   override func broadcastPaused() {
@@ -84,7 +87,6 @@ class SampleHandler: RPBroadcastSampleHandler {
         return
       }
       self.writer?.writeVideo(ofScreen: sampleBuffer, pixelBuffer: newPixelBuffer)
-      break
     case RPSampleBufferType.audioApp:
       var blockBuffer: CMBlockBuffer?
       CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
@@ -92,7 +94,6 @@ class SampleHandler: RPBroadcastSampleHandler {
         bufferListSize: MemoryLayout<AudioBufferList>.size, blockBufferAllocator: nil,
         blockBufferMemoryAllocator: nil, flags: 0, blockBufferOut: &blockBuffer)
       self.writer?.writeAudio(ofScreen: sampleBuffer, audioBufferList: &self.audioBufferList)
-      break
     case RPSampleBufferType.audioMic:
       var blockBuffer: CMBlockBuffer?
       CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
@@ -100,7 +101,6 @@ class SampleHandler: RPBroadcastSampleHandler {
         bufferListSize: MemoryLayout<AudioBufferList>.size, blockBufferAllocator: nil,
         blockBufferMemoryAllocator: nil, flags: 0, blockBufferOut: &blockBuffer)
       self.writer?.writeAudio(ofMic: sampleBuffer, audioBufferList: &self.audioBufferList)
-      break
     @unknown default:
       // Handle other sample buffer types
       fatalError("Unknown type of sample buffer")

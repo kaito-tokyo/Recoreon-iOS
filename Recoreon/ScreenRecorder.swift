@@ -53,7 +53,6 @@ class ScreenRecorder {
           print("Unable to process sample buffer")
         }
       }
-    } completionHandler: { error in
-    }
+    } completionHandler: {}
   }
 }
