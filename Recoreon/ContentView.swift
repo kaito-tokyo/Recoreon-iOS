@@ -19,7 +19,8 @@ struct ContentView: View {
   let videoEncoder = VideoEncoder()
 
   func listVideoEntries() -> [VideoEntry] {
-    paths.ensureDirectoriesExists()
+    paths.ensureRecordsDirExists()
+    paths.ensureThumbnailsDirExists()
     var entries: [VideoEntry] = []
     for url in paths.listMkvRecordURLs() {
       guard let thumbURL = paths.getThumbnailURL(videoURL: url) else { continue }
@@ -31,13 +32,13 @@ struct ContentView: View {
       guard let cgImage = uiImage.cgImage else { continue }
       var cropped: CGImage?
       if cgImage.width > cgImage.height {
-        let x = (cgImage.width - cgImage.height) / 2
+        let xPos = (cgImage.width - cgImage.height) / 2
         cropped = cgImage.cropping(
-          to: CGRect(x: x, y: 0, width: cgImage.height, height: cgImage.height))
+          to: CGRect(x: xPos, y: 0, width: cgImage.height, height: cgImage.height))
       } else {
-        let y = (cgImage.height - cgImage.width) / 2
+        let yPos = (cgImage.height - cgImage.width) / 2
         cropped = cgImage.cropping(
-          to: CGRect(x: 0, y: y, width: cgImage.width, height: cgImage.width))
+          to: CGRect(x: 0, y: yPos, width: cgImage.width, height: cgImage.width))
       }
       entries.append(
         VideoEntry(id: url.lastPathComponent, url: url, uiImage: UIImage(cgImage: cropped!)))
@@ -57,6 +58,7 @@ struct ContentView: View {
         ForEach(videoEntries, id: \.id) { entry in
           Button {
             Task {
+              paths.ensureEncodedVideosDirExists()
               try? FileManager.default.copyItem(
                 atPath: entry.url.path(),
                 toPath: NSHomeDirectory() + "/Documents/" + entry.url.lastPathComponent)
@@ -90,6 +92,6 @@ struct ContentView: View {
   }
 }
 
-//#Preview {
-//    ContentView()
-//}
+#Preview {
+  ContentView()
+}

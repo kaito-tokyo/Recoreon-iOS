@@ -20,5 +20,5 @@ jobs:
       - name: "Install yamllint"
         run: "sudo apt-get -y install --no-install-recommends yamllint"
 
-      - name: "Run swift-format"
+      - name: "Run yamllint"
         run: "yamllint .github"
