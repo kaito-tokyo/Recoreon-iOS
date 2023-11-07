@@ -23,4 +23,3 @@ jobs:
       - name: "Check newline at EOF"
         shell: "zsh"
         run: ".github/scripts/check-newline-at-eof.sh"
-
