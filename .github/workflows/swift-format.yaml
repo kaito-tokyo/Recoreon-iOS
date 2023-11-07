@@ -21,10 +21,4 @@ jobs:
         run: "brew install swift-format"
 
       - name: "Run swift-format"
-        run: |
-          swift-format lint --strict --recursive \
-            Recoreon \
-            RecoreonBroadcastUploadExtension \
-            RecoreonBroadcastUploadExtensionSetupUI \
-            RecoreonTests \
-            RecoreonUITests
+        run: ".github/scripts/check-swift-format.sh"
