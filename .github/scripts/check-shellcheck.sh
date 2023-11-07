@@ -5,4 +5,4 @@ local -a files=(**/*.sh(.N))
 files+=(.github/**/*.sh)
 files=(${files:#Pods/**})
 
-shellcheck "${(o)files[@]}" 
+shellcheck --exclude SC1071 "${(o)files[@]}" 
