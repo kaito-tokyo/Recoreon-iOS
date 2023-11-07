@@ -17,8 +17,8 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v4"
 
-      - name: "Install clang-format"
-        run: "sudo apt-get -y install --no-install-recommends clang-format"
+      - name: "Install clang-format and zsh"
+        run: "sudo apt-get -y install --no-install-recommends clang-format zsh"
 
       - name: "Run clang-format"
         run: ".github/scripts/check-clang-format.sh"
