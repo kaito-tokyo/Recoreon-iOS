@@ -1,6 +1,7 @@
+---
 name: "swift-format"
 
-on:
+"on":
   push:
     branches:
       - "main"
@@ -20,4 +21,10 @@ jobs:
         run: "brew install swift-format"
 
       - name: "Run swift-format"
-        run: "swift-format lint --strict --recursive Recoreon RecoreonBroadcastUploadExtension RecoreonBroadcastUploadExtensionSetupUI RecoreonTests RecoreonUITests"
+        run: |
+          swift-format lint --strict --recursive \
+            Recoreon \
+            RecoreonBroadcastUploadExtension \
+            RecoreonBroadcastUploadExtensionSetupUI \
+            RecoreonTests \
+            RecoreonUITests
