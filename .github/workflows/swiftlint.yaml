@@ -20,6 +20,7 @@ jobs:
       - name: "Install Swift"
         run: "sudo apt-get -y install --no-install-recommends swift"
 
+      # yamllint disable rule:line-length
       - name: "Install SwiftLint"
         shell: bash
         run: |
@@ -27,6 +28,7 @@ jobs:
           mkdir -p swiftlint_linux
           unzip swiftlint_linux.zip -d swiftlint_linux
           echo "${{ github.workspace }}/swiftlint_linux" >> "$GITHUB_PATH"
+      # yamllint enable rule:line-length
 
       - name: "Run SwiftLint"
         run: "swiftlint"
