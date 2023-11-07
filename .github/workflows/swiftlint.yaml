@@ -19,10 +19,10 @@ jobs:
 
       - name: "Install swiftlint"
         shell: bash
-        working-directory: "swiftlint_linux"
         run: |
           curl -fsSLO https://github.com/realm/SwiftLint/releases/download/0.53.0/swiftlint_linux.zip
-          unzip swiftlint_linux.zip
+          mkdir -p swiftlint_linux
+          unzip swiftlint_linux.zip -d swiftlint_linux
           echo "${{ github.workspace }}/swiftlint_linux" >> "$GITHUB_PATH"
 
       - name: "Run swiftlint"
