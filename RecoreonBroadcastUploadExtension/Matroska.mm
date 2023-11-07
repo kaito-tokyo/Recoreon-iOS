@@ -350,7 +350,7 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     /* Add the audio and video streams using the default format codecs
      * and initialize the codecs. */
     if (fmt->video_codec != AV_CODEC_ID_NONE) {
-        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_HEVC, "hevc_videotoolbox");
+        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_HEVC, "h264_videotoolbox");
         have_video = 1;
         encode_video = 1;
     }
@@ -433,7 +433,7 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
 
     write_frame(oc, video_st.enc, video_st.st, video_st.frame, video_st.tmp_pkt);
 }
-- (void)writeAudio:(CMSampleBufferRef)sampleBuffer {
+- (void)writeAudio:(CMSampleBufferRef)sampleBuffer audioBufferList:(AudioBufferList *)audioBufferList {
     AVFrame *frame = audio_st.frame;
     if (av_frame_make_writable(frame) < 0) {
         NSLog(@"Could not make a frame writable!");
@@ -476,19 +476,14 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
         NSLog(@"The sample format is not big endian!");
         return;
     }
-    
-    CMBlockBufferRef blockBuffer;
-    AudioBufferList audioBufferList;
-    
-    CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, NULL, &audioBufferList, sizeof(audioBufferList), NULL, NULL, 0, &blockBuffer);
-    
-    if (audioBufferList.mNumberBuffers != 1) {
+
+    if (audioBufferList->mNumberBuffers != 1) {
         NSLog(@"The audio buffer is not interleaved!");
         return;
     }
     
-    if (audioBufferList.mBuffers[0].mDataByteSize != 4096) {
-        NSLog(@"The size of the audio buffer is not 4096!");
+    if (audioBufferList->mBuffers[0].mDataByteSize != 4096) {
+        NSLog(@"The size of the audio buffer is %u and not 4096!", audioBufferList->mBuffers[0].mDataByteSize);
         return;
     }
 
@@ -497,7 +492,7 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
 
     c = ost->enc;
 
-    uint16_t *buf = (uint16_t *)audioBufferList.mBuffers[0].mData;
+    uint16_t *buf = (uint16_t *)audioBufferList->mBuffers[0].mData;
     float **data = (float **)frame->data;
     for (int i = 0; i < 1024; i++) {
         for (int j = 0; j < 2; j++) {

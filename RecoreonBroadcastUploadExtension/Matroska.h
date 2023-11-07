@@ -8,6 +8,6 @@
 }
 - (int)open:(NSString *)filename;
 - (void)writeVideo:(CMSampleBufferRef)sampleBuffer pixelBuffer:(CVPixelBufferRef)pixelBuffer;
-- (void)writeAudio:(CMSampleBufferRef)sampleBuffer;
+- (void)writeAudio:(CMSampleBufferRef)sampleBuffer audioBufferList:(AudioBufferList *)audioBufferList;
 - (int)close;
 @end

@@ -11,7 +11,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     var matroska: Matroska?
     var newPixelBufferRef: CVPixelBuffer?
     let ciContext = CIContext()
-    
+    var audioBufferList = AudioBufferList()
     let dateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions.remove(.withDashSeparatorInDate)
@@ -62,6 +62,7 @@ class SampleHandler: RPBroadcastSampleHandler {
         guard let newPixelBuffer = newPixelBufferRef else { return nil }
         let ciImage = CIImage(cvPixelBuffer: origPixelBuffer)
         ciContext.render(ciImage, to: newPixelBuffer)
+        ciContext.clearCaches()
         return newPixelBuffer
     }
     
@@ -79,7 +80,9 @@ class SampleHandler: RPBroadcastSampleHandler {
             self.matroska?.writeVideo(sampleBuffer, pixelBuffer: newPixelBuffer)
             break
         case RPSampleBufferType.audioApp:
-            self.matroska?.writeAudio(sampleBuffer)
+            var blockBuffer: CMBlockBuffer?
+            CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, bufferListSizeNeededOut: nil, bufferListOut: &audioBufferList, bufferListSize: MemoryLayout<AudioBufferList>.size, blockBufferAllocator: nil, blockBufferMemoryAllocator: nil, flags: 0, blockBufferOut: &blockBuffer)
+            self.matroska?.writeAudio(sampleBuffer, audioBufferList: &audioBufferList)
             break
         case RPSampleBufferType.audioMic:
             // Handle audio sample buffer for mic audio
