@@ -114,7 +114,7 @@ static void open_audio(AVFormatContext *oc, const AVCodec *codec,
     else
         nb_samples = c->frame_size;
 
-    ost->frame     = alloc_audio_frame(AV_SAMPLE_FMT_FLTP, &c->ch_layout,
+    ost->frame     = alloc_audio_frame(AV_SAMPLE_FMT_S16, &c->ch_layout,
                                        c->sample_rate, nb_samples);
 
     /* copy the stream parameters to the muxer */
@@ -323,7 +323,7 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
     }
     outputStream->enc = codecContext;
 
-    codecContext->sample_fmt = AV_SAMPLE_FMT_U8;
+    codecContext->sample_fmt = AV_SAMPLE_FMT_S16;
     codecContext->bit_rate = 320000;
     codecContext->sample_rate = sampleRate;
     AVChannelLayout layout = AV_CHANNEL_LAYOUT_STEREO;
@@ -382,6 +382,7 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
         firstScreenVideoFrameReceived = true;
     }
     [self writeVideo:&screenVideoStream sampleBuffer:sampleBuffer pixelBuffer:pixelBuffer];
+    avio_flush(outputFormatContext->pb);
 }
 - (void)writeAudio:(OutputStream *)outputStream sampleBuffer:(CMSampleBufferRef)sampleBuffer audioBufferList:(AudioBufferList *)audioBufferList pts:(int64_t)pts {
     AVCodecContext *c = outputStream->enc;
@@ -439,19 +440,17 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
         return;
     }
 
-    uint8_t *data = (uint8_t *)frame->data[0];
+    int16_t *data = (int16_t *)frame->data[0];
     if (desc->mChannelsPerFrame == 2 && (desc->mFormatFlags & kAudioFormatFlagIsBigEndian)) {
         uint16_t *buf = (uint16_t *)audioBufferList->mBuffers[0].mData;
         for (int i = 0; i < 2048; i++) {
-            uint16_t unsigned16Value = buf[i] >> 8 | buf[i] << 8;
-            uint8_t unsined8Value = (int32_t)*(int16_t *)&unsigned16Value * 127 / 32768 + 127;
-            data[i] = unsined8Value;
+            uint16_t unsigned16Value = CFSwapInt16BigToHost(buf[i]);
+            data[i] = *(int16_t *)&unsigned16Value;
         }
     } else if (desc->mChannelsPerFrame == 1 && !(desc->mFormatFlags & kAudioFormatFlagIsBigEndian)){
         int16_t *buf = (int16_t *)audioBufferList->mBuffers[0].mData;
         for (int i = 0; i < 1024; i++) {
-            uint8_t unsined8Value = buf[i] * 127 / 32768 + 127;
-            data[i * 2] = data[i * 2 + 1] = unsined8Value;
+            data[i * 2] = data[i * 2 + 1] = buf[i];
         }
     }
     

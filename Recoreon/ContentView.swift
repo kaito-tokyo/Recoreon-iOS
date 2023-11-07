@@ -22,8 +22,12 @@ struct ContentView: View {
         paths.ensureDirectoriesExists()
         var entries: [VideoEntry] = []
         for url in paths.listMkvRecordURLs() {
-            let thumbURL = paths.getThumbnailURL(videoURL: url)
-            guard let uiImage = thumbnailExtrator.extract(url, thumbnailURL: thumbURL) else { continue }
+            guard let thumbURL = paths.getThumbnailURL(videoURL: url) else { continue }
+            print(thumbURL)
+            if (!FileManager.default.fileExists(atPath: thumbURL.path())) {
+                thumbnailExtrator.extract(url, thumbnailURL: thumbURL)
+            }
+            guard let uiImage = UIImage(contentsOfFile: thumbURL.path()) else { continue }
             guard let cgImage = uiImage.cgImage else { continue }
             var cropped: CGImage?
             if (cgImage.width > cgImage.height) {

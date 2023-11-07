@@ -84,12 +84,12 @@ class SampleHandler: RPBroadcastSampleHandler {
         case RPSampleBufferType.audioApp:
             var blockBuffer: CMBlockBuffer?
             CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, bufferListSizeNeededOut: nil, bufferListOut: &audioBufferList, bufferListSize: MemoryLayout<AudioBufferList>.size, blockBufferAllocator: nil, blockBufferMemoryAllocator: nil, flags: 0, blockBufferOut: &blockBuffer)
-            self.matroska?.writeAudio(ofScreen: sampleBuffer, audioBufferList: &audioBufferList)
+            self.matroska?.writeAudio(ofScreen: sampleBuffer, audioBufferList: &self.audioBufferList)
             break
         case RPSampleBufferType.audioMic:
             var blockBuffer: CMBlockBuffer?
             CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, bufferListSizeNeededOut: nil, bufferListOut: &audioBufferList, bufferListSize: MemoryLayout<AudioBufferList>.size, blockBufferAllocator: nil, blockBufferMemoryAllocator: nil, flags: 0, blockBufferOut: &blockBuffer)
-            self.matroska?.writeAudio(ofMic: sampleBuffer, audioBufferList: &audioBufferList)
+            self.matroska?.writeAudio(ofMic: sampleBuffer, audioBufferList: &self.audioBufferList)
             break
         @unknown default:
             // Handle other sample buffer types

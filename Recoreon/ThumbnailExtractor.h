@@ -5,5 +5,5 @@
 
 @interface ThumbnailExtractor : NSObject {
 }
-- (UIImage *)extract:(NSURL *)videoURL thumbnailURL:(NSURL *)thumbnailURL;
+- (void)extract:(NSURL *)videoURL thumbnailURL:(NSURL *)thumbnailURL;
 @end

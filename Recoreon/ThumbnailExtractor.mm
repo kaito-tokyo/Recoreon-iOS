@@ -5,15 +5,15 @@ extern "C" {
 }
 
 @implementation ThumbnailExtractor : NSObject
-- (UIImage *)extract:(NSURL *)videoURL thumbnailURL:(NSURL *)thumbnailURL {
+- (void)extract:(NSURL *)videoURL thumbnailURL:(NSURL *)thumbnailURL {
     NSString *cmdline = [NSString stringWithFormat:@"-y -i \"%@\" -vf thumbnail=500 -frames:v 1 \"%@\"", videoURL.path, thumbnailURL.path];
     FFmpegSession *session = [FFmpegKit execute:cmdline];
     ReturnCode *ret = [session getReturnCode];
     if ([ReturnCode isSuccess:ret]) {
-        return [UIImage imageWithContentsOfFile:thumbnailURL.path];
+        return;
     } else {
         NSLog(@"Some error occured!");
-        return NULL;
+        return;
     }
 }
 @end
