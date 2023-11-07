@@ -350,7 +350,7 @@ void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src, size_t srcLinesiz
     /* Add the audio and video streams using the default format codecs
      * and initialize the codecs. */
     if (fmt->video_codec != AV_CODEC_ID_NONE) {
-        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_H264, NULL);
+        add_stream(&video_st, oc, &video_codec, AV_CODEC_ID_HEVC, "hevc_videotoolbox");
         have_video = 1;
         encode_video = 1;
     }
