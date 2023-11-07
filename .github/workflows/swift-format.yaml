@@ -21,4 +21,4 @@ jobs:
         run: "brew install swift-format"
 
       - name: "Run swift-format"
-        run: "./.github/scripts/check-swift-format.sh"
+        run: ".github/scripts/check-swift-format.sh"
