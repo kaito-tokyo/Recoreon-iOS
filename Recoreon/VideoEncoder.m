@@ -1,11 +1,9 @@
 #import "VideoEncoder.h"
 
-extern "C" {
 #include <ffmpegkit/FFmpegKit.h>
 #include <ffmpegkit/MediaInformationSession.h>
 #include <ffmpegkit/MediaInformation.h>
 #include <ffmpegkit/FFprobeKit.h>
-}
 
 double getDuration(NSString *videoPath) {
     MediaInformationSession *session = [FFprobeKit getMediaInformation:videoPath];
@@ -26,12 +24,18 @@ double getDuration(NSString *videoPath) {
         @"h264_videotoolbox",
         @"-vb",
         @"1000k",
-        @"-vf",
-        @"setpts=PTS/4",
-        @"-af",
-        @"atempo=4",
+        @"-c:a",
+        @"aac_at",
+        @"-filter_complex",
+        @"[0:0] setpts=PTS/4 [a]; [0:1] atempo=4 [b]; [0:2] aresample=async=1:first_pts=0 [c0]; [c0] atempo=4 [c1]",
         @"-r",
         @"60",
+        @"-map",
+        @"[a]",
+        @"-map",
+        @"[b]",
+        @"-map",
+        @"[c1]",
         outputURL.path,
     ];
     [FFmpegKit executeWithArgumentsAsync:args withCompleteCallback:^(FFmpegSession* session) {

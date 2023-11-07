@@ -472,7 +472,7 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
     }
     CMTime ptsTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
     if (micBasePts == 0) {
-        micBasePts = ptsTime.value - screenVideoStream.frame->pts;
+        micBasePts = ptsTime.value - screenVideoStream.frame->pts * ptsTime.timescale / STREAM_FRAME_RATE;
     }
     int64_t pts = (ptsTime.value - micBasePts) * micAudioStream.enc->sample_rate / ptsTime.timescale;
     [self writeAudio:&micAudioStream sampleBuffer:sampleBuffer audioBufferList:audioBufferList pts:pts];

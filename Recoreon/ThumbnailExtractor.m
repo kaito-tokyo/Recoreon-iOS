@@ -1,8 +1,6 @@
 #import "ThumbnailExtractor.h"
 
-extern "C" {
 #include <ffmpegkit/FFmpegKit.h>
-}
 
 @implementation ThumbnailExtractor : NSObject
 - (void)extract:(NSURL *)videoURL thumbnailURL:(NSURL *)thumbnailURL {

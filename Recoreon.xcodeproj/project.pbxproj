@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		20FF1DDA098E554EE0860294 /* Pods_RecoreonTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A067756C97349111E0E511E /* Pods_RecoreonTests.framework */; };
-		228B5AAB2AFA32C20016CAF2 /* ThumbnailExtractor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.mm */; };
+		228B5AAB2AFA32C20016CAF2 /* ThumbnailExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.m */; };
 		228B5AAE2AFA3CDB0016CAF2 /* RecoreonPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */; };
-		228B5AB02AFA49D30016CAF2 /* VideoEncoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAF2AFA49D30016CAF2 /* VideoEncoder.mm */; };
+		228B5AB02AFA49D30016CAF2 /* VideoEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAF2AFA49D30016CAF2 /* VideoEncoder.m */; };
 		22C18AE32AF2B08B00C41B49 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */; };
 		22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */; };
 		22C18AED2AF2B08C00C41B49 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */; };
@@ -82,10 +82,10 @@
 		1572C7C0B2AC1062995A3A79 /* Pods-RecoreonTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RecoreonTests.release.xcconfig"; path = "Target Support Files/Pods-RecoreonTests/Pods-RecoreonTests.release.xcconfig"; sourceTree = "<group>"; };
 		1CEEDF33F3DF9E6CF87BA072 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtension/Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; sourceTree = "<group>"; };
 		21494B872F6439D163F2B227 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; sourceTree = "<group>"; };
-		228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ThumbnailExtractor.mm; sourceTree = "<group>"; };
+		228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThumbnailExtractor.m; sourceTree = "<group>"; };
 		228B5AAC2AFA32D30016CAF2 /* ThumbnailExtractor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThumbnailExtractor.h; sourceTree = "<group>"; };
 		228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonPaths.swift; sourceTree = "<group>"; };
-		228B5AAF2AFA49D30016CAF2 /* VideoEncoder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = VideoEncoder.mm; sourceTree = "<group>"; };
+		228B5AAF2AFA49D30016CAF2 /* VideoEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoEncoder.m; sourceTree = "<group>"; };
 		228B5AB12AFA49E70016CAF2 /* VideoEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoEncoder.h; sourceTree = "<group>"; };
 		22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		22C18AC02AF2AEAA00C41B49 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -234,9 +234,9 @@
 				22C3CCFE2AF240B30039750A /* Assets.xcassets */,
 				22C3CD002AF240B30039750A /* Preview Content */,
 				22C3CD242AF241140039750A /* Recoreon-Bridging-Header.h */,
-				228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.mm */,
+				228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.m */,
 				228B5AAC2AFA32D30016CAF2 /* ThumbnailExtractor.h */,
-				228B5AAF2AFA49D30016CAF2 /* VideoEncoder.mm */,
+				228B5AAF2AFA49D30016CAF2 /* VideoEncoder.m */,
 				228B5AB12AFA49E70016CAF2 /* VideoEncoder.h */,
 			);
 			path = Recoreon;
@@ -662,8 +662,8 @@
 			files = (
 				22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */,
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
-				228B5AAB2AFA32C20016CAF2 /* ThumbnailExtractor.mm in Sources */,
-				228B5AB02AFA49D30016CAF2 /* VideoEncoder.mm in Sources */,
+				228B5AAB2AFA32C20016CAF2 /* ThumbnailExtractor.m in Sources */,
+				228B5AB02AFA49D30016CAF2 /* VideoEncoder.m in Sources */,
 				228B5AAE2AFA3CDB0016CAF2 /* RecoreonPaths.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
