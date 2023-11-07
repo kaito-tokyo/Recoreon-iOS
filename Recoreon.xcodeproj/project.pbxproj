@@ -347,6 +347,7 @@
 				22C3CCF52AF240B30039750A /* Resources */,
 				08668E884FBDB79A099C3A98 /* [CP] Embed Pods Frameworks */,
 				22C18AC92AF2AEAA00C41B49 /* Embed Foundation Extensions */,
+				22BBF4EB2AFADDF00093AA57 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -508,6 +509,23 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Recoreon/Pods-Recoreon-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		22BBF4EB2AFADDF00093AA57 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif command -v swiftlint > /dev/null\nthen\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 		37F577802292D31A1BFBE83B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
