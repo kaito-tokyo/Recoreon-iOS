@@ -1,0 +1,22 @@
+---
+name: "newline-at-eof"
+
+"on":
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  SwiftFormat:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "Install swift-format"
+        run: ".github/scripts/check-newline-at-eof.sh"
+
