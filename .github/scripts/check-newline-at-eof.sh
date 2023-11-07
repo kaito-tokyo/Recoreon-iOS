@@ -10,10 +10,9 @@ files+=(*(.N))
 
 exit_status=0
 
-IFS=
 for file in ${(o)files}
 do
-  if tail -n1 $file | grep -qz '\n'
+  if [[ -z $(tail -c1 $file) ]]
   then
     printf 'OK: %s\n' "$file"
   else
