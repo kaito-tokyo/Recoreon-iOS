@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Recoreon
-//
-//  Created by Kaito Udagawa on 2023/11/01.
-//
-
 import SwiftUI
 
 struct VideoEntry {
@@ -90,8 +83,4 @@ struct ContentView: View {
       }
     }
   }
-}
-
-#Preview {
-  ContentView()
 }
