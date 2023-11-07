@@ -10,7 +10,7 @@ name: "newline-at-eof"
       - "main"
 
 jobs:
-  SwiftFormat:
+  NewlineAtEOF:
     runs-on: "ubuntu-latest"
 
     steps:

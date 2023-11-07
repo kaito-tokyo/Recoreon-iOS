@@ -10,7 +10,7 @@ name: "yamllint"
       - "main"
 
 jobs:
-  SwiftFormat:
+  Yamllint:
     runs-on: "ubuntu-latest"
 
     steps:
