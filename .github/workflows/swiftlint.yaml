@@ -17,7 +17,10 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v4"
 
-      - name: "Install swiftlint"
+      - name: "Install Swift"
+        run: "sudo apt-get -y install --no-install-recommends swift"
+
+      - name: "Install SwiftLint"
         shell: bash
         run: |
           curl -fsSLO https://github.com/realm/SwiftLint/releases/download/0.53.0/swiftlint_linux.zip
@@ -25,5 +28,5 @@ jobs:
           unzip swiftlint_linux.zip -d swiftlint_linux
           echo "${{ github.workspace }}/swiftlint_linux" >> "$GITHUB_PATH"
 
-      - name: "Run swiftlint"
+      - name: "Run SwiftLint"
         run: "swiftlint"
