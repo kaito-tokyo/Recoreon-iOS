@@ -10,7 +10,7 @@ name: "yamllint"
       - "main"
 
 jobs:
-  SwiftFormat:
+  Yamllint:
     runs-on: "ubuntu-latest"
 
     steps:
@@ -18,7 +18,7 @@ jobs:
         uses: "actions/checkout@v4"
 
       - name: "Install yamllint"
-        run: "sudo apt-get install yamllint"
+        run: "sudo apt-get -y install --no-install-recommends yamllint"
 
       - name: "Run swift-format"
         run: "yamllint .github"
