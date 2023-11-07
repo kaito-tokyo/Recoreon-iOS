@@ -19,6 +19,7 @@ jobs:
 
       - name: "Install swiftlint"
         shell: bash
+        working-directory: "swiftlint_linux"
         run: |
           curl -fsSLO https://github.com/realm/SwiftLint/releases/download/0.53.0/swiftlint_linux.zip
           unzip swiftlint_linux.zip
