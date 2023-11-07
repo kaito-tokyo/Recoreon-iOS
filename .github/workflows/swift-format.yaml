@@ -1,0 +1,23 @@
+name: "swift-format"
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  SwiftFormat:
+    runs-on: "macos-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "Install swift-format"
+        run: "brew install swift-format"
+
+      - name: "Run swift-format"
+        run: "swift-format lint --strict --recursive Recoreon RecoreonBroadcastUploadExtension RecoreonBroadcastUploadExtensionSetupUI RecoreonTests RecoreonUITests"
