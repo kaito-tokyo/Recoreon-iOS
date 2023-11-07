@@ -11,24 +11,14 @@ name: "swiftlint"
 
 jobs:
   SwiftLint:
-    runs-on: "ubuntu-latest"
+    runs-on: "macos-latest"
 
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v4"
 
-      - name: "Install Swift"
-        run: "sudo apt-get -y install --no-install-recommends swift"
-
-      # yamllint disable rule:line-length
       - name: "Install SwiftLint"
-        shell: bash
-        run: |
-          curl -fsSLO https://github.com/realm/SwiftLint/releases/download/0.53.0/swiftlint_linux.zip
-          mkdir -p swiftlint_linux
-          unzip swiftlint_linux.zip -d swiftlint_linux
-          echo "${{ github.workspace }}/swiftlint_linux" >> "$GITHUB_PATH"
-      # yamllint enable rule:line-length
+        run: "brew install swift"
 
       - name: "Run SwiftLint"
         run: "swiftlint"
