@@ -10,7 +10,7 @@ name: "swiftlint"
       - "main"
 
 jobs:
-  NewlineAtEOF:
+  SwiftLint:
     runs-on: "ubuntu-latest"
 
     steps:
