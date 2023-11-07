@@ -18,15 +18,17 @@ typedef struct OutputStream {
     const AVCodec *videoCodec;
     const AVCodec *audioCodec;
     
-    struct OutputStream videoStreamScreen;
-    struct OutputStream audioStreamScreen;
+    struct OutputStream screenVideoStream;
+    struct OutputStream screenAudioStream;
+    struct OutputStream micAudioStream;
     
-    bool firstVideoFrameReceived;
-    bool basePtsInitialized;
-    double basePts;
+    BOOL firstScreenVideoFrameReceived;
+    int64_t screenBasePts;
+    int64_t micBasePts;
 }
 - (void)open:(NSString *)filename;
-- (void)writeVideo:(CMSampleBufferRef)sampleBuffer pixelBuffer:(CVPixelBufferRef)pixelBuffer;
-- (void)writeAudio:(CMSampleBufferRef)sampleBuffer audioBufferList:(AudioBufferList *)audioBufferList;
+- (void)writeVideoOfScreen:(CMSampleBufferRef)sampleBuffer pixelBuffer:(CVPixelBufferRef)pixelBuffer;
+- (void)writeAudioOfScreen:(CMSampleBufferRef)sampleBuffer audioBufferList:(AudioBufferList *)audioBufferList;
+- (void)writeAudioOfMic:(CMSampleBufferRef)sampleBuffer audioBufferList:(AudioBufferList *)audioBufferList;
 - (void)close;
 @end

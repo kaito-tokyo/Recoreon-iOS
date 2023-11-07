@@ -11,13 +11,13 @@
 
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {
-//    AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
-//
-//    printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
-//           av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
-//           av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
-//           av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
-//           pkt->stream_index);
+    AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
+
+    printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s stream_index:%d\n",
+           av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
+           av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
+           av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
+           pkt->stream_index);
 }
 
 static int write_frame(AVFormatContext *fmt_ctx, AVCodecContext *c,
@@ -234,19 +234,21 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
         @throw e;
     }
 }
-- (void)onFirstVideoFrame:(CMSampleBufferRef)sampleBuffer pixelBuffer:(CVPixelBufferRef)pixelBuffer {
-    int ret;
-
+- (void)initAllStreams:(CVPixelBufferRef)pixelBuffer {
     int width = (int)CVPixelBufferGetWidth(pixelBuffer);
     int height = (int)CVPixelBufferGetHeight(pixelBuffer);
-    [self addVideoStream:&videoStreamScreen index:0 width:width height:height];
-    [self addAudioStream:&audioStreamScreen index:1];
+    
+    [self addVideoStream:&screenVideoStream index:0 width:width height:height];
+    [self addAudioStream:&screenAudioStream index:1 sampleRate:44100];
+    [self addAudioStream:&micAudioStream index:2 sampleRate:48000];
 
-    open_video(outputFormatContext, videoCodec, &videoStreamScreen, NULL);
-    open_audio(outputFormatContext, audioCodec, &audioStreamScreen, NULL);
+    open_video(outputFormatContext, videoCodec, &screenVideoStream, NULL);
+    open_audio(outputFormatContext, audioCodec, &screenAudioStream, NULL);
+    open_audio(outputFormatContext, audioCodec, &micAudioStream, NULL);
 
     av_dump_format(outputFormatContext, 0, [filename UTF8String], 1);
     
+    int ret;
     ret = avio_open(&outputFormatContext->pb, [filename UTF8String], AVIO_FLAG_WRITE);
     if (ret < 0) {
         NSException *e = [NSException exceptionWithName:@"FileNotOpenedException" reason:@"Could not open!" userInfo:@{
@@ -299,7 +301,7 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
         codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
     }
 }
-- (void)addAudioStream:(struct OutputStream *)outputStream index:(int)index {
+- (void)addAudioStream:(struct OutputStream *)outputStream index:(int)index sampleRate:(int)sampleRate {
     outputStream->tmp_pkt = av_packet_alloc();
     if (!outputStream->tmp_pkt) {
         NSException *e = [NSException exceptionWithName:@"AVPacketNotAllocatedException" reason:@"Could not allocate AVPacket!" userInfo:nil];
@@ -323,7 +325,7 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
 
     codecContext->sample_fmt = AV_SAMPLE_FMT_U8;
     codecContext->bit_rate = 320000;
-    codecContext->sample_rate = 44100;
+    codecContext->sample_rate = sampleRate;
     AVChannelLayout layout = AV_CHANNEL_LAYOUT_STEREO;
     av_channel_layout_copy(&codecContext->ch_layout, &layout);
     codecContext->time_base = stream->time_base = (AVRational){ 1, codecContext->sample_rate };
@@ -332,13 +334,8 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
         codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
     }
 }
-- (void)writeVideo:(CMSampleBufferRef)sampleBuffer pixelBuffer:(CVPixelBufferRef)pixelBuffer {
-    if (!firstVideoFrameReceived) {
-        [self onFirstVideoFrame:sampleBuffer pixelBuffer:pixelBuffer];
-        firstVideoFrameReceived = true;
-    }
-
-    AVFrame *frame = videoStreamScreen.frame;
+- (void)writeVideo:(OutputStream *)outputStream sampleBuffer:(CMSampleBufferRef)sampleBuffer pixelBuffer:(CVPixelBufferRef)pixelBuffer {
+    AVFrame *frame = outputStream->frame;
     if (av_frame_make_writable(frame) < 0) {
         NSLog(@"Could not make a frame writable!");
         return;
@@ -372,20 +369,24 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
     CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
     
     CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-    if (!basePtsInitialized) {
-        basePts = pts.value;
-        basePtsInitialized = true;
+    if (screenBasePts == 0.0) {
+        screenBasePts = pts.value;
     }
-    videoStreamScreen.frame->pts = (pts.value - basePts) * STREAM_FRAME_RATE / pts.timescale;
+    screenVideoStream.frame->pts = (pts.value - screenBasePts) * STREAM_FRAME_RATE / pts.timescale;
 
-    write_frame(outputFormatContext, videoStreamScreen.enc, videoStreamScreen.st, videoStreamScreen.frame, videoStreamScreen.tmp_pkt);
+    write_frame(outputFormatContext, outputStream->enc, outputStream->st, outputStream->frame, outputStream->tmp_pkt);
 }
-- (void)writeAudio:(CMSampleBufferRef)sampleBuffer audioBufferList:(AudioBufferList *)audioBufferList {
-    if (!firstVideoFrameReceived) {
-        return;
+- (void)writeVideoOfScreen:(CMSampleBufferRef)sampleBuffer pixelBuffer:(CVPixelBufferRef)pixelBuffer {
+    if (!firstScreenVideoFrameReceived) {
+        [self initAllStreams:pixelBuffer];
+        firstScreenVideoFrameReceived = true;
     }
+    [self writeVideo:&screenVideoStream sampleBuffer:sampleBuffer pixelBuffer:pixelBuffer];
+}
+- (void)writeAudio:(OutputStream *)outputStream sampleBuffer:(CMSampleBufferRef)sampleBuffer audioBufferList:(AudioBufferList *)audioBufferList pts:(int64_t)pts {
+    AVCodecContext *c = outputStream->enc;
 
-    AVFrame *frame = audioStreamScreen.frame;
+    AVFrame *frame = outputStream->frame;
     if (av_frame_make_writable(frame) < 0) {
         NSLog(@"Could not make a frame writable!");
         return;
@@ -408,7 +409,7 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
         return;
     }
     
-    if (desc->mSampleRate != 44100) {
+    if (desc->mSampleRate != c->sample_rate) {
         NSLog(@"The sample rate is not supported!");
         return;
     }
@@ -418,53 +419,71 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
         return;
     }
     
-    if (desc->mChannelsPerFrame != 2) {
-        NSLog(@"The channels per frame is not supported!");
-        return;
-    }
-    
-    if (!(desc->mFormatFlags & kAudioFormatFlagIsBigEndian)) {
-        NSLog(@"The sample format is not big endian!");
-        return;
-    }
-
     if (audioBufferList->mNumberBuffers != 1) {
         NSLog(@"The audio buffer is not interleaved!");
         return;
     }
-    
-    if (audioBufferList->mBuffers[0].mDataByteSize != 4096) {
-        NSLog(@"The size of the audio buffer is %u and not 4096!", audioBufferList->mBuffers[0].mDataByteSize);
+
+    if (desc->mChannelsPerFrame == 1) {
+        if (audioBufferList->mBuffers[0].mDataByteSize != 2048) {
+            NSLog(@"The size of the audio buffer is %u and not 2048!", audioBufferList->mBuffers[0].mDataByteSize);
+            return;
+        }
+    } else if (desc->mChannelsPerFrame == 2) {
+        if (audioBufferList->mBuffers[0].mDataByteSize != 4096) {
+            NSLog(@"The size of the audio buffer is %u and not 4096!", audioBufferList->mBuffers[0].mDataByteSize);
+            return;
+        }
+    } else {
+        NSLog(@"The channels per frame is not supported!");
         return;
     }
 
-    OutputStream *ost = &audioStreamScreen;
-    AVCodecContext *c;
-
-    c = ost->enc;
-
-    uint16_t *buf = (uint16_t *)audioBufferList->mBuffers[0].mData;
     uint8_t *data = (uint8_t *)frame->data[0];
-    for (int i = 0; i < 2048; i++) {
-        uint16_t unsigned16Value = buf[i] >> 8 | buf[i] << 8;
-        uint8_t unsined8Value = (int32_t)*(int16_t *)&unsigned16Value * 127 / 32768 + 127;
-        data[i] = unsined8Value;
+    if (desc->mChannelsPerFrame == 2 && (desc->mFormatFlags & kAudioFormatFlagIsBigEndian)) {
+        uint16_t *buf = (uint16_t *)audioBufferList->mBuffers[0].mData;
+        for (int i = 0; i < 2048; i++) {
+            uint16_t unsigned16Value = buf[i] >> 8 | buf[i] << 8;
+            uint8_t unsined8Value = (int32_t)*(int16_t *)&unsigned16Value * 127 / 32768 + 127;
+            data[i] = unsined8Value;
+        }
+    } else if (desc->mChannelsPerFrame == 1 && !(desc->mFormatFlags & kAudioFormatFlagIsBigEndian)){
+        int16_t *buf = (int16_t *)audioBufferList->mBuffers[0].mData;
+        for (int i = 0; i < 1024; i++) {
+            uint8_t unsined8Value = buf[i] * 127 / 32768 + 127;
+            data[i * 2] = data[i * 2 + 1] = unsined8Value;
+        }
     }
     
-    CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-    if (!basePtsInitialized) {
-        basePts = pts.value;
-        basePtsInitialized = true;
-    }
-    frame->pts = (pts.value - basePts) * 44100.0 / pts.timescale;
+    frame->pts = pts;
 
-    write_frame(outputFormatContext, c, ost->st, frame, ost->tmp_pkt);
+    write_frame(outputFormatContext, c, outputStream->st, frame, outputStream->tmp_pkt);
+}
+- (void)writeAudioOfScreen:(CMSampleBufferRef)sampleBuffer audioBufferList:(AudioBufferList *)audioBufferList {
+    if (!firstScreenVideoFrameReceived) {
+        return;
+    }
+    CMTime ptsTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+    int64_t pts = (ptsTime.value - screenBasePts) * screenAudioStream.enc->sample_rate / ptsTime.timescale;
+    [self writeAudio:&screenAudioStream sampleBuffer:sampleBuffer audioBufferList:audioBufferList pts:pts];
+}
+- (void)writeAudioOfMic:(CMSampleBufferRef)sampleBuffer audioBufferList:(AudioBufferList *)audioBufferList {
+    if (!firstScreenVideoFrameReceived) {
+        return;
+    }
+    CMTime ptsTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+    if (micBasePts == 0) {
+        micBasePts = ptsTime.value - screenVideoStream.frame->pts;
+    }
+    int64_t pts = (ptsTime.value - micBasePts) * micAudioStream.enc->sample_rate / ptsTime.timescale;
+    [self writeAudio:&micAudioStream sampleBuffer:sampleBuffer audioBufferList:audioBufferList pts:pts];
 }
 - (void)close {
     av_write_trailer(outputFormatContext);
 
-    close_stream(outputFormatContext, &videoStreamScreen);
-    close_stream(outputFormatContext, &audioStreamScreen);
+    close_stream(outputFormatContext, &screenVideoStream);
+    close_stream(outputFormatContext, &screenAudioStream);
+    close_stream(outputFormatContext, &micAudioStream);
     avio_closep(&outputFormatContext->pb);
     avformat_free_context(outputFormatContext);
 }

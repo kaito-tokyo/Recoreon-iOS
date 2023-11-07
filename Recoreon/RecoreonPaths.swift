@@ -39,7 +39,7 @@ class RecoreonPaths {
         guard let urls = try? FileManager.default.contentsOfDirectory(at: recordsDir, includingPropertiesForKeys: nil) else {
             return []
         }
-        return urls
+        return urls.sorted(by: { $0.lastPathComponent.compare($1.lastPathComponent) == .orderedAscending })
     }
     
     func listMkvRecordURLs() -> [URL] {

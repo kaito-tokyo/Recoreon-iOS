@@ -50,6 +50,7 @@ struct ContentView: View {
                 ForEach(videoEntries, id: \.id) { entry in
                     Button {
                         Task {
+                            try? FileManager.default.copyItem(atPath: entry.url.path(), toPath: NSHomeDirectory() + "/Documents/" + entry.url.lastPathComponent)
                             let outputURL = paths.getEncodedVideoURL(videoURL: entry.url, suffix: "discord")!
                             let isSuccessful = await videoEncoder.encode(entry.url, outputURL: outputURL, progressHandler: { progress in
                                 Task { @MainActor in

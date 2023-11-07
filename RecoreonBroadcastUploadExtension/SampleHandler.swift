@@ -79,15 +79,17 @@ class SampleHandler: RPBroadcastSampleHandler {
                 print("Could not render to the pixel buffer!")
                 return
             }
-            self.matroska?.writeVideo(sampleBuffer, pixelBuffer: newPixelBuffer)
+            self.matroska?.writeVideo(ofScreen: sampleBuffer, pixelBuffer: newPixelBuffer)
             break
         case RPSampleBufferType.audioApp:
             var blockBuffer: CMBlockBuffer?
             CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, bufferListSizeNeededOut: nil, bufferListOut: &audioBufferList, bufferListSize: MemoryLayout<AudioBufferList>.size, blockBufferAllocator: nil, blockBufferMemoryAllocator: nil, flags: 0, blockBufferOut: &blockBuffer)
-            self.matroska?.writeAudio(sampleBuffer, audioBufferList: &audioBufferList)
+            self.matroska?.writeAudio(ofScreen: sampleBuffer, audioBufferList: &audioBufferList)
             break
         case RPSampleBufferType.audioMic:
-            // Handle audio sample buffer for mic audio
+            var blockBuffer: CMBlockBuffer?
+            CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, bufferListSizeNeededOut: nil, bufferListOut: &audioBufferList, bufferListSize: MemoryLayout<AudioBufferList>.size, blockBufferAllocator: nil, blockBufferMemoryAllocator: nil, flags: 0, blockBufferOut: &blockBuffer)
+            self.matroska?.writeAudio(ofMic: sampleBuffer, audioBufferList: &audioBufferList)
             break
         @unknown default:
             // Handle other sample buffer types
