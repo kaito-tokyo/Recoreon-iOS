@@ -38,16 +38,37 @@ struct ContentView: View {
         return entries
     }
     
+    @State var encodingProgress: Double = 0.0
+    @State var videoEntries: [VideoEntry] = []
+    
     var body: some View {
-        List {
-            ForEach(listVideoEntries(), id: \.id) { entry in
-                Button(action: {
-                    let outputURL = paths.getEncodedVideoURL(videoURL: entry.url, suffix: "discord")!
-                    videoEncoder.encode(entry.url, outputURL: outputURL)
-                    try? FileManager.default.copyItem(atPath: outputURL.path(), toPath:  NSHomeDirectory() + "/Documents/" + outputURL.lastPathComponent)
-                }, label: {
-                    Image(uiImage: entry.uiImage).resizable().scaledToFit()
-                })
+        VStack {
+            ProgressView(value: encodingProgress)
+            List {
+                ForEach(videoEntries, id: \.id) { entry in
+                    Button {
+                        Task {
+                            let outputURL = paths.getEncodedVideoURL(videoURL: entry.url, suffix: "discord")!
+                            let isSuccessful = await videoEncoder.encode(entry.url, outputURL: outputURL, progressHandler: { progress in
+                                Task { @MainActor in
+                                    print(progress)
+                                    encodingProgress = progress
+                                }
+                            })
+                            if (isSuccessful) {
+                                let publicPath = NSHomeDirectory() + "/Documents/" + outputURL.lastPathComponent
+                                if (FileManager.default.fileExists(atPath: publicPath)) {
+                                    try? FileManager.default.removeItem(atPath: publicPath)
+                                }
+                                try? FileManager.default.copyItem(atPath: outputURL.path(), toPath: publicPath)
+                            }
+                        }
+                    } label: {
+                        Image(uiImage: entry.uiImage).resizable().scaledToFit()
+                    }
+                }
+            }.onAppear {
+                videoEntries = listVideoEntries()
             }
         }
     }
