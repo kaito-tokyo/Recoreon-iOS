@@ -8,7 +8,7 @@
 import ReplayKit
 
 class SampleHandler: RPBroadcastSampleHandler {
-    var matroska: Matroska?
+    var writer: MediaWriter?
     var newPixelBufferRef: CVPixelBuffer?
     let ciContext = CIContext()
     var audioBufferList = AudioBufferList()
@@ -27,13 +27,13 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
 
     override func broadcastStarted(withSetupInfo setupInfo: [String : NSObject]?) {
-        matroska = Matroska()
+        writer = MediaWriter()
         let appGroupDir = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.github.umireon.Recoreon")!
         let documentsDir = appGroupDir.appendingPathComponent("Documents")
         let recordsDir = documentsDir.appendingPathComponent("Records")
         try! FileManager.default.createDirectory(at: recordsDir, withIntermediateDirectories: true)
         let filename = generateFileName(date: Date())
-        matroska?.open(recordsDir.appendingPathComponent(filename).path())
+        writer?.open(recordsDir.appendingPathComponent(filename).path())
     }
     
     override func broadcastPaused() {
@@ -45,7 +45,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
     
     override func broadcastFinished() {
-        matroska?.close()
+        writer?.close()
     }
     
     func checkIfNewPixelBufferShouldBeRecreate(_ origWidth: Int, _ origHeight: Int) -> Bool {
@@ -79,17 +79,17 @@ class SampleHandler: RPBroadcastSampleHandler {
                 print("Could not render to the pixel buffer!")
                 return
             }
-            self.matroska?.writeVideo(ofScreen: sampleBuffer, pixelBuffer: newPixelBuffer)
+            self.writer?.writeVideo(ofScreen: sampleBuffer, pixelBuffer: newPixelBuffer)
             break
         case RPSampleBufferType.audioApp:
             var blockBuffer: CMBlockBuffer?
             CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, bufferListSizeNeededOut: nil, bufferListOut: &audioBufferList, bufferListSize: MemoryLayout<AudioBufferList>.size, blockBufferAllocator: nil, blockBufferMemoryAllocator: nil, flags: 0, blockBufferOut: &blockBuffer)
-            self.matroska?.writeAudio(ofScreen: sampleBuffer, audioBufferList: &self.audioBufferList)
+            self.writer?.writeAudio(ofScreen: sampleBuffer, audioBufferList: &self.audioBufferList)
             break
         case RPSampleBufferType.audioMic:
             var blockBuffer: CMBlockBuffer?
             CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, bufferListSizeNeededOut: nil, bufferListOut: &audioBufferList, bufferListSize: MemoryLayout<AudioBufferList>.size, blockBufferAllocator: nil, blockBufferMemoryAllocator: nil, flags: 0, blockBufferOut: &blockBuffer)
-            self.matroska?.writeAudio(ofMic: sampleBuffer, audioBufferList: &self.audioBufferList)
+            self.writer?.writeAudio(ofMic: sampleBuffer, audioBufferList: &self.audioBufferList)
             break
         @unknown default:
             // Handle other sample buffer types

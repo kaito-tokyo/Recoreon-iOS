@@ -18,7 +18,7 @@
 		22C18AF12AF2B08C00C41B49 /* BroadcastSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AF02AF2B08C00C41B49 /* BroadcastSetupViewController.swift */; };
 		22C18AF52AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 22C18AEC2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		22C18AF82AF2B08C00C41B49 /* RecoreonBroadcastUploadExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		22C18B032AF2B17000C41B49 /* Matroska.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C18B022AF2B17000C41B49 /* Matroska.m */; };
+		22C18B032AF2B17000C41B49 /* MediaWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C18B022AF2B17000C41B49 /* MediaWriter.m */; };
 		22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CCFA2AF240B30039750A /* RecoreonApp.swift */; };
 		22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CCFC2AF240B30039750A /* ContentView.swift */; };
 		22C3CCFF2AF240B30039750A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22C3CCFE2AF240B30039750A /* Assets.xcassets */; };
@@ -96,8 +96,8 @@
 		22C18AF02AF2B08C00C41B49 /* BroadcastSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastSetupViewController.swift; sourceTree = "<group>"; };
 		22C18AF22AF2B08C00C41B49 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		22C18B012AF2B17000C41B49 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonBroadcastUploadExtension-Bridging-Header.h"; sourceTree = "<group>"; };
-		22C18B022AF2B17000C41B49 /* Matroska.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Matroska.m; sourceTree = "<group>"; };
-		22C18B042AF2B18700C41B49 /* Matroska.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Matroska.h; sourceTree = "<group>"; };
+		22C18B022AF2B17000C41B49 /* MediaWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaWriter.m; sourceTree = "<group>"; };
+		22C18B042AF2B18700C41B49 /* MediaWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaWriter.h; sourceTree = "<group>"; };
 		22C18B052AF2C20800C41B49 /* Recoreon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Recoreon.entitlements; sourceTree = "<group>"; };
 		22C18B062AF2C23B00C41B49 /* RecoreonBroadcastUploadExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecoreonBroadcastUploadExtension.entitlements; sourceTree = "<group>"; };
 		22C18B072AF2CE1300C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecoreonBroadcastUploadExtensionSetupUI.entitlements; sourceTree = "<group>"; };
@@ -180,8 +180,8 @@
 				22C18B062AF2C23B00C41B49 /* RecoreonBroadcastUploadExtension.entitlements */,
 				22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */,
 				22C18AE72AF2B08B00C41B49 /* Info.plist */,
-				22C18B042AF2B18700C41B49 /* Matroska.h */,
-				22C18B022AF2B17000C41B49 /* Matroska.m */,
+				22C18B042AF2B18700C41B49 /* MediaWriter.h */,
+				22C18B022AF2B17000C41B49 /* MediaWriter.m */,
 				22C18B012AF2B17000C41B49 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */,
 			);
 			path = RecoreonBroadcastUploadExtension;
@@ -644,7 +644,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
-				22C18B032AF2B17000C41B49 /* Matroska.m in Sources */,
+				22C18B032AF2B17000C41B49 /* MediaWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

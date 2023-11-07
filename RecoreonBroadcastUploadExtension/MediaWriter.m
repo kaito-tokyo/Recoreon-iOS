@@ -1,13 +1,9 @@
-#include <libavutil/avassert.h>
-#include <libavutil/channel_layout.h>
-#include <libavutil/opt.h>
-#include <libavutil/mathematics.h>
 #include <libavutil/timestamp.h>
 
 #define STREAM_FRAME_RATE 120 /* 25 images/s */
 #define STREAM_PIX_FMT    AV_PIX_FMT_NV12 /* default pix_fmt */
 
-#import "Matroska.h"
+#import "MediaWriter.h"
 
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt)
 {
@@ -206,7 +202,7 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost)
     av_packet_free(&ost->tmp_pkt);
 }
 
-@implementation Matroska : NSObject
+@implementation MediaWriter : NSObject
 - (void)open:(NSString *)_filename {
     filename = _filename;
 

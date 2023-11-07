@@ -12,7 +12,7 @@ typedef struct OutputStream {
     AVPacket *tmp_pkt;
 } OutputStream;
 
-@interface Matroska : NSObject {
+@interface MediaWriter : NSObject {
     NSString *filename;
     AVFormatContext *outputFormatContext;
     const AVCodec *videoCodec;
