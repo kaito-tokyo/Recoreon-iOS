@@ -1,2 +1,2 @@
 #!/bin/bash
-swift-format format --strict --recursive Recoreon RecoreonBroadcastUploadExtension RecoreonBroadcastUploadExtensionSetupUI RecoreonTests RecoreonUITests
+swift-format format --in-place --recursive Recoreon RecoreonBroadcastUploadExtension RecoreonBroadcastUploadExtensionSetupUI RecoreonTests RecoreonUITests
