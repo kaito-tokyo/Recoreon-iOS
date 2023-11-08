@@ -2,7 +2,9 @@ import SwiftUI
 
 struct EncodingRecordedVideoView: View {
   let recordedVideoManipulator: RecordedVideoManipulatorProtocol
-  @State var encodingEntry: RecordedVideoEntry
+  @Binding var url: URL
+  @Binding var uiImage: UIImage
+
   @State var encodingProgress: Double = 0
   @State var encodingInProgress: Bool = false
   @State var encodingSuccessfullyPresent: Bool = false
@@ -14,11 +16,11 @@ struct EncodingRecordedVideoView: View {
     VStack {
       if encodingProgress == 0.0 {
         ZStack {
-          Image(uiImage: encodingEntry.uiImage).resizable().scaledToFit()
+          Image(uiImage: uiImage).resizable().scaledToFit()
         }.padding()
       } else {
         ZStack {
-          Image(uiImage: encodingEntry.uiImage).resizable().scaledToFit().brightness(-0.3)
+          Image(uiImage: uiImage).resizable().scaledToFit().brightness(-0.3)
           ProgressView().scaleEffect(x: 5, y: 5, anchor: .center)
         }.padding()
       }
@@ -27,7 +29,7 @@ struct EncodingRecordedVideoView: View {
           Task {
             encodingInProgress = true
             let isSucceeded = await recordedVideoManipulator.encodeAsync(
-              encodingEntry.url,
+              url,
               progressHandler: {
                 encodingProgress = $0
               })
@@ -52,7 +54,7 @@ struct EncodingRecordedVideoView: View {
             Button("OK") { encodingUnsuccessfullyPresent = false }
           })
         Button {
-          let isSucceeded = recordedVideoManipulator.publishRecordedVideo(encodingEntry.url)
+          let isSucceeded = recordedVideoManipulator.publishRecordedVideo(url)
           if isSucceeded {
             copyToSharedDirSuccessfullyPresent = true
           } else {
@@ -79,9 +81,9 @@ struct EncodingRecordedVideoView: View {
 }
 
 #Preview {
-  let uiImage = UIImage(named: "AppIcon")!
-  let entry = RecordedVideoEntry(url: URL(fileURLWithPath: "1.mkv"), uiImage: uiImage)
+  @State var url = URL(fileURLWithPath: "1.mkv")
+  @State var uiImage = UIImage(named: "AppIcon")!
 
   return EncodingRecordedVideoView(
-    recordedVideoManipulator: RecordedVideoManipulatorMock(), encodingEntry: entry)
+    recordedVideoManipulator: RecordedVideoManipulatorMock(), url: $url, uiImage: $uiImage)
 }
