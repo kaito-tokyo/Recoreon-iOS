@@ -20,6 +20,8 @@ jobs:
       actions: "read"
       contents: "read"
       security-events: "write"
+    env:
+      DEVELOPER_DIR: "/Applications/Xcode_15.0.1.app/Contents/Developer"
 
     steps:
       - name: "Checkout repository"
