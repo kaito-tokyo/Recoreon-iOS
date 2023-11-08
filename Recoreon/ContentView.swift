@@ -42,7 +42,8 @@ struct ContentView: View {
       }
     }.sheet(isPresented: $encodingScreenIsPresented) {
       let recordedVideoManipulator = RecordedVideoManipulatorImpl()
-      EncodingRecordedVideoView(recordedVideoManipulator: recordedVideoManipulator,encodingEntry: encodingEntry)
+      EncodingRecordedVideoView(
+        recordedVideoManipulator: recordedVideoManipulator, encodingEntry: encodingEntry)
     }
   }
 }
@@ -57,7 +58,7 @@ struct ContentView: View {
   return ContentView(entries: entries)
 }
 
-  /*
+/*
   let paths = RecoreonPaths()
   let thumbnailExtrator = ThumbnailExtractor()
   let videoEncoder = VideoEncoder()

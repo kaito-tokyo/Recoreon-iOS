@@ -13,7 +13,8 @@ class RecoreonPaths {
   let sharedRecordsDir: URL
 
   init() {
-    appGroupDir = fileManager.containerURL(forSecurityApplicationGroupIdentifier: RecoreonPaths.appGroupIdentifier)!
+    appGroupDir = fileManager.containerURL(
+      forSecurityApplicationGroupIdentifier: RecoreonPaths.appGroupIdentifier)!
     documentsDir = appGroupDir.appending(component: "Documents", directoryHint: .isDirectory)
     recordsDir = documentsDir.appending(path: "Records", directoryHint: .isDirectory)
     libraryDir = appGroupDir.appending(path: "Library", directoryHint: .isDirectory)
@@ -46,7 +47,8 @@ class RecoreonPaths {
   }
 
   func getThumbnailURL(_ recordedVideoURL: URL, ext: String = "jpg") -> URL {
-    let filename = recordedVideoURL.deletingPathExtension().appendingPathExtension(ext).lastPathComponent
+    let filename = recordedVideoURL.deletingPathExtension().appendingPathExtension(ext)
+      .lastPathComponent
     return thumbnailsDir.appending(path: filename, directoryHint: .notDirectory)
   }
 

@@ -6,4 +6,8 @@ dirs=(
   RecoreonTests
   RecoreonUITests
 )
-swift-format lint --strict --recursive "${dirs[@]}"
+
+if [[ $1 = format ]]
+then swift-format format --in-place --recursive "${dirs[@]}"
+else swift-format lint --strict --recursive "${dirs[@]}"
+fi

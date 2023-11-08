@@ -4,6 +4,10 @@ struct EncodingRecordedVideoView: View {
   let recordedVideoManipulator: RecordedVideoManipulatorProtocol
   @State var encodingEntry: RecordedVideoEntry
   @State var encodingProgress: Double = 0
+  @State var encodingSuccessfullyFinishedIsPresent: Bool = false
+  @State var encodingUnsuccessfullyFinishedIsPresent: Bool = false
+  @State var copyToSharedDirSuccessfullyFinishedIsPresent: Bool = false
+  @State var copyToSharedDirUnsuccessfullyFinishedIsPresent: Bool = false
 
   var body: some View {
     VStack {
@@ -19,20 +23,47 @@ struct EncodingRecordedVideoView: View {
       }
       HStack {
         Button {
-          encodingProgress = 0.5
+          Task {
+            let isSucceeded = await recordedVideoManipulator.encodeAsync(
+              encodingEntry.url,
+              progressHandler: {
+                encodingProgress = $0
+              })
+            encodingProgress = 0
+            if isSucceeded {
+              encodingSuccessfullyFinishedIsPresent = true
+            } else {
+              encodingUnsuccessfullyFinishedIsPresent = true
+            }
+          }
         } label: {
           Text("Encode")
-        }.buttonStyle(.borderedProminent)
+        }.buttonStyle(.borderedProminent).alert(
+          "Encoding completed!", isPresented: $encodingSuccessfullyFinishedIsPresent,
+          actions: {
+            Button("OK") { encodingSuccessfullyFinishedIsPresent = false }
+          }
+        ).alert(
+          "Encoding failed!", isPresented: $encodingUnsuccessfullyFinishedIsPresent,
+          actions: {
+            Button("OK") { encodingUnsuccessfullyFinishedIsPresent = false }
+          })
         Button {
-          encodingProgress = 0.7
+          recordedVideoManipulator.publishRecordedVideo(encodingEntry.url)
         } label: {
           Text("Copy")
-        }.buttonStyle(.borderedProminent)
-        Button {
-          encodingProgress = 0.0
-        } label: {
-          Text("Cancel")
-        }.buttonStyle(.borderedProminent)
+        }.buttonStyle(.borderedProminent).alert(
+          "The original file of this video was successfully copied to the File app!",
+          isPresented: $copyToSharedDirSuccessfullyFinishedIsPresent,
+          actions: {
+            Button("OK") { copyToSharedDirSuccessfullyFinishedIsPresent = false }
+          }
+        ).alert(
+          "Unable to copy the original file of this video to the File app!",
+          isPresented: $copyToSharedDirUnsuccessfullyFinishedIsPresent,
+          actions: {
+            Button("OK") { copyToSharedDirUnsuccessfullyFinishedIsPresent = false }
+          })
       }.padding()
       ProgressView(value: encodingProgress).padding()
     }
@@ -44,14 +75,29 @@ struct EncodingRecordedVideoView: View {
   let entry = RecordedVideoEntry(url: URL(fileURLWithPath: "1.mkv"), uiImage: uiImage)
 
   class RecordedVideoManipulatorMock: RecordedVideoManipulatorProtocol {
-    func encodeAsync(_ recordedVideoURL: URL, progressHandler: @escaping (Double) -> Void) async -> Bool {
-      return true
+    var finishSucessfully = false
+
+    func encodeAsync(_ recordedVideoURL: URL, progressHandler: @escaping (Double) -> Void) async
+      -> Bool
+    {
+      progressHandler(0.3)
+      sleep(1)
+      progressHandler(0.5)
+      sleep(1)
+      progressHandler(0.7)
+      sleep(1)
+      progressHandler(1.1)
+      sleep(1)
+      finishSucessfully.toggle()
+      return finishSucessfully
     }
 
-    func publishRecordedVideo(_ recordedVideoURL: URL) {
-
+    func publishRecordedVideo(_ recordedVideoURL: URL) -> Bool {
+      finishSucessfully.toggle()
+      return finishSucessfully
     }
   }
 
-  return EncodingRecordedVideoView(recordedVideoManipulator: RecordedVideoManipulatorMock(), encodingEntry: entry)
+  return EncodingRecordedVideoView(
+    recordedVideoManipulator: RecordedVideoManipulatorMock(), encodingEntry: entry)
 }
