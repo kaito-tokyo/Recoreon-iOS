@@ -7,13 +7,84 @@
 
 import SwiftUI
 
-struct VideoEntry {
-  let id: String
+struct RecordedVideoEntry: Identifiable {
   let url: URL
   let uiImage: UIImage
+
+  var id: URL { url }
 }
 
 struct ContentView: View {
+  @State var entries: [RecordedVideoEntry]
+
+  @State var encodingScreenIsPresented: Bool = false
+
+  @State private var encodingEntry: RecordedVideoEntry = RecordedVideoEntry(url: URL(fileURLWithPath: ""), uiImage: UIImage(named: "AppIcon")!)
+
+  @State private var encodingProgress: Double = 0.0
+
+  let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
+
+  var body: some View {
+    VStack {
+      List {
+        LazyVGrid(columns: columns) {
+          ForEach(entries) { entry in
+            Button {
+              encodingScreenIsPresented = true
+              encodingEntry = entry
+            } label: {
+              Image(uiImage: entry.uiImage).resizable().scaledToFit()
+            }
+          }
+        }
+      }
+    }.sheet(isPresented: $encodingScreenIsPresented) {
+      VStack {
+        if (encodingProgress == 0.0) {
+          ZStack {
+            Image(uiImage: encodingEntry.uiImage).resizable().scaledToFit()
+          }.padding()
+        } else {
+          ZStack {
+            Image(uiImage: encodingEntry.uiImage).resizable().scaledToFit().brightness(-0.3)
+            ProgressView().scaleEffect(x: 5, y: 5, anchor: .center)
+          }.padding()
+        }
+        HStack {
+          Button {
+            encodingProgress = 0.5
+          } label: {
+            Text("Encode")
+          }.buttonStyle(.borderedProminent)
+          Button {
+            encodingProgress = 0.7
+          } label: {
+            Text("Copy")
+          }.buttonStyle(.borderedProminent)
+          Button {
+            encodingProgress = 0.0
+          } label: {
+            Text("Cancel")
+          }.buttonStyle(.borderedProminent)
+        }.padding()
+        ProgressView(value: encodingProgress).padding()
+      }
+    }
+  }
+}
+
+#Preview {
+  let uiImage = UIImage(named: "AppIcon")!
+
+  let entries = (0..<14).map {
+    RecordedVideoEntry(url: URL(fileURLWithPath: "\($0).mkv"), uiImage: uiImage)
+  }
+
+  return ContentView(entries: entries)
+}
+
+  /*
   let paths = RecoreonPaths()
   let thumbnailExtrator = ThumbnailExtractor()
   let videoEncoder = VideoEncoder()
@@ -86,12 +157,10 @@ struct ContentView: View {
             })
         }
       }.onAppear {
-        videoEntries = listVideoEntries()
+        /*if (videoEntries == nil) {
+          videoEntries = listVideoEntries()
+        }*/
       }
     }
   }
-}
-
-#Preview {
-  ContentView()
-}
+}*/
