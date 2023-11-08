@@ -185,6 +185,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		225B7A942AFB54BD001BA335 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				228B5AAC2AFA32D30016CAF2 /* ThumbnailExtractor.h */,
+				228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.m */,
+				228B5AB12AFA49E70016CAF2 /* VideoEncoder.h */,
+				228B5AAF2AFA49D30016CAF2 /* VideoEncoder.m */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
+		225B7A952AFB556B001BA335 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				22C18B042AF2B18700C41B49 /* MediaWriter.h */,
+				22C18B022AF2B17000C41B49 /* MediaWriter.m */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		226A897E2AFB1A7600EBD2CA /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -238,9 +258,8 @@
 		22C18AE42AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */ = {
 			isa = PBXGroup;
 			children = (
+				225B7A952AFB556B001BA335 /* Services */,
 				22C18AE72AF2B08B00C41B49 /* Info.plist */,
-				22C18B042AF2B18700C41B49 /* MediaWriter.h */,
-				22C18B022AF2B17000C41B49 /* MediaWriter.m */,
 				22C18B012AF2B17000C41B49 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */,
 				22C18B062AF2C23B00C41B49 /* RecoreonBroadcastUploadExtension.entitlements */,
 				22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */,
@@ -293,15 +312,12 @@
 				226A89902AFB30C900EBD2CA /* Models */,
 				22C3CD002AF240B30039750A /* Preview Content */,
 				226A89882AFB1CCE00EBD2CA /* Protocols */,
+				225B7A942AFB54BD001BA335 /* Services */,
 				226A897E2AFB1A7600EBD2CA /* UI */,
 				22C3CCFE2AF240B30039750A /* Assets.xcassets */,
 				22C3CD2A2AF28CED0039750A /* Info.plist */,
 				22C3CD242AF241140039750A /* Recoreon-Bridging-Header.h */,
 				22C18B052AF2C20800C41B49 /* Recoreon.entitlements */,
-				228B5AAC2AFA32D30016CAF2 /* ThumbnailExtractor.h */,
-				228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.m */,
-				228B5AB12AFA49E70016CAF2 /* VideoEncoder.h */,
-				228B5AAF2AFA49D30016CAF2 /* VideoEncoder.m */,
 			);
 			path = Recoreon;
 			sourceTree = "<group>";

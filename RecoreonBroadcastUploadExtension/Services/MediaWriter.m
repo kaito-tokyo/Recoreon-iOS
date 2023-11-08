@@ -222,7 +222,7 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
 }
 
 @implementation MediaWriter : NSObject
-- (void)open:(NSString *)_filename {
+- (void)open:(NSString * __nonnull)_filename {
   filename = _filename;
 
   avformat_alloc_output_context2(&outputFormatContext, NULL, NULL,
@@ -393,9 +393,9 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
     codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
   }
 }
-- (void)writeVideo:(OutputStream *)outputStream
-      sampleBuffer:(CMSampleBufferRef)sampleBuffer
-       pixelBuffer:(CVPixelBufferRef)pixelBuffer {
+- (void)writeVideo:(OutputStream * __nonnull)outputStream
+      sampleBuffer:(CMSampleBufferRef __nonnull)sampleBuffer
+       pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer {
   AVFrame *frame = outputStream->frame;
   if (av_frame_make_writable(frame) < 0) {
     NSLog(@"Could not make a frame writable!");
@@ -443,8 +443,8 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
   write_frame(outputFormatContext, outputStream->enc, outputStream->st,
               outputStream->frame, outputStream->tmp_pkt);
 }
-- (void)writeVideoOfScreen:(CMSampleBufferRef)sampleBuffer
-               pixelBuffer:(CVPixelBufferRef)pixelBuffer {
+- (void)writeVideoOfScreen:(CMSampleBufferRef __nonnull)sampleBuffer
+               pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer {
   if (!firstScreenVideoFrameReceived) {
     [self initAllStreams:pixelBuffer];
     firstScreenVideoFrameReceived = true;
@@ -454,9 +454,9 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
        pixelBuffer:pixelBuffer];
   avio_flush(outputFormatContext->pb);
 }
-- (void)writeAudio:(OutputStream *)outputStream
-       sampleBuffer:(CMSampleBufferRef)sampleBuffer
-    audioBufferList:(AudioBufferList *)audioBufferList
+- (void)writeAudio:(OutputStream * __nonnull)outputStream
+       sampleBuffer:(CMSampleBufferRef __nonnull)sampleBuffer
+    audioBufferList:(AudioBufferList * __nonnull)audioBufferList
                 pts:(int64_t)pts {
   AVCodecContext *c = outputStream->enc;
 
@@ -537,8 +537,8 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
   write_frame(outputFormatContext, c, outputStream->st, frame,
               outputStream->tmp_pkt);
 }
-- (void)writeAudioOfScreen:(CMSampleBufferRef)sampleBuffer
-           audioBufferList:(AudioBufferList *)audioBufferList {
+- (void)writeAudioOfScreen:(CMSampleBufferRef __nonnull)sampleBuffer
+           audioBufferList:(AudioBufferList * __nonnull)audioBufferList {
   if (!firstScreenVideoFrameReceived) {
     return;
   }
@@ -550,8 +550,8 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
       audioBufferList:audioBufferList
                   pts:pts];
 }
-- (void)writeAudioOfMic:(CMSampleBufferRef)sampleBuffer
-        audioBufferList:(AudioBufferList *)audioBufferList {
+- (void)writeAudioOfMic:(CMSampleBufferRef __nonnull)sampleBuffer
+        audioBufferList:(AudioBufferList * __nonnull)audioBufferList {
   if (!firstScreenVideoFrameReceived) {
     return;
   }
