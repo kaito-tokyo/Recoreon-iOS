@@ -38,7 +38,7 @@ class RecordedVideoManipulatorImpl: RecordedVideoManipulatorProtocol {
 
   func encodeAsync(_ recordedVideoURL: URL, progressHandler: @escaping (Double) -> Void) async
     -> Bool
-  { // swiftlint:disable:this opening_brace
+  {  // swiftlint:disable:this opening_brace
     paths.ensureAppGroupDirectoriesExists()
 
     let encodedVideoURL = paths.getEncodedVideoURL(recordedVideoURL, suffix: "-discord")
