@@ -10,7 +10,8 @@ class RecordedVideoManipulatorMock: RecordedVideoManipulatorProtocol {
   var finishSucessfully = false
 
   func encodeAsync(_ recordedVideoURL: URL, progressHandler: @escaping (Double) -> Void) async
-    -> Bool {
+    -> Bool
+  { // swiftlint:disable:this opening_brace
     progressHandler(0.3)
     sleep(1)
     progressHandler(0.5)

@@ -7,7 +7,8 @@ struct ContentView: View {
 
   @State var encodingScreenIsPresented: Bool = false
 
-  @State var encodingEntry = RecordedVideoEntry(url: URL(fileURLWithPath: ""), uiImage: UIImage(named: "AppIcon")!)
+  @State var encodingEntry = RecordedVideoEntry(
+    url: URL(fileURLWithPath: ""), uiImage: UIImage(named: "AppIcon")!)
 
   let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
 
