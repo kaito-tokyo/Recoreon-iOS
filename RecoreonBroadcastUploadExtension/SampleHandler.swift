@@ -30,12 +30,10 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
+    paths.ensureAppGroupDirectoriesExists()
+
     writer = MediaWriter()
-    paths.ensureRecordsDirExists()
-    guard let recordsDir = paths.recordsDir() else {
-      fatalError("Could not obtain the records directory path!")
-    }
-    let url = recordsDir.appending(
+    let url = paths.recordsDir.appending(
       path: generateFileName(date: Date()), directoryHint: .notDirectory)
     writer?.open(url.path())
   }
