@@ -2,7 +2,7 @@ class RecordedVideoManipulatorMock: RecordedVideoManipulatorProtocol {
   func listVideoEntries() -> [RecordedVideoEntry] {
     let uiImage = UIImage(named: "AppIcon")!
 
-    return (0..<14).map {
+    return (0..<30).map {
       RecordedVideoEntry(url: URL(fileURLWithPath: "\($0).mkv"), uiImage: uiImage)
     }
   }
