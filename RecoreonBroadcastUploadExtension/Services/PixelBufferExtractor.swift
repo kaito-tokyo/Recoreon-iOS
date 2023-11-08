@@ -5,7 +5,7 @@ class PixelBufferExtractor {
   private let textureCache: CVMetalTextureCache
   private let commandQueue: MTLCommandQueue
 
-  private var newPixelBufferRef: CVPixelBuffer?
+  private var dstPixelBufferRef: CVPixelBuffer?
 
   init?() {
     guard let device = MTLCreateSystemDefaultDevice() else { return nil }
@@ -21,45 +21,29 @@ class PixelBufferExtractor {
     self.commandQueue = queue
   }
 
-  func checkIfNewPixelBufferShouldBeRecreated(_ origWidth: Int, _ origHeight: Int) -> Bool {
-    guard let newPixelBuffer = newPixelBufferRef else { return true }
-    let newWidth = CVPixelBufferGetWidth(newPixelBuffer)
-    let newHeight = CVPixelBufferGetHeight(newPixelBuffer)
-    return newWidth != origWidth || newHeight != origHeight
-  }
-
-  func extract(_ pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
-    let pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer)
+  func extract(_ srcPixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
+    let pixelFormat = CVPixelBufferGetPixelFormatType(srcPixelBuffer)
     if pixelFormat != kCVPixelFormatType_420YpCbCr8BiPlanarFullRange {
       return nil
     }
 
-    let width = CVPixelBufferGetWidth(pixelBuffer)
-    let height = CVPixelBufferGetHeight(pixelBuffer)
-    if checkIfNewPixelBufferShouldBeRecreated(width, height) {
-      var attributes: [NSString: NSObject] = [:]
-      attributes[kCVPixelBufferIOSurfacePropertiesKey] = [AnyHashable: Any]() as NSObject
-      CVPixelBufferCreate(
-        kCFAllocatorDefault, width, height, kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
-        attributes as CFDictionary?, &newPixelBufferRef)
-    }
-    guard let newPixelBuffer = newPixelBufferRef else { return nil }
+    guard let dstPixelBuffer = getDstPixelBuffer(srcPixelBuffer) else { return nil }
 
     guard
       let srcLumaTexture = createTextureFromPixelBuffer(
-        pixelBuffer, planeIndex: 0, format: .r8Unorm)
+        srcPixelBuffer, planeIndex: 0, format: .r8Unorm)
     else { return nil }
     guard
       let srcChromaTexture = createTextureFromPixelBuffer(
-        pixelBuffer, planeIndex: 1, format: .rg8Unorm)
+        srcPixelBuffer, planeIndex: 1, format: .rg8Unorm)
     else { return nil }
     guard
       let dstLumaTexture = createTextureFromPixelBuffer(
-        newPixelBuffer, planeIndex: 0, format: .r8Unorm)
+        dstPixelBuffer, planeIndex: 0, format: .r8Unorm)
     else { return nil }
     guard
       let dstChromaTexture = createTextureFromPixelBuffer(
-        newPixelBuffer, planeIndex: 1, format: .rg8Unorm)
+        dstPixelBuffer, planeIndex: 1, format: .rg8Unorm)
     else { return nil }
 
     guard let commandBuffer = commandQueue.makeCommandBuffer() else { return nil }
@@ -70,10 +54,37 @@ class PixelBufferExtractor {
     commandBuffer.commit()
     commandBuffer.waitUntilCompleted()
 
-    return newPixelBuffer
+    return dstPixelBuffer
   }
 
-  func createTextureFromPixelBuffer(
+  private func allocatePixelBuffer(_ width: Int, _ height: Int, _ format: OSType) -> CVPixelBuffer? {
+    var pixelBufferRef: CVPixelBuffer?
+    var attributes: [NSString: NSObject] = [:]
+    attributes[kCVPixelBufferIOSurfacePropertiesKey] = [AnyHashable: Any]() as NSObject
+    CVPixelBufferCreate(nil, width, height, format, attributes as CFDictionary?, &pixelBufferRef)
+    return pixelBufferRef
+  }
+
+  private func getDstPixelBuffer(_ srcPixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
+    let srcWidth = CVPixelBufferGetWidth(srcPixelBuffer)
+    let srcHeight = CVPixelBufferGetHeight(srcPixelBuffer)
+    let format = CVPixelBufferGetPixelFormatType(srcPixelBuffer)
+
+    if let dstPixelBuffer = dstPixelBufferRef {
+      let dstWidth = CVPixelBufferGetWidth(dstPixelBuffer)
+      let dstHeight = CVPixelBufferGetHeight(dstPixelBuffer)
+      if dstWidth != srcWidth || dstHeight != srcHeight {
+        dstPixelBufferRef = nil
+        dstPixelBufferRef = allocatePixelBuffer(srcWidth, srcHeight, format)
+      }
+    } else {
+      dstPixelBufferRef = nil
+      dstPixelBufferRef = allocatePixelBuffer(srcWidth, srcHeight, format)
+    }
+    return dstPixelBufferRef
+  }
+
+  private func createTextureFromPixelBuffer(
     _ pixelBuffer: CVPixelBuffer, planeIndex: Int, format: MTLPixelFormat
   ) -> MTLTexture? {
     let width = CVPixelBufferGetWidthOfPlane(pixelBuffer, planeIndex)

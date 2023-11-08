@@ -20,8 +20,7 @@ static int write_frame(AVFormatContext *fmt_ctx, AVCodecContext *c,
                        AVStream *st, AVFrame *frame, AVPacket *pkt) {
   int ret;
 
-  // send the frame to the encoder
-  ret = avcodec_send_frame(c, frame);
+  // send the frame to the encoder  ret = avcodec_send_frame(c, frame);
   if (ret < 0) {
     NSLog(@"Error sending a frame to the encoder: %s", av_err2str(ret));
     return ret;
@@ -408,25 +407,21 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
     return;
   }
 
-  size_t width = CVPixelBufferGetWidth(pixelBuffer);
-  size_t height = CVPixelBufferGetHeight(pixelBuffer);
-  if (width != outputStream->enc->width || height != outputStream->enc->height) {
-    NSLog(@"The received dimension is %zux%zu but the desired dimention is %dx%d!", width, height, outputStream->enc->width, outputStream->enc->height);
-    return;
-  }
+  size_t srcYLinesize = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
+  size_t srcCbcrLinesize = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1);
 
-  size_t yLinesize = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
-  size_t cbcrLinesize = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1);
+  size_t width = MIN(CVPixelBufferGetWidth(pixelBuffer), frame->width);
+  size_t height = MIN(CVPixelBufferGetHeight(pixelBuffer), frame->height);
 
   CVPixelBufferLockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
   uint8_t *yPlane =
       (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
   uint8_t *cbcrPlane =
       (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 1);
-  copyPlane((uint8_t *)frame->data[0], frame->linesize[0], yPlane, yLinesize,
+  copyPlane((uint8_t *)frame->data[0], frame->linesize[0], yPlane, srcYLinesize,
             width, height);
   copyPlane((uint8_t *)frame->data[1], frame->linesize[1], cbcrPlane,
-            cbcrLinesize, width, height / 2);
+            srcCbcrLinesize, width, height / 2);
   CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
 
   CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
