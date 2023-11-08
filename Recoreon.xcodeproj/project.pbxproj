@@ -11,6 +11,8 @@
 		226A897D2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */; };
 		226A89852AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A89842AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift */; };
 		226A898C2AFB1D0D00EBD2CA /* RecordedVideoManipulatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A898B2AFB1D0D00EBD2CA /* RecordedVideoManipulatorProtocol.swift */; };
+		226A898F2AFB2EA500EBD2CA /* RecordedVideoManipulatorMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A898E2AFB2EA500EBD2CA /* RecordedVideoManipulatorMock.swift */; };
+		226A89922AFB30D900EBD2CA /* RecordedVideoEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A89912AFB30D900EBD2CA /* RecordedVideoEntry.swift */; };
 		228B5AAB2AFA32C20016CAF2 /* ThumbnailExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.m */; };
 		228B5AAE2AFA3CDB0016CAF2 /* RecoreonPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */; };
 		228B5AB02AFA49D30016CAF2 /* VideoEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAF2AFA49D30016CAF2 /* VideoEncoder.m */; };
@@ -89,6 +91,8 @@
 		226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingRecordedVideoView.swift; sourceTree = "<group>"; };
 		226A89842AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoManipulatorImpl.swift; sourceTree = "<group>"; };
 		226A898B2AFB1D0D00EBD2CA /* RecordedVideoManipulatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoManipulatorProtocol.swift; sourceTree = "<group>"; };
+		226A898E2AFB2EA500EBD2CA /* RecordedVideoManipulatorMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoManipulatorMock.swift; sourceTree = "<group>"; };
+		226A89912AFB30D900EBD2CA /* RecordedVideoEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoEntry.swift; sourceTree = "<group>"; };
 		228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThumbnailExtractor.m; sourceTree = "<group>"; };
 		228B5AAC2AFA32D30016CAF2 /* ThumbnailExtractor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThumbnailExtractor.h; sourceTree = "<group>"; };
 		228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonPaths.swift; sourceTree = "<group>"; };
@@ -215,6 +219,22 @@
 			name = Protocols;
 			sourceTree = "<group>";
 		};
+		226A898D2AFB2E9200EBD2CA /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				226A898E2AFB2EA500EBD2CA /* RecordedVideoManipulatorMock.swift */,
+			);
+			name = Mocks;
+			sourceTree = "<group>";
+		};
+		226A89902AFB30C900EBD2CA /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				226A89912AFB30D900EBD2CA /* RecordedVideoEntry.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		22C18AE42AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */ = {
 			isa = PBXGroup;
 			children = (
@@ -267,6 +287,8 @@
 		22C3CCF92AF240B30039750A /* Recoreon */ = {
 			isa = PBXGroup;
 			children = (
+				226A89902AFB30C900EBD2CA /* Models */,
+				226A898D2AFB2E9200EBD2CA /* Mocks */,
 				226A897F2AFB1AA000EBD2CA /* Implementations */,
 				226A89882AFB1CCE00EBD2CA /* Protocols */,
 				226A89872AFB1CB400EBD2CA /* Helpers */,
@@ -726,9 +748,11 @@
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
 				228B5AAB2AFA32C20016CAF2 /* ThumbnailExtractor.m in Sources */,
 				226A897D2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift in Sources */,
+				226A898F2AFB2EA500EBD2CA /* RecordedVideoManipulatorMock.swift in Sources */,
 				226A898C2AFB1D0D00EBD2CA /* RecordedVideoManipulatorProtocol.swift in Sources */,
 				228B5AB02AFA49D30016CAF2 /* VideoEncoder.m in Sources */,
 				228B5AAE2AFA3CDB0016CAF2 /* RecoreonPaths.swift in Sources */,
+				226A89922AFB30D900EBD2CA /* RecordedVideoEntry.swift in Sources */,
 				226A89852AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
