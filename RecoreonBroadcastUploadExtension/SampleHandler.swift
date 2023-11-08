@@ -77,7 +77,7 @@ class SampleHandler: RPBroadcastSampleHandler {
         return
       }
       let lumaBytesPerRow = getLumaBytesPerRow(pixelBuffer)
-      let chromaBytesPerRow = getChromaBytesPerRow(srcPixelBuffer)
+      let chromaBytesPerRow = getChromaBytesPerRow(pixelBuffer)
       guard
         let frame = pixelBufferExtractorRef?.extract(
           pixelBuffer, lumaBytesPerRow: lumaBytesPerRow, chromaBytesPerRow: chromaBytesPerRow)
