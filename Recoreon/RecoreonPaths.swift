@@ -1,73 +1,41 @@
+private let fileManager = FileManager.default
+
 class RecoreonPaths {
-  let appGroupIdentifier = "group.com.github.umireon.Recoreon"
+  static let appGroupIdentifier = "group.com.github.umireon.Recoreon"
 
-  private let fileManager = FileManager.default
+  let appGroupDir: URL
+  let documentsDir: URL
+  let recordsDir: URL
+  let libraryDir: URL
+  let thumbnailsDir: URL
+  let encodedVideosDir: URL
+  let sharedDocumentsDir: URL
+  let sharedRecordsDir: URL
 
-  func appGroupDir() -> URL? {
-    return FileManager.default.containerURL(
-      forSecurityApplicationGroupIdentifier: appGroupIdentifier)
+  init() {
+    appGroupDir = fileManager.containerURL(forSecurityApplicationGroupIdentifier: RecoreonPaths.appGroupIdentifier)!
+    documentsDir = appGroupDir.appending(component: "Documents", directoryHint: .isDirectory)
+    recordsDir = documentsDir.appending(path: "Records", directoryHint: .isDirectory)
+    libraryDir = appGroupDir.appending(path: "Library", directoryHint: .isDirectory)
+    thumbnailsDir = libraryDir.appending(path: "Thumbnails", directoryHint: .isDirectory)
+    encodedVideosDir = libraryDir.appending(path: "EncodedVideos", directoryHint: .isDirectory)
+    sharedDocumentsDir = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+    sharedRecordsDir = sharedDocumentsDir.appending(path: "Records", directoryHint: .isDirectory)
   }
 
-  func documentsDir() -> URL? {
-    return appGroupDir()?.appending(path: "Documents", directoryHint: .isDirectory)
+  func ensureAppGroupDirectoriesExists() {
+    try? fileManager.createDirectory(at: recordsDir, withIntermediateDirectories: true)
+    try? fileManager.createDirectory(at: thumbnailsDir, withIntermediateDirectories: true)
+    try? fileManager.createDirectory(at: encodedVideosDir, withIntermediateDirectories: true)
   }
 
-  func recordsDir() -> URL? {
-    return documentsDir()?.appending(path: "Records", directoryHint: .isDirectory)
-  }
-
-  func libraryDir() -> URL? {
-    return appGroupDir()?.appending(path: "Library", directoryHint: .isDirectory)
-  }
-
-  func thumbnailsDir() -> URL? {
-    return libraryDir()?.appending(path: "Thumbnails", directoryHint: .isDirectory)
-  }
-
-  func encodedVideosDir() -> URL? {
-    return libraryDir()?.appending(path: "EncodedVideos", directoryHint: .isDirectory)
-  }
-
-  func ensureRecordsDirExists() {
-    guard let recordsDir = recordsDir() else {
-      print("Could not obtain the records directory path!")
-      return
-    }
-    do {
-      try fileManager.createDirectory(at: recordsDir, withIntermediateDirectories: true)
-    } catch {
-      print("Could not create the records directory!")
-    }
-  }
-
-  func ensureThumbnailsDirExists() {
-    guard let thumbnailsDir = thumbnailsDir() else {
-      print("Could not obtain the thumbnails directory path!")
-      return
-    }
-    do {
-      try fileManager.createDirectory(at: thumbnailsDir, withIntermediateDirectories: true)
-    } catch {
-      print("Could not create the thumbnails directory!")
-    }
-  }
-
-  func ensureEncodedVideosDirExists() {
-    guard let encodedVideosDir = encodedVideosDir() else {
-      print("Could not obtain the encoded videos directory path!")
-      return
-    }
-    do {
-      try fileManager.createDirectory(at: encodedVideosDir, withIntermediateDirectories: true)
-    } catch {
-      print("Could not create the encoded videos directory!")
-    }
+  func ensureSharedDirectoriesExists() {
+    try? fileManager.createDirectory(at: sharedRecordsDir, withIntermediateDirectories: true)
   }
 
   func listRecordURLs() -> [URL] {
-    guard let recordsDir = recordsDir() else { return [] }
     guard
-      let urls = try? FileManager.default.contentsOfDirectory(
+      let urls = try? fileManager.contentsOfDirectory(
         at: recordsDir, includingPropertiesForKeys: nil)
     else {
       return []
@@ -77,20 +45,18 @@ class RecoreonPaths {
     })
   }
 
-  func listMkvRecordURLs() -> [URL] {
-    listRecordURLs().filter { $0.pathExtension == "mkv" }
+  func getThumbnailURL(_ recordedVideoURL: URL, ext: String = "jpg") -> URL {
+    let filename = recordedVideoURL.deletingPathExtension().appendingPathExtension(ext).lastPathComponent
+    return thumbnailsDir.appending(path: filename, directoryHint: .notDirectory)
   }
 
-  func getThumbnailURL(videoURL: URL) -> URL? {
-    let thumbFilaname = videoURL.deletingPathExtension().appendingPathExtension("jpg")
-      .lastPathComponent
-    guard let thumbnailsDir = thumbnailsDir() else { return nil }
-    return thumbnailsDir.appending(path: thumbFilaname, directoryHint: .notDirectory)
-  }
-
-  func getEncodedVideoURL(videoURL: URL, suffix: String, ext: String = "mp4") -> URL? {
-    let filename = videoURL.deletingPathExtension().lastPathComponent + suffix + "." + ext
-    guard let encodedVideosDir = encodedVideosDir() else { return nil }
+  func getEncodedVideoURL(_ recordedVideoURL: URL, suffix: String, ext: String = "mp4") -> URL {
+    let filename = recordedVideoURL.deletingPathExtension().lastPathComponent + "\(suffix).\(ext)"
     return encodedVideosDir.appending(path: filename, directoryHint: .notDirectory)
+  }
+
+  func getSharedRecordedVideoURL(_ recordedVideoURL: URL) -> URL {
+    let filename = recordedVideoURL.lastPathComponent
+    return sharedRecordsDir.appending(path: filename, directoryHint: .notDirectory)
   }
 }
