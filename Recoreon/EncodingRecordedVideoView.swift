@@ -2,8 +2,7 @@ import SwiftUI
 
 struct EncodingRecordedVideoView: View {
   let recordedVideoManipulator: RecordedVideoManipulatorProtocol
-  @Binding var url: URL
-  @Binding var uiImage: UIImage
+  @Binding var entry: RecordedVideoEntry
 
   @State var encodingProgress: Double = 0
   @State var encodingInProgress: Bool = false
@@ -16,11 +15,11 @@ struct EncodingRecordedVideoView: View {
     VStack {
       if encodingProgress == 0.0 {
         ZStack {
-          Image(uiImage: uiImage).resizable().scaledToFit()
+          Image(uiImage: entry.uiImage).resizable().scaledToFit()
         }.padding()
       } else {
         ZStack {
-          Image(uiImage: uiImage).resizable().scaledToFit().brightness(-0.3)
+          Image(uiImage: entry.uiImage).resizable().scaledToFit().brightness(-0.3)
           ProgressView().scaleEffect(x: 5, y: 5, anchor: .center)
         }.padding()
       }
@@ -29,7 +28,7 @@ struct EncodingRecordedVideoView: View {
           Task {
             encodingInProgress = true
             let isSucceeded = await recordedVideoManipulator.encodeAsync(
-              url,
+              entry.url,
               progressHandler: {
                 encodingProgress = $0
               })
@@ -54,7 +53,7 @@ struct EncodingRecordedVideoView: View {
             Button("OK") { encodingUnsuccessfullyPresent = false }
           })
         Button {
-          let isSucceeded = recordedVideoManipulator.publishRecordedVideo(url)
+          let isSucceeded = recordedVideoManipulator.publishRecordedVideo(entry.url)
           if isSucceeded {
             copyToSharedDirSuccessfullyPresent = true
           } else {
@@ -81,9 +80,10 @@ struct EncodingRecordedVideoView: View {
 }
 
 #Preview {
-  @State var url = URL(fileURLWithPath: "1.mkv")
-  @State var uiImage = UIImage(named: "AppIcon")!
+  let url = URL(fileURLWithPath: "1.mkv")
+  let uiImage = UIImage(named: "AppIcon")!
+  @State var entry = RecordedVideoEntry(url: url, uiImage: uiImage)
 
   return EncodingRecordedVideoView(
-    recordedVideoManipulator: RecordedVideoManipulatorMock(), url: $url, uiImage: $uiImage)
+    recordedVideoManipulator: RecordedVideoManipulatorMock(), entry: $entry)
 }

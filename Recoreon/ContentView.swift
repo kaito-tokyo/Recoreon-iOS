@@ -7,8 +7,7 @@ struct ContentView: View {
 
   @State var encodingScreenIsPresented: Bool = false
 
-  @State var encodingURL = URL(fileURLWithPath: "")
-  @State var encodingUIImage = UIImage(named: "AppIcon")!
+  @State var encodingEntry = RecordedVideoEntry(url: URL(fileURLWithPath: ""), uiImage: UIImage(named: "AppIcon")!)
 
   let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
 
@@ -19,17 +18,16 @@ struct ContentView: View {
           ForEach(entries) { entry in
             Button {
               encodingScreenIsPresented = true
-              encodingURL = entry.url
-              encodingUIImage = entry.uiImage
+              encodingEntry = entry
             } label: {
               Image(uiImage: entry.uiImage).resizable().scaledToFit()
-            }
+            }.buttonStyle(.borderless)
           }
         }
       }
     }.sheet(isPresented: $encodingScreenIsPresented) {
       EncodingRecordedVideoView(
-        recordedVideoManipulator: recordedVideoManipulator, url: $encodingURL, uiImage: $encodingUIImage)
+        recordedVideoManipulator: recordedVideoManipulator, entry: $encodingEntry)
     }.onAppear {
       entries = recordedVideoManipulator.listVideoEntries()
     }
