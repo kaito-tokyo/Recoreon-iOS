@@ -3,7 +3,8 @@
 #include <ffmpegkit/FFmpegKit.h>
 
 @implementation ThumbnailExtractor : NSObject
-- (void)extract:(NSURL *)videoURL thumbnailURL:(NSURL *)thumbnailURL {
+- (void)extract:(NSURL *__nonnull)videoURL
+    thumbnailURL:(NSURL *__nonnull)thumbnailURL {
   NSString *cmdline = [NSString
       stringWithFormat:@"-y -i \"%@\" -vf thumbnail=500 -frames:v 1 \"%@\"",
                        videoURL.path, thumbnailURL.path];

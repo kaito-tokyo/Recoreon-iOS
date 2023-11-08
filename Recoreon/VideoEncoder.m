@@ -13,10 +13,10 @@ double getDuration(NSString *videoPath) {
 }
 
 @implementation VideoEncoder : NSObject
-- (void)encode:(NSURL *)videoURL
-            outputURL:(NSURL *)outputURL
-      progressHandler:(void (^)(double progress))progressHandler
-    completionHandler:(void (^)(BOOL isSuccessful))completionHandler {
+- (void)encode:(NSURL *__nonnull)videoURL
+            outputURL:(NSURL *__nonnull)outputURL
+      progressHandler:(void (^__nonnull)(double progress))progressHandler
+    completionHandler:(void (^__nonnull)(BOOL isSuccessful))completionHandler {
   double origDuration = getDuration(videoURL.path);
   double targetTime = origDuration / 4.0 * 1000.0;
   NSArray *args = @[
