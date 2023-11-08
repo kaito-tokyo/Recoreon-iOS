@@ -49,20 +49,46 @@ class SampleHandler: RPBroadcastSampleHandler {
     writer?.close()
   }
 
+  func getLumaBytesPerRow(_ pixelBuffer: CVPixelBuffer) -> Int {
+    if let desired = writer?.desiredLumaBytesPerRow {
+      if desired != 0 {
+        return desired
+      }
+    }
+    return CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0)
+  }
+
+  func getChromaBytesPerRow(_ pixelBuffer: CVPixelBuffer) -> Int {
+    if let desired = writer?.desiredChromaBytesPerRow {
+      if desired != 0 {
+        return desired
+      }
+    }
+    return CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1)
+  }
+
   override func processSampleBuffer(
     _ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType
   ) {
     switch sampleBufferType {
     case RPSampleBufferType.video:
-      guard let origPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+      guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
         print("Could not obtain the pixel buffer!")
         return
       }
-      guard let newPixelBuffer = pixelBufferExtractorRef?.extract(origPixelBuffer) else {
+      let lumaBytesPerRow = getLumaBytesPerRow(pixelBuffer)
+      let chromaBytesPerRow = getChromaBytesPerRow(srcPixelBuffer)
+      guard
+        let frame = pixelBufferExtractorRef?.extract(
+          pixelBuffer, lumaBytesPerRow: lumaBytesPerRow, chromaBytesPerRow: chromaBytesPerRow)
+      else {
         print("Could not render to the pixel buffer!")
         return
       }
-      self.writer?.writeVideo(ofScreen: sampleBuffer, pixelBuffer: newPixelBuffer)
+      self.writer?.writeVideo(
+        ofScreen: sampleBuffer, pixelBuffer: pixelBuffer, lumaData: frame.lumaData,
+        chromaData: frame.chmoraData, lumaBytesPerRow: frame.lumaBytesPerRow,
+        chromaBytesPerRow: frame.chromaBytesPerRow)
     case RPSampleBufferType.audioApp:
       var blockBuffer: CMBlockBuffer?
       CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(

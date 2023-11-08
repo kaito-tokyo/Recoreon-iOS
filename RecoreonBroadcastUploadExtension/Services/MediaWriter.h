@@ -6,14 +6,14 @@
 #include <libavformat/avformat.h>
 
 typedef struct OutputStream {
-  AVStream *st;
-  AVCodecContext *enc;
-  AVFrame *frame;
-  AVPacket *tmp_pkt;
+  AVStream *__nullable st;
+  AVCodecContext *__nullable enc;
+  AVFrame *__nullable frame;
+  AVPacket *__nullable tmp_pkt;
 } OutputStream;
 
 @interface MediaWriter : NSObject {
-  NSString * __nonnull filename;
+  NSString *__nullable filename;
   AVFormatContext *outputFormatContext;
   const AVCodec *videoCodec;
   const AVCodec *audioCodec;
@@ -26,9 +26,17 @@ typedef struct OutputStream {
   int64_t screenBasePts;
   int64_t micBasePts;
 }
+
+@property(nonatomic) size_t desiredLumaBytesPerRow;
+@property(nonatomic) size_t desiredChromaBytesPerRow;
+
 - (void)open:(NSString * __nonnull)filename;
 - (void)writeVideoOfScreen:(CMSampleBufferRef __nonnull)sampleBuffer
-               pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer;
+       pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer
+          lumaData:(void *__nonnull)lumaData
+        chromaData:(void *__nonnull)chromaData
+   lumaBytesPerRow:(long)lumaBytesPerRow
+         chromaBytesPerRow:(long)chromaBytesPerRow;
 - (void)writeAudioOfScreen:(CMSampleBufferRef __nonnull)sampleBuffer
            audioBufferList:(AudioBufferList * __nonnull)audioBufferList;
 - (void)writeAudioOfMic:(CMSampleBufferRef __nonnull)sampleBuffer

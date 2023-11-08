@@ -6,21 +6,20 @@
 #import "MediaWriter.h"
 
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
-//  AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
+  AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
 
-//  printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s "
-//         "stream_index:%d\n",
-//         av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
-//         av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
-//         av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
-//         pkt->stream_index);
+  printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s "
+         "stream_index:%d\n",
+         av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
+         av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
+         av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
+         pkt->stream_index);
 }
 
 static int write_frame(AVFormatContext *fmt_ctx, AVCodecContext *c,
                        AVStream *st, AVFrame *frame, AVPacket *pkt) {
-  int ret;
-
-  // send the frame to the encoder  ret = avcodec_send_frame(c, frame);
+  // send the frame to the encoder
+  int ret = avcodec_send_frame(c, frame);
   if (ret < 0) {
     NSLog(@"Error sending a frame to the encoder: %s", av_err2str(ret));
     return ret;
@@ -392,9 +391,13 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
     codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
   }
 }
-- (void)writeVideo:(OutputStream * __nonnull)outputStream
+- (void)writeVideo:(OutputStream *__nonnull)outputStream
       sampleBuffer:(CMSampleBufferRef __nonnull)sampleBuffer
-       pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer {
+       pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer
+          lumaData:(void *__nonnull)lumaData
+        chromaData:(void *__nonnull)chromaData
+   lumaBytesPerRow:(long)lumaBytesPerRow
+ chromaBytesPerRow:(long)chromaBytesPerRow {
   AVFrame *frame = outputStream->frame;
   if (av_frame_make_writable(frame) < 0) {
     NSLog(@"Could not make a frame writable!");
@@ -407,21 +410,13 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
     return;
   }
 
-  size_t srcYLinesize = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
-  size_t srcCbcrLinesize = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1);
+  size_t width = CVPixelBufferGetWidth(pixelBuffer);
+  size_t height = CVPixelBufferGetHeight(pixelBuffer);
 
-  size_t width = MIN(CVPixelBufferGetWidth(pixelBuffer), frame->width);
-  size_t height = MIN(CVPixelBufferGetHeight(pixelBuffer), frame->height);
-
-  CVPixelBufferLockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
-  uint8_t *yPlane =
-      (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
-  uint8_t *cbcrPlane =
-      (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 1);
-  copyPlane((uint8_t *)frame->data[0], frame->linesize[0], yPlane, srcYLinesize,
+  copyPlane(frame->data[0], frame->linesize[0], lumaData, lumaBytesPerRow,
             width, height);
-  copyPlane((uint8_t *)frame->data[1], frame->linesize[1], cbcrPlane,
-            srcCbcrLinesize, width, height / 2);
+  copyPlane(frame->data[1], frame->linesize[1], chromaData,
+            chromaBytesPerRow, width, height / 2);
   CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
 
   CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
@@ -435,14 +430,21 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
               outputStream->frame, outputStream->tmp_pkt);
 }
 - (void)writeVideoOfScreen:(CMSampleBufferRef __nonnull)sampleBuffer
-               pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer {
+       pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer
+          lumaData:(void *__nonnull)lumaData
+        chromaData:(void *__nonnull)chromaData
+   lumaBytesPerRow:(long)lumaBytesPerRow
+ chromaBytesPerRow:(long)chromaBytesPerRow {
   if (!firstScreenVideoFrameReceived) {
     [self initAllStreams:pixelBuffer];
+    _desiredLumaBytesPerRow = screenVideoStream.frame->linesize[0];
+    _desiredChromaBytesPerRow = screenVideoStream.frame->linesize[1];
     firstScreenVideoFrameReceived = true;
   }
   [self writeVideo:&screenVideoStream
       sampleBuffer:sampleBuffer
-       pixelBuffer:pixelBuffer];
+       pixelBuffer:pixelBuffer
+  lumaData:lumaData chromaData:chromaData lumaBytesPerRow:lumaBytesPerRow chromaBytesPerRow:lumaBytesPerRow];
   avio_flush(outputFormatContext->pb);
 }
 - (void)writeAudio:(OutputStream * __nonnull)outputStream

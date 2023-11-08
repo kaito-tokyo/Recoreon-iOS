@@ -1,11 +1,20 @@
 import MetalKit
 
 class PixelBufferExtractor {
+  struct Frame {
+    let lumaData: UnsafeMutableRawPointer
+    let chmoraData: UnsafeMutableRawPointer
+    let lumaBytesPerRow: Int
+    let chromaBytesPerRow: Int
+    let height: Int
+  }
+
   private let metalDevice: MTLDevice
   private let textureCache: CVMetalTextureCache
   private let commandQueue: MTLCommandQueue
 
-  private var dstPixelBufferRef: CVPixelBuffer?
+  private var dstLumaBufferRef: MTLBuffer?
+  private var dstChromaBufferRef: MTLBuffer?
 
   init?() {
     guard let device = MTLCreateSystemDefaultDevice() else { return nil }
@@ -21,67 +30,55 @@ class PixelBufferExtractor {
     self.commandQueue = queue
   }
 
-  func extract(_ srcPixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
+  func extract(_ srcPixelBuffer: CVPixelBuffer, lumaBytesPerRow: Int, chromaBytesPerRow: Int)
+    -> Frame?
+  {  // swiftlint:disable:this opening_brace
     let pixelFormat = CVPixelBufferGetPixelFormatType(srcPixelBuffer)
     if pixelFormat != kCVPixelFormatType_420YpCbCr8BiPlanarFullRange {
       return nil
     }
 
-    guard let dstPixelBuffer = getDstPixelBuffer(srcPixelBuffer) else { return nil }
+    let height = CVPixelBufferGetHeight(srcPixelBuffer)
+    guard let dstLumaBuffer = getDstLumaBuffer(bytesPerRow: lumaBytesPerRow, height: height),
+      let dstChromaBuffer = getDstChromaBuffer(bytesPerRow: chromaBytesPerRow, height: height)
+    else { return nil }
 
     guard
       let srcLumaTexture = createTextureFromPixelBuffer(
-        srcPixelBuffer, planeIndex: 0, format: .r8Unorm)
-    else { return nil }
-    guard
+        srcPixelBuffer, planeIndex: 0, format: .r8Unorm),
       let srcChromaTexture = createTextureFromPixelBuffer(
-        srcPixelBuffer, planeIndex: 1, format: .rg8Unorm)
+        srcPixelBuffer, planeIndex: 1, format: .rg8Unorm),
+      let commandBuffer = commandQueue.makeCommandBuffer(),
+      let encoder = commandBuffer.makeBlitCommandEncoder()
     else { return nil }
-    guard
-      let dstLumaTexture = createTextureFromPixelBuffer(
-        dstPixelBuffer, planeIndex: 0, format: .r8Unorm)
-    else { return nil }
-    guard
-      let dstChromaTexture = createTextureFromPixelBuffer(
-        dstPixelBuffer, planeIndex: 1, format: .rg8Unorm)
-    else { return nil }
-
-    guard let commandBuffer = commandQueue.makeCommandBuffer() else { return nil }
-    guard let encoder = commandBuffer.makeBlitCommandEncoder() else { return nil }
-    encoder.copy(from: srcLumaTexture, to: dstLumaTexture)
-    encoder.copy(from: srcChromaTexture, to: dstChromaTexture)
+    encoder.copy(
+      fromTexture: srcLumaTexture, sourceBytesPerRow: lumaBytesPerRow, toBuffer: dstLumaBuffer)
+    encoder.copy(
+      fromTexture: srcChromaTexture, sourceBytesPerRow: chromaBytesPerRow, toBuffer: dstChromaBuffer
+    )
     encoder.endEncoding()
     commandBuffer.commit()
     commandBuffer.waitUntilCompleted()
 
-    return dstPixelBuffer
+    return Frame(
+      lumaData: dstLumaBuffer.contents(), chmoraData: dstChromaBuffer.contents(),
+      lumaBytesPerRow: lumaBytesPerRow, chromaBytesPerRow: chromaBytesPerRow, height: height)
   }
 
-  private func allocatePixelBuffer(_ width: Int, _ height: Int, _ format: OSType) -> CVPixelBuffer? {
-    var pixelBufferRef: CVPixelBuffer?
-    var attributes: [NSString: NSObject] = [:]
-    attributes[kCVPixelBufferIOSurfacePropertiesKey] = [AnyHashable: Any]() as NSObject
-    CVPixelBufferCreate(nil, width, height, format, attributes as CFDictionary?, &pixelBufferRef)
-    return pixelBufferRef
-  }
-
-  private func getDstPixelBuffer(_ srcPixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
-    let srcWidth = CVPixelBufferGetWidth(srcPixelBuffer)
-    let srcHeight = CVPixelBufferGetHeight(srcPixelBuffer)
-    let format = CVPixelBufferGetPixelFormatType(srcPixelBuffer)
-
-    if let dstPixelBuffer = dstPixelBufferRef {
-      let dstWidth = CVPixelBufferGetWidth(dstPixelBuffer)
-      let dstHeight = CVPixelBufferGetHeight(dstPixelBuffer)
-      if dstWidth != srcWidth || dstHeight != srcHeight {
-        dstPixelBufferRef = nil
-        dstPixelBufferRef = allocatePixelBuffer(srcWidth, srcHeight, format)
-      }
-    } else {
-      dstPixelBufferRef = nil
-      dstPixelBufferRef = allocatePixelBuffer(srcWidth, srcHeight, format)
+  private func getDstLumaBuffer(bytesPerRow: Int, height: Int) -> MTLBuffer? {
+    if dstLumaBufferRef == nil {
+      dstLumaBufferRef = metalDevice.makeBuffer(
+        length: (bytesPerRow + 4) * (height + 4), options: .storageModeShared)
     }
-    return dstPixelBufferRef
+    return dstLumaBufferRef
+  }
+
+  private func getDstChromaBuffer(bytesPerRow: Int, height: Int) -> MTLBuffer? {
+    if dstChromaBufferRef == nil {
+      dstChromaBufferRef = metalDevice.makeBuffer(
+        length: (bytesPerRow + 4) * (height + 4) / 2, options: .storageModeShared)
+    }
+    return dstChromaBufferRef
   }
 
   private func createTextureFromPixelBuffer(
@@ -100,5 +97,21 @@ class PixelBufferExtractor {
       }
     }
     return nil
+  }
+}
+
+extension MTLBlitCommandEncoder {
+  fileprivate func copy(fromTexture: MTLTexture, sourceBytesPerRow: Int, toBuffer: MTLBuffer) {
+    self.copy(
+      from: fromTexture,
+      sourceSlice: 0,
+      sourceLevel: 0,
+      sourceOrigin: MTLOriginMake(0, 0, 0),
+      sourceSize: MTLSizeMake(fromTexture.width, fromTexture.height, 1),
+      to: toBuffer,
+      destinationOffset: 0,
+      destinationBytesPerRow: sourceBytesPerRow,
+      destinationBytesPerImage: 0
+    )
   }
 }
