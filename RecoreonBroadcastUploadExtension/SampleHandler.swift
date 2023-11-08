@@ -12,8 +12,6 @@ private let paths = RecoreonPaths()
 class SampleHandler: RPBroadcastSampleHandler {
   private let fileManager = FileManager.default
   var writer: MediaWriter?
-  var newPixelBufferRef: CVPixelBuffer?
-  let ciContext = CIContext()
   var audioBufferList = AudioBufferList()
   let dateFormatter = {
     let formatter = ISO8601DateFormatter()
@@ -23,6 +21,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     formatter.timeZone = TimeZone.current
     return formatter
   }()
+  let pixelBufferExtractorRef = PixelBufferExtractor()
 
   func generateFileName(date: Date, ext: String = "mkv") -> String {
     let dateString = dateFormatter.string(from: date)
@@ -50,27 +49,6 @@ class SampleHandler: RPBroadcastSampleHandler {
     writer?.close()
   }
 
-  func checkIfNewPixelBufferShouldBeRecreate(_ origWidth: Int, _ origHeight: Int) -> Bool {
-    guard let newPixelBuffer = newPixelBufferRef else { return true }
-    let newWidth = CVPixelBufferGetWidth(newPixelBuffer)
-    let newHeight = CVPixelBufferGetHeight(newPixelBuffer)
-    return newWidth != origWidth || newHeight != origHeight
-  }
-
-  func renderToNewPixelBuffer(_ origPixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
-    let width = CVPixelBufferGetWidth(origPixelBuffer)
-    let height = CVPixelBufferGetHeight(origPixelBuffer)
-    if checkIfNewPixelBufferShouldBeRecreate(width, height) {
-      CVPixelBufferCreate(
-        nil, width, height, kCVPixelFormatType_420YpCbCr8BiPlanarFullRange, nil, &newPixelBufferRef)
-    }
-    guard let newPixelBuffer = newPixelBufferRef else { return nil }
-    let ciImage = CIImage(cvPixelBuffer: origPixelBuffer)
-    ciContext.render(ciImage, to: newPixelBuffer)
-    ciContext.clearCaches()
-    return newPixelBuffer
-  }
-
   override func processSampleBuffer(
     _ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType
   ) {
@@ -80,7 +58,7 @@ class SampleHandler: RPBroadcastSampleHandler {
         print("Could not obtain the pixel buffer!")
         return
       }
-      guard let newPixelBuffer = renderToNewPixelBuffer(origPixelBuffer) else {
+      guard let newPixelBuffer = pixelBufferExtractorRef?.extract(origPixelBuffer) else {
         print("Could not render to the pixel buffer!")
         return
       }
