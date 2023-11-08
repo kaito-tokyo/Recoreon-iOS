@@ -4,10 +4,10 @@ struct EncodingRecordedVideoView: View {
   let recordedVideoManipulator: RecordedVideoManipulatorProtocol
   @State var encodingEntry: RecordedVideoEntry
   @State var encodingProgress: Double = 0
-  @State var encodingSuccessfullyFinishedIsPresent: Bool = false
-  @State var encodingUnsuccessfullyFinishedIsPresent: Bool = false
-  @State var copyToSharedDirSuccessfullyFinishedIsPresent: Bool = false
-  @State var copyToSharedDirUnsuccessfullyFinishedIsPresent: Bool = false
+  @State var encodingSuccessfullyPresent: Bool = false
+  @State var encodingUnsuccessfullyPresent: Bool = false
+  @State var copyToSharedDirSuccessfullyPresent: Bool = false
+  @State var copyToSharedDirUnsuccessfullyPresent: Bool = false
 
   var body: some View {
     VStack {
@@ -31,38 +31,43 @@ struct EncodingRecordedVideoView: View {
               })
             encodingProgress = 0
             if isSucceeded {
-              encodingSuccessfullyFinishedIsPresent = true
+              encodingSuccessfullyPresent = true
             } else {
-              encodingUnsuccessfullyFinishedIsPresent = true
+              encodingUnsuccessfullyPresent = true
             }
           }
         } label: {
           Text("Encode")
         }.buttonStyle(.borderedProminent).alert(
-          "Encoding completed!", isPresented: $encodingSuccessfullyFinishedIsPresent,
+          "Encoding completed!", isPresented: $encodingSuccessfullyPresent,
           actions: {
-            Button("OK") { encodingSuccessfullyFinishedIsPresent = false }
+            Button("OK") { encodingSuccessfullyPresent = false }
           }
         ).alert(
-          "Encoding failed!", isPresented: $encodingUnsuccessfullyFinishedIsPresent,
+          "Encoding failed!", isPresented: $encodingUnsuccessfullyPresent,
           actions: {
-            Button("OK") { encodingUnsuccessfullyFinishedIsPresent = false }
+            Button("OK") { encodingUnsuccessfullyPresent = false }
           })
         Button {
-          recordedVideoManipulator.publishRecordedVideo(encodingEntry.url)
+          let isSucceeded = recordedVideoManipulator.publishRecordedVideo(encodingEntry.url)
+          if isSucceeded {
+            copyToSharedDirSuccessfullyPresent = true
+          } else {
+            copyToSharedDirUnsuccessfullyPresent = true
+          }
         } label: {
           Text("Copy")
         }.buttonStyle(.borderedProminent).alert(
           "The original file of this video was successfully copied to the File app!",
-          isPresented: $copyToSharedDirSuccessfullyFinishedIsPresent,
+          isPresented: $copyToSharedDirSuccessfullyPresent,
           actions: {
-            Button("OK") { copyToSharedDirSuccessfullyFinishedIsPresent = false }
+            Button("OK") { copyToSharedDirSuccessfullyPresent = false }
           }
         ).alert(
           "Unable to copy the original file of this video to the File app!",
-          isPresented: $copyToSharedDirUnsuccessfullyFinishedIsPresent,
+          isPresented: $copyToSharedDirUnsuccessfullyPresent,
           actions: {
-            Button("OK") { copyToSharedDirUnsuccessfullyFinishedIsPresent = false }
+            Button("OK") { copyToSharedDirUnsuccessfullyPresent = false }
           })
       }.padding()
       ProgressView(value: encodingProgress).padding()
@@ -78,8 +83,7 @@ struct EncodingRecordedVideoView: View {
     var finishSucessfully = false
 
     func encodeAsync(_ recordedVideoURL: URL, progressHandler: @escaping (Double) -> Void) async
-      -> Bool
-    {
+      -> Bool {
       progressHandler(0.3)
       sleep(1)
       progressHandler(0.5)
