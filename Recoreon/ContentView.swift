@@ -36,8 +36,11 @@ struct ContentView: View {
               } label: {
                 ZStack {
                   if selection.contains(entry.id) {
-                    Image(uiImage: entry.uiImage).resizable().scaledToFit().border(Color.blue, width: 5.0)
-                    Image(systemName: "checkmark.circle.fill").scaleEffect(CGSize(width: 2.0, height: 2.0), anchor: .center).padding()
+                    Image(uiImage: entry.uiImage).resizable().scaledToFit().border(
+                      Color.blue, width: 5.0)
+                    Image(systemName: "checkmark.circle.fill").scaleEffect(
+                      CGSize(width: 2.0, height: 2.0), anchor: .center
+                    ).padding()
                   } else {
                     Image(uiImage: entry.uiImage).resizable().scaledToFit()
                   }
