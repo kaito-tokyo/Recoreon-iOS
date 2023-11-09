@@ -27,7 +27,7 @@ class RecoreonPaths {
   }
 
   func ensureAppGroupDirectoriesExists() {
-    try? fileManager.createDirectory(at: recordsDir, withIntermediateDirectories: true)
+    try? fileManager.createDirectory(at: appGroupRecordsDir, withIntermediateDirectories: true)
   }
 
   func ensureSandboxDirectoriesExists() {
@@ -40,7 +40,7 @@ class RecoreonPaths {
   func listRecordURLs() -> [URL] {
     guard
       let urls = try? fileManager.contentsOfDirectory(
-        at: recordsDir, includingPropertiesForKeys: nil)
+        at: appGroupRecordsDir, includingPropertiesForKeys: nil)
     else {
       return []
     }
