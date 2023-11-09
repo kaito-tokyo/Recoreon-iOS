@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		20FF1DDA098E554EE0860294 /* Pods_RecoreonTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A067756C97349111E0E511E /* Pods_RecoreonTests.framework */; };
 		2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */; };
-		225B7A972AFBC4C8001BA335 /* PixelBufferExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 225B7A962AFBC4C8001BA335 /* PixelBufferExtractor.swift */; };
+		2232A94E2AFD3FEE00330C23 /* MediaWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94B2AFD3FEE00330C23 /* MediaWriter.m */; };
+		2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */; };
 		226A897D2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */; };
 		226A89852AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A89842AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift */; };
 		226A898C2AFB1D0D00EBD2CA /* RecordedVideoManipulatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A898B2AFB1D0D00EBD2CA /* RecordedVideoManipulatorProtocol.swift */; };
@@ -18,7 +19,6 @@
 		226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */; };
 		228B5AAB2AFA32C20016CAF2 /* ThumbnailExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.m */; };
 		228B5AAE2AFA3CDB0016CAF2 /* RecoreonPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */; };
-		228B5AB02AFA49D30016CAF2 /* VideoEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAF2AFA49D30016CAF2 /* VideoEncoder.m */; };
 		22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */; };
 		22C18AE32AF2B08B00C41B49 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */; };
 		22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */; };
@@ -27,7 +27,6 @@
 		22C18AF12AF2B08C00C41B49 /* BroadcastSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AF02AF2B08C00C41B49 /* BroadcastSetupViewController.swift */; };
 		22C18AF52AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 22C18AEC2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		22C18AF82AF2B08C00C41B49 /* RecoreonBroadcastUploadExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		22C18B032AF2B17000C41B49 /* MediaWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C18B022AF2B17000C41B49 /* MediaWriter.m */; };
 		22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CCFA2AF240B30039750A /* RecoreonApp.swift */; };
 		22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CCFC2AF240B30039750A /* ContentView.swift */; };
 		22C3CCFF2AF240B30039750A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22C3CCFE2AF240B30039750A /* Assets.xcassets */; };
@@ -92,7 +91,9 @@
 		1CEEDF33F3DF9E6CF87BA072 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtension/Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; sourceTree = "<group>"; };
 		21494B872F6439D163F2B227 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; sourceTree = "<group>"; };
 		2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonBroadcastPickerRepresentable.swift; sourceTree = "<group>"; };
-		225B7A962AFBC4C8001BA335 /* PixelBufferExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelBufferExtractor.swift; sourceTree = "<group>"; };
+		2232A94B2AFD3FEE00330C23 /* MediaWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaWriter.m; path = RecoreonBroadcastUploadExtension/MediaWriter.m; sourceTree = SOURCE_ROOT; };
+		2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PixelBufferExtractor.swift; path = RecoreonBroadcastUploadExtension/PixelBufferExtractor.swift; sourceTree = SOURCE_ROOT; };
+		2232A94D2AFD3FEE00330C23 /* MediaWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaWriter.h; path = RecoreonBroadcastUploadExtension/MediaWriter.h; sourceTree = SOURCE_ROOT; };
 		226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingRecordedVideoView.swift; sourceTree = "<group>"; };
 		226A89842AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoManipulatorImpl.swift; sourceTree = "<group>"; };
 		226A898B2AFB1D0D00EBD2CA /* RecordedVideoManipulatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoManipulatorProtocol.swift; sourceTree = "<group>"; };
@@ -102,8 +103,6 @@
 		228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThumbnailExtractor.m; sourceTree = "<group>"; };
 		228B5AAC2AFA32D30016CAF2 /* ThumbnailExtractor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThumbnailExtractor.h; sourceTree = "<group>"; };
 		228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonPaths.swift; sourceTree = "<group>"; };
-		228B5AAF2AFA49D30016CAF2 /* VideoEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoEncoder.m; sourceTree = "<group>"; };
-		228B5AB12AFA49E70016CAF2 /* VideoEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoEncoder.h; sourceTree = "<group>"; };
 		22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		22C18AC02AF2AEAA00C41B49 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecoreonBroadcastUploadExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -113,8 +112,6 @@
 		22C18AF02AF2B08C00C41B49 /* BroadcastSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastSetupViewController.swift; sourceTree = "<group>"; };
 		22C18AF22AF2B08C00C41B49 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		22C18B012AF2B17000C41B49 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonBroadcastUploadExtension-Bridging-Header.h"; sourceTree = "<group>"; };
-		22C18B022AF2B17000C41B49 /* MediaWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaWriter.m; sourceTree = "<group>"; };
-		22C18B042AF2B18700C41B49 /* MediaWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MediaWriter.h; sourceTree = "<group>"; };
 		22C18B052AF2C20800C41B49 /* Recoreon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Recoreon.entitlements; sourceTree = "<group>"; };
 		22C18B062AF2C23B00C41B49 /* RecoreonBroadcastUploadExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecoreonBroadcastUploadExtension.entitlements; sourceTree = "<group>"; };
 		22C18B072AF2CE1300C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecoreonBroadcastUploadExtensionSetupUI.entitlements; sourceTree = "<group>"; };
@@ -191,25 +188,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2232A94A2AFD3FAF00330C23 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				2232A94D2AFD3FEE00330C23 /* MediaWriter.h */,
+				2232A94B2AFD3FEE00330C23 /* MediaWriter.m */,
+				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		225B7A942AFB54BD001BA335 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				228B5AAC2AFA32D30016CAF2 /* ThumbnailExtractor.h */,
 				228B5AAA2AFA32C20016CAF2 /* ThumbnailExtractor.m */,
-				228B5AB12AFA49E70016CAF2 /* VideoEncoder.h */,
-				228B5AAF2AFA49D30016CAF2 /* VideoEncoder.m */,
 			);
 			name = Services;
-			sourceTree = "<group>";
-		};
-		225B7A952AFB556B001BA335 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				22C18B042AF2B18700C41B49 /* MediaWriter.h */,
-				22C18B022AF2B17000C41B49 /* MediaWriter.m */,
-				225B7A962AFBC4C8001BA335 /* PixelBufferExtractor.swift */,
-			);
-			path = Services;
 			sourceTree = "<group>";
 		};
 		226A897E2AFB1A7600EBD2CA /* UI */ = {
@@ -267,7 +262,7 @@
 		22C18AE42AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */ = {
 			isa = PBXGroup;
 			children = (
-				225B7A952AFB556B001BA335 /* Services */,
+				2232A94A2AFD3FAF00330C23 /* Services */,
 				22C18AE72AF2B08B00C41B49 /* Info.plist */,
 				22C18B012AF2B17000C41B49 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */,
 				22C18B062AF2C23B00C41B49 /* RecoreonBroadcastUploadExtension.entitlements */,
@@ -751,8 +746,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22C18B032AF2B17000C41B49 /* MediaWriter.m in Sources */,
-				225B7A972AFBC4C8001BA335 /* PixelBufferExtractor.swift in Sources */,
+				2232A94E2AFD3FEE00330C23 /* MediaWriter.m in Sources */,
+				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
 				22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
 			);
@@ -781,7 +776,6 @@
 				2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
 				228B5AAE2AFA3CDB0016CAF2 /* RecoreonPaths.swift in Sources */,
 				228B5AAB2AFA32C20016CAF2 /* ThumbnailExtractor.m in Sources */,
-				228B5AB02AFA49D30016CAF2 /* VideoEncoder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
