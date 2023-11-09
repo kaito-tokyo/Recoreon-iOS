@@ -10,7 +10,7 @@ struct RecorderView: View {
 }
 
 #if DEBUG
-#Preview {
-  RecorderView()
-}
+  #Preview {
+    RecorderView()
+  }
 #endif

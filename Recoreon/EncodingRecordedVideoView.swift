@@ -85,12 +85,12 @@ struct EncodingRecordedVideoView: View {
 }
 
 #if DEBUG
-#Preview {
-  let url = URL(fileURLWithPath: "1.mkv")
-  let uiImage = UIImage(named: "AppIcon")!
-  @State var entry = RecordedVideoEntry(url: url, uiImage: uiImage)
+  #Preview {
+    let url = URL(fileURLWithPath: "1.mkv")
+    let uiImage = UIImage(named: "AppIcon")!
+    @State var entry = RecordedVideoEntry(url: url, uiImage: uiImage)
 
-  return EncodingRecordedVideoView(
-    recordedVideoManipulator: RecordedVideoManipulatorMock(), entry: $entry)
-}
+    return EncodingRecordedVideoView(
+      recordedVideoManipulator: RecordedVideoManipulatorMock(), entry: $entry)
+  }
 #endif

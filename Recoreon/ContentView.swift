@@ -27,7 +27,7 @@ struct ContentView: View {
 }
 
 #if DEBUG
-#Preview {
-  ContentView(recordedVideoManipulator: RecordedVideoManipulatorMock())
-}
+  #Preview {
+    ContentView(recordedVideoManipulator: RecordedVideoManipulatorMock())
+  }
 #endif
