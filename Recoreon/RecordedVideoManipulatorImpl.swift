@@ -100,7 +100,7 @@ class RecordedVideoManipulatorImpl: RecordedVideoManipulatorProtocol {
       "-filter_complex",
       filter,
       "-r",
-      preset.framerate
+      preset.framerate,
     ]
     arguments += getMappingOptions(audioChannelMapping: audioChannelMapping)
     arguments.append(encodedVideoURL.path())

@@ -36,6 +36,6 @@ let kRecoreonLowBitrateFourTimes = EncodingPreset(
     .screenToScreen:
       "[0:0] setpts=PTS/4 [v0]; [0:1] atempo=4 [a0]",
     .screenToMic:
-      "[0:0] setpts=PTS/4 [v0]; [1:0] acopy [a1]"
+      "[0:0] setpts=PTS/4 [v0]; [1:0] acopy [a1]",
   ],
   estimatedDurationFactor: 0.25)
