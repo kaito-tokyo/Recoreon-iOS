@@ -1,6 +1,9 @@
 protocol RecordedVideoManipulatorProtocol {
   func listVideoEntries() -> [RecordedVideoEntry]
-  func encodeAsync(_ recordedVideoURL: URL, progressHandler: @escaping (Double) -> Void) async
-    -> Bool
+  func encode(
+    preset: EncodingPreset,
+    recordedVideoURL: URL,
+    progressHandler: @escaping (Double, Double) -> Void
+  ) async -> URL?
   func publishRecordedVideo(_ recordedVideoURL: URL) -> Bool
 }
