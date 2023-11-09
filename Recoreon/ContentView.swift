@@ -9,7 +9,7 @@ struct ContentView: View {
       RecorderView()
         .tabItem { Image(systemName: "record.circle") }
       RecordedVideoBasicView(recordedVideoManipulator: recordedVideoManipulator)
-        .tabItem { Image(systemName: "rectangle.grid.3x2" ) }
+        .tabItem { Image(systemName: "rectangle.grid.3x2") }
       RecordedVideoAdvancedView()
         .tabItem { Image(systemName: "list.bullet") }
     }
