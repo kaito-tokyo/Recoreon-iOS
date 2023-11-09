@@ -1,16 +1,40 @@
 import ReplayKit
 import SwiftUI
+import AVKit
 
 struct RecordedVideoAdvancedView: View {
+  let recordedVideoManipulator: RecordedVideoManipulator
+
   @Binding var recordedVideoEntries: [RecordedVideoEntry]
+
+  @State var player = AVPlayer()
+  @State var isPresentedPlayer: Bool = false
 
   var body: some View {
     NavigationStack {
       List {
         ForEach(recordedVideoEntries) { entry in
           NavigationLink {
-            Image(uiImage: entry.uiImage).resizable().scaledToFit()
-              .navigationTitle(entry.url.lastPathComponent)
+            Button {
+              let previewURL = RecoreonPaths().encodedVideosDir.appending(path: "a.mp4", directoryHint: .notDirectory)
+              FFmpegKit.execute(withArguments: [
+                "-y",
+                "-i",
+                entry.url.path(),
+                "-c:v",
+                "copy",
+                "-c:a",
+                "copy",
+                previewURL.path()
+              ])
+              player.replaceCurrentItem(with: AVPlayerItem(url: previewURL))
+              isPresentedPlayer = true
+            } label: {
+              ZStack {
+                Image(uiImage: entry.uiImage).resizable().scaledToFit()
+                Image(systemName: "play.fill").font(.system(size: 200))
+              }
+            }
           } label: {
             VStack {
               HStack {
@@ -23,7 +47,17 @@ struct RecordedVideoAdvancedView: View {
                 Spacer()
               }
             }
-          }.buttonStyle(.plain)
+          }.sheet(isPresented: $isPresentedPlayer) {
+            GeometryReader { geometry in
+              VideoPlayer(player: player).onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                  player.play()
+                })
+              }.onDisappear{
+                player.pause()
+              }.frame(height: geometry.size.height)
+            }
+          }
         }
       }
       .navigationTitle("List of recorded videos")
@@ -36,5 +70,5 @@ struct RecordedVideoAdvancedView: View {
   let recordedVideoManipulator = RecordedVideoManipulatorMock()
   @State var recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
 
-  return RecordedVideoAdvancedView(recordedVideoEntries: $recordedVideoEntries)
+  return RecordedVideoAdvancedView(recordedVideoManipulator: RecordedVideoManipulatorMock(), recordedVideoEntries: $recordedVideoEntries)
 }

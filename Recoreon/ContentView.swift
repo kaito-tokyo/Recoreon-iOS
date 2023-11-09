@@ -12,7 +12,7 @@ struct ContentView: View {
         .tabItem { Image(systemName: "record.circle") }
       RecordedVideoBasicView(recordedVideoManipulator: recordedVideoManipulator)
         .tabItem { Image(systemName: "rectangle.grid.3x2") }
-      RecordedVideoAdvancedView(recordedVideoEntries: $recordedVideoEntries)
+      RecordedVideoAdvancedView(recordedVideoManipulator: recordedVideoManipulator, recordedVideoEntries: $recordedVideoEntries)
         .tabItem { Image(systemName: "list.bullet") }
     }.onAppear {
       recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
