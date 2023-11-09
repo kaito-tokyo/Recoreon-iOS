@@ -65,6 +65,7 @@ struct RecordedVideoAdvancedView: View {
   }
 }
 
+#if DEBUG
 #Preview {
   let recordedVideoManipulator = RecordedVideoManipulatorMock()
   @State var recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
@@ -73,3 +74,4 @@ struct RecordedVideoAdvancedView: View {
     recordedVideoManipulator: RecordedVideoManipulatorMock(),
     recordedVideoEntries: $recordedVideoEntries)
 }
+#endif
