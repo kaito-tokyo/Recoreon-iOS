@@ -1,10 +1,11 @@
-import SwiftUI
 import ReplayKit
+import SwiftUI
 
 struct RecoreonBroadcastPickerRepresentable: UIViewRepresentable {
   func getButtonImage(size: Int = 100) -> UIImage? {
     let sizeConfig = UIImage.SymbolConfiguration(pointSize: 100)
-    return UIImage(systemName: "record.circle", withConfiguration: sizeConfig)?.withTintColor(.white, renderingMode: .alwaysOriginal)
+    return UIImage(systemName: "record.circle", withConfiguration: sizeConfig)?.withTintColor(
+      .white, renderingMode: .alwaysOriginal)
   }
 
   func makeUIView(context: Context) -> some UIView {

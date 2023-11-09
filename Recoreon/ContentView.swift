@@ -1,5 +1,5 @@
-import SwiftUI
 import ReplayKit
+import SwiftUI
 
 struct ContentView: View {
   let recordedVideoManipulator: RecordedVideoManipulatorProtocol
