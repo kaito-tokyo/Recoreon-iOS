@@ -255,8 +255,8 @@
 		226A89902AFB30C900EBD2CA /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				226A89912AFB30D900EBD2CA /* RecordedVideoEntry.swift */,
 				226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */,
+				226A89912AFB30D900EBD2CA /* RecordedVideoEntry.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
