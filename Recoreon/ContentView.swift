@@ -1,3 +1,4 @@
+import ReplayKit
 import SwiftUI
 
 struct ContentView: View {
@@ -16,9 +17,13 @@ struct ContentView: View {
 
   let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
 
+  @State var showingBroadcastPicker: Bool = false
+
   var body: some View {
     NavigationStack {
       VStack {
+        RecoreonBroadcastPickerRepresentable().frame(width: 80, height: 80)
+
         List {
           LazyVGrid(columns: columns) {
             ForEach(entries) { entry in
