@@ -11,6 +11,7 @@
 		2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */; };
 		2232A94E2AFD3FEE00330C23 /* MediaWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94B2AFD3FEE00330C23 /* MediaWriter.m */; };
 		2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */; };
+		2232A9512AFD452600330C23 /* RecordedVideoBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9502AFD452600330C23 /* RecordedVideoBasicView.swift */; };
 		226A897D2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */; };
 		226A89852AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A89842AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift */; };
 		226A898C2AFB1D0D00EBD2CA /* RecordedVideoManipulatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A898B2AFB1D0D00EBD2CA /* RecordedVideoManipulatorProtocol.swift */; };
@@ -94,6 +95,7 @@
 		2232A94B2AFD3FEE00330C23 /* MediaWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaWriter.m; path = RecoreonBroadcastUploadExtension/MediaWriter.m; sourceTree = SOURCE_ROOT; };
 		2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PixelBufferExtractor.swift; path = RecoreonBroadcastUploadExtension/PixelBufferExtractor.swift; sourceTree = SOURCE_ROOT; };
 		2232A94D2AFD3FEE00330C23 /* MediaWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaWriter.h; path = RecoreonBroadcastUploadExtension/MediaWriter.h; sourceTree = SOURCE_ROOT; };
+		2232A9502AFD452600330C23 /* RecordedVideoBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoBasicView.swift; sourceTree = "<group>"; };
 		226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingRecordedVideoView.swift; sourceTree = "<group>"; };
 		226A89842AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoManipulatorImpl.swift; sourceTree = "<group>"; };
 		226A898B2AFB1D0D00EBD2CA /* RecordedVideoManipulatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoManipulatorProtocol.swift; sourceTree = "<group>"; };
@@ -214,6 +216,7 @@
 				226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */,
 				22C3CCFA2AF240B30039750A /* RecoreonApp.swift */,
 				2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */,
+				2232A9502AFD452600330C23 /* RecordedVideoBasicView.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -775,6 +778,7 @@
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
 				2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
 				228B5AAE2AFA3CDB0016CAF2 /* RecoreonPaths.swift in Sources */,
+				2232A9512AFD452600330C23 /* RecordedVideoBasicView.swift in Sources */,
 				228B5AAB2AFA32C20016CAF2 /* ThumbnailExtractor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
