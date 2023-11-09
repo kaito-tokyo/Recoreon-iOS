@@ -220,7 +220,7 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
 }
 
 @implementation MediaWriter : NSObject
-- (void)open:(NSString * __nonnull)_filename {
+- (void)open:(NSString *__nonnull)_filename {
   filename = _filename;
 
   avformat_alloc_output_context2(&outputFormatContext, NULL, NULL,
@@ -392,12 +392,12 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
   }
 }
 - (void)writeVideo:(OutputStream *__nonnull)outputStream
-      sampleBuffer:(CMSampleBufferRef __nonnull)sampleBuffer
-       pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer
-          lumaData:(void *__nonnull)lumaData
-        chromaData:(void *__nonnull)chromaData
-   lumaBytesPerRow:(long)lumaBytesPerRow
- chromaBytesPerRow:(long)chromaBytesPerRow {
+         sampleBuffer:(CMSampleBufferRef __nonnull)sampleBuffer
+          pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer
+             lumaData:(void *__nonnull)lumaData
+           chromaData:(void *__nonnull)chromaData
+      lumaBytesPerRow:(long)lumaBytesPerRow
+    chromaBytesPerRow:(long)chromaBytesPerRow {
   AVFrame *frame = outputStream->frame;
   if (av_frame_make_writable(frame) < 0) {
     NSLog(@"Could not make a frame writable!");
@@ -415,8 +415,8 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
 
   copyPlane(frame->data[0], frame->linesize[0], lumaData, lumaBytesPerRow,
             width, height);
-  copyPlane(frame->data[1], frame->linesize[1], chromaData,
-            chromaBytesPerRow, width, height / 2);
+  copyPlane(frame->data[1], frame->linesize[1], chromaData, chromaBytesPerRow,
+            width, height / 2);
   CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
 
   CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
@@ -430,11 +430,11 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
               outputStream->frame, outputStream->tmp_pkt);
 }
 - (void)writeVideoOfScreen:(CMSampleBufferRef __nonnull)sampleBuffer
-       pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer
-          lumaData:(void *__nonnull)lumaData
-        chromaData:(void *__nonnull)chromaData
-   lumaBytesPerRow:(long)lumaBytesPerRow
- chromaBytesPerRow:(long)chromaBytesPerRow {
+               pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer
+                  lumaData:(void *__nonnull)lumaData
+                chromaData:(void *__nonnull)chromaData
+           lumaBytesPerRow:(long)lumaBytesPerRow
+         chromaBytesPerRow:(long)chromaBytesPerRow {
   if (!firstScreenVideoFrameReceived) {
     [self initAllStreams:pixelBuffer];
     _desiredLumaBytesPerRow = screenVideoStream.frame->linesize[0];
@@ -442,14 +442,17 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
     firstScreenVideoFrameReceived = true;
   }
   [self writeVideo:&screenVideoStream
-      sampleBuffer:sampleBuffer
-       pixelBuffer:pixelBuffer
-  lumaData:lumaData chromaData:chromaData lumaBytesPerRow:lumaBytesPerRow chromaBytesPerRow:lumaBytesPerRow];
+           sampleBuffer:sampleBuffer
+            pixelBuffer:pixelBuffer
+               lumaData:lumaData
+             chromaData:chromaData
+        lumaBytesPerRow:lumaBytesPerRow
+      chromaBytesPerRow:lumaBytesPerRow];
   avio_flush(outputFormatContext->pb);
 }
-- (void)writeAudio:(OutputStream * __nonnull)outputStream
+- (void)writeAudio:(OutputStream *__nonnull)outputStream
        sampleBuffer:(CMSampleBufferRef __nonnull)sampleBuffer
-    audioBufferList:(AudioBufferList * __nonnull)audioBufferList
+    audioBufferList:(AudioBufferList *__nonnull)audioBufferList
                 pts:(int64_t)pts {
   AVCodecContext *c = outputStream->enc;
 
@@ -531,7 +534,7 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
               outputStream->tmp_pkt);
 }
 - (void)writeAudioOfScreen:(CMSampleBufferRef __nonnull)sampleBuffer
-           audioBufferList:(AudioBufferList * __nonnull)audioBufferList {
+           audioBufferList:(AudioBufferList *__nonnull)audioBufferList {
   if (!firstScreenVideoFrameReceived) {
     return;
   }
@@ -544,7 +547,7 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
                   pts:pts];
 }
 - (void)writeAudioOfMic:(CMSampleBufferRef __nonnull)sampleBuffer
-        audioBufferList:(AudioBufferList * __nonnull)audioBufferList {
+        audioBufferList:(AudioBufferList *__nonnull)audioBufferList {
   if (!firstScreenVideoFrameReceived) {
     return;
   }

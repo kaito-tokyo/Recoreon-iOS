@@ -1,5 +1,4 @@
 #import "ThumbnailExtractor.h"
-#import "VideoEncoder.h"
 
 #include <ffmpegkit/FFmpegKit.h>
 #include <ffmpegkit/FFprobeKit.h>

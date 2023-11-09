@@ -5,7 +5,6 @@ private let fileManager = FileManager.default
 
 class RecordedVideoManipulatorImpl: RecordedVideoManipulatorProtocol {
   private let thumbnailExtractor = ThumbnailExtractor()
-  private let videoEncoder = VideoEncoder()
 
   private func cropCGImage(_ cgImage: CGImage) -> CGImage? {
     let width = cgImage.width
@@ -33,22 +32,6 @@ class RecordedVideoManipulatorImpl: RecordedVideoManipulatorProtocol {
       guard let cgImage = uiImage.cgImage else { return [] }
       guard let cropped = cropCGImage(cgImage) else { return [] }
       return [RecordedVideoEntry(url: recordedVideoURL, uiImage: UIImage(cgImage: cropped))]
-    }
-  }
-
-  func encodeAsync(_ recordedVideoURL: URL, progressHandler: @escaping (Double) -> Void) async
-    -> Bool
-  {  // swiftlint:disable:this opening_brace
-    paths.ensureAppGroupDirectoriesExists()
-
-    let encodedVideoURL = paths.getEncodedVideoURL(recordedVideoURL, suffix: "-discord")
-    let isSuccessful = await videoEncoder.encode(
-      recordedVideoURL, outputURL: encodedVideoURL, progressHandler: progressHandler)
-    if isSuccessful {
-      UISaveVideoAtPathToSavedPhotosAlbum(encodedVideoURL.path(), nil, nil, nil)
-      return true
-    } else {
-      return false
     }
   }
 
