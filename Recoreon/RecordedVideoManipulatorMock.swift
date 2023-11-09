@@ -1,9 +1,21 @@
-class RecordedVideoManipulatorMock: RecordedVideoManipulatorProtocol {
+class RecordedVideoManipulatorMock: RecordedVideoManipulator {
+  private let dateFormatter = {
+    let formatter = ISO8601DateFormatter()
+    formatter.formatOptions.remove(.withDashSeparatorInDate)
+    formatter.formatOptions.remove(.withColonSeparatorInTime)
+    formatter.formatOptions.remove(.withTimeZone)
+    formatter.timeZone = TimeZone.current
+    return formatter
+  }()
+
   func listVideoEntries() -> [RecordedVideoEntry] {
     let uiImage = UIImage(named: "AppIcon")!
 
     return (0..<30).map {
-      RecordedVideoEntry(url: URL(fileURLWithPath: "\($0).mkv"), uiImage: uiImage)
+      let date = Date(timeIntervalSince1970: TimeInterval($0))
+      let filename = "Recoreon" + dateFormatter.string(from: date) + ".mkv"
+      let path = "/Documents/Records/" + filename
+      return RecordedVideoEntry(url: URL(fileURLWithPath: path), uiImage: uiImage)
     }
   }
 

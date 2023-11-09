@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct EncodingRecordedVideoView: View {
-  let recordedVideoManipulator: RecordedVideoManipulatorProtocol
+  let recordedVideoManipulator: RecordedVideoManipulator
   @Binding var entry: RecordedVideoEntry
 
   @State var encodingProgress: Double = 0

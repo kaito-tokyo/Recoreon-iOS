@@ -2,7 +2,7 @@ import ReplayKit
 import SwiftUI
 
 struct RecordedVideoBasicView: View {
-  let recordedVideoManipulator: RecordedVideoManipulatorProtocol
+  let recordedVideoManipulator: RecordedVideoManipulator
 
   @State var entries: [RecordedVideoEntry] = []
 
