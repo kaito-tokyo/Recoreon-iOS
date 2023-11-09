@@ -3,7 +3,7 @@ import Foundation
 private let paths = RecoreonPaths()
 private let fileManager = FileManager.default
 
-class RecordedVideoManipulatorImpl: RecordedVideoManipulatorProtocol {
+class RecordedVideoManipulatorImpl: RecordedVideoManipulator {
   private let thumbnailExtractor = ThumbnailExtractor()
 
   private func cropCGImage(_ cgImage: CGImage) -> CGImage? {

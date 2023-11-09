@@ -2,7 +2,9 @@ import ReplayKit
 import SwiftUI
 
 struct ContentView: View {
-  let recordedVideoManipulator: RecordedVideoManipulatorProtocol
+  let recordedVideoManipulator: RecordedVideoManipulator
+
+  @State var recordedVideoEntries: [RecordedVideoEntry] = []
 
   var body: some View {
     TabView {
@@ -10,8 +12,10 @@ struct ContentView: View {
         .tabItem { Image(systemName: "record.circle") }
       RecordedVideoBasicView(recordedVideoManipulator: recordedVideoManipulator)
         .tabItem { Image(systemName: "rectangle.grid.3x2") }
-      RecordedVideoAdvancedView()
+      RecordedVideoAdvancedView(recordedVideoEntries: $recordedVideoEntries)
         .tabItem { Image(systemName: "list.bullet") }
+    }.onAppear {
+      recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
     }
   }
 }

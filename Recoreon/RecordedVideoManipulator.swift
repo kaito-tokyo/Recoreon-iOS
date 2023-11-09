@@ -1,4 +1,4 @@
-protocol RecordedVideoManipulatorProtocol {
+protocol RecordedVideoManipulator {
   func listVideoEntries() -> [RecordedVideoEntry]
   func encode(
     preset: EncodingPreset,
