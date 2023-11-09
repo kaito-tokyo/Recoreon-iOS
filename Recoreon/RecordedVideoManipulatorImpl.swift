@@ -99,7 +99,7 @@ class RecordedVideoManipulatorImpl: RecordedVideoManipulatorProtocol {
       preset.audioBitrate,
       "-r",
       preset.framerate,
-      "-shortest"
+      "-shortest",
     ]
     arguments += filter
     arguments += getMappingOptions(audioChannelMapping: audioChannelMapping)
