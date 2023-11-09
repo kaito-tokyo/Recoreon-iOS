@@ -47,8 +47,6 @@ struct RecordedVideoBasicView: View {
                   } else {
                     Image(uiImage: entry.uiImage).resizable().scaledToFit()
                   }
-                }.onChange(of: editMode) {
-                  selection.removeAll()
                 }
               }.buttonStyle(.borderless)
             }
@@ -67,9 +65,7 @@ struct RecordedVideoBasicView: View {
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem {
-          EditButton().onChange(of: editMode) {
-            selection.removeAll()
-          }
+          EditButton()
         }
       }.environment(\.editMode, $editMode)
     }
