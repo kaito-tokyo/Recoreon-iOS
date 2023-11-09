@@ -22,6 +22,7 @@ class RecordedVideoManipulatorImpl: RecordedVideoManipulator {
 
   func listVideoEntries() -> [RecordedVideoEntry] {
     paths.ensureAppGroupDirectoriesExists()
+    paths.ensureSandboxDirectoriesExists()
 
     return paths.listRecordURLs().flatMap { recordedVideoURL -> [RecordedVideoEntry] in
       let thumbnailURL = paths.getThumbnailURL(recordedVideoURL)
