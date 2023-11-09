@@ -8,6 +8,7 @@ class RecoreonPaths {
   let recordsDir: URL
   let libraryDir: URL
   let thumbnailsDir: URL
+  let resampledAudiosDir: URL
   let encodedVideosDir: URL
   let sharedDocumentsDir: URL
   let sharedRecordsDir: URL
@@ -19,6 +20,7 @@ class RecoreonPaths {
     recordsDir = documentsDir.appending(path: "Records", directoryHint: .isDirectory)
     libraryDir = appGroupDir.appending(path: "Library", directoryHint: .isDirectory)
     thumbnailsDir = libraryDir.appending(path: "Thumbnails", directoryHint: .isDirectory)
+    resampledAudiosDir = libraryDir.appending(path: "ResampledAudios", directoryHint: .isDirectory)
     encodedVideosDir = libraryDir.appending(path: "EncodedVideos", directoryHint: .isDirectory)
     sharedDocumentsDir = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
     sharedRecordsDir = sharedDocumentsDir.appending(path: "Records", directoryHint: .isDirectory)
@@ -27,6 +29,7 @@ class RecoreonPaths {
   func ensureAppGroupDirectoriesExists() {
     try? fileManager.createDirectory(at: recordsDir, withIntermediateDirectories: true)
     try? fileManager.createDirectory(at: thumbnailsDir, withIntermediateDirectories: true)
+    try? fileManager.createDirectory(at: resampledAudiosDir, withIntermediateDirectories: true)
     try? fileManager.createDirectory(at: encodedVideosDir, withIntermediateDirectories: true)
   }
 
@@ -50,6 +53,11 @@ class RecoreonPaths {
     let filename = recordedVideoURL.deletingPathExtension().appendingPathExtension(ext)
       .lastPathComponent
     return thumbnailsDir.appending(path: filename, directoryHint: .notDirectory)
+  }
+
+  func getResampledAudioURL(_ recordedVideoURL: URL, suffix: String, ext: String = "m4a") -> URL {
+    let filename = recordedVideoURL.deletingPathExtension().lastPathComponent + "\(suffix).\(ext)"
+    return encodedVideosDir.appending(path: filename, directoryHint: .notDirectory)
   }
 
   func getEncodedVideoURL(_ recordedVideoURL: URL, suffix: String, ext: String = "mp4") -> URL {

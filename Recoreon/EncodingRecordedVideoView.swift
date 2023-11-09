@@ -27,18 +27,23 @@ struct EncodingRecordedVideoView: View {
         Button {
           Task {
             encodingInProgress = true
-            let isSucceeded = await recordedVideoManipulator.encodeAsync(
-              entry.url,
-              progressHandler: {
-                encodingProgress = $0
-              })
+            guard
+              let encodedVideoURL = await recordedVideoManipulator.encode(
+                preset: kRecoreonLowBitrateFourTimes,
+                recordedVideoURL: entry.url,
+                progressHandler: { currentTime, totalTime in
+                  encodingProgress = currentTime / totalTime
+                })
+            else {
+              encodingUnsuccessfullyPresent = true
+              encodingInProgress = false
+              encodingProgress = 0
+              return
+            }
+            print(encodedVideoURL)
             encodingInProgress = false
             encodingProgress = 0
-            if isSucceeded {
-              encodingSuccessfullyPresent = true
-            } else {
-              encodingUnsuccessfullyPresent = true
-            }
+            encodingSuccessfullyPresent = true
           }
         } label: {
           Text("Encode")
