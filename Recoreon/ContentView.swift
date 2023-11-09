@@ -6,11 +6,11 @@ struct ContentView: View {
 
   var body: some View {
     TabView {
-      Text("Record")
+      RecorderView()
         .tabItem { Image(systemName: "record.circle") }
       RecordedVideoBasicView(recordedVideoManipulator: recordedVideoManipulator)
         .tabItem { Image(systemName: "rectangle.grid.3x2" ) }
-      Text("Advenced View")
+      RecordedVideoAdvancedView()
         .tabItem { Image(systemName: "list.bullet") }
     }
   }
