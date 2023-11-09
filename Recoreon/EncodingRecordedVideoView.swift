@@ -40,7 +40,7 @@ struct EncodingRecordedVideoView: View {
               encodingProgress = 0
               return
             }
-            print(encodedVideoURL)
+            UISaveVideoAtPathToSavedPhotosAlbum(encodedVideoURL.path(), nil, nil, nil)
             encodingInProgress = false
             encodingProgress = 0
             encodingSuccessfullyPresent = true
