@@ -238,11 +238,11 @@
 		226A89902AFB30C900EBD2CA /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				226A89842AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift */,
-				226A898E2AFB2EA500EBD2CA /* RecordedVideoManipulatorMock.swift */,
-				226A898B2AFB1D0D00EBD2CA /* RecordedVideoManipulator.swift */,
 				226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */,
 				226A89912AFB30D900EBD2CA /* RecordedVideoEntry.swift */,
+				226A898B2AFB1D0D00EBD2CA /* RecordedVideoManipulator.swift */,
+				226A89842AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift */,
+				226A898E2AFB2EA500EBD2CA /* RecordedVideoManipulatorMock.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -756,9 +756,9 @@
 				2232A9552AFD46ED00330C23 /* RecordedVideoAdvancedView.swift in Sources */,
 				2232A9512AFD452600330C23 /* RecordedVideoBasicView.swift in Sources */,
 				226A89922AFB30D900EBD2CA /* RecordedVideoEntry.swift in Sources */,
+				226A898C2AFB1D0D00EBD2CA /* RecordedVideoManipulator.swift in Sources */,
 				226A89852AFB1B7F00EBD2CA /* RecordedVideoManipulatorImpl.swift in Sources */,
 				226A898F2AFB2EA500EBD2CA /* RecordedVideoManipulatorMock.swift in Sources */,
-				226A898C2AFB1D0D00EBD2CA /* RecordedVideoManipulator.swift in Sources */,
 				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
 				2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
