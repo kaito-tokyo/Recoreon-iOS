@@ -6,4 +6,5 @@ protocol RecordedVideoManipulator {
     progressHandler: @escaping (Double, Double) -> Void
   ) async -> URL?
   func publishRecordedVideo(_ recordedVideoURL: URL) -> Bool
+  func remux(_ recordedVideoURL: URL) async -> URL?
 }

@@ -9,6 +9,7 @@ struct RecordedVideoAdvancedView: View {
 
   @State var player = AVPlayer()
   @State var isPresentedPlayer: Bool = false
+  @State var isPresentedRemuxing: Bool = false
 
   var body: some View {
     NavigationStack {
@@ -16,25 +17,22 @@ struct RecordedVideoAdvancedView: View {
         ForEach(recordedVideoEntries) { entry in
           NavigationLink {
             Button {
-              let previewURL = RecoreonPaths().encodedVideosDir.appending(path: "a.mp4", directoryHint: .notDirectory)
-              FFmpegKit.execute(withArguments: [
-                "-y",
-                "-i",
-                entry.url.path(),
-                "-c:v",
-                "copy",
-                "-c:a",
-                "copy",
-                previewURL.path()
-              ])
-              player.replaceCurrentItem(with: AVPlayerItem(url: previewURL))
-              isPresentedPlayer = true
+              Task {
+                isPresentedRemuxing = true
+                guard let previewURL = await recordedVideoManipulator.remux(entry.url) else { return }
+                player.replaceCurrentItem(with: AVPlayerItem(url: previewURL))
+                isPresentedRemuxing = false
+                isPresentedPlayer = true
+              }
             } label: {
               ZStack {
                 Image(uiImage: entry.uiImage).resizable().scaledToFit()
                 Image(systemName: "play.fill").font(.system(size: 200))
+                if isPresentedRemuxing {
+                  ProgressView().tint(.white).scaleEffect(CGSize(width: 10, height: 10))
+                }
               }
-            }
+            }.disabled(isPresentedRemuxing)
           } label: {
             VStack {
               HStack {
@@ -50,11 +48,10 @@ struct RecordedVideoAdvancedView: View {
           }.sheet(isPresented: $isPresentedPlayer) {
             GeometryReader { geometry in
               VideoPlayer(player: player).onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-                  player.play()
-                })
+                player.play()
               }.onDisappear{
                 player.pause()
+                isPresentedRemuxing = false
               }.frame(height: geometry.size.height)
             }
           }

@@ -9,7 +9,7 @@ class RecordedVideoManipulatorMock: RecordedVideoManipulator {
   }()
 
   func listVideoEntries() -> [RecordedVideoEntry] {
-    let uiImage = UIImage(named: "AppIcon")!
+    let uiImage = UIImage(named: "Thumbnail01")!
 
     return (0..<30).map {
       let date = Date(timeIntervalSince1970: TimeInterval($0))
@@ -60,5 +60,9 @@ class RecordedVideoManipulatorMock: RecordedVideoManipulator {
   func publishRecordedVideo(_ recordedVideoURL: URL) -> Bool {
     finishSucessfully.toggle()
     return finishSucessfully
+  }
+  func remux(_ recordedVideoURL: URL) async -> URL? {
+    sleep(3)
+    return Bundle.main.url(forResource: "Preview01", withExtension: "mp4")
   }
 }
