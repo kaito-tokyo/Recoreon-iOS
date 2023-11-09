@@ -101,6 +101,7 @@ class RecordedVideoManipulatorImpl: RecordedVideoManipulatorProtocol {
       filter,
       "-r",
       preset.framerate,
+      "-shortest",
     ]
     arguments += getMappingOptions(audioChannelMapping: audioChannelMapping)
     arguments.append(encodedVideoURL.path())
