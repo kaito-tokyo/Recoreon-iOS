@@ -4,7 +4,7 @@ import SwiftUI
 struct RecordedVideoBasicView: View {
   let recordedVideoManipulator: RecordedVideoManipulator
 
-  @State var entries: [RecordedVideoEntry] = []
+  @Binding var recordedVideoEntries: [RecordedVideoEntry]
 
   @State var encodingScreenIsPresented: Bool = false
 
@@ -24,7 +24,7 @@ struct RecordedVideoBasicView: View {
       VStack {
         List {
           LazyVGrid(columns: columns) {
-            ForEach(entries) { entry in
+            ForEach(recordedVideoEntries) { entry in
               Button {
                 if editMode.isEditing == true {
                   if selection.contains(entry.id) {
@@ -62,8 +62,6 @@ struct RecordedVideoBasicView: View {
       }.sheet(isPresented: $encodingScreenIsPresented) {
         EncodingRecordedVideoView(
           recordedVideoManipulator: recordedVideoManipulator, entry: $encodingEntry)
-      }.onAppear {
-        entries = recordedVideoManipulator.listVideoEntries()
       }
       .navigationTitle("List of recorded videos")
       .navigationBarTitleDisplayMode(.inline)
@@ -79,5 +77,8 @@ struct RecordedVideoBasicView: View {
 }
 
 #Preview {
-  RecordedVideoBasicView(recordedVideoManipulator: RecordedVideoManipulatorMock())
+  let recordedVideoManipulator = RecordedVideoManipulatorMock()
+  @State var recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
+  return RecordedVideoBasicView(
+    recordedVideoManipulator: recordedVideoManipulator, recordedVideoEntries: $recordedVideoEntries)
 }

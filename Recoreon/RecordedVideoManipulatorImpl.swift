@@ -22,6 +22,7 @@ class RecordedVideoManipulatorImpl: RecordedVideoManipulator {
 
   func listVideoEntries() -> [RecordedVideoEntry] {
     paths.ensureAppGroupDirectoriesExists()
+    paths.ensureSandboxDirectoriesExists()
 
     return paths.listRecordURLs().flatMap { recordedVideoURL -> [RecordedVideoEntry] in
       let thumbnailURL = paths.getThumbnailURL(recordedVideoURL)
@@ -37,7 +38,7 @@ class RecordedVideoManipulatorImpl: RecordedVideoManipulator {
 
   func publishRecordedVideo(_ recordedVideoURL: URL) -> Bool {
     paths.ensureAppGroupDirectoriesExists()
-    paths.ensureSharedDirectoriesExists()
+    paths.ensureSandboxDirectoriesExists()
 
     let sharedRecordedVideoURL = paths.getSharedRecordedVideoURL(recordedVideoURL)
     do {
@@ -154,6 +155,34 @@ class RecordedVideoManipulatorImpl: RecordedVideoManipulator {
       return ["-map", "[v0]", "-map", "[a0]", "-map", "[a1]"]
     default:
       return []
+    }
+  }
+
+  func remux(_ recordedVideoURL: URL) async -> URL? {
+    let previewVideoURL = paths.getPreviewVideoURL(recordedVideoURL)
+    let arguments = [
+      "-i",
+      recordedVideoURL.path(),
+      "-c:v",
+      "copy",
+      "-c:a",
+      "copy",
+      previewVideoURL.path(),
+    ]
+    if fileManager.fileExists(atPath: previewVideoURL.path()) {
+      return previewVideoURL
+    }
+    return await withCheckedContinuation { continuation in
+      FFmpegKit.execute(
+        withArgumentsAsync: arguments,
+        withCompleteCallback: { session in
+          let ret = session?.getReturnCode()
+          if ReturnCode.isSuccess(ret) {
+            continuation.resume(returning: previewVideoURL)
+          } else {
+            continuation.resume(returning: nil)
+          }
+        })
     }
   }
 }

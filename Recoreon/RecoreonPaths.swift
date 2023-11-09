@@ -4,43 +4,45 @@ class RecoreonPaths {
   static let appGroupIdentifier = "group.com.github.umireon.Recoreon"
 
   let appGroupDir: URL
+  let appGroupDocumentsDir: URL
+  let appGroupRecordsDir: URL
+  let libraryDir: URL
+  let previewsDir: URL
+  let thumbnailsDir: URL
+  let encodedVideosDir: URL
   let documentsDir: URL
   let recordsDir: URL
-  let libraryDir: URL
-  let thumbnailsDir: URL
-  let resampledAudiosDir: URL
-  let encodedVideosDir: URL
-  let sharedDocumentsDir: URL
-  let sharedRecordsDir: URL
 
   init() {
     appGroupDir = fileManager.containerURL(
       forSecurityApplicationGroupIdentifier: RecoreonPaths.appGroupIdentifier)!
-    documentsDir = appGroupDir.appending(component: "Documents", directoryHint: .isDirectory)
-    recordsDir = documentsDir.appending(path: "Records", directoryHint: .isDirectory)
-    libraryDir = appGroupDir.appending(path: "Library", directoryHint: .isDirectory)
+    appGroupDocumentsDir = appGroupDir.appending(
+      component: "Documents", directoryHint: .isDirectory)
+    appGroupRecordsDir = appGroupDocumentsDir.appending(
+      path: "Records", directoryHint: .isDirectory)
+    libraryDir = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first!
+    previewsDir = libraryDir.appending(path: "Previews", directoryHint: .isDirectory)
     thumbnailsDir = libraryDir.appending(path: "Thumbnails", directoryHint: .isDirectory)
-    resampledAudiosDir = libraryDir.appending(path: "ResampledAudios", directoryHint: .isDirectory)
     encodedVideosDir = libraryDir.appending(path: "EncodedVideos", directoryHint: .isDirectory)
-    sharedDocumentsDir = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-    sharedRecordsDir = sharedDocumentsDir.appending(path: "Records", directoryHint: .isDirectory)
+    documentsDir = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+    recordsDir = documentsDir.appending(path: "Records", directoryHint: .isDirectory)
   }
 
   func ensureAppGroupDirectoriesExists() {
-    try? fileManager.createDirectory(at: recordsDir, withIntermediateDirectories: true)
-    try? fileManager.createDirectory(at: thumbnailsDir, withIntermediateDirectories: true)
-    try? fileManager.createDirectory(at: resampledAudiosDir, withIntermediateDirectories: true)
-    try? fileManager.createDirectory(at: encodedVideosDir, withIntermediateDirectories: true)
+    try? fileManager.createDirectory(at: appGroupRecordsDir, withIntermediateDirectories: true)
   }
 
-  func ensureSharedDirectoriesExists() {
-    try? fileManager.createDirectory(at: sharedRecordsDir, withIntermediateDirectories: true)
+  func ensureSandboxDirectoriesExists() {
+    try? fileManager.createDirectory(at: recordsDir, withIntermediateDirectories: true)
+    try? fileManager.createDirectory(at: encodedVideosDir, withIntermediateDirectories: true)
+    try? fileManager.createDirectory(at: previewsDir, withIntermediateDirectories: true)
+    try? fileManager.createDirectory(at: thumbnailsDir, withIntermediateDirectories: true)
   }
 
   func listRecordURLs() -> [URL] {
     guard
       let urls = try? fileManager.contentsOfDirectory(
-        at: recordsDir, includingPropertiesForKeys: nil)
+        at: appGroupRecordsDir, includingPropertiesForKeys: nil)
     else {
       return []
     }
@@ -67,6 +69,12 @@ class RecoreonPaths {
 
   func getSharedRecordedVideoURL(_ recordedVideoURL: URL) -> URL {
     let filename = recordedVideoURL.lastPathComponent
-    return sharedRecordsDir.appending(path: filename, directoryHint: .notDirectory)
+    return recordsDir.appending(path: filename, directoryHint: .notDirectory)
+  }
+
+  func getPreviewVideoURL(_ recordedVideoURL: URL, ext: String = "mp4") -> URL {
+    let filename = recordedVideoURL.deletingPathExtension().appendingPathExtension(ext)
+      .lastPathComponent
+    return previewsDir.appending(path: filename, directoryHint: .notDirectory)
   }
 }

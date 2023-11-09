@@ -10,10 +10,16 @@ struct ContentView: View {
     TabView {
       RecorderView()
         .tabItem { Image(systemName: "record.circle") }
-      RecordedVideoBasicView(recordedVideoManipulator: recordedVideoManipulator)
-        .tabItem { Image(systemName: "rectangle.grid.3x2") }
-      RecordedVideoAdvancedView(recordedVideoEntries: $recordedVideoEntries)
-        .tabItem { Image(systemName: "list.bullet") }
+      RecordedVideoBasicView(
+        recordedVideoManipulator: recordedVideoManipulator,
+        recordedVideoEntries: $recordedVideoEntries
+      )
+      .tabItem { Image(systemName: "rectangle.grid.3x2") }
+      RecordedVideoAdvancedView(
+        recordedVideoManipulator: recordedVideoManipulator,
+        recordedVideoEntries: $recordedVideoEntries
+      )
+      .tabItem { Image(systemName: "list.bullet") }
     }.onAppear {
       recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
     }

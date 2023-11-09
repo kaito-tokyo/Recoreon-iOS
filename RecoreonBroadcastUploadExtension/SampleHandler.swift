@@ -32,7 +32,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     paths.ensureAppGroupDirectoriesExists()
 
     writer = MediaWriter()
-    let url = paths.recordsDir.appending(
+    let url = paths.appGroupRecordsDir.appending(
       path: generateFileName(date: Date()), directoryHint: .notDirectory)
     writer?.open(url.path())
   }
