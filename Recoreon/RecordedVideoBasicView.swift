@@ -79,5 +79,6 @@ struct RecordedVideoBasicView: View {
 #Preview {
   let recordedVideoManipulator = RecordedVideoManipulatorMock()
   @State var recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
-  return RecordedVideoBasicView(recordedVideoManipulator: recordedVideoManipulator, recordedVideoEntries: $recordedVideoEntries)
+  return RecordedVideoBasicView(
+    recordedVideoManipulator: recordedVideoManipulator, recordedVideoEntries: $recordedVideoEntries)
 }

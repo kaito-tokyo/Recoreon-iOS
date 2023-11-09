@@ -1,6 +1,6 @@
+import AVKit
 import ReplayKit
 import SwiftUI
-import AVKit
 
 struct RecordedVideoAdvancedView: View {
   let recordedVideoManipulator: RecordedVideoManipulator
@@ -19,7 +19,9 @@ struct RecordedVideoAdvancedView: View {
             Button {
               Task {
                 isPresentedRemuxing = true
-                guard let previewURL = await recordedVideoManipulator.remux(entry.url) else { return }
+                guard let previewURL = await recordedVideoManipulator.remux(entry.url) else {
+                  return
+                }
                 player.replaceCurrentItem(with: AVPlayerItem(url: previewURL))
                 isPresentedRemuxing = false
                 isPresentedPlayer = true
@@ -49,7 +51,7 @@ struct RecordedVideoAdvancedView: View {
             GeometryReader { geometry in
               VideoPlayer(player: player).onAppear {
                 player.play()
-              }.onDisappear{
+              }.onDisappear {
                 player.pause()
                 isPresentedRemuxing = false
               }.frame(height: geometry.size.height)
@@ -67,5 +69,7 @@ struct RecordedVideoAdvancedView: View {
   let recordedVideoManipulator = RecordedVideoManipulatorMock()
   @State var recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
 
-  return RecordedVideoAdvancedView(recordedVideoManipulator: RecordedVideoManipulatorMock(), recordedVideoEntries: $recordedVideoEntries)
+  return RecordedVideoAdvancedView(
+    recordedVideoManipulator: RecordedVideoManipulatorMock(),
+    recordedVideoEntries: $recordedVideoEntries)
 }

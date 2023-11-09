@@ -16,8 +16,10 @@ class RecoreonPaths {
   init() {
     appGroupDir = fileManager.containerURL(
       forSecurityApplicationGroupIdentifier: RecoreonPaths.appGroupIdentifier)!
-    appGroupDocumentsDir = appGroupDir.appending(component: "Documents", directoryHint: .isDirectory)
-    appGroupRecordsDir = appGroupDocumentsDir.appending(path: "Records", directoryHint: .isDirectory)
+    appGroupDocumentsDir = appGroupDir.appending(
+      component: "Documents", directoryHint: .isDirectory)
+    appGroupRecordsDir = appGroupDocumentsDir.appending(
+      path: "Records", directoryHint: .isDirectory)
     libraryDir = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first!
     previewsDir = libraryDir.appending(path: "Previews", directoryHint: .isDirectory)
     thumbnailsDir = libraryDir.appending(path: "Thumbnails", directoryHint: .isDirectory)
@@ -71,7 +73,8 @@ class RecoreonPaths {
   }
 
   func getPreviewVideoURL(_ recordedVideoURL: URL, ext: String = "mp4") -> URL {
-    let filename = recordedVideoURL.deletingPathExtension().appendingPathExtension(ext).lastPathComponent
+    let filename = recordedVideoURL.deletingPathExtension().appendingPathExtension(ext)
+      .lastPathComponent
     return previewsDir.appending(path: filename, directoryHint: .notDirectory)
   }
 }

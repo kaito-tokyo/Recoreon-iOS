@@ -315,9 +315,9 @@
 		22C3CD002AF240B30039750A /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				22C3CD012AF240B30039750A /* Preview Assets.xcassets */,
 				2232A95A2AFD80A200330C23 /* Preview01.mp4 */,
 				226A898E2AFB2EA500EBD2CA /* RecordedVideoManipulatorMock.swift */,
-				22C3CD012AF240B30039750A /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -544,8 +544,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				22C3CCFF2AF240B30039750A /* Assets.xcassets in Resources */,
-				2232A95C2AFD80A200330C23 /* Preview01.mp4 in Resources */,
 				22C3CD022AF240B30039750A /* Preview Assets.xcassets in Resources */,
+				2232A95C2AFD80A200330C23 /* Preview01.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

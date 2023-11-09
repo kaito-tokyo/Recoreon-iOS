@@ -167,20 +167,22 @@ class RecordedVideoManipulatorImpl: RecordedVideoManipulator {
       "copy",
       "-c:a",
       "copy",
-      previewVideoURL.path()
+      previewVideoURL.path(),
     ]
     if fileManager.fileExists(atPath: previewVideoURL.path()) {
       return previewVideoURL
     }
     return await withCheckedContinuation { continuation in
-      FFmpegKit.execute(withArgumentsAsync: arguments, withCompleteCallback: { session in
-        let ret = session?.getReturnCode()
-        if ReturnCode.isSuccess(ret) {
-          continuation.resume(returning: previewVideoURL)
-        } else {
-          continuation.resume(returning: nil)
-        }
-      })
+      FFmpegKit.execute(
+        withArgumentsAsync: arguments,
+        withCompleteCallback: { session in
+          let ret = session?.getReturnCode()
+          if ReturnCode.isSuccess(ret) {
+            continuation.resume(returning: previewVideoURL)
+          } else {
+            continuation.resume(returning: nil)
+          }
+        })
     }
   }
 }
