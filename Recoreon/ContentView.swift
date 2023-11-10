@@ -9,11 +9,11 @@ struct ContentView: View {
     TabView {
       RecorderView()
         .tabItem { Image(systemName: "record.circle") }
-      RecordedVideoBasicView(
-        recordedVideoService: recordedVideoService,
-        recordedVideoEntries: $recordedVideoEntries
-      )
-      .tabItem { Image(systemName: "rectangle.grid.3x2") }
+//      RecordedVideoBasicView(
+//        recordedVideoService: recordedVideoService,
+//        recordedVideoEntries: $recordedVideoEntries
+//      )
+//      .tabItem { Image(systemName: "rectangle.grid.3x2") }
       RecordedVideoAdvancedView(
         recordedVideoService: recordedVideoService,
         recordedVideoEntries: $recordedVideoEntries
