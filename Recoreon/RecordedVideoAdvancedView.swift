@@ -16,7 +16,10 @@ struct RecordedVideoAdvancedView: View {
       List {
         ForEach(recordedVideoEntries) { entry in
           NavigationLink {
-            RecordedVideoAdvancedDetailView(recordedVideoManipulator: recordedVideoManipulator, recordedVideoEntry: entry)
+            RecordedVideoAdvancedDetailView(
+              recordedVideoManipulator: recordedVideoManipulator,
+              recordedVideoEntry: entry
+            )
           } label: {
             VStack {
               HStack {
