@@ -11,7 +11,11 @@ struct AdvancedRecordedVideoListView: View {
     NavigationStack(path: $path) {
       List {
         ForEach(recordedVideoStore.recordedVideoEntries) { entry in
-          NavigationLink(value: entry) {
+          NavigationLink(
+            value: AdvancedRecordedVideoDetailViewRoute(
+              recordedVideoEntry: entry
+            )
+          ) {
             VStack {
               HStack {
                 Text(entry.url.lastPathComponent)
@@ -28,12 +32,12 @@ struct AdvancedRecordedVideoListView: View {
       }
       .navigationTitle("List of recorded videos")
       .navigationBarTitleDisplayMode(.inline)
-      .navigationDestination(for: RecordedVideoEntry.self) { entry in
+      .navigationDestination(for: AdvancedRecordedVideoDetailViewRoute.self) { route in
         AdvancedRecordedVideoDetailView(
           recordedVideoService: recordedVideoService,
           recordedVideoStore: recordedVideoStore,
           path: $path,
-          recordedVideoEntry: entry
+          recordedVideoEntry: route.recordedVideoEntry
         )
       }
     }
