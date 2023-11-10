@@ -6,6 +6,8 @@ struct ContentView: View {
 
   @State var recordedVideoEntries: [RecordedVideoEntry] = []
 
+  @State var recordedVideoURLs: [URL] = []
+
   var body: some View {
     TabView {
       RecorderView()
@@ -17,11 +19,13 @@ struct ContentView: View {
       .tabItem { Image(systemName: "rectangle.grid.3x2") }
       RecordedVideoAdvancedView(
         recordedVideoManipulator: recordedVideoManipulator,
-        recordedVideoEntries: $recordedVideoEntries
+        recordedVideoEntries: $recordedVideoEntries,
+        recordedVideoURLs: $recordedVideoURLs
       )
       .tabItem { Image(systemName: "list.bullet") }
     }.onAppear {
       recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
+      recordedVideoURLs = recordedVideoManipulator.listRecordedVideoURLs()
     }
   }
 }

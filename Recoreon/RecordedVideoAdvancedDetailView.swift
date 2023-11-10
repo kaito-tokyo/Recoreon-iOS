@@ -4,6 +4,7 @@ import SwiftUI
 struct RecordedVideoAdvancedDetailView: View {
   let recordedVideoManipulator: RecordedVideoManipulator
   @State var recordedVideoEntry: RecordedVideoEntry
+  @State var recordedVideoURL: URL
 
   let player = AVPlayer()
 
@@ -63,9 +64,12 @@ struct RecordedVideoAdvancedDetailView: View {
   #Preview {
     let recordedVideoManipulator = RecordedVideoManipulatorMock()
     let recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
+    let recordedVideoURLs = recordedVideoManipulator.listRecordedVideoURLs()
     @State var recordedVideoEntry = recordedVideoEntries.first!
+    @State var recordedVideoURL = recordedVideoURLs.first!
 
     return RecordedVideoAdvancedDetailView(
-      recordedVideoManipulator: recordedVideoManipulator, recordedVideoEntry: recordedVideoEntry)
+      recordedVideoManipulator: recordedVideoManipulator, recordedVideoEntry: recordedVideoEntry,
+      recordedVideoURL: recordedVideoURL)
   }
 #endif

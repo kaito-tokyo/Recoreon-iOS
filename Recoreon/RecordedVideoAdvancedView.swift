@@ -6,6 +6,7 @@ struct RecordedVideoAdvancedView: View {
   let recordedVideoManipulator: RecordedVideoManipulator
 
   @Binding var recordedVideoEntries: [RecordedVideoEntry]
+  @Binding var recordedVideoURLs: [URL]
 
   @State var player = AVPlayer()
   @State var isPresentedPlayer: Bool = false
@@ -14,16 +15,19 @@ struct RecordedVideoAdvancedView: View {
   var body: some View {
     NavigationStack {
       List {
-        ForEach(recordedVideoEntries) { entry in
+        ForEach(recordedVideoURLs, id: \.lastPathComponent) { url in
           NavigationLink {
             RecordedVideoAdvancedDetailView(
               recordedVideoManipulator: recordedVideoManipulator,
-              recordedVideoEntry: entry
+              recordedVideoEntry: RecordedVideoEntry(
+                url: url,
+                uiImage: UIImage()
+              ), recordedVideoURL: url
             )
           } label: {
             VStack {
               HStack {
-                Text(entry.url.lastPathComponent)
+                Text(url.lastPathComponent)
                 Spacer()
               }
               HStack {
@@ -45,9 +49,10 @@ struct RecordedVideoAdvancedView: View {
   #Preview {
     let recordedVideoManipulator = RecordedVideoManipulatorMock()
     @State var recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
+    @State var recordedVideoURLs = recordedVideoManipulator.listRecordedVideoURLs()
 
     return RecordedVideoAdvancedView(
       recordedVideoManipulator: RecordedVideoManipulatorMock(),
-      recordedVideoEntries: $recordedVideoEntries)
+      recordedVideoEntries: $recordedVideoEntries, recordedVideoURLs: $recordedVideoURLs)
   }
 #endif
