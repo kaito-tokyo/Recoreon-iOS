@@ -1,4 +1,4 @@
-class RecordedVideoManipulatorMock: RecordedVideoManipulator {
+class RecordedVideoServiceMock: RecordedVideoService {
   private let dateFormatter = {
     let formatter = ISO8601DateFormatter()
     formatter.formatOptions.remove(.withDashSeparatorInDate)
@@ -8,21 +8,25 @@ class RecordedVideoManipulatorMock: RecordedVideoManipulator {
     return formatter
   }()
 
+  override func listRecordedVideoEntries() -> [RecordedVideoEntry] {
+    return [
+      RecordedVideoEntry(url: Bundle.main.url(forResource: "Record01", withExtension: "mkv")!)
+    ]
+  }
+
+  override func getThumbnailImage(_ recordedVideoURL: URL) -> UIImage {
+    let filenameWithoutExt = recordedVideoURL.deletingPathExtension().lastPathComponent
+    let thumbnailName = filenameWithoutExt.replacingOccurrences(of: "Record", with: "Thumbnail")
+    return UIImage(named: thumbnailName)!
+  }
+
+  override func generateThumbnail(_ recordedVideoURL: URL) async {
+  }
+
   override func listRecordedVideoURLs() -> [URL] {
     return [
       Bundle.main.url(forResource: "Record01", withExtension: "mkv")!
     ]
-  }
-
-  override func listVideoEntries() -> [RecordedVideoEntry] {
-    let uiImage = UIImage(named: "Thumbnail01")!
-
-    return (0..<30).map {
-      let date = Date(timeIntervalSince1970: TimeInterval($0))
-      let filename = "Recoreon" + dateFormatter.string(from: date) + ".mkv"
-      let path = "/Documents/Records/" + filename
-      return RecordedVideoEntry(url: URL(fileURLWithPath: path), uiImage: uiImage)
-    }
   }
 
   var finishSucessfully = false

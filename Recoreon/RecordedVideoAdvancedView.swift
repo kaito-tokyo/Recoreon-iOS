@@ -3,31 +3,23 @@ import ReplayKit
 import SwiftUI
 
 struct RecordedVideoAdvancedView: View {
-  let recordedVideoManipulator: RecordedVideoManipulator
+  let recordedVideoService: RecordedVideoService
 
   @Binding var recordedVideoEntries: [RecordedVideoEntry]
-  @Binding var recordedVideoURLs: [URL]
-
-  @State var player = AVPlayer()
-  @State var isPresentedPlayer: Bool = false
-  @State var isPresentedRemuxing: Bool = false
 
   var body: some View {
     NavigationStack {
       List {
-        ForEach(recordedVideoURLs, id: \.lastPathComponent) { url in
+        ForEach(recordedVideoEntries) { entry in
           NavigationLink {
             RecordedVideoAdvancedDetailView(
-              recordedVideoManipulator: recordedVideoManipulator,
-              recordedVideoEntry: RecordedVideoEntry(
-                url: url,
-                uiImage: UIImage()
-              ), recordedVideoURL: url
+              recordedVideoService: recordedVideoService,
+              recordedVideoEntry: entry
             )
           } label: {
             VStack {
               HStack {
-                Text(url.lastPathComponent)
+                Text(entry.url.lastPathComponent)
                 Spacer()
               }
               HStack {
@@ -47,12 +39,12 @@ struct RecordedVideoAdvancedView: View {
 
 #if DEBUG
   #Preview {
-    let recordedVideoManipulator = RecordedVideoManipulatorMock()
-    @State var recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
-    @State var recordedVideoURLs = recordedVideoManipulator.listRecordedVideoURLs()
+    let service = RecordedVideoServiceMock()
+    @State var entries = service.listRecordedVideoEntries()
 
     return RecordedVideoAdvancedView(
-      recordedVideoManipulator: RecordedVideoManipulatorMock(),
-      recordedVideoEntries: $recordedVideoEntries, recordedVideoURLs: $recordedVideoURLs)
+      recordedVideoService: service,
+      recordedVideoEntries: $entries
+    )
   }
 #endif

@@ -1,10 +1,14 @@
 import AVKit
 import SwiftUI
 
+private func getThumbnailUnavailableImage() -> UIImage {
+  let config = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 200))
+  return UIImage(systemName: "xmark.circle", withConfiguration: config)!
+}
+
 struct RecordedVideoAdvancedDetailView: View {
-  let recordedVideoManipulator: RecordedVideoManipulator
+  let recordedVideoService: RecordedVideoService
   @State var recordedVideoEntry: RecordedVideoEntry
-  @State var recordedVideoURL: URL
 
   let player = AVPlayer()
 
@@ -12,11 +16,13 @@ struct RecordedVideoAdvancedDetailView: View {
   @State var isRemuxing: Bool = false
   @State var isRemuxingFailed: Bool = false
 
+  @State var thumbnailImage: UIImage = getThumbnailUnavailableImage()
+
   var body: some View {
     Button {
       Task {
         isRemuxing = true
-        guard let previewURL = await recordedVideoManipulator.remux(recordedVideoEntry.url) else {
+        guard let previewURL = await recordedVideoService.remux(recordedVideoEntry.url) else {
           isRemuxingFailed = true
           isRemuxing = false
           return
@@ -27,12 +33,28 @@ struct RecordedVideoAdvancedDetailView: View {
       }
     } label: {
       ZStack {
-        Image(uiImage: recordedVideoEntry.uiImage).resizable().scaledToFit()
+        Image(
+          uiImage: thumbnailImage
+        ).resizable().scaledToFit()
         Image(systemName: "play.fill").font(.system(size: 200))
         if isRemuxing {
           ProgressView()
             .tint(.white)
             .scaleEffect(CGSize(width: 10, height: 10))
+        }
+      }.onAppear {
+        Task {
+          var imageRef = recordedVideoService.getThumbnailImage(recordedVideoEntry.url)
+          if imageRef == nil {
+            await recordedVideoService.generateThumbnail(recordedVideoEntry.url)
+            imageRef = recordedVideoService.getThumbnailImage(recordedVideoEntry.url)
+          }
+          if let image = imageRef {
+            thumbnailImage = image
+          } else {
+            let config = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 200))
+            thumbnailImage = getThumbnailUnavailableImage()
+          }
         }
       }
     }.disabled(isRemuxing)
@@ -61,15 +83,14 @@ struct RecordedVideoAdvancedDetailView: View {
 }
 
 #if DEBUG
-  #Preview {
-    let recordedVideoManipulator = RecordedVideoManipulatorMock()
-    let recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
-    let recordedVideoURLs = recordedVideoManipulator.listRecordedVideoURLs()
-    @State var recordedVideoEntry = recordedVideoEntries.first!
-    @State var recordedVideoURL = recordedVideoURLs.first!
+#Preview {
+  let service = RecordedVideoServiceMock()
+  let entries = service.listRecordedVideoEntries()
+  @State var selectedEntry = entries.first!
 
-    return RecordedVideoAdvancedDetailView(
-      recordedVideoManipulator: recordedVideoManipulator, recordedVideoEntry: recordedVideoEntry,
-      recordedVideoURL: recordedVideoURL)
-  }
+  return RecordedVideoAdvancedDetailView(
+    recordedVideoService: service,
+    recordedVideoEntry: selectedEntry
+  )
+}
 #endif

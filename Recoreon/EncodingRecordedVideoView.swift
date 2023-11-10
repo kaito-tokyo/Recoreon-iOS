@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct EncodingRecordedVideoView: View {
-  let recordedVideoManipulator: RecordedVideoManipulator
-  @Binding var entry: RecordedVideoEntry
+  let recordedVideoService: RecordedVideoService
+  @State var entry: RecordedVideoEntry
 
   @State var encodingProgress: Double = 0
   @State var encodingInProgress: Bool = false
@@ -15,11 +15,11 @@ struct EncodingRecordedVideoView: View {
     VStack {
       if encodingProgress == 0.0 {
         ZStack {
-          Image(uiImage: entry.uiImage).resizable().scaledToFit()
+          Image(uiImage: UIImage()).resizable().scaledToFit()
         }.padding()
       } else {
         ZStack {
-          Image(uiImage: entry.uiImage).resizable().scaledToFit().brightness(-0.3)
+          Image(uiImage: UIImage()).resizable().scaledToFit().brightness(-0.3)
           ProgressView().scaleEffect(x: 5, y: 5, anchor: .center)
         }.padding()
       }
@@ -28,7 +28,7 @@ struct EncodingRecordedVideoView: View {
           Task {
             encodingInProgress = true
             guard
-              let encodedVideoURL = await recordedVideoManipulator.encode(
+              let encodedVideoURL = await recordedVideoService.encode(
                 preset: kRecoreonLowBitrateFourTimes,
                 recordedVideoURL: entry.url,
                 progressHandler: { currentTime, totalTime in
@@ -58,7 +58,7 @@ struct EncodingRecordedVideoView: View {
             Button("OK") { encodingUnsuccessfullyPresent = false }
           })
         Button {
-          let isSucceeded = recordedVideoManipulator.publishRecordedVideo(entry.url)
+          let isSucceeded = recordedVideoService.publishRecordedVideo(entry.url)
           if isSucceeded {
             copyToSharedDirSuccessfullyPresent = true
           } else {
@@ -86,11 +86,13 @@ struct EncodingRecordedVideoView: View {
 
 #if DEBUG
   #Preview {
-    let url = URL(fileURLWithPath: "1.mkv")
-    let uiImage = UIImage(named: "AppIcon")!
-    @State var entry = RecordedVideoEntry(url: url, uiImage: uiImage)
+    let service = RecordedVideoServiceMock()
+    let entries = service.listRecordedVideoEntries()
+    let entry = entries.first!
 
     return EncodingRecordedVideoView(
-      recordedVideoManipulator: RecordedVideoManipulatorMock(), entry: $entry)
+      recordedVideoService: service,
+      entry: entry
+    )
   }
 #endif

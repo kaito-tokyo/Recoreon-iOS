@@ -3,7 +3,7 @@ import Foundation
 private let paths = RecoreonPaths()
 private let fileManager = FileManager.default
 
-class RecordedVideoManipulator {
+class RecordedVideoService {
   private let thumbnailExtractor = ThumbnailExtractor()
 
   private func cropCGImage(_ cgImage: CGImage) -> CGImage? {
@@ -20,26 +20,48 @@ class RecordedVideoManipulator {
     }
   }
 
+  func listRecordedVideoEntries() -> [RecordedVideoEntry] {
+    paths.ensureAppGroupDirectoriesExists()
+    paths.ensureSandboxDirectoriesExists()
+    
+    return paths.listRecordURLs().map { url in
+      RecordedVideoEntry(
+        url: url
+      )
+    }
+  }
+
+  func getThumbnailImage(_ recordedVideoURL: URL) -> UIImage? {
+    let thumbnailURL = paths.getThumbnailURL(recordedVideoURL)
+    return UIImage(contentsOfFile: thumbnailURL.path())
+  }
+
+  func generateThumbnail(_ recordedVideoURL: URL) async {
+    let thumbnailURL = paths.getThumbnailURL(recordedVideoURL)
+    let arguments = [
+      "-y",
+      "-i",
+      recordedVideoURL.path(),
+      "-vf",
+      "thumbnail",
+      "-frames:v",
+      "1",
+      thumbnailURL.path()
+    ]
+    return await withCheckedContinuation { continuation in
+      FFmpegKit.execute(
+        withArgumentsAsync: arguments,
+        withCompleteCallback: { session in
+          continuation.resume()
+        }
+      )
+    }
+  }
+
   func listRecordedVideoURLs() -> [URL] {
     paths.ensureAppGroupDirectoriesExists()
     paths.ensureSandboxDirectoriesExists()
     return paths.listRecordURLs()
-  }
-
-  func listVideoEntries() -> [RecordedVideoEntry] {
-    paths.ensureAppGroupDirectoriesExists()
-    paths.ensureSandboxDirectoriesExists()
-
-    return paths.listRecordURLs().flatMap { recordedVideoURL -> [RecordedVideoEntry] in
-      let thumbnailURL = paths.getThumbnailURL(recordedVideoURL)
-      if !fileManager.fileExists(atPath: thumbnailURL.path()) {
-        thumbnailExtractor.extract(recordedVideoURL, thumbnailURL: thumbnailURL)
-      }
-      guard let uiImage = UIImage(contentsOfFile: thumbnailURL.path()) else { return [] }
-      guard let cgImage = uiImage.cgImage else { return [] }
-      guard let cropped = cropCGImage(cgImage) else { return [] }
-      return [RecordedVideoEntry(url: recordedVideoURL, uiImage: UIImage(cgImage: cropped))]
-    }
   }
 
   func publishRecordedVideo(_ recordedVideoURL: URL) -> Bool {
