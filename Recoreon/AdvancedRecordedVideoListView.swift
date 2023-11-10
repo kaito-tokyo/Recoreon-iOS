@@ -4,13 +4,13 @@ import SwiftUI
 
 struct AdvancedRecordedVideoListView: View {
   let recordedVideoService: RecordedVideoService
-  let recordedVideoEntries: [RecordedVideoEntry]
+  @ObservedObject var recordedVideoStore: RecordedVideoStore
   @Binding var path: NavigationPath
 
   var body: some View {
     NavigationStack(path: $path) {
       List {
-        ForEach(recordedVideoEntries) { entry in
+        ForEach(recordedVideoStore.recordedVideoEntries) { entry in
           NavigationLink(value: entry) {
             VStack {
               HStack {
@@ -31,6 +31,7 @@ struct AdvancedRecordedVideoListView: View {
       .navigationDestination(for: RecordedVideoEntry.self) { entry in
         AdvancedRecordedVideoDetailView(
           recordedVideoService: recordedVideoService,
+          recordedVideoStore: recordedVideoStore,
           path: $path,
           recordedVideoEntry: entry
         )
@@ -44,11 +45,12 @@ struct AdvancedRecordedVideoListView: View {
     let service = RecordedVideoServiceMock()
     @State var entries = service.listRecordedVideoEntries()
     @State var path = NavigationPath()
+    @StateObject var store = RecordedVideoStore(recordedVideoService: service)
 
     return NavigationStack {
       AdvancedRecordedVideoListView(
         recordedVideoService: service,
-        recordedVideoEntries: entries,
+        recordedVideoStore: store,
         path: $path
       )
     }

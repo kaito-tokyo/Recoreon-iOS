@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AdvancedRecordedVideoView: View {
   let recordedVideoService: RecordedVideoService
-  let recordedVideoEntries: [RecordedVideoEntry]
+  @ObservedObject var recordedVideoStore: RecordedVideoStore
 
   @State var path = NavigationPath()
 
@@ -10,7 +10,7 @@ struct AdvancedRecordedVideoView: View {
     NavigationStack(path: $path) {
       AdvancedRecordedVideoListView(
         recordedVideoService: recordedVideoService,
-        recordedVideoEntries: recordedVideoEntries,
+        recordedVideoStore: recordedVideoStore,
         path: $path
       )
     }

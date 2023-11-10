@@ -14,7 +14,7 @@ struct RecoreonApp: App {
       let service = RecordedVideoService()
       ContentView(
         recordedVideoService: service,
-        recordedVideoEntries: service.listRecordedVideoEntries()
+        recordedVideoStore: RecordedVideoStore(recordedVideoService: service)
       )
     }
   }
