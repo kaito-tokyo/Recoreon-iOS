@@ -190,4 +190,10 @@ struct EncodingPreset: Hashable {
         ],
     ],
     estimatedDurationFactor: 0.25)
+
+  static let allPresets: [EncodingPreset] = [
+    .lowQuality,
+    .twoTimeSpeedLowQuality,
+    .fourTimeSpeedLowQuality,
+  ]
 }

@@ -26,7 +26,8 @@ class RecordedVideoService {
 
     return paths.listRecordURLs().map { url in
       RecordedVideoEntry(
-        url: url
+        url: url,
+        encodedVideoCollection: getEncodedVideoCollection(url)
       )
     }
   }
@@ -228,5 +229,22 @@ class RecordedVideoService {
     if fileManager.fileExists(atPath: url.path()) {
       try? fileManager.removeItem(at: url)
     }
+  }
+
+  private func getEncodedVideoCollection(_ recordedVideoURL: URL) -> EncodedVideoCollection {
+    let pairs = EncodingPreset.allPresets.flatMap { preset in
+      guard
+        let url = getEncodedVideoURL(
+          recordedVideoURL: recordedVideoURL,
+          encodingPreset: preset
+        )
+      else {
+        return [(EncodingPreset, URL)]()
+      }
+      return [(preset, url)]
+    }
+    return EncodedVideoCollection(
+      encodedVideoURLs: Dictionary(uniqueKeysWithValues: pairs)
+    )
   }
 }

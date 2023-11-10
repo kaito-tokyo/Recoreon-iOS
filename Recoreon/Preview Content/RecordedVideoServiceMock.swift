@@ -10,7 +10,12 @@ class RecordedVideoServiceMock: RecordedVideoService {
 
   override func listRecordedVideoEntries() -> [RecordedVideoEntry] {
     return [
-      RecordedVideoEntry(url: Bundle.main.url(forResource: "Record01", withExtension: "mkv")!)
+      RecordedVideoEntry(
+        url: Bundle.main.url(forResource: "Record01", withExtension: "mkv")!,
+        encodedVideoCollection: EncodedVideoCollection(encodedVideoURLs: [
+          .fourTimeSpeedLowQuality: Bundle.main.url(forResource: "Preview01", withExtension: "mp4")!
+        ])
+      )
     ]
   }
 

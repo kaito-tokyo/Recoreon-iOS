@@ -14,9 +14,9 @@ struct ContentView: View {
       //        recordedVideoEntries: $recordedVideoEntries
       //      )
       //      .tabItem { Image(systemName: "rectangle.grid.3x2") }
-      AdvancedRecordedVideoListView(
+      AdvancedRecordedVideoView(
         recordedVideoService: recordedVideoService,
-        recordedVideoEntries: $recordedVideoEntries
+        recordedVideoEntries: recordedVideoEntries
       )
       .tabItem { Image(systemName: "list.bullet") }
     }.onAppear {
