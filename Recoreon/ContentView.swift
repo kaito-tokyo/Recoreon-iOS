@@ -14,7 +14,7 @@ struct ContentView: View {
       //        recordedVideoEntries: $recordedVideoEntries
       //      )
       //      .tabItem { Image(systemName: "rectangle.grid.3x2") }
-      RecordedVideoAdvancedView(
+      AdvancedRecordedVideoListView(
         recordedVideoService: recordedVideoService,
         recordedVideoEntries: $recordedVideoEntries
       )

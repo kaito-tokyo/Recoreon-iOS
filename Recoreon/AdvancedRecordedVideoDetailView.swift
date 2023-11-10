@@ -6,7 +6,7 @@ private func getThumbnailUnavailableImage() -> UIImage {
   return UIImage(systemName: "xmark.circle", withConfiguration: config)!
 }
 
-struct RecordedVideoAdvancedDetailView: View {
+struct AdvancedRecordedVideoDetailView: View {
   let recordedVideoService: RecordedVideoService
   @State var recordedVideoEntry: RecordedVideoEntry
 
@@ -107,7 +107,7 @@ struct RecordedVideoAdvancedDetailView: View {
     let entries = service.listRecordedVideoEntries()
     @State var selectedEntry = entries.first!
 
-    return RecordedVideoAdvancedDetailView(
+    return AdvancedRecordedVideoDetailView(
       recordedVideoService: service,
       recordedVideoEntry: selectedEntry
     )
