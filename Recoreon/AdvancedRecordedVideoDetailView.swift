@@ -62,7 +62,6 @@ struct AdvancedRecordedVideoDetailView: View {
             if let image = imageRef {
               thumbnailImage = image
             } else {
-              let config = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 200))
               thumbnailImage = getThumbnailUnavailableImage()
             }
           }
