@@ -2,7 +2,7 @@ import AVKit
 import ReplayKit
 import SwiftUI
 
-struct RecordedVideoAdvancedView: View {
+struct AdvancedRecordedVideoListView: View {
   let recordedVideoService: RecordedVideoService
 
   @Binding var recordedVideoEntries: [RecordedVideoEntry]
@@ -12,7 +12,7 @@ struct RecordedVideoAdvancedView: View {
       List {
         ForEach(recordedVideoEntries) { entry in
           NavigationLink {
-            RecordedVideoAdvancedDetailView(
+            AdvancedRecordedVideoDetailView(
               recordedVideoService: recordedVideoService,
               recordedVideoEntry: entry
             )
@@ -42,7 +42,7 @@ struct RecordedVideoAdvancedView: View {
     let service = RecordedVideoServiceMock()
     @State var entries = service.listRecordedVideoEntries()
 
-    return RecordedVideoAdvancedView(
+    return AdvancedRecordedVideoListView(
       recordedVideoService: service,
       recordedVideoEntries: $entries
     )
