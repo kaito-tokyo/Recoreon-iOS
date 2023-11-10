@@ -254,7 +254,8 @@ class RecordedVideoService {
 
   func removeEncodedVideos(recordedVideoEntry: RecordedVideoEntry) {
     for preset in EncodingPreset.allPresets {
-      let url = generateEncodedVideoURL(recordedVideoURL: recordedVideoEntry.url, encodingPreset: preset)
+      let url = generateEncodedVideoURL(
+        recordedVideoURL: recordedVideoEntry.url, encodingPreset: preset)
       try? fileManager.removeItem(at: url)
     }
   }
