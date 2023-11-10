@@ -198,16 +198,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2232A94A2AFD3FAF00330C23 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				2232A94D2AFD3FEE00330C23 /* MediaWriter.h */,
-				2232A94B2AFD3FEE00330C23 /* MediaWriter.m */,
-				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
 		225B7A942AFB54BD001BA335 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -250,10 +240,20 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
+		22966A252AFE47110080324D /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				2232A94D2AFD3FEE00330C23 /* MediaWriter.h */,
+				2232A94B2AFD3FEE00330C23 /* MediaWriter.m */,
+				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
 		22C18AE42AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */ = {
 			isa = PBXGroup;
 			children = (
-				2232A94A2AFD3FAF00330C23 /* Services */,
+				22966A252AFE47110080324D /* Services */,
 				22C18AE72AF2B08B00C41B49 /* Info.plist */,
 				22C18B012AF2B17000C41B49 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */,
 				22C18B062AF2C23B00C41B49 /* RecoreonBroadcastUploadExtension.entitlements */,
