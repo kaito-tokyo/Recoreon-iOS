@@ -33,10 +33,9 @@ class RecordedVideoServiceMock: RecordedVideoService {
 
   override func encode(
     preset: EncodingPreset,
-    recordedVideoURL: URL, progressHandler: @escaping (Double, Double) -> Void
+    recordedVideoURL: URL,
+    progressHandler: @escaping (Double, Double) -> Void
   ) async -> URL? {
-    progressHandler(0.3, 1.0)
-    sleep(1)
     progressHandler(0.3, 1.0)
     sleep(1)
     progressHandler(0.5, 1.0)
@@ -59,5 +58,13 @@ class RecordedVideoServiceMock: RecordedVideoService {
   override func remux(_ recordedVideoURL: URL) async -> URL? {
     sleep(3)
     return Bundle.main.url(forResource: "Preview01", withExtension: "mp4")
+  }
+
+  override func getEncodedVideoURL(recordedVideoURL: URL, encodingPreset: EncodingPreset) -> URL? {
+    if encodingPreset == .fourTimeSpeedLowQuality {
+      return Bundle.main.url(forResource: "Preview01", withExtension: "mp4")
+    } else {
+      return nil
+    }
   }
 }
