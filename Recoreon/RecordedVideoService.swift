@@ -23,7 +23,7 @@ class RecordedVideoService {
   func listRecordedVideoEntries() -> [RecordedVideoEntry] {
     paths.ensureAppGroupDirectoriesExists()
     paths.ensureSandboxDirectoriesExists()
-    
+
     return paths.listRecordURLs().map { url in
       RecordedVideoEntry(
         url: url
@@ -46,7 +46,7 @@ class RecordedVideoService {
       "thumbnail",
       "-frames:v",
       "1",
-      thumbnailURL.path()
+      thumbnailURL.path(),
     ]
     return await withCheckedContinuation { continuation in
       FFmpegKit.execute(

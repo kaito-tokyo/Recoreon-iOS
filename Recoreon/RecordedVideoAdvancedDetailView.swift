@@ -42,7 +42,8 @@ struct RecordedVideoAdvancedDetailView: View {
             .tint(.white)
             .scaleEffect(CGSize(width: 10, height: 10))
         }
-      }.onAppear {
+      }
+      .onAppear {
         Task {
           var imageRef = recordedVideoService.getThumbnailImage(recordedVideoEntry.url)
           if imageRef == nil {
@@ -57,40 +58,41 @@ struct RecordedVideoAdvancedDetailView: View {
           }
         }
       }
-    }.disabled(isRemuxing)
-      .toolbar {
-        ToolbarItem(placement: .bottomBar) {
-          Button {
+    }
+    .disabled(isRemuxing)
+    .toolbar {
+      ToolbarItem(placement: .bottomBar) {
+        Button {
 
-          } label: {
-            Text("aaa")
+        } label: {
+          Text("aaa")
+        }
+      }
+    }
+    .sheet(isPresented: $isVideoPlayerPresented) {
+      GeometryReader { geometry in
+        VideoPlayer(player: player)
+          .onAppear {
+            player.play()
           }
-        }
+          .onDisappear {
+            player.pause()
+          }
+          .frame(height: geometry.size.height)
       }
-      .sheet(isPresented: $isVideoPlayerPresented) {
-        GeometryReader { geometry in
-          VideoPlayer(player: player)
-            .onAppear {
-              player.play()
-            }
-            .onDisappear {
-              player.pause()
-            }
-            .frame(height: geometry.size.height)
-        }
-      }
+    }
   }
 }
 
 #if DEBUG
-#Preview {
-  let service = RecordedVideoServiceMock()
-  let entries = service.listRecordedVideoEntries()
-  @State var selectedEntry = entries.first!
+  #Preview {
+    let service = RecordedVideoServiceMock()
+    let entries = service.listRecordedVideoEntries()
+    @State var selectedEntry = entries.first!
 
-  return RecordedVideoAdvancedDetailView(
-    recordedVideoService: service,
-    recordedVideoEntry: selectedEntry
-  )
-}
+    return RecordedVideoAdvancedDetailView(
+      recordedVideoService: service,
+      recordedVideoEntry: selectedEntry
+    )
+  }
 #endif
