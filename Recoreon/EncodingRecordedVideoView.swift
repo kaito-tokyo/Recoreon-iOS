@@ -29,7 +29,7 @@ struct EncodingRecordedVideoView: View {
             encodingInProgress = true
             guard
               let encodedVideoURL = await recordedVideoService.encode(
-                preset: kRecoreonLowBitrateFourTimes,
+                preset: .fourTimeSpeedLowQuality,
                 recordedVideoURL: entry.url,
                 progressHandler: { currentTime, totalTime in
                   encodingProgress = currentTime / totalTime

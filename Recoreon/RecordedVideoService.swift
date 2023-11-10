@@ -78,14 +78,6 @@ class RecordedVideoService {
   }
 
   func encode(
-    recordedVideoURL: URL, progressHandler: @escaping (Double, Double) -> Void
-  ) async -> URL? {
-    let preset = kRecoreonLowBitrateFourTimes
-    return await encode(
-      preset: preset, recordedVideoURL: recordedVideoURL, progressHandler: progressHandler)
-  }
-
-  func encode(
     preset: EncodingPreset, recordedVideoURL: URL,
     progressHandler: @escaping (Double, Double) -> Void
   ) async -> URL? {
@@ -211,6 +203,30 @@ class RecordedVideoService {
             continuation.resume(returning: nil)
           }
         })
+    }
+  }
+
+  func generateEncodedVideoURL(recordedVideoURL: URL, encodingPreset: EncodingPreset) -> URL {
+    let suffix = "-\(encodingPreset.name)"
+    return paths.getEncodedVideoURL(recordedVideoURL, suffix: suffix)
+  }
+
+  func getEncodedVideoURL(recordedVideoURL: URL, encodingPreset: EncodingPreset) -> URL? {
+    let encodedVideoURL = generateEncodedVideoURL(
+      recordedVideoURL: recordedVideoURL,
+      encodingPreset: encodingPreset
+    )
+    if fileManager.fileExists(atPath: encodedVideoURL.path()) {
+      return encodedVideoURL
+    } else {
+      return nil
+    }
+  }
+
+  func removeFileIfExists(url urlRef: URL?) {
+    guard let url = urlRef else { return }
+    if (fileManager.fileExists(atPath: url.path())) {
+      try? fileManager.removeItem(at: url)
     }
   }
 }
