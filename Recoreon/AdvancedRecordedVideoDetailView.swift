@@ -104,6 +104,11 @@ struct AdvancedRecordedVideoDetailView: View {
         Alert(
           title: Text("Are you sure to remove this video?"),
           primaryButton: .destructive(Text("OK")) {
+            recordedVideoService.removeThumbnail(recordedVideoEntry: recordedVideoEntry)
+            recordedVideoService.removePreviewVideo(recordedVideoEntry: recordedVideoEntry)
+            recordedVideoService.removeRecordedVideo(recordedVideoEntry: recordedVideoEntry)
+            recordedVideoService.removeEncodedVideos(recordedVideoEntry: recordedVideoEntry)
+            recordedVideoStore.update()
             path.removeLast()
           },
           secondaryButton: .cancel()
