@@ -247,4 +247,25 @@ class RecordedVideoService {
       encodedVideoURLs: Dictionary(uniqueKeysWithValues: pairs)
     )
   }
+
+  func removeRecordedVideo(recordedVideoEntry: RecordedVideoEntry) {
+    try? fileManager.removeItem(at: recordedVideoEntry.url)
+  }
+
+  func removeEncodedVideos(recordedVideoEntry: RecordedVideoEntry) {
+    for preset in EncodingPreset.allPresets {
+      let url = generateEncodedVideoURL(recordedVideoURL: recordedVideoEntry.url, encodingPreset: preset)
+      try? fileManager.removeItem(at: url)
+    }
+  }
+
+  func removeThumbnail(recordedVideoEntry: RecordedVideoEntry) {
+    let url = paths.getThumbnailURL(recordedVideoEntry.url)
+    try? fileManager.removeItem(at: url)
+  }
+
+  func removePreviewVideo(recordedVideoEntry: RecordedVideoEntry) {
+    let url = paths.getPreviewVideoURL(recordedVideoEntry.url)
+    try? fileManager.removeItem(at: url)
+  }
 }
