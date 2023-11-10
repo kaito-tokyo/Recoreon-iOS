@@ -225,7 +225,7 @@ class RecordedVideoService {
 
   func removeFileIfExists(url urlRef: URL?) {
     guard let url = urlRef else { return }
-    if (fileManager.fileExists(atPath: url.path())) {
+    if fileManager.fileExists(atPath: url.path()) {
       try? fileManager.removeItem(at: url)
     }
   }

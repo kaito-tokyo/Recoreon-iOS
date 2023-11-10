@@ -254,9 +254,9 @@
 		22966A262AFE505C0080324D /* AdvancedRecordedVideoView */ = {
 			isa = PBXGroup;
 			children = (
-				2232A9542AFD46ED00330C23 /* RecordedVideoAdvancedView.swift */,
-				22966A202AFD9ED40080324D /* RecordedVideoAdvancedDetailView.swift */,
 				22966A272AFE50B10080324D /* AdvancedVideoEncoderView.swift */,
+				22966A202AFD9ED40080324D /* RecordedVideoAdvancedDetailView.swift */,
+				2232A9542AFD46ED00330C23 /* RecordedVideoAdvancedView.swift */,
 			);
 			name = AdvancedRecordedVideoView;
 			sourceTree = "<group>";
@@ -769,6 +769,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22966A282AFE50B10080324D /* AdvancedVideoEncoderView.swift in Sources */,
 				22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */,
 				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
 				226A897D2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift in Sources */,
@@ -781,7 +782,6 @@
 				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
 				2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
-				22966A282AFE50B10080324D /* AdvancedVideoEncoderView.swift in Sources */,
 				228B5AAE2AFA3CDB0016CAF2 /* RecoreonPaths.swift in Sources */,
 				228B5AAB2AFA32C20016CAF2 /* ThumbnailExtractor.m in Sources */,
 			);
