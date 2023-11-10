@@ -6,6 +6,10 @@ private func getThumbnailUnavailableImage() -> UIImage {
   return UIImage(systemName: "xmark.circle", withConfiguration: config)!
 }
 
+struct AdvancedRecordedVideoDetailViewRoute: Hashable {
+  let recordedVideoEntry: RecordedVideoEntry
+}
+
 struct AdvancedRecordedVideoDetailView: View {
   let recordedVideoService: RecordedVideoService
   @ObservedObject var recordedVideoStore: RecordedVideoStore
@@ -79,7 +83,9 @@ struct AdvancedRecordedVideoDetailView: View {
       }
     }
     List {
-      NavigationLink(value: recordedVideoEntry.encodedVideoCollection) {
+      NavigationLink(
+        value: AdvencedVideoEncoderViewRoute(recordedVideoEntry: recordedVideoEntry)
+      ) {
         Button {
         } label: {
           Label("Encode", systemImage: "film")
@@ -104,10 +110,10 @@ struct AdvancedRecordedVideoDetailView: View {
         )
       }
     }
-    .navigationDestination(for: EncodedVideoCollection.self) { _ in
+    .navigationDestination(for: AdvencedVideoEncoderViewRoute.self) { route in
       AdvancedVideoEncoderView(
         recordedVideoService: recordedVideoService,
-        recordedVideoEntry: recordedVideoEntry,
+        recordedVideoEntry: route.recordedVideoEntry,
         recordedVideoThumbnail: thumbnailImage
       )
     }

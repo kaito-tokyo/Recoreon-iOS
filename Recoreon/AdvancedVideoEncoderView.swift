@@ -1,5 +1,9 @@
 import SwiftUI
 
+struct AdvencedVideoEncoderViewRoute: Hashable {
+  let recordedVideoEntry: RecordedVideoEntry
+}
+
 struct AdvancedVideoEncoderView: View {
   let recordedVideoService: RecordedVideoService
   @State var recordedVideoEntry: RecordedVideoEntry
