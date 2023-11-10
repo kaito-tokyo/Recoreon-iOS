@@ -2,14 +2,15 @@ import ReplayKit
 import SwiftUI
 
 struct RecordedVideoBasicView: View {
-  let recordedVideoManipulator: RecordedVideoManipulator
+  let recordedVideoService: RecordedVideoService
 
   @Binding var recordedVideoEntries: [RecordedVideoEntry]
 
   @State var encodingScreenIsPresented: Bool = false
 
   @State var encodingEntry = RecordedVideoEntry(
-    url: URL(fileURLWithPath: ""), uiImage: UIImage(named: "AppIcon")!)
+    url: URL(fileURLWithPath: "")
+  )
 
   @State var selection: Set<URL> = []
 
@@ -39,13 +40,13 @@ struct RecordedVideoBasicView: View {
               } label: {
                 ZStack {
                   if selection.contains(entry.id) {
-                    Image(uiImage: entry.uiImage).resizable().scaledToFit().border(
+                    Image(uiImage: UIImage()).resizable().scaledToFit().border(
                       Color.blue, width: 5.0)
                     Image(systemName: "checkmark.circle.fill").scaleEffect(
                       CGSize(width: 2.0, height: 2.0), anchor: .center
                     ).padding()
                   } else {
-                    Image(uiImage: entry.uiImage).resizable().scaledToFit()
+                    Image(uiImage: UIImage()).resizable().scaledToFit()
                   }
                 }
               }.buttonStyle(.borderless)
@@ -59,7 +60,9 @@ struct RecordedVideoBasicView: View {
         }
       }.sheet(isPresented: $encodingScreenIsPresented) {
         EncodingRecordedVideoView(
-          recordedVideoManipulator: recordedVideoManipulator, entry: $encodingEntry)
+          recordedVideoService: recordedVideoService,
+          entry: encodingEntry
+        )
       }
       .navigationTitle("List of recorded videos")
       .navigationBarTitleDisplayMode(.inline)
@@ -74,10 +77,11 @@ struct RecordedVideoBasicView: View {
 
 #if DEBUG
   #Preview {
-    let recordedVideoManipulator = RecordedVideoManipulatorMock()
-    @State var recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
+    let service = RecordedVideoServiceMock()
+    @State var entries = service.listRecordedVideoEntries()
     return RecordedVideoBasicView(
-      recordedVideoManipulator: recordedVideoManipulator,
-      recordedVideoEntries: $recordedVideoEntries)
+      recordedVideoService: service,
+      recordedVideoEntries: $entries
+    )
   }
 #endif

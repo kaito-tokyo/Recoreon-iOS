@@ -1,4 +1,4 @@
-class RecordedVideoManipulatorMock: RecordedVideoManipulator {
+class RecordedVideoServiceMock: RecordedVideoService {
   private let dateFormatter = {
     let formatter = ISO8601DateFormatter()
     formatter.formatOptions.remove(.withDashSeparatorInDate)
@@ -8,20 +8,30 @@ class RecordedVideoManipulatorMock: RecordedVideoManipulator {
     return formatter
   }()
 
-  func listVideoEntries() -> [RecordedVideoEntry] {
-    let uiImage = UIImage(named: "Thumbnail01")!
+  override func listRecordedVideoEntries() -> [RecordedVideoEntry] {
+    return [
+      RecordedVideoEntry(url: Bundle.main.url(forResource: "Record01", withExtension: "mkv")!)
+    ]
+  }
 
-    return (0..<30).map {
-      let date = Date(timeIntervalSince1970: TimeInterval($0))
-      let filename = "Recoreon" + dateFormatter.string(from: date) + ".mkv"
-      let path = "/Documents/Records/" + filename
-      return RecordedVideoEntry(url: URL(fileURLWithPath: path), uiImage: uiImage)
-    }
+  override func getThumbnailImage(_ recordedVideoURL: URL) -> UIImage {
+    let filenameWithoutExt = recordedVideoURL.deletingPathExtension().lastPathComponent
+    let thumbnailName = filenameWithoutExt.replacingOccurrences(of: "Record", with: "Thumbnail")
+    return UIImage(named: thumbnailName)!
+  }
+
+  override func generateThumbnail(_ recordedVideoURL: URL) async {
+  }
+
+  override func listRecordedVideoURLs() -> [URL] {
+    return [
+      Bundle.main.url(forResource: "Record01", withExtension: "mkv")!
+    ]
   }
 
   var finishSucessfully = false
 
-  func encode(
+  override func encode(
     preset: EncodingPreset,
     recordedVideoURL: URL, progressHandler: @escaping (Double, Double) -> Void
   ) async -> URL? {
@@ -42,26 +52,11 @@ class RecordedVideoManipulatorMock: RecordedVideoManipulator {
     }
   }
 
-  func encodeAsync(_ recordedVideoURL: URL, progressHandler: @escaping (Double) -> Void) async
-    -> Bool
-  {  // swiftlint:disable:this opening_brace
-    progressHandler(0.3)
-    sleep(1)
-    progressHandler(0.5)
-    sleep(1)
-    progressHandler(0.7)
-    sleep(1)
-    progressHandler(1.1)
-    sleep(1)
+  override func publishRecordedVideo(_ recordedVideoURL: URL) -> Bool {
     finishSucessfully.toggle()
     return finishSucessfully
   }
-
-  func publishRecordedVideo(_ recordedVideoURL: URL) -> Bool {
-    finishSucessfully.toggle()
-    return finishSucessfully
-  }
-  func remux(_ recordedVideoURL: URL) async -> URL? {
+  override func remux(_ recordedVideoURL: URL) async -> URL? {
     sleep(3)
     return Bundle.main.url(forResource: "Preview01", withExtension: "mp4")
   }

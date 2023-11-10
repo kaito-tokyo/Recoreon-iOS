@@ -3,13 +3,9 @@ import ReplayKit
 import SwiftUI
 
 struct RecordedVideoAdvancedView: View {
-  let recordedVideoManipulator: RecordedVideoManipulator
+  let recordedVideoService: RecordedVideoService
 
   @Binding var recordedVideoEntries: [RecordedVideoEntry]
-
-  @State var player = AVPlayer()
-  @State var isPresentedPlayer: Bool = false
-  @State var isPresentedRemuxing: Bool = false
 
   var body: some View {
     NavigationStack {
@@ -17,7 +13,7 @@ struct RecordedVideoAdvancedView: View {
         ForEach(recordedVideoEntries) { entry in
           NavigationLink {
             RecordedVideoAdvancedDetailView(
-              recordedVideoManipulator: recordedVideoManipulator,
+              recordedVideoService: recordedVideoService,
               recordedVideoEntry: entry
             )
           } label: {
@@ -43,11 +39,12 @@ struct RecordedVideoAdvancedView: View {
 
 #if DEBUG
   #Preview {
-    let recordedVideoManipulator = RecordedVideoManipulatorMock()
-    @State var recordedVideoEntries = recordedVideoManipulator.listVideoEntries()
+    let service = RecordedVideoServiceMock()
+    @State var entries = service.listRecordedVideoEntries()
 
     return RecordedVideoAdvancedView(
-      recordedVideoManipulator: RecordedVideoManipulatorMock(),
-      recordedVideoEntries: $recordedVideoEntries)
+      recordedVideoService: service,
+      recordedVideoEntries: $entries
+    )
   }
 #endif

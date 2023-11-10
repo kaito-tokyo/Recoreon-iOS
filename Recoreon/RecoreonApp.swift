@@ -11,7 +11,11 @@ import SwiftUI
 struct RecoreonApp: App {
   var body: some Scene {
     WindowGroup {
-      ContentView(recordedVideoManipulator: RecordedVideoManipulatorImpl())
+      let service = RecordedVideoService()
+      ContentView(
+        recordedVideoService: service,
+        recordedVideoEntries: service.listRecordedVideoEntries()
+      )
     }
   }
 }
