@@ -9,7 +9,8 @@ struct RecordedVideoBasicView: View {
   @State var encodingScreenIsPresented: Bool = false
 
   @State var encodingEntry = RecordedVideoEntry(
-    url: URL(fileURLWithPath: "")
+    url: URL(fileURLWithPath: ""),
+    encodedVideoCollection: EncodedVideoCollection(encodedVideoURLs: [:])
   )
 
   @State var selection: Set<URL> = []

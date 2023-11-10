@@ -8,7 +8,8 @@ private func getThumbnailUnavailableImage() -> UIImage {
 
 struct AdvancedRecordedVideoDetailView: View {
   let recordedVideoService: RecordedVideoService
-  @State var recordedVideoEntry: RecordedVideoEntry
+  @Binding var path: NavigationPath
+  let recordedVideoEntry: RecordedVideoEntry
 
   let player = AVPlayer()
 
@@ -17,6 +18,8 @@ struct AdvancedRecordedVideoDetailView: View {
   @State var isRemuxingFailed: Bool = false
 
   @State var thumbnailImage: UIImage = getThumbnailUnavailableImage()
+
+  @State var isShowingRemoveConfirmation = false
 
   var body: some View {
     VStack {
@@ -75,28 +78,37 @@ struct AdvancedRecordedVideoDetailView: View {
       }
     }
     List {
-      NavigationLink {
-        AdvancedVideoEncoderView(
-          recordedVideoService: recordedVideoService,
-          recordedVideoEntry: recordedVideoEntry,
-          recordedVideoThumbnail: thumbnailImage
-        )
-      } label: {
+      NavigationLink(value: recordedVideoEntry.encodedVideoCollection) {
         Button {
-
         } label: {
           Label("Encode", systemImage: "film")
         }
       }
+      ShareLink(item: recordedVideoEntry.url)
       Button {
+        isShowingRemoveConfirmation = true
       } label: {
         Label {
           Text("Remove")
         } icon: {
           Image(systemName: "trash")
         }
+      }.alert(isPresented: $isShowingRemoveConfirmation) {
+        Alert(
+          title: Text("Are you sure to remove this video?"),
+          primaryButton: .destructive(Text("OK")) {
+            path.removeLast()
+          },
+          secondaryButton: .cancel()
+        )
       }
-      ShareLink(item: recordedVideoEntry.url)
+    }
+    .navigationDestination(for: EncodedVideoCollection.self) { _ in
+      AdvancedVideoEncoderView(
+        recordedVideoService: recordedVideoService,
+        recordedVideoEntry: recordedVideoEntry,
+        recordedVideoThumbnail: thumbnailImage
+      )
     }
   }
 }
@@ -106,10 +118,14 @@ struct AdvancedRecordedVideoDetailView: View {
     let service = RecordedVideoServiceMock()
     let entries = service.listRecordedVideoEntries()
     @State var selectedEntry = entries.first!
+    @State var path: NavigationPath = NavigationPath()
 
-    return AdvancedRecordedVideoDetailView(
-      recordedVideoService: service,
-      recordedVideoEntry: selectedEntry
-    )
+    return NavigationStack {
+      AdvancedRecordedVideoDetailView(
+        recordedVideoService: service,
+        path: $path,
+        recordedVideoEntry: selectedEntry
+      )
+    }
   }
 #endif

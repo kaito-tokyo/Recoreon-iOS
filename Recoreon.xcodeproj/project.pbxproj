@@ -25,6 +25,8 @@
 		22966A212AFD9ED40080324D /* AdvancedRecordedVideoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A202AFD9ED40080324D /* AdvancedRecordedVideoDetailView.swift */; };
 		22966A232AFE29660080324D /* Record01.mkv in Resources */ = {isa = PBXBuildFile; fileRef = 22966A222AFE29660080324D /* Record01.mkv */; };
 		22966A282AFE50B10080324D /* AdvancedVideoEncoderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A272AFE50B10080324D /* AdvancedVideoEncoderView.swift */; };
+		22966A2E2AFE756F0080324D /* AdvancedRecordedVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A2D2AFE756F0080324D /* AdvancedRecordedVideoView.swift */; };
+		22966A302AFE79200080324D /* EncodedVideoCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A2F2AFE79200080324D /* EncodedVideoCollection.swift */; };
 		22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */; };
 		22C18AE32AF2B08B00C41B49 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */; };
 		22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */; };
@@ -115,6 +117,8 @@
 		22966A202AFD9ED40080324D /* AdvancedRecordedVideoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedRecordedVideoDetailView.swift; sourceTree = "<group>"; };
 		22966A222AFE29660080324D /* Record01.mkv */ = {isa = PBXFileReference; lastKnownFileType = file; path = Record01.mkv; sourceTree = "<group>"; };
 		22966A272AFE50B10080324D /* AdvancedVideoEncoderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedVideoEncoderView.swift; sourceTree = "<group>"; };
+		22966A2D2AFE756F0080324D /* AdvancedRecordedVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedRecordedVideoView.swift; sourceTree = "<group>"; };
+		22966A2F2AFE79200080324D /* EncodedVideoCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoCollection.swift; sourceTree = "<group>"; };
 		22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		22C18AC02AF2AEAA00C41B49 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecoreonBroadcastUploadExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -236,6 +240,7 @@
 			children = (
 				226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */,
 				226A89912AFB30D900EBD2CA /* RecordedVideoEntry.swift */,
+				22966A2F2AFE79200080324D /* EncodedVideoCollection.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -256,6 +261,7 @@
 				22966A202AFD9ED40080324D /* AdvancedRecordedVideoDetailView.swift */,
 				2232A9542AFD46ED00330C23 /* AdvancedRecordedVideoListView.swift */,
 				22966A272AFE50B10080324D /* AdvancedVideoEncoderView.swift */,
+				22966A2D2AFE756F0080324D /* AdvancedRecordedVideoView.swift */,
 			);
 			name = AdvancedRecordedVideoView;
 			sourceTree = "<group>";
@@ -790,11 +796,13 @@
 				22966A282AFE50B10080324D /* AdvancedVideoEncoderView.swift in Sources */,
 				22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */,
 				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
+				22966A302AFE79200080324D /* EncodedVideoCollection.swift in Sources */,
 				226A897D2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift in Sources */,
 				2232A9512AFD452600330C23 /* RecordedVideoBasicView.swift in Sources */,
 				226A89922AFB30D900EBD2CA /* RecordedVideoEntry.swift in Sources */,
 				226A89852AFB1B7F00EBD2CA /* RecordedVideoService.swift in Sources */,
 				226A898F2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift in Sources */,
+				22966A2E2AFE756F0080324D /* AdvancedRecordedVideoView.swift in Sources */,
 				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
 				2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
