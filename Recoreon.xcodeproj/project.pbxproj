@@ -238,9 +238,9 @@
 		226A89902AFB30C900EBD2CA /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				22966A2F2AFE79200080324D /* EncodedVideoCollection.swift */,
 				226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */,
 				226A89912AFB30D900EBD2CA /* RecordedVideoEntry.swift */,
-				22966A2F2AFE79200080324D /* EncodedVideoCollection.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -260,8 +260,8 @@
 			children = (
 				22966A202AFD9ED40080324D /* AdvancedRecordedVideoDetailView.swift */,
 				2232A9542AFD46ED00330C23 /* AdvancedRecordedVideoListView.swift */,
-				22966A272AFE50B10080324D /* AdvancedVideoEncoderView.swift */,
 				22966A2D2AFE756F0080324D /* AdvancedRecordedVideoView.swift */,
+				22966A272AFE50B10080324D /* AdvancedVideoEncoderView.swift */,
 			);
 			name = AdvancedRecordedVideoView;
 			sourceTree = "<group>";
@@ -793,16 +793,16 @@
 			files = (
 				22966A212AFD9ED40080324D /* AdvancedRecordedVideoDetailView.swift in Sources */,
 				2232A9552AFD46ED00330C23 /* AdvancedRecordedVideoListView.swift in Sources */,
+				22966A2E2AFE756F0080324D /* AdvancedRecordedVideoView.swift in Sources */,
 				22966A282AFE50B10080324D /* AdvancedVideoEncoderView.swift in Sources */,
 				22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */,
-				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
 				22966A302AFE79200080324D /* EncodedVideoCollection.swift in Sources */,
+				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
 				226A897D2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift in Sources */,
 				2232A9512AFD452600330C23 /* RecordedVideoBasicView.swift in Sources */,
 				226A89922AFB30D900EBD2CA /* RecordedVideoEntry.swift in Sources */,
 				226A89852AFB1B7F00EBD2CA /* RecordedVideoService.swift in Sources */,
 				226A898F2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift in Sources */,
-				22966A2E2AFE756F0080324D /* AdvancedRecordedVideoView.swift in Sources */,
 				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
 				2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
