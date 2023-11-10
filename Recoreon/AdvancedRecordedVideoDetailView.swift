@@ -8,6 +8,7 @@ private func getThumbnailUnavailableImage() -> UIImage {
 
 struct AdvancedRecordedVideoDetailView: View {
   let recordedVideoService: RecordedVideoService
+  @ObservedObject var recordedVideoStore: RecordedVideoStore
   @Binding var path: NavigationPath
   let recordedVideoEntry: RecordedVideoEntry
 
@@ -119,10 +120,12 @@ struct AdvancedRecordedVideoDetailView: View {
     let entries = service.listRecordedVideoEntries()
     @State var selectedEntry = entries.first!
     @State var path: NavigationPath = NavigationPath()
+    @StateObject var store = RecordedVideoStore(recordedVideoService: service)
 
     return NavigationStack {
       AdvancedRecordedVideoDetailView(
         recordedVideoService: service,
+        recordedVideoStore: store,
         path: $path,
         recordedVideoEntry: selectedEntry
       )

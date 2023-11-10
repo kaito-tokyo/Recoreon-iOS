@@ -3,24 +3,30 @@ import SwiftUI
 
 struct ContentView: View {
   let recordedVideoService: RecordedVideoService
-  @State var recordedVideoEntries: [RecordedVideoEntry]
+
+  @StateObject private var recordedVideoStore: RecordedVideoStore
+
+  @Environment(\.scenePhase) private var scenePhase
+
+  init(recordedVideoService: RecordedVideoService, recordedVideoStore: RecordedVideoStore) {
+    self.recordedVideoService = recordedVideoService
+    self._recordedVideoStore = StateObject(wrappedValue: recordedVideoStore)
+  }
 
   var body: some View {
     TabView {
       RecorderView()
         .tabItem { Image(systemName: "record.circle") }
-      //      RecordedVideoBasicView(
-      //        recordedVideoService: recordedVideoService,
-      //        recordedVideoEntries: $recordedVideoEntries
-      //      )
-      //      .tabItem { Image(systemName: "rectangle.grid.3x2") }
       AdvancedRecordedVideoView(
         recordedVideoService: recordedVideoService,
-        recordedVideoEntries: recordedVideoEntries
+        recordedVideoStore: recordedVideoStore
       )
       .tabItem { Image(systemName: "list.bullet") }
-    }.onAppear {
-      recordedVideoEntries = recordedVideoService.listRecordedVideoEntries()
+    }
+    .onChange(of: scenePhase) { phase in
+      if phase == .active {
+        recordedVideoStore.update()
+      }
     }
   }
 }
@@ -31,7 +37,9 @@ struct ContentView: View {
 
     return ContentView(
       recordedVideoService: service,
-      recordedVideoEntries: service.listRecordedVideoEntries()
+      recordedVideoStore: RecordedVideoStore(
+        recordedVideoService: service
+      )
     )
   }
 #endif
