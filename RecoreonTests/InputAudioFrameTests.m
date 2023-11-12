@@ -13,8 +13,15 @@
 - (void)tearDown {
 }
 
-- (CMSampleBufferRef)createInt16AudioSampleBuffer:(uint8_t *)buf bufSize:(uint32_t)bufSize numChannels:(int)numChannels sampleRate:(double)sampleRate isBigEndian:(BOOL)isBigEndian {
-  int numSamples = bufSize / numChannels;
+- (void)testInitWithSampleBuffer {
+  uint8_t dataBuf[4096];
+  const CMItemCount numSamples = 1024;
+  double sampleRate = 44100;
+
+//  CMBlockBufferRef blockBuffer;
+//  CMBlockBufferCreateWithMemoryBlock(NULL, NULL, bufSize, NULL, NULL, 0, bufSize, 0, &blockBuffer);
+//  CMBlockBufferAssureBlockMemory(blockBuffer);
+//  CMSampleBufferCreate(NULL, blockBuffer, true, NULL, NULL, NULL, numSamples, 0, NULL, 0, NULL, &sampleBuffer);
 
   AudioStreamBasicDescription asbd = {
     .mSampleRate = sampleRate,
@@ -26,9 +33,6 @@
     .mChannelsPerFrame = 2,
     .mBitsPerChannel = 16
   };
-//  if (isBigEndian) {
-//    asbd.mFormatFlags |= kAudioFormatFlagIsBigEndian;
-//  }
 
   CMFormatDescriptionRef format;
   XCTAssertEqual(CMAudioFormatDescriptionCreate(NULL, &asbd, 0, NULL, 0, NULL, NULL, &format), noErr);
@@ -44,20 +48,15 @@
 
   AudioBufferList audioBufferList;
   audioBufferList.mNumberBuffers = 1;
-  audioBufferList.mBuffers[0].mData = buf;
-  audioBufferList.mBuffers[0].mDataByteSize = 4096;
+  audioBufferList.mBuffers[0].mData = dataBuf;
+  audioBufferList.mBuffers[0].mDataByteSize = sizeof(dataBuf);
   audioBufferList.mBuffers[0].mNumberChannels = 2;
 
   XCTAssertEqual(CMSampleBufferSetDataBufferFromAudioBufferList(sampleBuffer, NULL, NULL, 0, &audioBufferList), noErr);
-
-  return sampleBuffer;
-}
-- (void)testInitWithSampleBuffer {
-  uint8_t buf[4096];
-  CMSampleBufferRef sampleBuffer = [self createInt16AudioSampleBuffer:buf bufSize:4096 numChannels:2 sampleRate:44100 isBigEndian:true];
   InputAudioFrame *inputFrame = [[InputAudioFrame alloc] initWithSampleBuffer:sampleBuffer sampleRate:44100];
   XCTAssertNotNil(inputFrame);
 }
+
 - (void)testPerformanceExample {
   // This is an example of a performance test case.
   [self measureBlock:^{
