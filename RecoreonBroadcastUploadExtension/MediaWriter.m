@@ -1,9 +1,13 @@
 #include <libavutil/timestamp.h>
 
+#import "os/log.h"
+
 #define STREAM_FRAME_RATE 120          /* 25 images/s */
 #define STREAM_PIX_FMT AV_PIX_FMT_NV12 /* default pix_fmt */
 
 #import "MediaWriter.h"
+
+#import "InputAudioFrame.h"
 
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
@@ -455,77 +459,18 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
                 pts:(int64_t)pts {
   AVCodecContext *c = outputStream->enc;
 
+  InputAudioFrame *inputFrame = [[InputAudioFrame alloc] initWithSampleBuffer:sampleBuffer sampleRate:c->sample_rate];
+  if (![inputFrame checkIfCompatible]) {
+    return;
+  }
+
   AVFrame *frame = outputStream->frame;
   if (av_frame_make_writable(frame) < 0) {
     NSLog(@"Could not make a frame writable!");
     return;
   }
 
-  CMFormatDescriptionRef fmt = CMSampleBufferGetFormatDescription(sampleBuffer);
-  if (fmt == NULL) {
-    NSLog(@"Could not get the format description!");
-    return;
-  }
-
-  const AudioStreamBasicDescription *desc =
-      CMAudioFormatDescriptionGetStreamBasicDescription(fmt);
-  if (desc == NULL) {
-    NSLog(@"Could not get the audio stream basic description!");
-    return;
-  }
-
-  if (desc->mFormatID != kAudioFormatLinearPCM) {
-    NSLog(@"The format is not supported!");
-    return;
-  }
-
-  if (desc->mSampleRate != c->sample_rate) {
-    NSLog(@"The sample rate is not supported!");
-    return;
-  }
-
-  if (desc->mBitsPerChannel != 16) {
-    NSLog(@"The bits per channel is not supported!");
-    return;
-  }
-
-  if (audioBufferList->mNumberBuffers != 1) {
-    NSLog(@"The audio buffer is not interleaved!");
-    return;
-  }
-
-  if (desc->mChannelsPerFrame == 1) {
-    if (audioBufferList->mBuffers[0].mDataByteSize != 2048) {
-      NSLog(@"The size of the audio buffer is %u and not 2048!",
-            audioBufferList->mBuffers[0].mDataByteSize);
-      return;
-    }
-  } else if (desc->mChannelsPerFrame == 2) {
-    if (audioBufferList->mBuffers[0].mDataByteSize != 4096) {
-      NSLog(@"The size of the audio buffer is %u and not 4096!",
-            audioBufferList->mBuffers[0].mDataByteSize);
-      return;
-    }
-  } else {
-    NSLog(@"The channels per frame is not supported!");
-    return;
-  }
-
-  int16_t *data = (int16_t *)frame->data[0];
-  if (desc->mChannelsPerFrame == 2 &&
-      (desc->mFormatFlags & kAudioFormatFlagIsBigEndian)) {
-    uint16_t *buf = (uint16_t *)audioBufferList->mBuffers[0].mData;
-    for (int i = 0; i < 2048; i++) {
-      uint16_t unsigned16Value = CFSwapInt16BigToHost(buf[i]);
-      data[i] = *(int16_t *)&unsigned16Value;
-    }
-  } else if (desc->mChannelsPerFrame == 1 &&
-             !(desc->mFormatFlags & kAudioFormatFlagIsBigEndian)) {
-    int16_t *buf = (int16_t *)audioBufferList->mBuffers[0].mData;
-    for (int i = 0; i < 1024; i++) {
-      data[i * 2] = data[i * 2 + 1] = buf[i];
-    }
-  }
+  [inputFrame loadDataToBuffer:(int16_t *)frame->data[0] size:4096];
 
   frame->pts = pts;
 

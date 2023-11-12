@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		20FF1DDA098E554EE0860294 /* Pods_RecoreonTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A067756C97349111E0E511E /* Pods_RecoreonTests.framework */; };
+		22154CCB2B00C1AD0004CB17 /* InputAudioFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 22154CCA2B00C1AD0004CB17 /* InputAudioFrame.m */; };
+		22154CD02B00F5630004CB17 /* MediaWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94B2AFD3FEE00330C23 /* MediaWriter.m */; };
+		22154CD22B00F5FA0004CB17 /* InputAudioFrameTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22154CD12B00F5FA0004CB17 /* InputAudioFrameTests.m */; };
 		2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */; };
 		2232A94E2AFD3FEE00330C23 /* MediaWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94B2AFD3FEE00330C23 /* MediaWriter.m */; };
 		2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */; };
@@ -99,6 +102,10 @@
 		1572C7C0B2AC1062995A3A79 /* Pods-RecoreonTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RecoreonTests.release.xcconfig"; path = "Target Support Files/Pods-RecoreonTests/Pods-RecoreonTests.release.xcconfig"; sourceTree = "<group>"; };
 		1CEEDF33F3DF9E6CF87BA072 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtension/Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; sourceTree = "<group>"; };
 		21494B872F6439D163F2B227 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; sourceTree = "<group>"; };
+		22154CCA2B00C1AD0004CB17 /* InputAudioFrame.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InputAudioFrame.m; sourceTree = "<group>"; };
+		22154CCC2B00C1C00004CB17 /* InputAudioFrame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InputAudioFrame.h; sourceTree = "<group>"; };
+		22154CCD2B00F50D0004CB17 /* RecoreonTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		22154CD12B00F5FA0004CB17 /* InputAudioFrameTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InputAudioFrameTests.m; sourceTree = "<group>"; };
 		2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonBroadcastPickerRepresentable.swift; sourceTree = "<group>"; };
 		2232A94B2AFD3FEE00330C23 /* MediaWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaWriter.m; path = RecoreonBroadcastUploadExtension/MediaWriter.m; sourceTree = SOURCE_ROOT; };
 		2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PixelBufferExtractor.swift; path = RecoreonBroadcastUploadExtension/PixelBufferExtractor.swift; sourceTree = SOURCE_ROOT; };
@@ -206,6 +213,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		22154CC92B00C1990004CB17 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				22154CCA2B00C1AD0004CB17 /* InputAudioFrame.m */,
+				22154CCC2B00C1C00004CB17 /* InputAudioFrame.h */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		225B7A942AFB54BD001BA335 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -296,6 +312,7 @@
 		22C18AE42AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */ = {
 			isa = PBXGroup;
 			children = (
+				22154CC92B00C1990004CB17 /* Models */,
 				22966A252AFE47110080324D /* Services */,
 				22C18AE72AF2B08B00C41B49 /* Info.plist */,
 				22C18B012AF2B17000C41B49 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */,
@@ -373,6 +390,8 @@
 			isa = PBXGroup;
 			children = (
 				22C3CD0B2AF240B40039750A /* RecoreonTests.swift */,
+				22154CCD2B00F50D0004CB17 /* RecoreonTests-Bridging-Header.h */,
+				22154CD12B00F5FA0004CB17 /* InputAudioFrameTests.m */,
 			);
 			path = RecoreonTests;
 			sourceTree = "<group>";
@@ -541,6 +560,7 @@
 					};
 					22C3CD062AF240B40039750A = {
 						CreatedOnToolsVersion = 15.0;
+						LastSwiftMigration = 1500;
 						TestTargetID = 22C3CCF62AF240B30039750A;
 					};
 					22C3CD102AF240B40039750A = {
@@ -784,6 +804,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2232A94E2AFD3FEE00330C23 /* MediaWriter.m in Sources */,
+				22154CCB2B00C1AD0004CB17 /* InputAudioFrame.m in Sources */,
 				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
 				22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
@@ -827,6 +848,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22154CD02B00F5630004CB17 /* MediaWriter.m in Sources */,
+				22154CD22B00F5FA0004CB17 /* InputAudioFrameTests.m in Sources */,
 				22C3CD0C2AF240B40039750A /* RecoreonTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1189,6 +1212,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
@@ -1198,6 +1222,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "RecoreonTests/RecoreonTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Recoreon.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Recoreon";
@@ -1210,6 +1236,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
@@ -1219,6 +1246,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "RecoreonTests/RecoreonTests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Recoreon.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Recoreon";
