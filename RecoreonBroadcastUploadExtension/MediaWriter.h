@@ -5,6 +5,8 @@
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 
+#import "InputAudioSampleReader.h"
+
 typedef struct OutputStream {
   AVStream *__nullable st;
   AVCodecContext *__nullable enc;
@@ -25,6 +27,9 @@ typedef struct OutputStream {
   BOOL firstScreenVideoFrameReceived;
   int64_t screenBasePts;
   int64_t micBasePts;
+
+  InputAudioSampleReader *screenInputAudioSampleReader;
+  InputAudioSampleReader *micInputAudioSampleReader;
 }
 
 @property(nonatomic) size_t desiredLumaBytesPerRow;

@@ -7,7 +7,7 @@
 
 #import "MediaWriter.h"
 
-#import "InputAudioFrame.h"
+#import "InputAudioFrameReader.h"
 
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
@@ -261,6 +261,9 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
                  }];
     @throw e;
   }
+
+  screenInputAudioSampleReader = [[InputAudioSampleReader alloc] init];
+  micInputAudioSampleReader = [[InputAudioSampleReader alloc] init];
 }
 - (void)initAllStreams:(CVPixelBufferRef)pixelBuffer {
   int width = (int)CVPixelBufferGetWidth(pixelBuffer);
@@ -497,6 +500,9 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
   if (!firstScreenVideoFrameReceived) {
     return;
   }
+
+  [micInputAudioSampleReader read:sampleBuffer];
+
   CMTime ptsTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
   if (micBasePts == 0) {
     micBasePts = ptsTime.value - screenVideoStream.frame->pts *
