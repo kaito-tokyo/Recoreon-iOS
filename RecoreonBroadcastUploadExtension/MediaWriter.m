@@ -459,7 +459,9 @@ static void close_stream(AVFormatContext *oc, OutputStream *ost) {
                 pts:(int64_t)pts {
   AVCodecContext *c = outputStream->enc;
 
-  InputAudioFrame *inputFrame = [[InputAudioFrame alloc] initWithSampleBuffer:sampleBuffer sampleRate:c->sample_rate];
+  InputAudioFrame *inputFrame =
+      [[InputAudioFrame alloc] initWithSampleBuffer:sampleBuffer
+                                         sampleRate:c->sample_rate];
   if (![inputFrame checkIfCompatible]) {
     return;
   }

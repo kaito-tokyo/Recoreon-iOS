@@ -216,8 +216,8 @@
 		22154CC92B00C1990004CB17 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				22154CCA2B00C1AD0004CB17 /* InputAudioFrame.m */,
 				22154CCC2B00C1C00004CB17 /* InputAudioFrame.h */,
+				22154CCA2B00C1AD0004CB17 /* InputAudioFrame.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -389,9 +389,9 @@
 		22C3CD0A2AF240B40039750A /* RecoreonTests */ = {
 			isa = PBXGroup;
 			children = (
-				22C3CD0B2AF240B40039750A /* RecoreonTests.swift */,
-				22154CCD2B00F50D0004CB17 /* RecoreonTests-Bridging-Header.h */,
 				22154CD12B00F5FA0004CB17 /* InputAudioFrameTests.m */,
+				22154CCD2B00F50D0004CB17 /* RecoreonTests-Bridging-Header.h */,
+				22C3CD0B2AF240B40039750A /* RecoreonTests.swift */,
 			);
 			path = RecoreonTests;
 			sourceTree = "<group>";
@@ -803,8 +803,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2232A94E2AFD3FEE00330C23 /* MediaWriter.m in Sources */,
 				22154CCB2B00C1AD0004CB17 /* InputAudioFrame.m in Sources */,
+				2232A94E2AFD3FEE00330C23 /* MediaWriter.m in Sources */,
 				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
 				22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
@@ -848,8 +848,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22154CD02B00F5630004CB17 /* MediaWriter.m in Sources */,
 				22154CD22B00F5FA0004CB17 /* InputAudioFrameTests.m in Sources */,
+				22154CD02B00F5630004CB17 /* MediaWriter.m in Sources */,
 				22C3CD0C2AF240B40039750A /* RecoreonTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

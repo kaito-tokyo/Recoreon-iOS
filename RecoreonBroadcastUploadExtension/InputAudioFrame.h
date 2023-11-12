@@ -11,7 +11,9 @@
   CMFormatDescriptionRef __nonnull format;
   const AudioStreamBasicDescription *__nonnull desc;
 }
-- (instancetype __nullable)initWithSampleBuffer:(CMSampleBufferRef __nonnull)sampleBuffer sampleRate:(double)sampleRate;
+- (instancetype __nullable)initWithSampleBuffer:
+                               (CMSampleBufferRef __nonnull)sampleBuffer
+                                     sampleRate:(double)sampleRate;
 - (BOOL)checkIfCompatible;
 - (void)loadDataToBuffer:(int16_t *__nonnull)buffer size:(size_t)size;
 @end
