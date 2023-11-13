@@ -40,6 +40,9 @@
   XCTAssertTrue([writer openVideo:0]);
   XCTAssertTrue([writer openAudio:1]);
   XCTAssertTrue([writer openAudio:2]);
+
+  
+
   [writer finishOutput];
   [writer closeStream:0];
   [writer closeStream:1];
