@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		20FF1DDA098E554EE0860294 /* Pods_RecoreonTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A067756C97349111E0E511E /* Pods_RecoreonTests.framework */; };
 		2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */; };
 		2232A94E2AFD3FEE00330C23 /* MediaWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94B2AFD3FEE00330C23 /* MediaWriter.m */; };
 		2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */; };
@@ -15,6 +14,9 @@
 		2232A9532AFD469400330C23 /* RecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9522AFD469400330C23 /* RecorderView.swift */; };
 		2232A9552AFD46ED00330C23 /* AdvancedRecordedVideoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9542AFD46ED00330C23 /* AdvancedRecordedVideoListView.swift */; };
 		2232A95C2AFD80A200330C23 /* Preview01.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2232A95A2AFD80A200330C23 /* Preview01.mp4 */; };
+		22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */; };
+		224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
+		224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
 		226A897D2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */; };
 		226A89852AFB1B7F00EBD2CA /* RecordedVideoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A89842AFB1B7F00EBD2CA /* RecordedVideoService.swift */; };
 		226A898F2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A898E2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift */; };
@@ -45,6 +47,7 @@
 		22C3CD182AF240B40039750A /* RecoreonUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CD172AF240B40039750A /* RecoreonUITestsLaunchTests.swift */; };
 		4F179A3420E857055C5B9FF6 /* Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67EE69F63EAE3CAC1C6E8041 /* Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework */; };
 		61EE899430438D2BA41FCC42 /* Pods_Recoreon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1AB3933CE8D82BA68F94B36 /* Pods_Recoreon.framework */; };
+		85AC0D23B71266CB4300873A /* Pods_Recoreon_RecoreonTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 403780D9CD9FC96873A85CEC /* Pods_Recoreon_RecoreonTests.framework */; };
 		A2ACF2631FE42EA383DB083A /* Pods_Recoreon_RecoreonUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C0416396D33F9CF52DF5D6D /* Pods_Recoreon_RecoreonUITests.framework */; };
 		A8C3FC58A6C2F51AED8C4DCF /* Pods_Recoreon_RecoreonBroadcastUploadExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3C5AF681C81615562327694 /* Pods_Recoreon_RecoreonBroadcastUploadExtension.framework */; };
 /* End PBXBuildFile section */
@@ -96,6 +99,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		004FAD9530C817772E8284F7 /* Pods-Recoreon-RecoreonTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonTests.debug.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonTests/Pods-Recoreon-RecoreonTests.debug.xcconfig"; sourceTree = "<group>"; };
 		1572C7C0B2AC1062995A3A79 /* Pods-RecoreonTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RecoreonTests.release.xcconfig"; path = "Target Support Files/Pods-RecoreonTests/Pods-RecoreonTests.release.xcconfig"; sourceTree = "<group>"; };
 		1CEEDF33F3DF9E6CF87BA072 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtension/Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; sourceTree = "<group>"; };
 		21494B872F6439D163F2B227 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; sourceTree = "<group>"; };
@@ -107,6 +111,10 @@
 		2232A9522AFD469400330C23 /* RecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderView.swift; sourceTree = "<group>"; };
 		2232A9542AFD46ED00330C23 /* AdvancedRecordedVideoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedRecordedVideoListView.swift; sourceTree = "<group>"; };
 		2232A95A2AFD80A200330C23 /* Preview01.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Preview01.mp4; sourceTree = "<group>"; };
+		22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriterTests.m; sourceTree = "<group>"; };
+		224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
+		224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenRecordWriter.h; sourceTree = "<group>"; };
 		226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingRecordedVideoView.swift; sourceTree = "<group>"; };
 		226A89842AFB1B7F00EBD2CA /* RecordedVideoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoService.swift; sourceTree = "<group>"; };
 		226A898E2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoServiceMock.swift; sourceTree = "<group>"; };
@@ -145,7 +153,9 @@
 		22C3CD172AF240B40039750A /* RecoreonUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		22C3CD242AF241140039750A /* Recoreon-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Recoreon-Bridging-Header.h"; sourceTree = "<group>"; };
 		22C3CD2A2AF28CED0039750A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		273E6C1050F80A3D90C6C8B1 /* Pods-Recoreon-RecoreonTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonTests.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonTests/Pods-Recoreon-RecoreonTests.release.xcconfig"; sourceTree = "<group>"; };
 		3EC10D9E365CDB0104450C2E /* Pods-Recoreon-RecoreonUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonUITests.debug.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonUITests/Pods-Recoreon-RecoreonUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		403780D9CD9FC96873A85CEC /* Pods_Recoreon_RecoreonTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Recoreon_RecoreonTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		48F4DEA343A80AA53D8998E9 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtension.debug.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtension/Pods-Recoreon-RecoreonBroadcastUploadExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		4C0416396D33F9CF52DF5D6D /* Pods_Recoreon_RecoreonUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Recoreon_RecoreonUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		59F2603F497C749216BA3E94 /* Pods-RecoreonTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RecoreonTests.debug.xcconfig"; path = "Target Support Files/Pods-RecoreonTests/Pods-RecoreonTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -153,7 +163,6 @@
 		673948922AD5439F33B95426 /* Pods-Recoreon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon.debug.xcconfig"; path = "Target Support Files/Pods-Recoreon/Pods-Recoreon.debug.xcconfig"; sourceTree = "<group>"; };
 		67EE69F63EAE3CAC1C6E8041 /* Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7789E3C6ACBA360752D869B3 /* Pods-Recoreon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon.release.xcconfig"; path = "Target Support Files/Pods-Recoreon/Pods-Recoreon.release.xcconfig"; sourceTree = "<group>"; };
-		8A067756C97349111E0E511E /* Pods_RecoreonTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RecoreonTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1AB3933CE8D82BA68F94B36 /* Pods_Recoreon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Recoreon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1409A3B78F24B76E0F23C62 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.debug.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.debug.xcconfig"; sourceTree = "<group>"; };
 		D3C5AF681C81615562327694 /* Pods_Recoreon_RecoreonBroadcastUploadExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Recoreon_RecoreonBroadcastUploadExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -191,7 +200,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				20FF1DDA098E554EE0860294 /* Pods_RecoreonTests.framework in Frameworks */,
+				85AC0D23B71266CB4300873A /* Pods_Recoreon_RecoreonTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,6 +262,8 @@
 				2232A94D2AFD3FEE00330C23 /* MediaWriter.h */,
 				2232A94B2AFD3FEE00330C23 /* MediaWriter.m */,
 				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
+				224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */,
+				224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -373,6 +384,8 @@
 			isa = PBXGroup;
 			children = (
 				22C3CD0B2AF240B40039750A /* RecoreonTests.swift */,
+				22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */,
+				22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */,
 			);
 			path = RecoreonTests;
 			sourceTree = "<group>";
@@ -393,9 +406,9 @@
 				D3C5AF681C81615562327694 /* Pods_Recoreon_RecoreonBroadcastUploadExtension.framework */,
 				67EE69F63EAE3CAC1C6E8041 /* Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework */,
 				4C0416396D33F9CF52DF5D6D /* Pods_Recoreon_RecoreonUITests.framework */,
-				8A067756C97349111E0E511E /* Pods_RecoreonTests.framework */,
 				22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */,
 				22C18AC02AF2AEAA00C41B49 /* UIKit.framework */,
+				403780D9CD9FC96873A85CEC /* Pods_Recoreon_RecoreonTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -413,6 +426,8 @@
 				7789E3C6ACBA360752D869B3 /* Pods-Recoreon.release.xcconfig */,
 				59F2603F497C749216BA3E94 /* Pods-RecoreonTests.debug.xcconfig */,
 				1572C7C0B2AC1062995A3A79 /* Pods-RecoreonTests.release.xcconfig */,
+				004FAD9530C817772E8284F7 /* Pods-Recoreon-RecoreonTests.debug.xcconfig */,
+				273E6C1050F80A3D90C6C8B1 /* Pods-Recoreon-RecoreonTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -487,6 +502,7 @@
 				22C3CD032AF240B40039750A /* Sources */,
 				22C3CD042AF240B40039750A /* Frameworks */,
 				22C3CD052AF240B40039750A /* Resources */,
+				4891C5D19AAA569A063CC55C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -541,6 +557,7 @@
 					};
 					22C3CD062AF240B40039750A = {
 						CreatedOnToolsVersion = 15.0;
+						LastSwiftMigration = 1500;
 						TestTargetID = 22C3CCF62AF240B30039750A;
 					};
 					22C3CD102AF240B40039750A = {
@@ -671,6 +688,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		4891C5D19AAA569A063CC55C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Recoreon-RecoreonTests/Pods-Recoreon-RecoreonTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Recoreon-RecoreonTests/Pods-Recoreon-RecoreonTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Recoreon-RecoreonTests/Pods-Recoreon-RecoreonTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		557750D6ABCD54266D72FCE0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -686,7 +720,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-RecoreonTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Recoreon-RecoreonTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -787,6 +821,7 @@
 				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
 				22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
+				224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -827,7 +862,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */,
 				22C3CD0C2AF240B40039750A /* RecoreonTests.swift in Sources */,
+				22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1185,10 +1222,11 @@
 		};
 		22C3CD1F2AF240B40039750A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 59F2603F497C749216BA3E94 /* Pods-RecoreonTests.debug.xcconfig */;
+			baseConfigurationReference = 004FAD9530C817772E8284F7 /* Pods-Recoreon-RecoreonTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
@@ -1198,6 +1236,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "RecoreonTests/RecoreonTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Recoreon.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Recoreon";
@@ -1206,10 +1246,11 @@
 		};
 		22C3CD202AF240B40039750A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1572C7C0B2AC1062995A3A79 /* Pods-RecoreonTests.release.xcconfig */;
+			baseConfigurationReference = 273E6C1050F80A3D90C6C8B1 /* Pods-Recoreon-RecoreonTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
@@ -1219,6 +1260,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "RecoreonTests/RecoreonTests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Recoreon.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Recoreon";

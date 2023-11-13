@@ -7,7 +7,7 @@ target 'Recoreon' do
   pod 'ffmpeg-kit-ios-full', '~> 6.0'
 
   target 'RecoreonTests' do
-    inherit! :search_paths
+    inhibit_all_warnings!
   end
 
   target 'RecoreonUITests' do
