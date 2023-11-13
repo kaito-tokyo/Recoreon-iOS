@@ -214,34 +214,23 @@
   return YES;
 }
 
-- (void)writeVideo:(int)index
-         sampleBuffer:(CMSampleBufferRef __nonnull)sampleBuffer
-          pixelBuffer:(CVPixelBufferRef __nonnull)pixelBuffer
+- (BOOL)writeVideo:(int)index
              lumaData:(void *__nonnull)lumaData
            chromaData:(void *__nonnull)chromaData
       lumaBytesPerRow:(long)lumaBytesPerRow
-    chromaBytesPerRow:(long)chromaBytesPerRow {
-  AVFrame *frame = outputStream->frame;
+    chromaBytesPerRow:(long)chromaBytesPerRow
+            height:(long)height {
+  OutputStream *os = &outputStreams[index];
+  AVFrame *frame = os->frame;
   if (av_frame_make_writable(frame) < 0) {
-    NSLog(@"Could not make a frame writable!");
-    return;
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not make the video frame writable");
+    return NO;
   }
-
-  size_t width = CVPixelBufferGetWidth(pixelBuffer);
-  size_t height = CVPixelBufferGetHeight(pixelBuffer);
 
   copyPlane(frame->data[0], frame->linesize[0], lumaData, lumaBytesPerRow,
             width, height);
   copyPlane(frame->data[1], frame->linesize[1], chromaData, chromaBytesPerRow,
             width, height / 2);
-  CVPixelBufferUnlockBaseAddress(pixelBuffer, kCVPixelBufferLock_ReadOnly);
-
-  CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-  if (screenBasePts == 0.0) {
-    screenBasePts = pts.value;
-  }
-  screenVideoStream.frame->pts =
-      (pts.value - screenBasePts) * STREAM_FRAME_RATE / pts.timescale;
 
   write_frame(outputFormatContext, outputStream->enc, outputStream->st,
               outputStream->frame, outputStream->tmp_pkt);
