@@ -2,8 +2,18 @@
 
 #import "ScreenRecordWriter.h"
 
-@implementation ScreenRecordWriter
+static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
+                      size_t srcLinesize, size_t height) {
+  if (dstLinesize == srcLinesize) {
+    memcpy(dst, src, dstLinesize * height);
+  } else {
+    for (int i = 0; i < height; i++) {
+      memcpy(&dst[dstLinesize * i], &src[srcLinesize * i], MIN(srcLinesize, dstLinesize));
+    }
+  }
+}
 
+@implementation ScreenRecordWriter
 - (BOOL)openVideoCodec:(NSString *__nonnull)name {
   videoCodec = avcodec_find_encoder_by_name([name UTF8String]);
   if (videoCodec == NULL) {
@@ -198,7 +208,24 @@
   return YES;
 }
 
-- (BOOL)checkIfVideoSampleBufferIsValid:(CMSampleBufferRef __nonnull)sampleBuffer {
+- (BOOL)startOutput {
+  const char *path = [_filename UTF8String];
+  av_dump_format(formatContext, 0, path, 1);
+
+  if (avio_open(&formatContext->pb, path, AVIO_FLAG_WRITE) < 0) {
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not open the file io:%@", _filename);
+    return NO;
+  }
+
+  if (avformat_write_header(formatContext, NULL) < 0) {
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not write the header");
+    return NO;
+  }
+
+  return YES;
+}
+
+- (BOOL)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer {
   CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
   if (pixelBuffer == nil) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not get the pixel buffer");
@@ -206,9 +233,55 @@
   }
 
   OSType pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer);
-  if (pixelFormat != kCVPixelFormatType_420YpCbCr10BiPlanarFullRange) {
+  if (pixelFormat != kCVPixelFormatType_420YpCbCr8BiPlanarFullRange) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "The pixel format is not supported: %u", pixelFormat);
     return NO;
+  }
+
+  return YES;
+}
+
+- (BOOL)checkIfAudioSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer {
+  CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+  if (pixelBuffer == nil) {
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not get the pixel buffer");
+    return NO;
+  }
+
+  OSType pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer);
+  if (pixelFormat != kCVPixelFormatType_420YpCbCr8BiPlanarFullRange) {
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "The pixel format is not supported: %u", pixelFormat);
+    return NO;
+  }
+
+  return YES;
+}
+
+- (BOOL)writeFrame:(OutputStream *)os {
+  int ret;
+  ret = avcodec_send_frame(os->codecContext, os->frame);
+  if (ret < 0) {
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Error sending a frame to the encoder: %s", av_err2str(ret));
+    return NO;
+  }
+
+  while (ret >= 0) {
+    ret = avcodec_receive_packet(os->codecContext, os->packet);
+    if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
+      break;
+    } else if (ret < 0) {
+      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Error encoding a frame: %s", av_err2str(ret));
+      return NO;
+    }
+
+    av_packet_rescale_ts(os->packet, os->codecContext->time_base, os->stream->time_base);
+    os->packet->stream_index = os->stream->index;
+
+    ret = av_interleaved_write_frame(formatContext, os->packet);
+    if (ret < 0) {
+      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Error while writing output packet: %s", av_err2str(ret));
+      return NO;
+    }
   }
 
   return YES;
@@ -219,7 +292,8 @@
            chromaData:(void *__nonnull)chromaData
       lumaBytesPerRow:(long)lumaBytesPerRow
     chromaBytesPerRow:(long)chromaBytesPerRow
-            height:(long)height {
+            height:(long)height
+               pts:(CMTime)pts {
   OutputStream *os = &outputStreams[index];
   AVFrame *frame = os->frame;
   if (av_frame_make_writable(frame) < 0) {
@@ -227,13 +301,26 @@
     return NO;
   }
 
-  copyPlane(frame->data[0], frame->linesize[0], lumaData, lumaBytesPerRow,
-            width, height);
-  copyPlane(frame->data[1], frame->linesize[1], chromaData, chromaBytesPerRow,
-            width, height / 2);
+  copyPlane(frame->data[0], frame->linesize[0], lumaData, lumaBytesPerRow, height);
+  copyPlane(frame->data[1], frame->linesize[1], chromaData, chromaBytesPerRow, height / 2);
 
-  write_frame(outputFormatContext, outputStream->enc, outputStream->st,
-              outputStream->frame, outputStream->tmp_pkt);
+  AVRational *timeBase = &os->codecContext->time_base;
+  frame->pts = pts.value * timeBase->num / timeBase->den / pts.timescale;
+
+  [self writeFrame:os];
+
+  return YES;
+}
+
+- (BOOL)writeAudio:(int)index
+               abl:(AudioBufferList *)abl {
+  
+}
+
+- (void)finishStream:(int)index {
+  OutputStream *os = &outputStreams[index];
+  os->frame = NULL;
+  [self writeFrame:os];
 }
 
 - (void)finishOutput {

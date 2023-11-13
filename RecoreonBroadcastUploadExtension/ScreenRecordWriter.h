@@ -36,7 +36,17 @@ typedef struct OutputStream {
                bitRate:(int)bitRate;
 - (BOOL)openVideo:(int)index;
 - (BOOL)openAudio:(int)index;
+- (BOOL)startOutput;
+- (BOOL)checkIfVideoSampleBufferIsValid:(CMSampleBufferRef __nonnull)sampleBuffer;
+- (BOOL)writeVideo:(int)index
+             lumaData:(void *__nonnull)lumaData
+           chromaData:(void *__nonnull)chromaData
+      lumaBytesPerRow:(long)lumaBytesPerRow
+    chromaBytesPerRow:(long)chromaBytesPerRow
+            height:(long)height
+pts:(CMTime)pts;
+- (void)finishStream:(int)index;
 - (void)finishOutput;
-- (void)closeStream:(int)index;
-- (void)closeOutput;
+- (void)freeStream:(int)index;
+- (void)freeOutput;
 @end
