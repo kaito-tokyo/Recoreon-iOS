@@ -292,6 +292,10 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   return YES;
 }
 
+- (int)getBytesPerRow:(int)index planeIndex:(int)planeIndex {
+  return outputStreams[index].frame->linesize[planeIndex];
+}
+
 - (BOOL)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer {
   CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
   if (pixelBuffer == nil) {
