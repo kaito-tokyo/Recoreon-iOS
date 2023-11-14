@@ -41,6 +41,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       path: generateFileName(date: Date()), directoryHint: .notDirectory)
     writer.openVideoCodec("h264_videotoolbox")
     writer.openAudioCodec("aac_at")
+    writer.openOutputFile(url.path())
   }
 
   override func broadcastPaused() {
@@ -67,6 +68,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       writer.openAudio(1)
       writer.openAudio(2)
       writer.startOutput()
+      isOutputStarted = true
     }
 
     let lumaBytesPerRow = Int(writer.getBytesPerRow(0, planeIndex: 0))
