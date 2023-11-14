@@ -121,6 +121,10 @@ class SampleHandler: RPBroadcastSampleHandler {
         return
       }
 
+      if screenBasePTS == 0 {
+        screenBasePTS = pts.value
+      }
+
       let outputPTS = (pts.value - screenBasePTS) * Int64(frameRate) / Int64(pts.timescale)
       handleVideoSample(index: 0, pixelBuffer: pixelBuffer, outputPTS: outputPTS)
     case RPSampleBufferType.audioApp:
