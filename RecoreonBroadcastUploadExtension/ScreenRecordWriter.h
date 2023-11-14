@@ -1,24 +1,31 @@
 #pragma once
 
+#import <AudioToolbox/AudioToolbox.h>
 #import <CoreMedia/CoreMedia.h>
 
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+
+#define MAX_STREAMS 8
 
 typedef struct OutputStream {
   AVStream *__nullable stream;
   AVCodecContext *__nullable codecContext;
   AVFrame *__nullable frame;
   AVPacket *__nullable packet;
-  int64_t basePts;
+
+  AudioStreamBasicDescription inputASBD;
+  AudioStreamBasicDescription outputASBD;
+  AudioConverterRef __nullable audioConverter;
 } OutputStream;
 
 @interface ScreenRecordWriter : NSObject {
   const AVCodec *__nullable videoCodec;
   const AVCodec *__nullable audioCodec;
   AVFormatContext *__nullable formatContext;
-  OutputStream outputStreams[3];
-  BOOL isFirstScreenVideoFrameReceived;
+  OutputStream outputStreams[MAX_STREAMS];
+
+  @public int16_t buf[2048];
 }
 
 @property(nonatomic, readonly) NSString *__nullable filename;
@@ -37,7 +44,7 @@ typedef struct OutputStream {
 - (BOOL)openVideo:(int)index;
 - (BOOL)openAudio:(int)index;
 - (BOOL)startOutput;
-- (BOOL)checkIfVideoSampleBufferIsValid:(CMSampleBufferRef __nonnull)sampleBuffer;
+- (BOOL)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer;
 - (BOOL)writeVideo:(int)index
              lumaData:(void *__nonnull)lumaData
            chromaData:(void *__nonnull)chromaData
@@ -45,6 +52,12 @@ typedef struct OutputStream {
     chromaBytesPerRow:(long)chromaBytesPerRow
             height:(long)height
 pts:(CMTime)pts;
+- (bool)ensureAudioConverterAvailable:(int)index asbd:(const AudioStreamBasicDescription *__nonnull)asbd;
+- (void)listenToResampleAudioFrame:(int)index numSamples:(uint32_t *__nonnull)numSamples fillBufList:(AudioBufferList *__nonnull)fillBufList;
+- (bool)writeAudio:(int)index
+               abl:(const AudioBufferList *__nonnull)abl
+              asbd:(const AudioStreamBasicDescription *__nonnull)asbd
+         outputPts:(int64_t)outputPts;
 - (void)finishStream:(int)index;
 - (void)finishOutput;
 - (void)freeStream:(int)index;
