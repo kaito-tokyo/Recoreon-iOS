@@ -262,8 +262,8 @@
 				2232A94D2AFD3FEE00330C23 /* MediaWriter.h */,
 				2232A94B2AFD3FEE00330C23 /* MediaWriter.m */,
 				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
-				224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */,
 				224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */,
+				224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -383,9 +383,9 @@
 		22C3CD0A2AF240B40039750A /* RecoreonTests */ = {
 			isa = PBXGroup;
 			children = (
+				22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */,
 				22C3CD0B2AF240B40039750A /* RecoreonTests.swift */,
 				22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */,
-				22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */,
 			);
 			path = RecoreonTests;
 			sourceTree = "<group>";
@@ -405,10 +405,10 @@
 				A1AB3933CE8D82BA68F94B36 /* Pods_Recoreon.framework */,
 				D3C5AF681C81615562327694 /* Pods_Recoreon_RecoreonBroadcastUploadExtension.framework */,
 				67EE69F63EAE3CAC1C6E8041 /* Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework */,
+				403780D9CD9FC96873A85CEC /* Pods_Recoreon_RecoreonTests.framework */,
 				4C0416396D33F9CF52DF5D6D /* Pods_Recoreon_RecoreonUITests.framework */,
 				22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */,
 				22C18AC02AF2AEAA00C41B49 /* UIKit.framework */,
-				403780D9CD9FC96873A85CEC /* Pods_Recoreon_RecoreonTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -420,14 +420,14 @@
 				1CEEDF33F3DF9E6CF87BA072 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig */,
 				D1409A3B78F24B76E0F23C62 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.debug.xcconfig */,
 				21494B872F6439D163F2B227 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig */,
+				004FAD9530C817772E8284F7 /* Pods-Recoreon-RecoreonTests.debug.xcconfig */,
+				273E6C1050F80A3D90C6C8B1 /* Pods-Recoreon-RecoreonTests.release.xcconfig */,
 				3EC10D9E365CDB0104450C2E /* Pods-Recoreon-RecoreonUITests.debug.xcconfig */,
 				658CAD6469F2B522F9F90C33 /* Pods-Recoreon-RecoreonUITests.release.xcconfig */,
 				673948922AD5439F33B95426 /* Pods-Recoreon.debug.xcconfig */,
 				7789E3C6ACBA360752D869B3 /* Pods-Recoreon.release.xcconfig */,
 				59F2603F497C749216BA3E94 /* Pods-RecoreonTests.debug.xcconfig */,
 				1572C7C0B2AC1062995A3A79 /* Pods-RecoreonTests.release.xcconfig */,
-				004FAD9530C817772E8284F7 /* Pods-Recoreon-RecoreonTests.debug.xcconfig */,
-				273E6C1050F80A3D90C6C8B1 /* Pods-Recoreon-RecoreonTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -862,8 +862,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */,
 				22C3CD0C2AF240B40039750A /* RecoreonTests.swift in Sources */,
+				224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */,
 				22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

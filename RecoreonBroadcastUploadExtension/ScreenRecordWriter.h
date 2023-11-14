@@ -25,8 +25,10 @@ typedef struct OutputStream {
   AVFormatContext *__nullable formatContext;
   OutputStream outputStreams[MAX_STREAMS];
 
-  @public int16_t buf[2048];
-  @public AudioBufferList *__nullable abl;
+@public
+  int16_t buf[2048];
+@public
+  AudioBufferList *__nullable abl;
 }
 
 @property(nonatomic, readonly) NSString *__nullable filename;
@@ -51,9 +53,12 @@ typedef struct OutputStream {
            chromaData:(void *__nonnull)chromaData
       lumaBytesPerRow:(long)lumaBytesPerRow
     chromaBytesPerRow:(long)chromaBytesPerRow
-            height:(long)height
-outputPTS:(int64_t)outputPTS;
-- (bool)ensureAudioConverterAvailable:(int)index asbd:(const AudioStreamBasicDescription *__nonnull)asbd;
+               height:(long)height
+            outputPTS:(int64_t)outputPTS;
+- (bool)
+    ensureAudioConverterAvailable:(int)index
+                             asbd:(const AudioStreamBasicDescription *__nonnull)
+                                      asbd;
 - (bool)writeAudio:(int)index
                abl:(AudioBufferList *__nonnull)abl
               asbd:(const AudioStreamBasicDescription *__nonnull)asbd

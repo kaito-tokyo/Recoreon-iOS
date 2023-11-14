@@ -5,14 +5,15 @@
 #import "ScreenRecordWriter.h"
 
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
-//  AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
-//
-//  printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s "
-//         "stream_index:%d\n",
-//         av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
-//         av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
-//         av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
-//         pkt->stream_index);
+  //  AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
+  //
+  //  printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s
+  //  "
+  //         "stream_index:%d\n",
+  //         av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
+  //         av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
+  //         av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
+  //         pkt->stream_index);
 }
 
 static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
@@ -21,13 +22,21 @@ static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
     memcpy(dst, src, dstLinesize * height);
   } else {
     for (int i = 0; i < height; i++) {
-      memcpy(&dst[dstLinesize * i], &src[srcLinesize * i], MIN(srcLinesize, dstLinesize));
+      memcpy(&dst[dstLinesize * i], &src[srcLinesize * i],
+             MIN(srcLinesize, dstLinesize));
     }
   }
 }
 
-static bool isASBDEqual(const AudioStreamBasicDescription *x, const AudioStreamBasicDescription *y) {
-  return x->mSampleRate == y->mSampleRate && x->mFormatID == y->mFormatID && x->mFormatFlags == y->mFormatFlags && x->mBytesPerPacket == y->mBytesPerPacket && x->mFramesPerPacket == y->mFramesPerPacket && x->mBytesPerFrame == y->mBytesPerFrame && x->mChannelsPerFrame == y->mChannelsPerFrame && x->mBitsPerChannel == y->mBitsPerChannel;
+static bool isASBDEqual(const AudioStreamBasicDescription *x,
+                        const AudioStreamBasicDescription *y) {
+  return x->mSampleRate == y->mSampleRate && x->mFormatID == y->mFormatID &&
+         x->mFormatFlags == y->mFormatFlags &&
+         x->mBytesPerPacket == y->mBytesPerPacket &&
+         x->mFramesPerPacket == y->mFramesPerPacket &&
+         x->mBytesPerFrame == y->mBytesPerFrame &&
+         x->mChannelsPerFrame == y->mChannelsPerFrame &&
+         x->mBitsPerChannel == y->mBitsPerChannel;
 }
 
 typedef struct ResamplerState {
@@ -37,7 +46,12 @@ typedef struct ResamplerState {
   size_t readSize;
 } ResamplerState;
 
-static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *ioNumberDataPackets, AudioBufferList *ioData, AudioStreamPacketDescription * __nullable * __nullable outDataPacketDescription, void * __nullable inUserData) {
+static OSStatus
+audioConvertProc(AudioConverterRef inAudioConverter,
+                 uint32_t *ioNumberDataPackets, AudioBufferList *ioData,
+                 AudioStreamPacketDescription *__nullable *__nullable
+                     outDataPacketDescription,
+                 void *__nullable inUserData) {
   ResamplerState *state = (ResamplerState *)inUserData;
   *ioData = state->inputABL;
   *ioNumberDataPackets = state->outputNumberDataPackets;
@@ -168,16 +182,16 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
     c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
   }
 
-  AudioStreamBasicDescription asbd = {
-    .mSampleRate = sampleRate,
-    .mFormatID = kAudioFormatLinearPCM,
-    .mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked,
-    .mBytesPerPacket = 4,
-    .mFramesPerPacket = 1,
-    .mBytesPerFrame = 4,
-    .mChannelsPerFrame = 2,
-    .mBitsPerChannel = 16
-  };
+  AudioStreamBasicDescription asbd = {.mSampleRate = sampleRate,
+                                      .mFormatID = kAudioFormatLinearPCM,
+                                      .mFormatFlags =
+                                          kAudioFormatFlagIsSignedInteger |
+                                          kAudioFormatFlagIsPacked,
+                                      .mBytesPerPacket = 4,
+                                      .mFramesPerPacket = 1,
+                                      .mBytesPerFrame = 4,
+                                      .mChannelsPerFrame = 2,
+                                      .mBitsPerChannel = 16};
   os->outputASBD = asbd;
 
   return YES;
@@ -187,13 +201,15 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
   OutputStream *os = &outputStreams[index];
   AVCodecContext *codecContext = os->codecContext;
   if (avcodec_open2(codecContext, videoCodec, NULL) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not open video codec context");
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not open video codec context");
     return NO;
   }
 
   AVFrame *frame = av_frame_alloc();
   if (frame == NULL) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not allocate video frame");
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not allocate video frame");
     return NO;
   }
 
@@ -203,14 +219,16 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
   frame->color_range = AVCOL_RANGE_JPEG;
 
   if (av_frame_get_buffer(frame, 0) < 0) {
-      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not allocate video frame buffer");
-      return NO;
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not allocate video frame buffer");
+    return NO;
   }
 
   os->frame = frame;
 
   if (avcodec_parameters_from_context(os->stream->codecpar, codecContext) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not copy the video stream parameters");
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not copy the video stream parameters");
     return NO;
   }
 
@@ -221,13 +239,15 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
   OutputStream *os = &outputStreams[index];
   AVCodecContext *codecContext = os->codecContext;
   if (avcodec_open2(codecContext, audioCodec, NULL) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not open audio codec context");
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not open audio codec context");
     return NO;
   }
 
   AVFrame *frame = av_frame_alloc();
   if (frame == NULL) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not allocate audio frame");
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not allocate audio frame");
     return NO;
   }
 
@@ -237,14 +257,16 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
   frame->nb_samples = codecContext->frame_size;
 
   if (av_frame_get_buffer(frame, 0) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not allocate video frame buffer");
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not allocate video frame buffer");
     return NO;
   }
 
   os->frame = frame;
 
   if (avcodec_parameters_from_context(os->stream->codecpar, codecContext) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not copy the audio stream parameters");
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not copy the audio stream parameters");
     return NO;
   }
 
@@ -256,12 +278,14 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
   av_dump_format(formatContext, 0, path, 1);
 
   if (avio_open(&formatContext->pb, path, AVIO_FLAG_WRITE) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not open the file io:%@", _filename);
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not open the file io:%@", _filename);
     return NO;
   }
 
   if (avformat_write_header(formatContext, NULL) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not write the header");
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not write the header");
     return NO;
   }
 
@@ -271,13 +295,15 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
 - (BOOL)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer {
   CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
   if (pixelBuffer == nil) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not get the pixel buffer");
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not get the pixel buffer");
     return NO;
   }
 
   OSType pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer);
   if (pixelFormat != kCVPixelFormatType_420YpCbCr8BiPlanarFullRange) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "The pixel format is not supported: %u", pixelFormat);
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "The pixel format is not supported: %u", pixelFormat);
     return NO;
   }
 
@@ -288,7 +314,9 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
   int ret;
   ret = avcodec_send_frame(os->codecContext, os->frame);
   if (ret < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Error sending a frame to the encoder: %s", av_err2str(ret));
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Error sending a frame to the encoder: %s",
+                     av_err2str(ret));
     return NO;
   }
 
@@ -297,17 +325,21 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
     if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
       break;
     } else if (ret < 0) {
-      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Error encoding a frame: %s", av_err2str(ret));
+      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                       "Error encoding a frame: %s", av_err2str(ret));
       return NO;
     }
 
-    av_packet_rescale_ts(os->packet, os->codecContext->time_base, os->stream->time_base);
+    av_packet_rescale_ts(os->packet, os->codecContext->time_base,
+                         os->stream->time_base);
     os->packet->stream_index = os->stream->index;
 
     log_packet(formatContext, os->packet);
     ret = av_interleaved_write_frame(formatContext, os->packet);
     if (ret < 0) {
-      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Error while writing output packet: %s", av_err2str(ret));
+      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                       "Error while writing output packet: %s",
+                       av_err2str(ret));
       return NO;
     }
   }
@@ -320,17 +352,20 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
            chromaData:(void *__nonnull)chromaData
       lumaBytesPerRow:(long)lumaBytesPerRow
     chromaBytesPerRow:(long)chromaBytesPerRow
-            height:(long)height
-               outputPTS:(int64_t)outputPTS {
+               height:(long)height
+            outputPTS:(int64_t)outputPTS {
   OutputStream *os = &outputStreams[index];
   AVFrame *frame = os->frame;
   if (av_frame_make_writable(frame) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not make the video frame writable");
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not make the video frame writable");
     return NO;
   }
 
-  copyPlane(frame->data[0], frame->linesize[0], lumaData, lumaBytesPerRow, height);
-  copyPlane(frame->data[1], frame->linesize[1], chromaData, chromaBytesPerRow, height / 2);
+  copyPlane(frame->data[0], frame->linesize[0], lumaData, lumaBytesPerRow,
+            height);
+  copyPlane(frame->data[1], frame->linesize[1], chromaData, chromaBytesPerRow,
+            height / 2);
 
   frame->pts = outputPTS;
 
@@ -339,7 +374,9 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
   return YES;
 }
 
-- (bool)ensureAudioConverterAvailable:(int)index asbd:(const AudioStreamBasicDescription *)asbd {
+- (bool)ensureAudioConverterAvailable:(int)index
+                                 asbd:
+                                     (const AudioStreamBasicDescription *)asbd {
   OSStatus status;
   OutputStream *os = &outputStreams[index];
 
@@ -347,18 +384,21 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
     if (os->audioConverter != NULL) {
       status = AudioConverterDispose(os->audioConverter);
       if (status != noErr) {
-        os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO, "Could not dispose the audio converter: %d", status);
+        os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
+                         "Could not dispose the audio converter: %d", status);
       }
     }
     status = AudioConverterNew(asbd, &os->outputASBD, &os->audioConverter);
     if (status != noErr) {
-      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not create the audio converter: %d", status);
+      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                       "Could not create the audio converter: %d", status);
       return false;
     }
     os->inputASBD = *asbd;
   }
   if (os->audioConverter == NULL) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not find the audio converter");
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not find the audio converter");
     return false;
   }
 
@@ -376,12 +416,15 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
   }
 
   uint32_t numSamples = os->frame->nb_samples;
-  uint32_t readSize = abl->mBuffers[0].mDataByteSize * os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
-  uint32_t ptsStep = os->frame->nb_samples * os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
+  uint32_t readSize = abl->mBuffers[0].mDataByteSize *
+                      os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
+  uint32_t ptsStep = os->frame->nb_samples * os->inputASBD.mSampleRate /
+                     os->outputASBD.mSampleRate;
   size_t offset = 0;
   while (offset < abl->mBuffers[0].mDataByteSize) {
     if (av_frame_make_writable(os->frame) < 0) {
-      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not make the audio frame writable");
+      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                       "Could not make the audio frame writable");
       return false;
     }
 
@@ -389,8 +432,10 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
     state.inputABL.mNumberBuffers = 1;
     state.inputABL.mBuffers[0].mDataByteSize = readSize;
     state.inputABL.mBuffers[0].mData = abl->mBuffers[0].mData + offset;
-    state.inputABL.mBuffers[0].mNumberChannels = os->inputASBD.mChannelsPerFrame;
-    state.outputNumberDataPackets = numSamples * os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
+    state.inputABL.mBuffers[0].mNumberChannels =
+        os->inputASBD.mChannelsPerFrame;
+    state.outputNumberDataPackets =
+        numSamples * os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
 
     AudioBufferList outputABL;
     outputABL.mNumberBuffers = 1;
@@ -398,9 +443,12 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
     outputABL.mBuffers[0].mDataByteSize = numSamples * 4;
     outputABL.mBuffers[0].mData = os->frame->data[0];
 
-    AudioConverterFillComplexBuffer(os->audioConverter, &audioConvertProc, &state, &numSamples, &outputABL, NULL);
+    AudioConverterFillComplexBuffer(os->audioConverter, &audioConvertProc,
+                                    &state, &numSamples, &outputABL, NULL);
 
-    os->frame->pts = av_rescale_q(outputPTS, (AVRational){1, os->codecContext->sample_rate}, os->codecContext->time_base);
+    os->frame->pts =
+        av_rescale_q(outputPTS, (AVRational){1, os->codecContext->sample_rate},
+                     os->codecContext->time_base);
     [self writeFrame:os];
 
     offset += readSize;
