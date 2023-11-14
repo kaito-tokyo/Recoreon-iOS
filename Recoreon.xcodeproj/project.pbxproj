@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */; };
-		2232A94E2AFD3FEE00330C23 /* MediaWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94B2AFD3FEE00330C23 /* MediaWriter.m */; };
 		2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */; };
 		2232A9512AFD452600330C23 /* RecordedVideoBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9502AFD452600330C23 /* RecordedVideoBasicView.swift */; };
 		2232A9532AFD469400330C23 /* RecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9522AFD469400330C23 /* RecorderView.swift */; };
@@ -104,9 +103,7 @@
 		1CEEDF33F3DF9E6CF87BA072 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtension/Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; sourceTree = "<group>"; };
 		21494B872F6439D163F2B227 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; sourceTree = "<group>"; };
 		2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonBroadcastPickerRepresentable.swift; sourceTree = "<group>"; };
-		2232A94B2AFD3FEE00330C23 /* MediaWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaWriter.m; path = RecoreonBroadcastUploadExtension/MediaWriter.m; sourceTree = SOURCE_ROOT; };
 		2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PixelBufferExtractor.swift; path = RecoreonBroadcastUploadExtension/PixelBufferExtractor.swift; sourceTree = SOURCE_ROOT; };
-		2232A94D2AFD3FEE00330C23 /* MediaWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaWriter.h; path = RecoreonBroadcastUploadExtension/MediaWriter.h; sourceTree = SOURCE_ROOT; };
 		2232A9502AFD452600330C23 /* RecordedVideoBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoBasicView.swift; sourceTree = "<group>"; };
 		2232A9522AFD469400330C23 /* RecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderView.swift; sourceTree = "<group>"; };
 		2232A9542AFD46ED00330C23 /* AdvancedRecordedVideoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedRecordedVideoListView.swift; sourceTree = "<group>"; };
@@ -259,8 +256,6 @@
 		22966A252AFE47110080324D /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				2232A94D2AFD3FEE00330C23 /* MediaWriter.h */,
-				2232A94B2AFD3FEE00330C23 /* MediaWriter.m */,
 				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
 				224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */,
 				224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */,
@@ -817,7 +812,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2232A94E2AFD3FEE00330C23 /* MediaWriter.m in Sources */,
 				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
 				22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
