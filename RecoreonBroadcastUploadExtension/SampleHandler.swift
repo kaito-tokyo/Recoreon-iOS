@@ -155,7 +155,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     guard let bufferHandler = micAudioBufferHandler else { return }
 
     writer.prepareFrame(2)
-    let frameBuf = writer.getBaseAddress(ofPlane: 2, planeIndex: 0)
+    let frameBuf = writer.getBaseAddress(2, ofPlane: 0)
 
     if abl.mBuffers.mDataByteSize != bufferHandler.byteCount {
       return
