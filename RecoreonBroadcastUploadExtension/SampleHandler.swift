@@ -9,20 +9,24 @@ import ReplayKit
 
 private let paths = RecoreonPaths()
 
+private let fileManager = FileManager.default
+
+private let dateFormatter = {
+  let formatter = ISO8601DateFormatter()
+  formatter.formatOptions.remove(.withDashSeparatorInDate)
+  formatter.formatOptions.remove(.withColonSeparatorInTime)
+  formatter.formatOptions.remove(.withTimeZone)
+  formatter.timeZone = TimeZone.current
+  return formatter
+}()
+
 class SampleHandler: RPBroadcastSampleHandler {
   let frameRate: Int32 = 120
 
-  private let fileManager = FileManager.default
-  var writer = ScreenRecordWriter()
-  let dateFormatter = {
-    let formatter = ISO8601DateFormatter()
-    formatter.formatOptions.remove(.withDashSeparatorInDate)
-    formatter.formatOptions.remove(.withColonSeparatorInTime)
-    formatter.formatOptions.remove(.withTimeZone)
-    formatter.timeZone = TimeZone.current
-    return formatter
-  }()
+  let writer = ScreenRecordWriter()
   let pixelBufferExtractorRef = PixelBufferExtractor()
+  var screenAudioBufferHandler: AudioBufferHandler?
+  var micAudioBufferHandler: AudioBufferHandler?
 
   var isOutputStarted: Bool = false
 
@@ -90,7 +94,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
   }
 
-  func handleAudioSample(index: Int32, sampleBuffer: CMSampleBuffer, outputPTS: Int64) {
+  func handleScreenAudioSample(index: Int32, sampleBuffer: CMSampleBuffer, outputPTS: Int64) {
     var blockBuffer: CMBlockBuffer?
     var abl = AudioBufferList()
     CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
@@ -103,11 +107,75 @@ class SampleHandler: RPBroadcastSampleHandler {
       flags: 0,
       blockBufferOut: &blockBuffer
     )
+
     guard let format = CMSampleBufferGetFormatDescription(sampleBuffer) else { return }
-    guard let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format) else { return }
-    queue.async {
-      self.writer.writeAudio(index, abl: &abl, asbd: asbd, outputPTS: outputPTS)
+    guard let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee else {
+      return
     }
+    guard let bufferHandler = screenAudioBufferHandler else { return }
+
+    if abl.mBuffers.mDataByteSize != bufferHandler.byteCount {
+      return
+    }
+
+    guard let data = abl.mBuffers.mData else { return }
+
+    if asbd.mSampleRate == 44100 {
+      if asbd.mChannelsPerFrame == 2 {
+        if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
+          bufferHandler.copyStereoToStereo(from: data)
+        } else {
+          bufferHandler.copyStereoToStereoWithSwap(from: data)
+        }
+      } else {
+        return
+      }
+    } else {
+      print(asbd.mSampleRate)
+      return
+    }
+    writer.writeAudio(1, outputPTS: outputPTS)
+  }
+
+  func handleMicAudioSample(index: Int32, sampleBuffer: CMSampleBuffer, outputPTS: Int64) {
+    var blockBuffer: CMBlockBuffer?
+    var abl = AudioBufferList()
+    CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
+      sampleBuffer,
+      bufferListSizeNeededOut: nil,
+      bufferListOut: &abl,
+      bufferListSize: MemoryLayout<AudioBufferList>.size,
+      blockBufferAllocator: nil,
+      blockBufferMemoryAllocator: nil,
+      flags: 0,
+      blockBufferOut: &blockBuffer
+    )
+
+    guard let format = CMSampleBufferGetFormatDescription(sampleBuffer) else { return }
+    guard let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee else {
+      return
+    }
+    guard let bufferHandler = micAudioBufferHandler else { return }
+
+    if abl.mBuffers.mDataByteSize != bufferHandler.byteCount {
+      return
+    }
+
+    guard let inData = abl.mBuffers.mData else { return }
+    if asbd.mSampleRate == 48000 {
+      if asbd.mChannelsPerFrame == 1 {
+        if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian != 0 {
+          bufferHandler.copyMonoToStereoWithSwap(from: inData)
+        } else {
+          return
+        }
+      } else {
+        return
+      }
+    } else {
+      return
+    }
+    writer.writeAudio(1, outputPTS: outputPTS)
   }
 
   override func processSampleBuffer(
@@ -134,6 +202,15 @@ class SampleHandler: RPBroadcastSampleHandler {
         writer.openAudio(2)
         writer.startOutput()
 
+        screenAudioBufferHandler = AudioBufferHandler(
+          buf: writer.getMemoryOfPlane(1, planeIndex: 0),
+          byteCount: writer.getByteCount(ofAudioPlane: 1)
+        )
+        micAudioBufferHandler = AudioBufferHandler(
+          buf: writer.getMemoryOfPlane(2, planeIndex: 0),
+          byteCount: writer.getByteCount(ofAudioPlane: 2)
+        )
+
         isOutputStarted = true
         screenFirstTime = pts
       }
@@ -143,6 +220,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       self.screenElapsedTime = elapsedTime
       let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: frameRate)
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+      print("V: \(outputPTS)")
 
       self.handleVideoSample(index: 0, pixelBuffer: pixelBuffer, outputPTS: outputPTS)
     case RPSampleBufferType.audioApp:
@@ -151,10 +229,12 @@ class SampleHandler: RPBroadcastSampleHandler {
       }
 
       guard let firstTime = screenFirstTime else { return }
-      let elapsedCount = CMTimeMultiply(CMTimeSubtract(pts, firstTime), multiplier: 44100)
+      let elapsedTime = CMTimeSubtract(pts, firstTime)
+      let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: 44100)
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+      print("A: \(outputPTS)")
 
-      self.handleAudioSample(index: 1, sampleBuffer: sampleBuffer, outputPTS: outputPTS)
+      self.handleScreenAudioSample(index: 1, sampleBuffer: sampleBuffer, outputPTS: outputPTS)
     case RPSampleBufferType.audioMic:
       if !isOutputStarted {
         return
@@ -168,7 +248,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       let elapsedCount = CMTimeMultiply(CMTimeSubtract(pts, firstTime), multiplier: 48000)
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
-      self.handleAudioSample(index: 2, sampleBuffer: sampleBuffer, outputPTS: outputPTS)
+      self.handleMicAudioSample(index: 2, sampleBuffer: sampleBuffer, outputPTS: outputPTS)
     @unknown default:
       // Handle other sample buffer types
       fatalError("Unknown type of sample buffer")

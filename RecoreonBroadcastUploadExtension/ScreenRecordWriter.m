@@ -295,8 +295,16 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   return YES;
 }
 
+- (void *__nonnull)getMemoryOfPlane:(long)index planeIndex:(long)planeIndex {
+  return outputStreams[index].frame->data[planeIndex];
+}
+
 - (int)getBytesPerRow:(int)index planeIndex:(int)planeIndex {
   return outputStreams[index].frame->linesize[planeIndex];
+}
+
+- (long)getByteCountOfAudioPlane:(long)index {
+  return outputStreams[index].frame->nb_samples * 4;
 }
 
 - (BOOL)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer {
@@ -381,86 +389,12 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   return YES;
 }
 
-- (bool)ensureAudioConverterAvailable:(int)index
-                                 asbd:
-                                     (const AudioStreamBasicDescription *)asbd {
-  OSStatus status;
+- (bool)writeAudio:(int)index outputPTS:(int64_t)outputPTS {
   OutputStream *os = &outputStreams[index];
-
-  if (!isASBDEqual(&os->inputASBD, asbd)) {
-    if (os->audioConverter != NULL) {
-      status = AudioConverterDispose(os->audioConverter);
-      if (status != noErr) {
-        os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
-                         "Could not dispose the audio converter: %d", status);
-      }
-    }
-    status = AudioConverterNew(asbd, &os->outputASBD, &os->audioConverter);
-    if (status != noErr) {
-      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                       "Could not create the audio converter: %d", status);
-      return false;
-    }
-    os->inputASBD = *asbd;
-  }
-  if (os->audioConverter == NULL) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not find the audio converter");
-    return false;
-  }
-
-  return true;
-}
-
-- (bool)writeAudio:(int)index
-               abl:(AudioBufferList *__nonnull)abl
-              asbd:(const AudioStreamBasicDescription *__nonnull)asbd
-         outputPTS:(int64_t)outputPTS {
-  OutputStream *os = &outputStreams[index];
-
-  if (![self ensureAudioConverterAvailable:index asbd:asbd]) {
-    return false;
-  }
-
-  uint32_t numSamples = os->frame->nb_samples;
-  uint32_t readSize = abl->mBuffers[0].mDataByteSize *
-                      os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
-  uint32_t ptsStep = os->frame->nb_samples * os->inputASBD.mSampleRate /
-                     os->outputASBD.mSampleRate;
-  size_t offset = 0;
-  while (offset < abl->mBuffers[0].mDataByteSize) {
-    if (av_frame_make_writable(os->frame) < 0) {
-      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                       "Could not make the audio frame writable");
-      return false;
-    }
-
-    ResamplerState state;
-    state.inputABL.mNumberBuffers = 1;
-    state.inputABL.mBuffers[0].mDataByteSize = readSize;
-    state.inputABL.mBuffers[0].mData = abl->mBuffers[0].mData + offset;
-    state.inputABL.mBuffers[0].mNumberChannels =
-        os->inputASBD.mChannelsPerFrame;
-    state.outputNumberDataPackets =
-        numSamples * os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
-
-    AudioBufferList outputABL;
-    outputABL.mNumberBuffers = 1;
-    outputABL.mBuffers[0].mNumberChannels = os->outputASBD.mChannelsPerFrame;
-    outputABL.mBuffers[0].mDataByteSize = numSamples * 4;
-    outputABL.mBuffers[0].mData = os->frame->data[0];
-
-    AudioConverterFillComplexBuffer(os->audioConverter, &audioConvertProc,
-                                    &state, &numSamples, &outputABL, NULL);
-
-    os->frame->pts =
-        av_rescale_q(outputPTS, (AVRational){1, os->codecContext->sample_rate},
-                     os->codecContext->time_base);
-    [self writeFrame:os];
-
-    offset += readSize;
-    outputPTS += ptsStep;
-  }
+  os->frame->pts =
+      av_rescale_q(outputPTS, (AVRational){1, os->codecContext->sample_rate},
+                   os->codecContext->time_base);
+  [self writeFrame:os];
 
   return true;
 }
