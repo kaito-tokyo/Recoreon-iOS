@@ -34,8 +34,6 @@ class SampleHandler: RPBroadcastSampleHandler {
   var screenElapsedTime: CMTime?
   var micFirstTime: CMTime?
 
-  let queue = DispatchQueue(label: "com.github.umireon.Recoreon.com.github.umireon.Recoreon.queue")
-
   func generateFileName(date: Date, ext: String = "mkv") -> String {
     let dateString = dateFormatter.string(from: date)
     return "Recoreon\(dateString).\(ext)"
@@ -81,17 +79,15 @@ class SampleHandler: RPBroadcastSampleHandler {
       return
     }
 
-    queue.async {
-      self.writer.writeVideo(
-        0,
-        lumaData: frame.lumaData,
-        chromaData: frame.chmoraData,
-        lumaBytesPerRow: frame.lumaBytesPerRow,
-        chromaBytesPerRow: frame.chromaBytesPerRow,
-        height: frame.height,
-        outputPTS: outputPTS
-      )
-    }
+    self.writer.writeVideo(
+      0,
+      lumaData: frame.lumaData,
+      chromaData: frame.chmoraData,
+      lumaBytesPerRow: frame.lumaBytesPerRow,
+      chromaBytesPerRow: frame.chromaBytesPerRow,
+      height: frame.height,
+      outputPTS: outputPTS
+    )
   }
 
   func handleScreenAudioSample(index: Int32, sampleBuffer: CMSampleBuffer, outputPTS: Int64) {
@@ -120,18 +116,19 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     guard let data = abl.mBuffers.mData else { return }
 
+    writer.prepareFrame(1)
+    let frameBuf = writer.getBaseAddress(1, ofPlane: 0)
     if asbd.mSampleRate == 44100 {
       if asbd.mChannelsPerFrame == 2 {
         if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
-          bufferHandler.copyStereoToStereo(from: data)
+          bufferHandler.copyStereoToStereo(from: data, to: frameBuf)
         } else {
-          bufferHandler.copyStereoToStereoWithSwap(from: data)
+          bufferHandler.copyStereoToStereoWithSwap(from: data, to: frameBuf)
         }
       } else {
         return
       }
     } else {
-      print(asbd.mSampleRate)
       return
     }
     writer.writeAudio(1, outputPTS: outputPTS)
@@ -157,6 +154,9 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
     guard let bufferHandler = micAudioBufferHandler else { return }
 
+    writer.prepareFrame(2)
+    let frameBuf = writer.getBaseAddress(ofPlane: 2, planeIndex: 0)
+
     if abl.mBuffers.mDataByteSize != bufferHandler.byteCount {
       return
     }
@@ -165,7 +165,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     if asbd.mSampleRate == 48000 {
       if asbd.mChannelsPerFrame == 1 {
         if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian != 0 {
-          bufferHandler.copyMonoToStereoWithSwap(from: inData)
+          bufferHandler.copyMonoToStereoWithSwap(from: inData, to: frameBuf)
         } else {
           return
         }
@@ -175,7 +175,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     } else {
       return
     }
-    writer.writeAudio(1, outputPTS: outputPTS)
+    writer.writeAudio(2, outputPTS: outputPTS)
   }
 
   override func processSampleBuffer(
@@ -203,11 +203,9 @@ class SampleHandler: RPBroadcastSampleHandler {
         writer.startOutput()
 
         screenAudioBufferHandler = AudioBufferHandler(
-          buf: writer.getMemoryOfPlane(1, planeIndex: 0),
           byteCount: writer.getByteCount(ofAudioPlane: 1)
         )
         micAudioBufferHandler = AudioBufferHandler(
-          buf: writer.getMemoryOfPlane(2, planeIndex: 0),
           byteCount: writer.getByteCount(ofAudioPlane: 2)
         )
 
@@ -220,7 +218,6 @@ class SampleHandler: RPBroadcastSampleHandler {
       self.screenElapsedTime = elapsedTime
       let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: frameRate)
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
-      print("V: \(outputPTS)")
 
       self.handleVideoSample(index: 0, pixelBuffer: pixelBuffer, outputPTS: outputPTS)
     case RPSampleBufferType.audioApp:
@@ -232,7 +229,6 @@ class SampleHandler: RPBroadcastSampleHandler {
       let elapsedTime = CMTimeSubtract(pts, firstTime)
       let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: 44100)
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
-      print("A: \(outputPTS)")
 
       self.handleScreenAudioSample(index: 1, sampleBuffer: sampleBuffer, outputPTS: outputPTS)
     case RPSampleBufferType.audioMic:
