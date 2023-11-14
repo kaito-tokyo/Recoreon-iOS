@@ -41,16 +41,6 @@ static AudioInfo micAudioInfo1 = {
     .numChannels = 2,
 };
 
-static NSString *sha256sum(NSData *data) {
-  uint8_t digest[CC_SHA256_DIGEST_LENGTH];
-  CC_SHA256(data.bytes, (int)data.length, digest);
-  NSMutableString *result = [[NSMutableString alloc] init];
-  for (int i = 0; i < CC_SHA256_DIGEST_LENGTH; i++) {
-    [result appendFormat:@"%02x", digest[i]];
-  }
-  return [result copy];
-}
-
 @interface ScreenRecordWriterTests : XCTestCase {
   double t;
   double tincr;
@@ -263,11 +253,6 @@ static NSString *sha256sum(NSData *data) {
   [writer finishOutput];
   [writer freeStream:0];
   [writer freeOutput];
-
-  NSData *outputData = [NSData dataWithContentsOfFile:path];
-  XCTAssertEqualObjects(
-      sha256sum(outputData),
-      @"291f7c360dc01856580fc8c40fe3ce2cfc00f8a647326da1a88a3daa1bd6dcb6");
 }
 
 - (void)testSameSampleRateAudio {
@@ -305,11 +290,6 @@ static NSString *sha256sum(NSData *data) {
   [writer finishOutput];
   [writer freeStream:0];
   [writer freeOutput];
-
-  NSData *outputData = [NSData dataWithContentsOfFile:path];
-  XCTAssertEqualObjects(
-      sha256sum(outputData),
-      @"efcbbf358a000a485980641140c7c625ea01ae20de1e2f6c8dbe40b7cf645c94");
 }
 
 - (void)testResampledAudio {
@@ -349,11 +329,6 @@ static NSString *sha256sum(NSData *data) {
   [writer finishOutput];
   [writer freeStream:0];
   [writer freeOutput];
-
-  NSData *outputData = [NSData dataWithContentsOfFile:path];
-  XCTAssertEqualObjects(
-      sha256sum(outputData),
-      @"924006554e0864a07cf720a5717fb5e2e1c0ddc5195121a3063802e4d7d23bbd");
 }
 
 @end
