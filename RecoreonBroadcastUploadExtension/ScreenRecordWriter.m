@@ -5,15 +5,18 @@
 #import "ScreenRecordWriter.h"
 
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
-  //  AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
-  //
-  //  printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s
-  //  "
-  //         "stream_index:%d\n",
-  //         av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
-  //         av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
-  //         av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
-  //         pkt->stream_index);
+#if DEBUG
+  AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
+
+//  os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_DEBUG,
+//                   "pts:%s pts_time:%s dts:%s dts_time:%s duration:%s "
+//                   "duration_time:%s stream_index:%d\n",
+//                   av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
+//                   av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
+//                   av_ts2str(pkt->duration),
+//                   av_ts2timestr(pkt->duration, time_base),
+//                   pkt->stream_index);
+#endif
 }
 
 static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
@@ -290,6 +293,10 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   }
 
   return YES;
+}
+
+- (int)getBytesPerRow:(int)index planeIndex:(int)planeIndex {
+  return outputStreams[index].frame->linesize[planeIndex];
 }
 
 - (BOOL)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer {

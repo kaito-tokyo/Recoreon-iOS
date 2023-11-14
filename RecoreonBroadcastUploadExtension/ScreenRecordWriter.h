@@ -47,6 +47,7 @@ typedef struct OutputStream {
 - (BOOL)openVideo:(int)index;
 - (BOOL)openAudio:(int)index;
 - (BOOL)startOutput;
+- (int)getBytesPerRow:(int)index planeIndex:(int)planeIndex;
 - (BOOL)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer;
 - (BOOL)writeVideo:(int)index
              lumaData:(void *__nonnull)lumaData

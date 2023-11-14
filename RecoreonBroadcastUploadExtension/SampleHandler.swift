@@ -10,9 +10,10 @@ import ReplayKit
 private let paths = RecoreonPaths()
 
 class SampleHandler: RPBroadcastSampleHandler {
+  let frameRate: Int32 = 120
+
   private let fileManager = FileManager.default
-  var writer: MediaWriter?
-  var audioBufferList = AudioBufferList()
+  var writer = ScreenRecordWriter()
   let dateFormatter = {
     let formatter = ISO8601DateFormatter()
     formatter.formatOptions.remove(.withDashSeparatorInDate)
@@ -23,6 +24,14 @@ class SampleHandler: RPBroadcastSampleHandler {
   }()
   let pixelBufferExtractorRef = PixelBufferExtractor()
 
+  var isOutputStarted: Bool = false
+
+  var screenFirstTime: CMTime?
+  var screenElapsedTime: CMTime?
+  var micFirstTime: CMTime?
+
+  let queue = DispatchQueue(label: "com.github.umireon.Recoreon.com.github.umireon.Recoreon.queue")
+
   func generateFileName(date: Date, ext: String = "mkv") -> String {
     let dateString = dateFormatter.string(from: date)
     return "Recoreon\(dateString).\(ext)"
@@ -31,10 +40,11 @@ class SampleHandler: RPBroadcastSampleHandler {
   override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
     paths.ensureAppGroupDirectoriesExists()
 
-    writer = MediaWriter()
     let url = paths.appGroupRecordsDir.appending(
       path: generateFileName(date: Date()), directoryHint: .notDirectory)
-    writer?.open(url.path())
+    writer.openVideoCodec("h264_videotoolbox")
+    writer.openAudioCodec("aac_at")
+    writer.openOutputFile(url.path())
   }
 
   override func broadcastPaused() {
@@ -46,63 +56,119 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   override func broadcastFinished() {
-    writer?.close()
+    writer.finishStream(0)
+    writer.finishStream(1)
+    writer.finishStream(2)
+    writer.finishOutput()
+    writer.freeStream(0)
+    writer.freeStream(1)
+    writer.freeStream(2)
+    writer.freeOutput()
   }
 
-  func getLumaBytesPerRow(_ pixelBuffer: CVPixelBuffer) -> Int {
-    if let desired = writer?.desiredLumaBytesPerRow {
-      if desired != 0 {
-        return desired
-      }
+  func handleVideoSample(index: Int32, pixelBuffer: CVPixelBuffer, outputPTS: Int64) {
+    let lumaBytesPerRow = Int(writer.getBytesPerRow(0, planeIndex: 0))
+    let chromaBytesPerRow = Int(writer.getBytesPerRow(0, planeIndex: 1))
+    guard
+      let frame = pixelBufferExtractorRef?.extract(
+        pixelBuffer, lumaBytesPerRow: lumaBytesPerRow, chromaBytesPerRow: chromaBytesPerRow)
+    else {
+      print("Could not render to the pixel buffer!")
+      return
     }
-    return CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0)
+
+    queue.async {
+      self.writer.writeVideo(
+        0,
+        lumaData: frame.lumaData,
+        chromaData: frame.chmoraData,
+        lumaBytesPerRow: frame.lumaBytesPerRow,
+        chromaBytesPerRow: frame.chromaBytesPerRow,
+        height: frame.height,
+        outputPTS: outputPTS
+      )
+    }
   }
 
-  func getChromaBytesPerRow(_ pixelBuffer: CVPixelBuffer) -> Int {
-    if let desired = writer?.desiredChromaBytesPerRow {
-      if desired != 0 {
-        return desired
-      }
+  func handleAudioSample(index: Int32, sampleBuffer: CMSampleBuffer, outputPTS: Int64) {
+    var blockBuffer: CMBlockBuffer?
+    var abl = AudioBufferList()
+    CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
+      sampleBuffer,
+      bufferListSizeNeededOut: nil,
+      bufferListOut: &abl,
+      bufferListSize: MemoryLayout<AudioBufferList>.size,
+      blockBufferAllocator: nil,
+      blockBufferMemoryAllocator: nil,
+      flags: 0,
+      blockBufferOut: &blockBuffer
+    )
+    guard let format = CMSampleBufferGetFormatDescription(sampleBuffer) else { return }
+    guard let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format) else { return }
+    queue.async {
+      self.writer.writeAudio(index, abl: &abl, asbd: asbd, outputPTS: outputPTS)
     }
-    return CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1)
   }
 
   override func processSampleBuffer(
     _ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType
   ) {
+    let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
     switch sampleBufferType {
     case RPSampleBufferType.video:
       guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
         print("Could not obtain the pixel buffer!")
         return
       }
-      let lumaBytesPerRow = getLumaBytesPerRow(pixelBuffer)
-      let chromaBytesPerRow = getChromaBytesPerRow(pixelBuffer)
-      guard
-        let frame = pixelBufferExtractorRef?.extract(
-          pixelBuffer, lumaBytesPerRow: lumaBytesPerRow, chromaBytesPerRow: chromaBytesPerRow)
-      else {
-        print("Could not render to the pixel buffer!")
+
+      let width = Int32(CVPixelBufferGetWidth(pixelBuffer))
+      let height = Int32(CVPixelBufferGetHeight(pixelBuffer))
+
+      if !isOutputStarted {
+        writer.addVideoStream(
+          0, width: width, height: height, frameRate: frameRate, bitRate: 8_000_000)
+        writer.addAudioStream(1, sampleRate: 44100, bitRate: 320000)
+        writer.addAudioStream(2, sampleRate: 48000, bitRate: 320000)
+        writer.openVideo(0)
+        writer.openAudio(1)
+        writer.openAudio(2)
+        writer.startOutput()
+
+        isOutputStarted = true
+        screenFirstTime = pts
+      }
+
+      guard let firstTime = self.screenFirstTime else { return }
+      let elapsedTime = CMTimeSubtract(pts, firstTime)
+      self.screenElapsedTime = elapsedTime
+      let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: frameRate)
+      let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+
+      self.handleVideoSample(index: 0, pixelBuffer: pixelBuffer, outputPTS: outputPTS)
+    case RPSampleBufferType.audioApp:
+      if !isOutputStarted {
         return
       }
-      self.writer?.writeVideo(
-        ofScreen: sampleBuffer, pixelBuffer: pixelBuffer, lumaData: frame.lumaData,
-        chromaData: frame.chmoraData, lumaBytesPerRow: frame.lumaBytesPerRow,
-        chromaBytesPerRow: frame.chromaBytesPerRow)
-    case RPSampleBufferType.audioApp:
-      var blockBuffer: CMBlockBuffer?
-      CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-        sampleBuffer, bufferListSizeNeededOut: nil, bufferListOut: &audioBufferList,
-        bufferListSize: MemoryLayout<AudioBufferList>.size, blockBufferAllocator: nil,
-        blockBufferMemoryAllocator: nil, flags: 0, blockBufferOut: &blockBuffer)
-      self.writer?.writeAudio(ofScreen: sampleBuffer, audioBufferList: &self.audioBufferList)
+
+      guard let firstTime = screenFirstTime else { return }
+      let elapsedCount = CMTimeMultiply(CMTimeSubtract(pts, firstTime), multiplier: 44100)
+      let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+
+      self.handleAudioSample(index: 1, sampleBuffer: sampleBuffer, outputPTS: outputPTS)
     case RPSampleBufferType.audioMic:
-      var blockBuffer: CMBlockBuffer?
-      CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-        sampleBuffer, bufferListSizeNeededOut: nil, bufferListOut: &audioBufferList,
-        bufferListSize: MemoryLayout<AudioBufferList>.size, blockBufferAllocator: nil,
-        blockBufferMemoryAllocator: nil, flags: 0, blockBufferOut: &blockBuffer)
-      self.writer?.writeAudio(ofMic: sampleBuffer, audioBufferList: &self.audioBufferList)
+      if !isOutputStarted {
+        return
+      }
+
+      if micFirstTime == nil {
+        guard let elapsedTime = screenElapsedTime else { return }
+        micFirstTime = CMTimeSubtract(pts, elapsedTime)
+      }
+      guard let firstTime = micFirstTime else { return }
+      let elapsedCount = CMTimeMultiply(CMTimeSubtract(pts, firstTime), multiplier: 48000)
+      let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+
+      self.handleAudioSample(index: 2, sampleBuffer: sampleBuffer, outputPTS: outputPTS)
     @unknown default:
       // Handle other sample buffer types
       fatalError("Unknown type of sample buffer")
