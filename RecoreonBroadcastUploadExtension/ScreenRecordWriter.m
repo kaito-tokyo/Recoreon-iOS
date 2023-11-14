@@ -31,56 +31,26 @@ static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
   }
 }
 
-static bool isASBDEqual(const AudioStreamBasicDescription *x,
-                        const AudioStreamBasicDescription *y) {
-  return x->mSampleRate == y->mSampleRate && x->mFormatID == y->mFormatID &&
-         x->mFormatFlags == y->mFormatFlags &&
-         x->mBytesPerPacket == y->mBytesPerPacket &&
-         x->mFramesPerPacket == y->mFramesPerPacket &&
-         x->mBytesPerFrame == y->mBytesPerFrame &&
-         x->mChannelsPerFrame == y->mChannelsPerFrame &&
-         x->mBitsPerChannel == y->mBitsPerChannel;
-}
-
-typedef struct ResamplerState {
-  AudioBufferList inputABL;
-  uint32_t outputNumberDataPackets;
-  uint8_t *data;
-  size_t readSize;
-} ResamplerState;
-
-static OSStatus
-audioConvertProc(AudioConverterRef inAudioConverter,
-                 uint32_t *ioNumberDataPackets, AudioBufferList *ioData,
-                 AudioStreamPacketDescription *__nullable *__nullable
-                     outDataPacketDescription,
-                 void *__nullable inUserData) {
-  ResamplerState *state = (ResamplerState *)inUserData;
-  *ioData = state->inputABL;
-  *ioNumberDataPackets = state->outputNumberDataPackets;
-  return noErr;
-}
-
 @implementation ScreenRecordWriter
-- (BOOL)openVideoCodec:(NSString *__nonnull)name {
+- (bool)openVideoCodec:(NSString *__nonnull)name {
   videoCodec = avcodec_find_encoder_by_name([name UTF8String]);
   if (videoCodec == NULL) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
                      "Could not find a video encoder: %@", name);
-    return NO;
+    return false;
   } else {
-    return YES;
+    return true;
   }
 }
 
-- (BOOL)openAudioCodec:(NSString *__nonnull)name {
+- (bool)openAudioCodec:(NSString *__nonnull)name {
   audioCodec = avcodec_find_encoder_by_name([name UTF8String]);
   if (audioCodec == NULL) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
                      "Could not find an audio encoder: %@", name);
-    return NO;
+    return false;
   } else {
-    return YES;
+    return true;
   }
 }
 
@@ -97,35 +67,35 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   }
 }
 
-- (BOOL)addStream:(int)index {
+- (bool)addStream:(int)index {
   OutputStream *os = &outputStreams[index];
 
   os->packet = av_packet_alloc();
   if (!os->packet) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
                      "Could not allocate a packet");
-    return NO;
+    return false;
   }
 
   AVStream *stream = avformat_new_stream(formatContext, NULL);
   if (!stream) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
                      "Could not allocate a stream");
-    return NO;
+    return false;
   }
   stream->id = index;
   os->stream = stream;
 
-  return YES;
+  return true;
 }
 
-- (BOOL)addVideoStream:(int)index
+- (bool)addVideoStream:(int)index
                  width:(int)width
                 height:(int)height
              frameRate:(int)frameRate
                bitRate:(int)bitRate {
   if (![self addStream:index]) {
-    return NO;
+    return false;
   }
 
   OutputStream *os = &outputStreams[index];
@@ -134,7 +104,7 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   if (!c) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
                      "Could not allocate an video codec context");
-    return NO;
+    return false;
   }
   os->codecContext = c;
 
@@ -153,14 +123,14 @@ audioConvertProc(AudioConverterRef inAudioConverter,
     c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
   }
 
-  return YES;
+  return true;
 }
 
-- (BOOL)addAudioStream:(int)index
+- (bool)addAudioStream:(int)index
             sampleRate:(int)sampleRate
                bitRate:(int)bitRate {
   if (![self addStream:index]) {
-    return NO;
+    return false;
   }
 
   OutputStream *os = &outputStreams[index];
@@ -169,7 +139,7 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   if (!c) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
                      "Could not allocate an video codec context");
-    return NO;
+    return false;
   }
   os->codecContext = c;
 
@@ -185,35 +155,23 @@ audioConvertProc(AudioConverterRef inAudioConverter,
     c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
   }
 
-  AudioStreamBasicDescription asbd = {.mSampleRate = sampleRate,
-                                      .mFormatID = kAudioFormatLinearPCM,
-                                      .mFormatFlags =
-                                          kAudioFormatFlagIsSignedInteger |
-                                          kAudioFormatFlagIsPacked,
-                                      .mBytesPerPacket = 4,
-                                      .mFramesPerPacket = 1,
-                                      .mBytesPerFrame = 4,
-                                      .mChannelsPerFrame = 2,
-                                      .mBitsPerChannel = 16};
-  os->outputASBD = asbd;
-
-  return YES;
+  return true;
 }
 
-- (BOOL)openVideo:(int)index {
+- (bool)openVideo:(int)index {
   OutputStream *os = &outputStreams[index];
   AVCodecContext *codecContext = os->codecContext;
   if (avcodec_open2(codecContext, videoCodec, NULL) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not open video codec context");
-    return NO;
+    return false;
   }
 
   AVFrame *frame = av_frame_alloc();
   if (frame == NULL) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not allocate video frame");
-    return NO;
+    return false;
   }
 
   frame->format = codecContext->pix_fmt;
@@ -224,7 +182,7 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   if (av_frame_get_buffer(frame, 0) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not allocate video frame buffer");
-    return NO;
+    return false;
   }
 
   os->frame = frame;
@@ -232,26 +190,26 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   if (avcodec_parameters_from_context(os->stream->codecpar, codecContext) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not copy the video stream parameters");
-    return NO;
+    return false;
   }
 
-  return YES;
+  return true;
 }
 
-- (BOOL)openAudio:(int)index {
+- (bool)openAudio:(int)index {
   OutputStream *os = &outputStreams[index];
   AVCodecContext *codecContext = os->codecContext;
   if (avcodec_open2(codecContext, audioCodec, NULL) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not open audio codec context");
-    return NO;
+    return false;
   }
 
   AVFrame *frame = av_frame_alloc();
   if (frame == NULL) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not allocate audio frame");
-    return NO;
+    return false;
   }
 
   frame->format = codecContext->sample_fmt;
@@ -262,7 +220,7 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   if (av_frame_get_buffer(frame, 0) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not allocate video frame buffer");
-    return NO;
+    return false;
   }
 
   os->frame = frame;
@@ -270,61 +228,79 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   if (avcodec_parameters_from_context(os->stream->codecpar, codecContext) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not copy the audio stream parameters");
-    return NO;
+    return false;
   }
 
-  return YES;
+  return true;
 }
 
-- (BOOL)startOutput {
+- (bool)startOutput {
   const char *path = [_filename UTF8String];
   av_dump_format(formatContext, 0, path, 1);
 
   if (avio_open(&formatContext->pb, path, AVIO_FLAG_WRITE) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not open the file io:%@", _filename);
-    return NO;
+    return false;
   }
 
   if (avformat_write_header(formatContext, NULL) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not write the header");
-    return NO;
+    return false;
   }
 
-  return YES;
+  return true;
 }
 
 - (int)getBytesPerRow:(int)index planeIndex:(int)planeIndex {
   return outputStreams[index].frame->linesize[planeIndex];
 }
 
-- (BOOL)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer {
+- (long)getByteCountOfAudioPlane:(long)index {
+  return outputStreams[index].frame->nb_samples * 4;
+}
+
+- (bool)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer {
   CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
   if (pixelBuffer == nil) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not get the pixel buffer");
-    return NO;
+    return false;
   }
 
   OSType pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer);
   if (pixelFormat != kCVPixelFormatType_420YpCbCr8BiPlanarFullRange) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "The pixel format is not supported: %u", pixelFormat);
-    return NO;
+    return false;
   }
 
-  return YES;
+  return true;
 }
 
-- (BOOL)writeFrame:(OutputStream *)os {
+- (bool)prepareFrame:(long)index {
+  AVFrame *frame = outputStreams[index].frame;
+  if (av_frame_make_writable(frame) < 0) {
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not make the video frame writable");
+    return false;
+  }
+  return true;
+}
+
+- (void *__nonnull)getBaseAddress:(long)index ofPlane:(long)planeIndex {
+  return outputStreams[index].frame->data[planeIndex];
+}
+
+- (bool)writeFrame:(OutputStream *)os {
   int ret;
   ret = avcodec_send_frame(os->codecContext, os->frame);
   if (ret < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Error sending a frame to the encoder: %s",
                      av_err2str(ret));
-    return NO;
+    return false;
   }
 
   while (ret >= 0) {
@@ -334,7 +310,7 @@ audioConvertProc(AudioConverterRef inAudioConverter,
     } else if (ret < 0) {
       os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                        "Error encoding a frame: %s", av_err2str(ret));
-      return NO;
+      return false;
     }
 
     av_packet_rescale_ts(os->packet, os->codecContext->time_base,
@@ -347,11 +323,11 @@ audioConvertProc(AudioConverterRef inAudioConverter,
       os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                        "Error while writing output packet: %s",
                        av_err2str(ret));
-      return NO;
+      return false;
     }
   }
 
-  return YES;
+  return true;
 }
 
 - (BOOL)writeVideo:(int)index
@@ -366,7 +342,7 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   if (av_frame_make_writable(frame) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not make the video frame writable");
-    return NO;
+    return false;
   }
 
   copyPlane(frame->data[0], frame->linesize[0], lumaData, lumaBytesPerRow,
@@ -381,86 +357,13 @@ audioConvertProc(AudioConverterRef inAudioConverter,
   return YES;
 }
 
-- (bool)ensureAudioConverterAvailable:(int)index
-                                 asbd:
-                                     (const AudioStreamBasicDescription *)asbd {
-  OSStatus status;
+- (bool)writeAudio:(int)index outputPTS:(int64_t)outputPTS {
   OutputStream *os = &outputStreams[index];
 
-  if (!isASBDEqual(&os->inputASBD, asbd)) {
-    if (os->audioConverter != NULL) {
-      status = AudioConverterDispose(os->audioConverter);
-      if (status != noErr) {
-        os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
-                         "Could not dispose the audio converter: %d", status);
-      }
-    }
-    status = AudioConverterNew(asbd, &os->outputASBD, &os->audioConverter);
-    if (status != noErr) {
-      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                       "Could not create the audio converter: %d", status);
-      return false;
-    }
-    os->inputASBD = *asbd;
-  }
-  if (os->audioConverter == NULL) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not find the audio converter");
-    return false;
-  }
-
-  return true;
-}
-
-- (bool)writeAudio:(int)index
-               abl:(AudioBufferList *__nonnull)abl
-              asbd:(const AudioStreamBasicDescription *__nonnull)asbd
-         outputPTS:(int64_t)outputPTS {
-  OutputStream *os = &outputStreams[index];
-
-  if (![self ensureAudioConverterAvailable:index asbd:asbd]) {
-    return false;
-  }
-
-  uint32_t numSamples = os->frame->nb_samples;
-  uint32_t readSize = abl->mBuffers[0].mDataByteSize *
-                      os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
-  uint32_t ptsStep = os->frame->nb_samples * os->inputASBD.mSampleRate /
-                     os->outputASBD.mSampleRate;
-  size_t offset = 0;
-  while (offset < abl->mBuffers[0].mDataByteSize) {
-    if (av_frame_make_writable(os->frame) < 0) {
-      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                       "Could not make the audio frame writable");
-      return false;
-    }
-
-    ResamplerState state;
-    state.inputABL.mNumberBuffers = 1;
-    state.inputABL.mBuffers[0].mDataByteSize = readSize;
-    state.inputABL.mBuffers[0].mData = abl->mBuffers[0].mData + offset;
-    state.inputABL.mBuffers[0].mNumberChannels =
-        os->inputASBD.mChannelsPerFrame;
-    state.outputNumberDataPackets =
-        numSamples * os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
-
-    AudioBufferList outputABL;
-    outputABL.mNumberBuffers = 1;
-    outputABL.mBuffers[0].mNumberChannels = os->outputASBD.mChannelsPerFrame;
-    outputABL.mBuffers[0].mDataByteSize = numSamples * 4;
-    outputABL.mBuffers[0].mData = os->frame->data[0];
-
-    AudioConverterFillComplexBuffer(os->audioConverter, &audioConvertProc,
-                                    &state, &numSamples, &outputABL, NULL);
-
-    os->frame->pts =
-        av_rescale_q(outputPTS, (AVRational){1, os->codecContext->sample_rate},
-                     os->codecContext->time_base);
-    [self writeFrame:os];
-
-    offset += readSize;
-    outputPTS += ptsStep;
-  }
+  os->frame->pts =
+      av_rescale_q(outputPTS, (AVRational){1, os->codecContext->sample_rate},
+                   os->codecContext->time_base);
+  [self writeFrame:os];
 
   return true;
 }

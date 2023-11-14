@@ -48,7 +48,10 @@ typedef struct OutputStream {
 - (BOOL)openAudio:(int)index;
 - (BOOL)startOutput;
 - (int)getBytesPerRow:(int)index planeIndex:(int)planeIndex;
+- (long)getByteCountOfAudioPlane:(long)index;
 - (BOOL)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer;
+- (bool)prepareFrame:(long)index;
+- (void *__nonnull)getBaseAddress:(long)index ofPlane:(long)planeIndex;
 - (BOOL)writeVideo:(int)index
              lumaData:(void *__nonnull)lumaData
            chromaData:(void *__nonnull)chromaData
@@ -60,10 +63,7 @@ typedef struct OutputStream {
     ensureAudioConverterAvailable:(int)index
                              asbd:(const AudioStreamBasicDescription *__nonnull)
                                       asbd;
-- (bool)writeAudio:(int)index
-               abl:(AudioBufferList *__nonnull)abl
-              asbd:(const AudioStreamBasicDescription *__nonnull)asbd
-         outputPTS:(int64_t)outputPTS;
+- (bool)writeAudio:(int)index outputPTS:(int64_t)outputPTS;
 - (void)finishStream:(int)index;
 - (void)finishOutput;
 - (void)freeStream:(int)index;
