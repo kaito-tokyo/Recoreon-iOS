@@ -1,11 +1,5 @@
-//
-//  RecordWriterTests.m
-//  RecoreonTests
-//
-//  Created by Kaito Udagawa on 2023/11/13.
-//
-
 #import <XCTest/XCTest.h>
+#import <CommonCrypto/CommonHMAC.h>
 
 #import "../RecoreonBroadcastUploadExtension/ScreenRecordWriter.h"
 
@@ -22,72 +16,112 @@ typedef struct AudioInfo {
   int numChannels;
 } AudioInfo;
 
-static VideoInfo info0 = {
+
+static VideoInfo screenVideoInfo0 = {
   .width = 888,
   .height = 1920,
-  .frameRate = 120,
+  .frameRate = 60,
   .bitRate = 8000000,
 };
 
-static AudioInfo info1 = {
+static AudioInfo screenAudioInfo = {
   .sampleRate = 44100,
   .bitRate = 320000,
   .numChannels = 2,
 };
 
-static AudioInfo info2 = {
+static AudioInfo micAudioInfo0 = {
   .sampleRate = 48000,
   .bitRate = 320000,
   .numChannels = 2,
 };
 
-static AudioInfo screenAudioinfo = {
-  .sampleRate = 44100,
+static AudioInfo micAudioInfo1 = {
+  .sampleRate = 24000,
   .bitRate = 320000,
   .numChannels = 2,
 };
 
-@interface ScreenRecordWriterTests : XCTestCase
+static NSString *sha256sum(NSData *data) {
+  uint8_t digest[CC_SHA256_DIGEST_LENGTH];
+  CC_SHA256(data.bytes, (int)data.length, digest);
+  NSMutableString *result = [[NSMutableString alloc] init];
+  for (int i = 0; i < CC_SHA256_DIGEST_LENGTH; i++) {
+    [result appendFormat:@"%02x", digest[i]];
+  }
+  return [result copy];
+}
+
+@interface ScreenRecordWriterTests : XCTestCase {
+  double t;
+  double tincr;
+  double tincr2;
+  int frameIndex;
+}
 @end
 
 @implementation ScreenRecordWriterTests
 - (void)setUp {
-  // Put setup code here. This method is called before the invocation of each
-  // test method in the class.
 }
 
 - (void)tearDown {
-  // Put teardown code here. This method is called after the invocation of each
-  // test method in the class.
 }
 
-- (void)setupWriter:(ScreenRecordWriter *)writer filename:(NSString *__nonnull)filename info0:(VideoInfo *__nonnull)info0 info1:(AudioInfo *)info1 info2:(AudioInfo *)info2{
-  XCTAssertTrue([writer openVideoCodec:@"h264_videotoolbox"]);
-  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
-  XCTAssertTrue([writer openOutputFile:filename]);
-  XCTAssertTrue([writer addVideoStream:0
-                                 width:info0->width
-                                height:info0->height
-                             frameRate:info0->frameRate
-                               bitRate:info0->bitRate]);
-  XCTAssertTrue([writer addAudioStream:1 sampleRate:info1->sampleRate bitRate:info1->bitRate]);
-  XCTAssertTrue([writer addAudioStream:2 sampleRate:info2->sampleRate bitRate:info2->bitRate]);
-  XCTAssertTrue([writer openVideo:0]);
-  XCTAssertTrue([writer openAudio:1]);
-  XCTAssertTrue([writer openAudio:2]);
-  XCTAssertTrue([writer startOutput]);
+- (NSString *__nonnull)getOutputPath:(NSString *__nonnull)filename {
+  NSURL *baseURL = [NSFileManager.defaultManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask][0];
+  [NSFileManager.defaultManager createDirectoryAtURL:baseURL withIntermediateDirectories:true attributes:nil error:nil];
+  NSURL *fileURL = [baseURL URLByAppendingPathComponent:filename isDirectory:false];
+  NSLog(@"The output file of this test case is %@", fileURL);
+  return fileURL.path;
 }
 
-- (void)setupWriterWithOneAudio:(ScreenRecordWriter *)writer filename:(NSString *__nonnull)filename info0:(AudioInfo *__nonnull)info0 {
-  XCTAssertTrue([writer openVideoCodec:@"h264_videotoolbox"]);
-  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
-  XCTAssertTrue([writer openOutputFile:filename]);
-  XCTAssertTrue([writer addAudioStream:0 sampleRate:info0->sampleRate bitRate:info0->bitRate]);
-  XCTAssertTrue([writer openAudio:0]);
-  XCTAssertTrue([writer startOutput]);
+- (void)setUpDummyVideo {
+  frameIndex = 0;
 }
 
-- (CMSampleBufferRef)createVideoSample:(VideoInfo *)info pts:(int64_t)pts {
+- (void)fillDummyVideoFrame:(CMSampleBufferRef)sampleBuffer {
+  CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+
+  CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+
+  uint8_t *lumaData = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
+  uint8_t *chromaData = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 1);
+  size_t lumaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
+  size_t chromaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1);
+  size_t width = CVPixelBufferGetWidth(pixelBuffer);
+  size_t height = CVPixelBufferGetHeight(pixelBuffer);
+
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      lumaData[y * lumaBytesPerRow + x] = x + y + frameIndex * 3;
+    }
+  }
+
+  for (int y = 0; y < height / 2; y++) {
+    for (int x = 0; x < width; x += 2) {
+      chromaData[y * chromaBytesPerRow + x] = 128 + y + frameIndex * 2;
+      chromaData[y * chromaBytesPerRow + x + 1] = 64 + x + frameIndex * 5;
+    }
+  }
+
+  CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+
+  frameIndex++;
+}
+
+- (void)setUpDummyAudio:(AudioInfo *)info {
+  t = 0;
+  tincr = 2 * M_PI * 330.0 / info->sampleRate;
+  tincr2 = 2 * M_PI * 330.0 / info->sampleRate / info->sampleRate;
+}
+
+- (int16_t)getDummyAudioSample {
+  t += tincr;
+  tincr += tincr2;
+  return sin(t) * 10000;
+}
+
+- (CMSampleBufferRef)createVideoSample:(VideoInfo *)info {
   CVPixelBufferRef pixelBuffer;
   CVPixelBufferCreate(NULL, info->width, info->height, kCVPixelFormatType_420YpCbCr8BiPlanarFullRange, NULL, &pixelBuffer);
 
@@ -96,8 +130,8 @@ static AudioInfo screenAudioinfo = {
 
   CMSampleTimingInfo timing = {
     .duration = CMTimeMake(1, info->frameRate),
-    .presentationTimeStamp = CMTimeMake(pts, info->frameRate),
-    .decodeTimeStamp = CMTimeMake(pts, info->frameRate)
+    .presentationTimeStamp = CMTimeMake(0, info->frameRate),
+    .decodeTimeStamp = CMTimeMake(0, info->frameRate)
   };
 
   CMSampleBufferRef sampleBuffer;
@@ -105,7 +139,7 @@ static AudioInfo screenAudioinfo = {
   return sampleBuffer;
 }
 
-- (void)writeVideoSampleToWriter:(ScreenRecordWriter *)writer sampleBuffer:(CMSampleBufferRef)sampleBuffer {
+- (void)writeVideoSampleToWriter:(ScreenRecordWriter *)writer index:(int)index sampleBuffer:(CMSampleBufferRef)sampleBuffer outputPTS:(int64_t)outputPTS {
   CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
 
   CVPixelBufferLockBaseAddress(pixelBuffer, 0);
@@ -115,9 +149,8 @@ static AudioInfo screenAudioinfo = {
   size_t lumaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
   size_t chromaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1);
   size_t height = CVPixelBufferGetHeight(pixelBuffer);
-  CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
 
-  [writer writeVideo:0 lumaData:lumaData chromaData:chromaData lumaBytesPerRow:lumaBytesPerRow chromaBytesPerRow:chromaBytesPerRow height:height pts:pts];
+  [writer writeVideo:index lumaData:lumaData chromaData:chromaData lumaBytesPerRow:lumaBytesPerRow chromaBytesPerRow:chromaBytesPerRow height:height outputPTS:outputPTS];
 
   CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
 }
@@ -159,121 +192,107 @@ static AudioInfo screenAudioinfo = {
   return sampleBuffer;
 }
 
-- (void)writeAudioSampleToWriter:(ScreenRecordWriter *)writer index:(int)index sampleBuffer:(CMSampleBufferRef)sampleBuffer outputPts:(int64_t)outputPts {
+- (void)writeAudioSampleToWriter:(ScreenRecordWriter *)writer index:(int)index sampleBuffer:(CMSampleBufferRef)sampleBuffer outputPTS:(int64_t)outputPTS {
   AudioBufferList abl;
   CMBlockBufferRef blockBuffer;
   CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer, NULL, &abl, sizeof(AudioBufferList), NULL, NULL, 0, &blockBuffer);
   CMFormatDescriptionRef format = CMSampleBufferGetFormatDescription(sampleBuffer);
   const AudioStreamBasicDescription *asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format);
-  [writer writeAudio:index abl:&abl asbd:asbd outputPts:outputPts];
+  [writer writeAudio:index abl:&abl asbd:asbd outputPTS:outputPTS];
 }
 
-- (void)finalizeWriterWithOneAudio:(ScreenRecordWriter *)writer {
-  [writer finishStream:0];
-
-  [writer finishOutput];
-  [writer freeStream:0];
-  [writer freeOutput];
-}
-
-- (void)finalizeWriter:(ScreenRecordWriter *)writer {
-  [writer finishStream:0];
-  [writer finishStream:1];
-  [writer finishStream:2];
-
-  [writer finishOutput];
-  [writer freeStream:0];
-  [writer freeStream:1];
-  [writer freeStream:2];
-  [writer freeOutput];
-}
-
-- (void)testEmptyVideo {
+- (void)testVideoFrame {
   ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
 
-  NSString *filename = [NSHomeDirectory() stringByAppendingString:@"/test2.mkv"];
-  [self setupWriter:writer filename:filename info0:&info0 info1:&info1 info2:&info2];
+  NSString *path = [self getOutputPath:@"testVideoFrame.mp4"];
+  VideoInfo *info0 = &screenVideoInfo0;
+
+  XCTAssertTrue([writer openVideoCodec:@"h264_videotoolbox"]);
+  XCTAssertTrue([writer openOutputFile:path]);
+  XCTAssertTrue([writer addVideoStream:0 width:info0->width height:info0->height frameRate:info0->frameRate bitRate:info0->bitRate]);
+  XCTAssertTrue([writer openVideo:0]);
+  XCTAssertTrue([writer startOutput]);
+
   for (int i = 0; i < 60; i++) {
-    CMSampleBufferRef sampleBuffer = [self createVideoSample:&info0 pts:i];
-    [self writeVideoSampleToWriter:writer sampleBuffer:sampleBuffer];
+    CMSampleBufferRef sampleBuffer = [self createVideoSample:info0];
+    [self fillDummyVideoFrame:sampleBuffer];
+    [self writeVideoSampleToWriter:writer index:0 sampleBuffer:sampleBuffer outputPTS:i];
   }
-  uint8_t data[4096];
-  CMSampleBufferRef sampleBuffer1 = [self createAudioSample:&info1 buf:data bufSize:4096];
-  [self writeAudioSampleToWriter:writer index:1 sampleBuffer:sampleBuffer1 outputPts:0];
-  [self writeAudioSampleToWriter:writer index:2 sampleBuffer:sampleBuffer1 outputPts:0];
-  [self finalizeWriter:writer];
+
+  [writer finishStream:0];
+  [writer finishOutput];
+  [writer freeStream:0];
+  [writer freeOutput];
+
+  NSData *outputData = [NSData dataWithContentsOfFile:path];
+  XCTAssertEqualObjects(sha256sum(outputData), @"291f7c360dc01856580fc8c40fe3ce2cfc00f8a647326da1a88a3daa1bd6dcb6");
 }
 
-- (void)testSineAudio {
+- (void)testSameSampleRateAudio {
   ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
 
-  NSString *filename = [NSHomeDirectory() stringByAppendingString:@"/testSineAudio.mkv"];
-  NSLog(@"%@", filename);
-  AudioInfo *info0 = &screenAudioinfo;
+  NSString *path = [self getOutputPath:@"testSameSampleRateAudio.mp4"];
+  AudioInfo *info0 = &screenAudioInfo;
 
   XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
-  XCTAssertTrue([writer openOutputFile:filename]);
+  XCTAssertTrue([writer openOutputFile:path]);
   XCTAssertTrue([writer addAudioStream:0 sampleRate:info0->sampleRate bitRate:info0->bitRate]);
   XCTAssertTrue([writer openAudio:0]);
   XCTAssertTrue([writer startOutput]);
 
+  int16_t data[2048];
+  int numSamples = sizeof(data) / sizeof(int16_t) / 2;
+  [self setUpDummyAudio:info0];
   for (int i = 0; i < 43; i++) {
-    int16_t data[2048];
-    for (int j = 0; j < 1024; j++) {
-      int n = j + i * 1024;
-      data[j * 2] = data[j * 2 + 1] = sin(2 * M_PI * n * 1000.0 / info0->sampleRate) * 10000;
+    for (int j = 0; j < numSamples; j++) {
+      data[j * 2] = data[j * 2 + 1] = [self getDummyAudioSample];
     }
-    int64_t pts = i * 1024;
-    CMSampleBufferRef sampleBuffer = [self createAudioSample:&screenAudioinfo buf:data bufSize:4096];
-    [self writeAudioSampleToWriter:writer index:0 sampleBuffer:sampleBuffer outputPts:pts];
+    int64_t outputPTS = i * numSamples;
+    CMSampleBufferRef sampleBuffer = [self createAudioSample:info0 buf:data bufSize:sizeof(data)];
+    [self writeAudioSampleToWriter:writer index:0 sampleBuffer:sampleBuffer outputPTS:outputPTS];
   }
 
   [writer finishStream:0];
   [writer finishOutput];
   [writer freeStream:0];
   [writer freeOutput];
+
+  NSData *outputData = [NSData dataWithContentsOfFile:path];
+  XCTAssertEqualObjects(sha256sum(outputData), @"efcbbf358a000a485980641140c7c625ea01ae20de1e2f6c8dbe40b7cf645c94");
 }
 
-- (void)testSampleRateChange {
-  AudioInfo info21 = {
-    .sampleRate = 96000,
-    .bitRate = 320000,
-    .numChannels = 2,
-  };
-
+- (void)testResampledAudio {
   ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
-  NSString *filename = [NSHomeDirectory() stringByAppendingString:@"/test2.mkv"];
-  [self setupWriter:writer filename:filename info0:&info0 info1:&info1 info2:&info2];
 
-  int16_t dataIn[2048];
-  dataIn[0] = 150;
-  dataIn[1] = 300;
-  CMSampleBufferRef sampleBuffer = [self createAudioSample:&info21 buf:dataIn bufSize:4096];
-  CMFormatDescriptionRef format = CMSampleBufferGetFormatDescription(sampleBuffer);
-  const AudioStreamBasicDescription *inASBD = CMAudioFormatDescriptionGetStreamBasicDescription(format);
+  NSString *path = [self getOutputPath:@"testResampledAudio.mp4"];
+  AudioInfo *info0In = &micAudioInfo1;
+  AudioInfo *info0Out = &micAudioInfo0;
 
-  [writer ensureAudioConverterAvailable:2 asbd:inASBD];
+  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
+  XCTAssertTrue([writer openOutputFile:path]);
+  XCTAssertTrue([writer addAudioStream:0 sampleRate:info0Out->sampleRate bitRate:info0Out->bitRate]);
+  XCTAssertTrue([writer openAudio:0]);
+  XCTAssertTrue([writer startOutput]);
 
-  int16_t dataOut[2048];
-  uint32_t numSamples = 1024;
-  AudioBufferList abl;
-  abl.mNumberBuffers = 1;
-  abl.mBuffers[0].mNumberChannels = 2;
-  abl.mBuffers[0].mDataByteSize = 4096;
-  abl.mBuffers[0].mData = dataOut;
+  int16_t data[2048];
+  int numSamples = sizeof(data) / sizeof(int16_t) / 2;
+  [self setUpDummyAudio:info0In];
+  for (int i = 0; i < 23; i++) {
+    for (int j = 0; j < numSamples; j++) {
+      data[j * 2] = data[j * 2 + 1] = [self getDummyAudioSample];
+    }
+    int64_t outputPTS = i * numSamples * info0Out->sampleRate / info0In->sampleRate;
+    CMSampleBufferRef sampleBuffer = [self createAudioSample:info0In buf:data bufSize:sizeof(data)];
+    [self writeAudioSampleToWriter:writer index:0 sampleBuffer:sampleBuffer outputPTS:outputPTS];
+  }
 
-  [writer listenToResampleAudioFrame:2 numSamples:&numSamples fillBufList:&abl];
+  [writer finishStream:0];
+  [writer finishOutput];
+  [writer freeStream:0];
+  [writer freeOutput];
 
-  NSLog(@"0: %d", dataOut[0]);
-  NSLog(@"1: %d", dataOut[1]);
-  NSLog(@"1: %d", dataOut[2]);
-  NSLog(@"1: %d", dataOut[3]);
-  NSLog(@"1: %d", dataOut[4]);
-  NSLog(@"1: %d", dataOut[5]);
-  NSLog(@"1: %d", dataOut[6]);
-  NSLog(@"1: %d", dataOut[7]);
-  NSLog(@"1: %d", dataOut[8]);
-  NSLog(@"1: %d", dataOut[9]);
+  NSData *outputData = [NSData dataWithContentsOfFile:path];
+  XCTAssertEqualObjects(sha256sum(outputData), @"924006554e0864a07cf720a5717fb5e2e1c0ddc5195121a3063802e4d7d23bbd");
 }
 
 @end

@@ -1,6 +1,19 @@
 #include <os/log.h>
 
+#include <libavutil/timestamp.h>
+
 #import "ScreenRecordWriter.h"
+
+static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
+//  AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
+//
+//  printf("pts:%s pts_time:%s dts:%s dts_time:%s duration:%s duration_time:%s "
+//         "stream_index:%d\n",
+//         av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
+//         av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
+//         av_ts2str(pkt->duration), av_ts2timestr(pkt->duration, time_base),
+//         pkt->stream_index);
+}
 
 static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
                       size_t srcLinesize, size_t height) {
@@ -17,18 +30,17 @@ static bool isASBDEqual(const AudioStreamBasicDescription *x, const AudioStreamB
   return x->mSampleRate == y->mSampleRate && x->mFormatID == y->mFormatID && x->mFormatFlags == y->mFormatFlags && x->mBytesPerPacket == y->mBytesPerPacket && x->mFramesPerPacket == y->mFramesPerPacket && x->mBytesPerFrame == y->mBytesPerFrame && x->mChannelsPerFrame == y->mChannelsPerFrame && x->mBitsPerChannel == y->mBitsPerChannel;
 }
 
+typedef struct ResamplerState {
+  AudioBufferList inputABL;
+  uint32_t outputNumberDataPackets;
+  uint8_t *data;
+  size_t readSize;
+} ResamplerState;
+
 static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *ioNumberDataPackets, AudioBufferList *ioData, AudioStreamPacketDescription * __nullable * __nullable outDataPacketDescription, void * __nullable inUserData) {
-  ScreenRecordWriter *self = (__bridge ScreenRecordWriter *)inUserData;
-  *ioData = *self->abl;
-//  ioData->mNumberBuffers = 1;
-//  ioData->mBuffers[0].mNumberChannels = 2;
-//  ioData->mBuffers[0].mDataByteSize = 4096;
-//  ioData->mBuffers[0].mData = self->buf;
-//  memcpy(<#void *dst#>, <#const void *src#>, <#size_t n#>)
-//  self->buf[0] = 100;
-//  self->buf[1] = 200;
-//  self->buf[2] = 300;
-//  self->buf[3] = 400;
+  ResamplerState *state = (ResamplerState *)inUserData;
+  *ioData = state->inputABL;
+  *ioNumberDataPackets = state->outputNumberDataPackets;
   return noErr;
 }
 
@@ -150,7 +162,7 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
   AVChannelLayout layout = AV_CHANNEL_LAYOUT_STEREO;
   av_channel_layout_copy(&c->ch_layout, &layout);
   AVRational timeBase = {1, sampleRate};
-  os->stream->time_base = timeBase;
+  c->time_base = os->stream->time_base = timeBase;
 
   if (formatContext->oformat->flags & AVFMT_GLOBALHEADER) {
     c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
@@ -292,6 +304,7 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
     av_packet_rescale_ts(os->packet, os->codecContext->time_base, os->stream->time_base);
     os->packet->stream_index = os->stream->index;
 
+    log_packet(formatContext, os->packet);
     ret = av_interleaved_write_frame(formatContext, os->packet);
     if (ret < 0) {
       os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Error while writing output packet: %s", av_err2str(ret));
@@ -308,7 +321,7 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
       lumaBytesPerRow:(long)lumaBytesPerRow
     chromaBytesPerRow:(long)chromaBytesPerRow
             height:(long)height
-               pts:(CMTime)pts {
+               outputPTS:(int64_t)outputPTS {
   OutputStream *os = &outputStreams[index];
   AVFrame *frame = os->frame;
   if (av_frame_make_writable(frame) < 0) {
@@ -319,8 +332,7 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
   copyPlane(frame->data[0], frame->linesize[0], lumaData, lumaBytesPerRow, height);
   copyPlane(frame->data[1], frame->linesize[1], chromaData, chromaBytesPerRow, height / 2);
 
-  AVRational *timeBase = &os->codecContext->time_base;
-  frame->pts = pts.value * timeBase->num / timeBase->den / pts.timescale;
+  frame->pts = outputPTS;
 
   [self writeFrame:os];
 
@@ -353,41 +365,47 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
   return true;
 }
 
-- (void)listenToResampleAudioFrame:(int)index numSamples:(uint32_t *)numSamples fillBufList:(AudioBufferList *)fillBufList {
-  OutputStream *os = &outputStreams[index];
-  AudioConverterFillComplexBuffer(os->audioConverter, audioConvertProc, (__bridge void *)self, numSamples, fillBufList, NULL);
-}
-
 - (bool)writeAudio:(int)index
                abl:(AudioBufferList *__nonnull)abl
               asbd:(const AudioStreamBasicDescription *__nonnull)asbd
-         outputPts:(int64_t)outputPts {
+         outputPTS:(int64_t)outputPTS {
   OutputStream *os = &outputStreams[index];
-
-  if (av_frame_make_writable(os->frame) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not make the audio frame writable");
-    return false;
-  }
 
   if (![self ensureAudioConverterAvailable:index asbd:asbd]) {
     return false;
   }
 
-  os->frame->pts = outputPts;
-
-  AudioBufferList outputABL;
-  outputABL.mNumberBuffers = 1;
-  outputABL.mBuffers[0].mNumberChannels = 2;
-  outputABL.mBuffers[0].mDataByteSize = os->frame->nb_samples * 4;
-  outputABL.mBuffers[0].mData = os->frame->data[0];
-
   uint32_t numSamples = os->frame->nb_samples;
+  uint32_t readSize = abl->mBuffers[0].mDataByteSize * os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
+  uint32_t ptsStep = os->frame->nb_samples * os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
+  size_t offset = 0;
+  while (offset < abl->mBuffers[0].mDataByteSize) {
+    if (av_frame_make_writable(os->frame) < 0) {
+      os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR, "Could not make the audio frame writable");
+      return false;
+    }
 
-  self->abl = abl;
+    ResamplerState state;
+    state.inputABL.mNumberBuffers = 1;
+    state.inputABL.mBuffers[0].mDataByteSize = readSize;
+    state.inputABL.mBuffers[0].mData = abl->mBuffers[0].mData + offset;
+    state.inputABL.mBuffers[0].mNumberChannels = os->inputASBD.mChannelsPerFrame;
+    state.outputNumberDataPackets = numSamples * os->inputASBD.mSampleRate / os->outputASBD.mSampleRate;
 
-  AudioConverterFillComplexBuffer(os->audioConverter, &audioConvertProc, (__bridge void *)self, &numSamples, &outputABL, NULL);
+    AudioBufferList outputABL;
+    outputABL.mNumberBuffers = 1;
+    outputABL.mBuffers[0].mNumberChannels = os->outputASBD.mChannelsPerFrame;
+    outputABL.mBuffers[0].mDataByteSize = numSamples * 4;
+    outputABL.mBuffers[0].mData = os->frame->data[0];
 
-  [self writeFrame:os];
+    AudioConverterFillComplexBuffer(os->audioConverter, &audioConvertProc, &state, &numSamples, &outputABL, NULL);
+
+    os->frame->pts = av_rescale_q(outputPTS, (AVRational){1, os->codecContext->sample_rate}, os->codecContext->time_base);
+    [self writeFrame:os];
+
+    offset += readSize;
+    outputPTS += ptsStep;
+  }
 
   return true;
 }

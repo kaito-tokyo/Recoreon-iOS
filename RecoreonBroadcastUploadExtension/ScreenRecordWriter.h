@@ -52,13 +52,12 @@ typedef struct OutputStream {
       lumaBytesPerRow:(long)lumaBytesPerRow
     chromaBytesPerRow:(long)chromaBytesPerRow
             height:(long)height
-pts:(CMTime)pts;
+outputPTS:(int64_t)outputPTS;
 - (bool)ensureAudioConverterAvailable:(int)index asbd:(const AudioStreamBasicDescription *__nonnull)asbd;
-- (void)listenToResampleAudioFrame:(int)index numSamples:(uint32_t *__nonnull)numSamples fillBufList:(AudioBufferList *__nonnull)fillBufList;
 - (bool)writeAudio:(int)index
                abl:(AudioBufferList *__nonnull)abl
               asbd:(const AudioStreamBasicDescription *__nonnull)asbd
-         outputPts:(int64_t)outputPts;
+         outputPTS:(int64_t)outputPTS;
 - (void)finishStream:(int)index;
 - (void)finishOutput;
 - (void)freeStream:(int)index;
