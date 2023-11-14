@@ -19,14 +19,16 @@ static bool isASBDEqual(const AudioStreamBasicDescription *x, const AudioStreamB
 
 static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *ioNumberDataPackets, AudioBufferList *ioData, AudioStreamPacketDescription * __nullable * __nullable outDataPacketDescription, void * __nullable inUserData) {
   ScreenRecordWriter *self = (__bridge ScreenRecordWriter *)inUserData;
-  ioData->mNumberBuffers = 1;
-  ioData->mBuffers[0].mNumberChannels = 2;
-  ioData->mBuffers[0].mDataByteSize = 4096;
-  ioData->mBuffers[0].mData = self->buf;
-  self->buf[0] = 100;
-  self->buf[1] = 200;
-  self->buf[2] = 300;
-  self->buf[3] = 400;
+  *ioData = *self->abl;
+//  ioData->mNumberBuffers = 1;
+//  ioData->mBuffers[0].mNumberChannels = 2;
+//  ioData->mBuffers[0].mDataByteSize = 4096;
+//  ioData->mBuffers[0].mData = self->buf;
+//  memcpy(<#void *dst#>, <#const void *src#>, <#size_t n#>)
+//  self->buf[0] = 100;
+//  self->buf[1] = 200;
+//  self->buf[2] = 300;
+//  self->buf[3] = 400;
   return noErr;
 }
 
@@ -357,7 +359,7 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
 }
 
 - (bool)writeAudio:(int)index
-               abl:(const AudioBufferList *__nonnull)abl
+               abl:(AudioBufferList *__nonnull)abl
               asbd:(const AudioStreamBasicDescription *__nonnull)asbd
          outputPts:(int64_t)outputPts {
   OutputStream *os = &outputStreams[index];
@@ -371,23 +373,19 @@ static OSStatus audioConvertProc(AudioConverterRef inAudioConverter, uint32_t *i
     return false;
   }
 
-  int16_t *inputBuf = abl->mBuffers[0].mData;
-  int16_t *outputBuf = os->frame->data[0];
-  for (int i = 0; i < 2048; i++) {
-    outputBuf[i] = inputBuf[i];
-  }
-
   os->frame->pts = outputPts;
 
-//  AudioBufferList outputABL;
-//  outputABL.mNumberBuffers = 1;
-//  outputABL.mBuffers[0].mNumberChannels = 2;
-//  outputABL.mBuffers[0].mDataByteSize = os->frame->nb_samples * 4;
-//  outputABL.mBuffers[0].mData = os->frame->data[0];
+  AudioBufferList outputABL;
+  outputABL.mNumberBuffers = 1;
+  outputABL.mBuffers[0].mNumberChannels = 2;
+  outputABL.mBuffers[0].mDataByteSize = os->frame->nb_samples * 4;
+  outputABL.mBuffers[0].mData = os->frame->data[0];
 
-//  uint32_t numSamples = os->frame->nb_samples;
+  uint32_t numSamples = os->frame->nb_samples;
 
-//  AudioConverterFillComplexBuffer(os->audioConverter, &audioConvertProc, (__bridge void *)self, &numSamples, &outputABL, NULL);
+  self->abl = abl;
+
+  AudioConverterFillComplexBuffer(os->audioConverter, &audioConvertProc, (__bridge void *)self, &numSamples, &outputABL, NULL);
 
   [self writeFrame:os];
 

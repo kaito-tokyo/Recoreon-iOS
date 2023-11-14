@@ -26,6 +26,7 @@ typedef struct OutputStream {
   OutputStream outputStreams[MAX_STREAMS];
 
   @public int16_t buf[2048];
+  @public AudioBufferList *__nullable abl;
 }
 
 @property(nonatomic, readonly) NSString *__nullable filename;
@@ -55,7 +56,7 @@ pts:(CMTime)pts;
 - (bool)ensureAudioConverterAvailable:(int)index asbd:(const AudioStreamBasicDescription *__nonnull)asbd;
 - (void)listenToResampleAudioFrame:(int)index numSamples:(uint32_t *__nonnull)numSamples fillBufList:(AudioBufferList *__nonnull)fillBufList;
 - (bool)writeAudio:(int)index
-               abl:(const AudioBufferList *__nonnull)abl
+               abl:(AudioBufferList *__nonnull)abl
               asbd:(const AudioStreamBasicDescription *__nonnull)asbd
          outputPts:(int64_t)outputPts;
 - (void)finishStream:(int)index;
