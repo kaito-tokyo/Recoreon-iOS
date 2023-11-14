@@ -14,7 +14,8 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
 //                   av_ts2str(pkt->pts), av_ts2timestr(pkt->pts, time_base),
 //                   av_ts2str(pkt->dts), av_ts2timestr(pkt->dts, time_base),
 //                   av_ts2str(pkt->duration),
-//                   av_ts2timestr(pkt->duration, time_base), pkt->stream_index);
+//                   av_ts2timestr(pkt->duration, time_base),
+//                   pkt->stream_index);
 #endif
 }
 
