@@ -40,13 +40,7 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
-    paths.ensureAppGroupDirectoriesExists()
-
-    let url = paths.appGroupRecordsDir.appending(
-      path: generateFileName(date: Date()), directoryHint: .notDirectory)
-    writer.openVideoCodec("h264_videotoolbox")
-    writer.openAudioCodec("aac_at")
-    writer.openOutputFile(url.path())
+    startRecording()
   }
 
   override func broadcastPaused() {
@@ -55,6 +49,79 @@ class SampleHandler: RPBroadcastSampleHandler {
 
   override func broadcastResumed() {
     // User has requested to resume the broadcast. Samples delivery will resume.
+  }
+
+  override func processSampleBuffer(
+    _ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType
+  ) {
+    let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+    switch sampleBufferType {
+    case RPSampleBufferType.video:
+      guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+        print("Could not obtain the pixel buffer!")
+        return
+      }
+
+      let width = CVPixelBufferGetWidth(pixelBuffer)
+      let height = CVPixelBufferGetHeight(pixelBuffer)
+
+      if !isOutputStarted {
+        writer.addVideoStream(
+          0, width: width, height: height, frameRate: frameRate, bitRate: 8_000_000)
+        writer.addAudioStream(1, sampleRate: 44100, bitRate: 320000)
+        writer.addAudioStream(2, sampleRate: 48000, bitRate: 320000)
+        writer.openVideo(0)
+        writer.openAudio(1)
+        writer.openAudio(2)
+        writer.startOutput()
+
+        screenAudioBufferHandler = AudioBufferHandler(
+          byteCount: writer.getNumSamples(1) * 4
+        )
+        micAudioBufferHandler = AudioBufferHandler(
+          byteCount: writer.getNumSamples(2) * 4
+        )
+
+        isOutputStarted = true
+        screenFirstTime = pts
+      }
+
+      guard let firstTime = self.screenFirstTime else { return }
+      let elapsedTime = CMTimeSubtract(pts, firstTime)
+      self.screenElapsedTime = elapsedTime
+      let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: Int32(frameRate))
+      let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+
+      self.handleVideoSample(index: 0, pixelBuffer: pixelBuffer, outputPTS: outputPTS)
+    case RPSampleBufferType.audioApp:
+      if !isOutputStarted {
+        return
+      }
+
+      guard let firstTime = screenFirstTime else { return }
+      let elapsedTime = CMTimeSubtract(pts, firstTime)
+      let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: 44100)
+      let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+
+      self.handleScreenAudioSample(index: 1, sampleBuffer: sampleBuffer, outputPTS: outputPTS)
+    case RPSampleBufferType.audioMic:
+      if !isOutputStarted {
+        return
+      }
+
+      if micFirstTime == nil {
+        guard let elapsedTime = screenElapsedTime else { return }
+        micFirstTime = CMTimeSubtract(pts, elapsedTime)
+      }
+      guard let firstTime = micFirstTime else { return }
+      let elapsedCount = CMTimeMultiply(CMTimeSubtract(pts, firstTime), multiplier: 48000)
+      let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+
+      self.handleMicAudioSample(index: 2, sampleBuffer: sampleBuffer, outputPTS: outputPTS)
+    @unknown default:
+      // Handle other sample buffer types
+      fatalError("Unknown type of sample buffer")
+    }
   }
 
   override func broadcastFinished() {
@@ -68,7 +135,45 @@ class SampleHandler: RPBroadcastSampleHandler {
     writer.closeOutput()
   }
 
+  func startRecording() {
+    paths.ensureAppGroupDirectoriesExists()
+
+    let url = paths.appGroupRecordsDir.appending(
+      path: generateFileName(date: Date()), directoryHint: .notDirectory)
+    writer.openVideoCodec("h264_videotoolbox")
+    writer.openAudioCodec("aac_at")
+    writer.openOutputFile(url.path())
+  }
+
+  func initAllStreams() {
+    writer.addVideoStream(
+      0, width: width, height: height, frameRate: frameRate, bitRate: 8_000_000)
+    writer.addAudioStream(1, sampleRate: 44100, bitRate: 320000)
+    writer.addAudioStream(2, sampleRate: 48000, bitRate: 320000)
+    writer.openVideo(0)
+    writer.openAudio(1)
+    writer.openAudio(2)
+    writer.startOutput()
+
+    screenAudioBufferHandler = AudioBufferHandler(
+      byteCount: writer.getNumSamples(1) * 4
+    )
+    micAudioBufferHandler = AudioBufferHandler(
+      byteCount: writer.getNumSamples(2) * 4
+    )
+  }
+
+  func writeVideoFrame(sampleBuffer: CMSampleBuffer) {
+    guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+    guard let extractor = pixelBufferExtractorRef else { return }
+  }
+
   func handleVideoSample(index: Int32, pixelBuffer: CVPixelBuffer, outputPTS: Int64) {
+    if !isOutputStarted {
+      initAllStreams()
+      isOutputStarted = true
+    }
+
     let lumaBytesPerRow = writer.getBytesPerRow(0, ofPlane: 0)
     let chromaBytesPerRow = writer.getBytesPerRow(0, ofPlane: 1)
     guard

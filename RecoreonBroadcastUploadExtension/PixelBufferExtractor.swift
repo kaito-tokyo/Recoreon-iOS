@@ -2,21 +2,22 @@ import MetalKit
 
 class PixelBufferExtractor {
   struct Frame {
-    let lumaData: UnsafeMutableRawPointer
-    let chmoraData: UnsafeMutableRawPointer
+    let width: Int
+    let height: Int
     let lumaBytesPerRow: Int
     let chromaBytesPerRow: Int
-    let height: Int
+    let lumaData: UnsafeRawPointer
+    let chmoraData: UnsafeRawPointer
   }
 
   private let metalDevice: MTLDevice
   private let textureCache: CVMetalTextureCache
   private let commandQueue: MTLCommandQueue
 
-  private var dstLumaBufferRef: MTLBuffer?
-  private var dstChromaBufferRef: MTLBuffer?
+  private let lumaBuffer: MTLBuffer
+  private let chromaBuffer: MTLBuffer
 
-  init?() {
+  init?(height: Int, lumaBytesPerRow: Int, chromaBytesPerRow: Int) {
     guard let device = MTLCreateSystemDefaultDevice() else { return nil }
 
     var cacheRef: CVMetalTextureCache?
@@ -25,71 +26,67 @@ class PixelBufferExtractor {
 
     guard let queue = device.makeCommandQueue() else { return nil }
 
-    self.metalDevice = device
-    self.textureCache = cache
-    self.commandQueue = queue
+    let lumaLength = (lumaBytesPerRow + 4) * (height + 4)
+    let chromaLength = (chromaBytesPerRow + 4) * (height + 4)
+
+    guard
+      let lumaBuffer = device.makeBuffer(length: lumaLength, options: .storageModeShared),
+      let chromaBuffer = device.makeBuffer(length: chromaLength, options: .storageModeShared)
+    else { return nil }
+
+    metalDevice = device
+    textureCache = cache
+    commandQueue = queue
+    self.lumaBuffer = lumaBuffer
+    self.chromaBuffer = chromaBuffer
   }
 
-  func extract(_ srcPixelBuffer: CVPixelBuffer, lumaBytesPerRow: Int, chromaBytesPerRow: Int)
-    -> Frame?
-  {  // swiftlint:disable:this opening_brace
-    let pixelFormat = CVPixelBufferGetPixelFormatType(srcPixelBuffer)
-    if pixelFormat != kCVPixelFormatType_420YpCbCr8BiPlanarFullRange {
+  func extract(pixelBuffer: CVPixelBuffer) -> Frame? {
+    let format = CVPixelBufferGetPixelFormatType(pixelBuffer)
+    if format != kCVPixelFormatType_420YpCbCr8BiPlanarFullRange {
       return nil
     }
 
-    let height = CVPixelBufferGetHeight(srcPixelBuffer)
-    guard let dstLumaBuffer = getDstLumaBuffer(bytesPerRow: lumaBytesPerRow, height: height),
-      let dstChromaBuffer = getDstChromaBuffer(bytesPerRow: chromaBytesPerRow, height: height)
-    else { return nil }
-
     guard
-      let srcLumaTexture = createTextureFromPixelBuffer(
-        srcPixelBuffer, planeIndex: 0, format: .r8Unorm),
-      let srcChromaTexture = createTextureFromPixelBuffer(
-        srcPixelBuffer, planeIndex: 1, format: .rg8Unorm),
+      let lumaTexture = createTextureFromPixelBuffer(pixelBuffer, 0, .r8Unorm),
+      let chromaTexture = createTextureFromPixelBuffer(pixelBuffer, 1, .rg8Unorm),
       let commandBuffer = commandQueue.makeCommandBuffer(),
       let encoder = commandBuffer.makeBlitCommandEncoder()
     else { return nil }
-    encoder.copy(
-      fromTexture: srcLumaTexture, sourceBytesPerRow: lumaBytesPerRow, toBuffer: dstLumaBuffer)
-    encoder.copy(
-      fromTexture: srcChromaTexture, sourceBytesPerRow: chromaBytesPerRow, toBuffer: dstChromaBuffer
-    )
+
+    let lumaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0)
+    let chromaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1)
+
+    encoder.copy(fromTexture: lumaTexture, bytesPerRow: lumaBytesPerRow, toBuffer: lumaBuffer)
+    encoder.copy(fromTexture: chromaTexture, bytesPerRow: chromaBytesPerRow, toBuffer: lumaBuffer)
     encoder.endEncoding()
     commandBuffer.commit()
     commandBuffer.waitUntilCompleted()
 
-    return Frame(
-      lumaData: dstLumaBuffer.contents(), chmoraData: dstChromaBuffer.contents(),
-      lumaBytesPerRow: lumaBytesPerRow, chromaBytesPerRow: chromaBytesPerRow, height: height)
-  }
+    let width = CVPixelBufferGetWidth(pixelBuffer)
+    let height = CVPixelBufferGetHeight(pixelBuffer)
 
-  private func getDstLumaBuffer(bytesPerRow: Int, height: Int) -> MTLBuffer? {
-    if dstLumaBufferRef == nil {
-      dstLumaBufferRef = metalDevice.makeBuffer(
-        length: (bytesPerRow + 4) * (height + 4), options: .storageModeShared)
-    }
-    return dstLumaBufferRef
-  }
+    let frame = Frame(
+      width: width,
+      height: height,
+      lumaBytesPerRow: lumaBytesPerRow,
+      chromaBytesPerRow: chromaBytesPerRow,
+      lumaData: lumaBuffer.contents(),
+      chmoraData: chromaBuffer.contents()
+    )
 
-  private func getDstChromaBuffer(bytesPerRow: Int, height: Int) -> MTLBuffer? {
-    if dstChromaBufferRef == nil {
-      dstChromaBufferRef = metalDevice.makeBuffer(
-        length: (bytesPerRow + 4) * (height + 4) / 2, options: .storageModeShared)
-    }
-    return dstChromaBufferRef
+    return frame
   }
 
   private func createTextureFromPixelBuffer(
-    _ pixelBuffer: CVPixelBuffer, planeIndex: Int, format: MTLPixelFormat
+    _ pixelBuffer: CVPixelBuffer, _ planeIndex: Int, _ format: MTLPixelFormat
   ) -> MTLTexture? {
     let width = CVPixelBufferGetWidthOfPlane(pixelBuffer, planeIndex)
     let height = CVPixelBufferGetHeightOfPlane(pixelBuffer, planeIndex)
 
     var textureRef: CVMetalTexture?
     let ret = CVMetalTextureCacheCreateTextureFromImage(
-      kCFAllocatorDefault, textureCache, pixelBuffer, nil, format, width, height, planeIndex,
+      nil, textureCache, pixelBuffer, nil, format, width, height, planeIndex,
       &textureRef)
     if ret == kCVReturnSuccess {
       if let texture = textureRef {
@@ -101,7 +98,7 @@ class PixelBufferExtractor {
 }
 
 extension MTLBlitCommandEncoder {
-  fileprivate func copy(fromTexture: MTLTexture, sourceBytesPerRow: Int, toBuffer: MTLBuffer) {
+  fileprivate func copy(fromTexture: MTLTexture, bytesPerRow: Int, toBuffer: MTLBuffer) {
     self.copy(
       from: fromTexture,
       sourceSlice: 0,
@@ -110,7 +107,7 @@ extension MTLBlitCommandEncoder {
       sourceSize: MTLSizeMake(fromTexture.width, fromTexture.height, 1),
       to: toBuffer,
       destinationOffset: 0,
-      destinationBytesPerRow: sourceBytesPerRow,
+      destinationBytesPerRow: bytesPerRow,
       destinationBytesPerImage: 0
     )
   }
