@@ -331,26 +331,10 @@ static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
 }
 
 - (BOOL)writeVideo:(int)index
-             lumaData:(void *__nonnull)lumaData
-           chromaData:(void *__nonnull)chromaData
-      lumaBytesPerRow:(long)lumaBytesPerRow
-    chromaBytesPerRow:(long)chromaBytesPerRow
-               height:(long)height
             outputPTS:(int64_t)outputPTS {
   OutputStream *os = &outputStreams[index];
-  AVFrame *frame = os->frame;
-  if (av_frame_make_writable(frame) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not make the video frame writable");
-    return false;
-  }
 
-  copyPlane(frame->data[0], frame->linesize[0], lumaData, lumaBytesPerRow,
-            height);
-  copyPlane(frame->data[1], frame->linesize[1], chromaData, chromaBytesPerRow,
-            height / 2);
-
-  frame->pts = outputPTS;
+  os->frame->pts = outputPTS;
 
   [self writeFrame:os];
 
