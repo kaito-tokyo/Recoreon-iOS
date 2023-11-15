@@ -1,4 +1,2 @@
-//
-//  Use this file to import your target's public headers that you would like to
-//  expose to Swift.
-//
+#import "../RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension-Bridging-Header.h"
+#import "../Recoreon/Recoreon-Bridging-Header.h"

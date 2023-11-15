@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2222798E2B04FB25006A2588 /* AudioResamplerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2222798D2B04FB25006A2588 /* AudioResamplerTests.swift */; };
+		222279902B04FB33006A2588 /* Int16DoubleUpsampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2222798F2B04FB33006A2588 /* Int16DoubleUpsampler.swift */; };
+		222279912B04FB87006A2588 /* Int16DoubleUpsampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2222798F2B04FB33006A2588 /* Int16DoubleUpsampler.swift */; };
+		222279932B050CDD006A2588 /* AudioResampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222279922B050CDD006A2588 /* AudioResampler.swift */; };
 		2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */; };
 		2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */; };
 		2232A9512AFD452600330C23 /* RecordedVideoBasicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9502AFD452600330C23 /* RecordedVideoBasicView.swift */; };
@@ -16,7 +20,7 @@
 		22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */; };
 		224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
 		224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
-		226A7D7D2B03CDC4000A6FEA /* SameRateAudioResampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A7D7C2B03CDC4000A6FEA /* SameRateAudioResampler.swift */; };
+		226A7D7D2B03CDC4000A6FEA /* Int16SameRateSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A7D7C2B03CDC4000A6FEA /* Int16SameRateSampler.swift */; };
 		226A897D2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */; };
 		226A89852AFB1B7F00EBD2CA /* RecordedVideoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A89842AFB1B7F00EBD2CA /* RecordedVideoService.swift */; };
 		226A898F2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A898E2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift */; };
@@ -30,6 +34,8 @@
 		22966A2E2AFE756F0080324D /* AdvancedRecordedVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A2D2AFE756F0080324D /* AdvancedRecordedVideoView.swift */; };
 		22966A302AFE79200080324D /* EncodedVideoCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A2F2AFE79200080324D /* EncodedVideoCollection.swift */; };
 		22966A332AFE8D1B0080324D /* RecordedVideoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A322AFE8D1B0080324D /* RecordedVideoStore.swift */; };
+		22AE9D2C2B051756002858FD /* AudioResampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222279922B050CDD006A2588 /* AudioResampler.swift */; };
+		22AE9D2D2B052344002858FD /* Int16SameRateSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A7D7C2B03CDC4000A6FEA /* Int16SameRateSampler.swift */; };
 		22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */; };
 		22C18AE32AF2B08B00C41B49 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */; };
 		22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */; };
@@ -103,6 +109,9 @@
 		1572C7C0B2AC1062995A3A79 /* Pods-RecoreonTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RecoreonTests.release.xcconfig"; path = "Target Support Files/Pods-RecoreonTests/Pods-RecoreonTests.release.xcconfig"; sourceTree = "<group>"; };
 		1CEEDF33F3DF9E6CF87BA072 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtension/Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; sourceTree = "<group>"; };
 		21494B872F6439D163F2B227 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; sourceTree = "<group>"; };
+		2222798D2B04FB25006A2588 /* AudioResamplerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioResamplerTests.swift; sourceTree = "<group>"; };
+		2222798F2B04FB33006A2588 /* Int16DoubleUpsampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int16DoubleUpsampler.swift; sourceTree = "<group>"; };
+		222279922B050CDD006A2588 /* AudioResampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioResampler.swift; sourceTree = "<group>"; };
 		2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonBroadcastPickerRepresentable.swift; sourceTree = "<group>"; };
 		2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PixelBufferExtractor.swift; path = RecoreonBroadcastUploadExtension/PixelBufferExtractor.swift; sourceTree = SOURCE_ROOT; };
 		2232A9502AFD452600330C23 /* RecordedVideoBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoBasicView.swift; sourceTree = "<group>"; };
@@ -113,7 +122,7 @@
 		22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriterTests.m; sourceTree = "<group>"; };
 		224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
 		224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenRecordWriter.h; sourceTree = "<group>"; };
-		226A7D7C2B03CDC4000A6FEA /* SameRateAudioResampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SameRateAudioResampler.swift; sourceTree = "<group>"; };
+		226A7D7C2B03CDC4000A6FEA /* Int16SameRateSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int16SameRateSampler.swift; sourceTree = "<group>"; };
 		226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingRecordedVideoView.swift; sourceTree = "<group>"; };
 		226A89842AFB1B7F00EBD2CA /* RecordedVideoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoService.swift; sourceTree = "<group>"; };
 		226A898E2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoServiceMock.swift; sourceTree = "<group>"; };
@@ -259,9 +268,11 @@
 			isa = PBXGroup;
 			children = (
 				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
-				226A7D7C2B03CDC4000A6FEA /* SameRateAudioResampler.swift */,
+				226A7D7C2B03CDC4000A6FEA /* Int16SameRateSampler.swift */,
 				224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */,
 				224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */,
+				2222798F2B04FB33006A2588 /* Int16DoubleUpsampler.swift */,
+				222279922B050CDD006A2588 /* AudioResampler.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -384,6 +395,7 @@
 				22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */,
 				22C3CD0B2AF240B40039750A /* RecoreonTests.swift */,
 				22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */,
+				2222798D2B04FB25006A2588 /* AudioResamplerTests.swift */,
 			);
 			path = RecoreonTests;
 			sourceTree = "<group>";
@@ -817,8 +829,10 @@
 			files = (
 				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
 				22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */,
-				226A7D7D2B03CDC4000A6FEA /* SameRateAudioResampler.swift in Sources */,
+				222279902B04FB33006A2588 /* Int16DoubleUpsampler.swift in Sources */,
+				226A7D7D2B03CDC4000A6FEA /* Int16SameRateSampler.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
+				222279932B050CDD006A2588 /* AudioResampler.swift in Sources */,
 				224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -860,6 +874,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22AE9D2D2B052344002858FD /* Int16SameRateSampler.swift in Sources */,
+				22AE9D2C2B051756002858FD /* AudioResampler.swift in Sources */,
+				222279912B04FB87006A2588 /* Int16DoubleUpsampler.swift in Sources */,
+				2222798E2B04FB25006A2588 /* AudioResamplerTests.swift in Sources */,
 				22C3CD0C2AF240B40039750A /* RecoreonTests.swift in Sources */,
 				224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */,
 				22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */,
