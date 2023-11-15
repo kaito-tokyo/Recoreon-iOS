@@ -6,7 +6,7 @@
 
 static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
 #if DEBUG
-  AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
+//  AVRational *time_base = &fmt_ctx->streams[pkt->stream_index]->time_base;
 
 //  os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_DEBUG,
 //                   "pts:%s pts_time:%s dts:%s dts_time:%s duration:%s "

@@ -16,7 +16,7 @@
 		22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */; };
 		224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
 		224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
-		226A7D7D2B03CDC4000A6FEA /* AudioBufferHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A7D7C2B03CDC4000A6FEA /* AudioBufferHandler.swift */; };
+		226A7D7D2B03CDC4000A6FEA /* SameRateAudioResampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A7D7C2B03CDC4000A6FEA /* SameRateAudioResampler.swift */; };
 		226A897D2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */; };
 		226A89852AFB1B7F00EBD2CA /* RecordedVideoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A89842AFB1B7F00EBD2CA /* RecordedVideoService.swift */; };
 		226A898F2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A898E2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift */; };
@@ -113,7 +113,7 @@
 		22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriterTests.m; sourceTree = "<group>"; };
 		224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
 		224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenRecordWriter.h; sourceTree = "<group>"; };
-		226A7D7C2B03CDC4000A6FEA /* AudioBufferHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBufferHandler.swift; sourceTree = "<group>"; };
+		226A7D7C2B03CDC4000A6FEA /* SameRateAudioResampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SameRateAudioResampler.swift; sourceTree = "<group>"; };
 		226A897C2AFB179A00EBD2CA /* EncodingRecordedVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingRecordedVideoView.swift; sourceTree = "<group>"; };
 		226A89842AFB1B7F00EBD2CA /* RecordedVideoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoService.swift; sourceTree = "<group>"; };
 		226A898E2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoServiceMock.swift; sourceTree = "<group>"; };
@@ -258,8 +258,8 @@
 		22966A252AFE47110080324D /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				226A7D7C2B03CDC4000A6FEA /* AudioBufferHandler.swift */,
 				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
+				226A7D7C2B03CDC4000A6FEA /* SameRateAudioResampler.swift */,
 				224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */,
 				224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */,
 			);
@@ -815,9 +815,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				226A7D7D2B03CDC4000A6FEA /* AudioBufferHandler.swift in Sources */,
 				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
 				22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */,
+				226A7D7D2B03CDC4000A6FEA /* SameRateAudioResampler.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
 				224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */,
 			);
