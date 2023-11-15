@@ -21,7 +21,7 @@ private let dateFormatter = {
 }()
 
 class SampleHandler: RPBroadcastSampleHandler {
-  let frameRate: Int32 = 120
+  let frameRate = 120
 
   let writer = ScreenRecordWriter()
   let pixelBufferExtractorRef = PixelBufferExtractor()
@@ -62,15 +62,15 @@ class SampleHandler: RPBroadcastSampleHandler {
     writer.finishStream(1)
     writer.finishStream(2)
     writer.finishOutput()
-    writer.freeStream(0)
-    writer.freeStream(1)
-    writer.freeStream(2)
-    writer.freeOutput()
+    writer.closeStream(0)
+    writer.closeStream(1)
+    writer.closeStream(2)
+    writer.closeOutput()
   }
 
   func handleVideoSample(index: Int32, pixelBuffer: CVPixelBuffer, outputPTS: Int64) {
-    let lumaBytesPerRow = Int(writer.getBytesPerRow(0, planeIndex: 0))
-    let chromaBytesPerRow = Int(writer.getBytesPerRow(0, planeIndex: 1))
+    let lumaBytesPerRow = writer.getBytesPerRow(0, ofPlane: 0)
+    let chromaBytesPerRow = writer.getBytesPerRow(0, ofPlane: 1)
     guard
       let frame = pixelBufferExtractorRef?.extract(
         pixelBuffer, lumaBytesPerRow: lumaBytesPerRow, chromaBytesPerRow: chromaBytesPerRow)
@@ -78,16 +78,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       print("Could not render to the pixel buffer!")
       return
     }
-
-    self.writer.writeVideo(
-      0,
-      lumaData: frame.lumaData,
-      chromaData: frame.chmoraData,
-      lumaBytesPerRow: frame.lumaBytesPerRow,
-      chromaBytesPerRow: frame.chromaBytesPerRow,
-      height: frame.height,
-      outputPTS: outputPTS
-    )
+    writer.writeVideo(0, outputPTS: outputPTS)
   }
 
   func handleScreenAudioSample(index: Int32, sampleBuffer: CMSampleBuffer, outputPTS: Int64) {
@@ -116,7 +107,7 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     guard let data = abl.mBuffers.mData else { return }
 
-    writer.prepareFrame(1)
+    writer.makeFrameWritable(1)
     let frameBuf = writer.getBaseAddress(1, ofPlane: 0)
     if asbd.mSampleRate == 44100 {
       if asbd.mChannelsPerFrame == 2 {
@@ -154,7 +145,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
     guard let bufferHandler = micAudioBufferHandler else { return }
 
-    writer.prepareFrame(2)
+    writer.makeFrameWritable(2)
     let frameBuf = writer.getBaseAddress(2, ofPlane: 0)
 
     if abl.mBuffers.mDataByteSize != bufferHandler.byteCount {
@@ -189,8 +180,8 @@ class SampleHandler: RPBroadcastSampleHandler {
         return
       }
 
-      let width = Int32(CVPixelBufferGetWidth(pixelBuffer))
-      let height = Int32(CVPixelBufferGetHeight(pixelBuffer))
+      let width = CVPixelBufferGetWidth(pixelBuffer)
+      let height = CVPixelBufferGetHeight(pixelBuffer)
 
       if !isOutputStarted {
         writer.addVideoStream(
@@ -203,10 +194,10 @@ class SampleHandler: RPBroadcastSampleHandler {
         writer.startOutput()
 
         screenAudioBufferHandler = AudioBufferHandler(
-          byteCount: writer.getByteCount(ofAudioPlane: 1)
+          byteCount: writer.getNumSamples(1) * 4
         )
         micAudioBufferHandler = AudioBufferHandler(
-          byteCount: writer.getByteCount(ofAudioPlane: 2)
+          byteCount: writer.getNumSamples(2) * 4
         )
 
         isOutputStarted = true
@@ -216,7 +207,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       guard let firstTime = self.screenFirstTime else { return }
       let elapsedTime = CMTimeSubtract(pts, firstTime)
       self.screenElapsedTime = elapsedTime
-      let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: frameRate)
+      let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: Int32(frameRate))
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
       self.handleVideoSample(index: 0, pixelBuffer: pixelBuffer, outputPTS: outputPTS)
