@@ -216,11 +216,6 @@ class SampleHandler: RPBroadcastSampleHandler {
     let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: Int32(spec.screenAudioSampleRate))
     var outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
-    writer.makeFrameWritable(index)
-    guard let src = abl.mBuffers.mData else { return }
-    let srcByteCount = Int(abl.mBuffers.mDataByteSize)
-    let dest = writer.getBaseAddress(index, ofPlane: 0)
-
     guard
       let format = CMSampleBufferGetFormatDescription(sampleBuffer),
       let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee
@@ -291,11 +286,6 @@ class SampleHandler: RPBroadcastSampleHandler {
     let elapsedCount = CMTimeMultiply(
       CMTimeSubtract(pts, firstTime), multiplier: Int32(spec.micAudioSampleRate))
     var outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
-
-    writer.makeFrameWritable(index)
-    guard let src = abl.mBuffers.mData else { return }
-    let srcByteCount = Int(abl.mBuffers.mDataByteSize)
-    let dest = writer.getBaseAddress(index, ofPlane: 0)
 
     if abl.mBuffers.mDataByteSize != writer.getNumSamples(index) * 4 {
       print("Sample size invalid")
