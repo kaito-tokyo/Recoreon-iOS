@@ -242,7 +242,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       } else {
         resampler.copyOperationMode = .monoToStereoWithSwap
       }
-    } else  if asbd.mChannelsPerFrame == 2 {
+    } else if asbd.mChannelsPerFrame == 2 {
       if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
         resampler.copyOperationMode = .stereoToStereo
       } else {
