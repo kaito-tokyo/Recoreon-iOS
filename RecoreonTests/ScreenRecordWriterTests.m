@@ -97,8 +97,10 @@ typedef struct AudioFrame {
 
   for (long y = 0; y < frame->height / 2; y++) {
     for (long x = 0; x < frame->width; x += 2) {
-      frame->chromaData[y * frame->chromaBytesPerRow + x] = 128 + y + frameIndex * 2;
-      frame->chromaData[y * frame->chromaBytesPerRow + x + 1] = 64 + x + frameIndex * 5;
+      frame->chromaData[y * frame->chromaBytesPerRow + x] =
+          128 + y + frameIndex * 2;
+      frame->chromaData[y * frame->chromaBytesPerRow + x + 1] =
+          64 + x + frameIndex * 5;
     }
   }
 

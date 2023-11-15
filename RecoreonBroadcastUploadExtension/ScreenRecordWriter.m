@@ -172,7 +172,8 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
     return false;
   }
 
-  if (avcodec_parameters_from_context(os->stream->codecpar, os->codecContext) < 0) {
+  if (avcodec_parameters_from_context(os->stream->codecpar, os->codecContext) <
+      0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not copy the video stream parameters");
     return false;
@@ -207,7 +208,8 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
     return false;
   }
 
-  if (avcodec_parameters_from_context(os->stream->codecpar, os->codecContext) < 0) {
+  if (avcodec_parameters_from_context(os->stream->codecpar, os->codecContext) <
+      0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not copy the audio stream parameters");
     return false;
