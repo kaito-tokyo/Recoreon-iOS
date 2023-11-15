@@ -52,7 +52,7 @@ class RecordedVideoService {
     return await withCheckedContinuation { continuation in
       FFmpegKit.execute(
         withArgumentsAsync: arguments,
-        withCompleteCallback: { session in
+        withCompleteCallback: { _ in
           continuation.resume()
         }
       )

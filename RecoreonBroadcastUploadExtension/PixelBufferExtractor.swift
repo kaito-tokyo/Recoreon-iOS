@@ -7,7 +7,7 @@ class PixelBufferExtractor {
     let lumaBytesPerRow: Int
     let chromaBytesPerRow: Int
     let lumaData: UnsafeRawPointer
-    let chmoraData: UnsafeRawPointer
+    let chromaData: UnsafeRawPointer
   }
 
   private let metalDevice: MTLDevice
@@ -41,7 +41,7 @@ class PixelBufferExtractor {
     self.chromaBuffer = chromaBuffer
   }
 
-  func extract(pixelBuffer: CVPixelBuffer) -> Frame? {
+  func extract(_ pixelBuffer: CVPixelBuffer) -> Frame? {
     let format = CVPixelBufferGetPixelFormatType(pixelBuffer)
     if format != kCVPixelFormatType_420YpCbCr8BiPlanarFullRange {
       return nil
@@ -72,7 +72,7 @@ class PixelBufferExtractor {
       lumaBytesPerRow: lumaBytesPerRow,
       chromaBytesPerRow: chromaBytesPerRow,
       lumaData: lumaBuffer.contents(),
-      chmoraData: chromaBuffer.contents()
+      chromaData: chromaBuffer.contents()
     )
 
     return frame
