@@ -63,6 +63,9 @@ class SampleHandler: RPBroadcastSampleHandler {
 
   let writer = ScreenRecordWriter()
   var pixelBufferExtractorRef: PixelBufferExtractor?
+  var screenSameRateSampler: Int16SameRateSampler?
+  var micSameRateSampler: Int16SameRateSampler?
+  var micDoubleUpsampler: Int16DoubleUpsampler?
 
   var isOutputStarted: Bool = false
 
@@ -134,6 +137,10 @@ class SampleHandler: RPBroadcastSampleHandler {
       lumaBytesPerRow: lumaBytesPerRow,
       chromaBytesPerRow: chromaBytesPerRow
     )
+
+    screenSameRateSampler = Int16SameRateSampler(toNumSamples: writer.getNumSamples(1))
+    micSameRateSampler = Int16SameRateSampler(toNumSamples: writer.getNumSamples(2))
+    micDoubleUpsampler = Int16DoubleUpsampler(toNumSamples: writer.getNumSamples(2))
   }
 
   func processScreenVideoSample(_ sampleBuffer: CMSampleBuffer) {
@@ -207,13 +214,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     guard let firstTime = screenFirstTime else { return }
     let elapsedTime = CMTimeSubtract(pts, firstTime)
     let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: Int32(spec.screenAudioSampleRate))
-    let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
-    print(outputPTS)
-
-    writer.makeFrameWritable(index)
-    guard let src = abl.mBuffers.mData else { return }
-    let srcByteCount = Int(abl.mBuffers.mDataByteSize)
-    let dest = writer.getBaseAddress(index, ofPlane: 0)
+    var outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
     guard
       let format = CMSampleBufferGetFormatDescription(sampleBuffer),
@@ -225,35 +226,39 @@ class SampleHandler: RPBroadcastSampleHandler {
       return
     }
 
+    var resamplerRef: AudioResampler?
     if Int(asbd.mSampleRate) == spec.screenAudioSampleRate {
-      let resampler = SameRateAudioResampler(destNumSamples: writer.getNumSamples(index))
-      if asbd.mChannelsPerFrame == 1 {
-        if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
-          resampler.copyMonoToStereo(fromData: src, toData: dest, numSamples: srcByteCount / 2) {
-            writer.writeAudio(index, outputPTS: outputPTS)
-          }
-        } else {
-          resampler.copyMonoToStereoWithSwap(
-            fromData: src, toData: dest, numSamples: srcByteCount / 2
-          ) {
-            writer.writeAudio(index, outputPTS: outputPTS)
-          }
-        }
-      } else if asbd.mChannelsPerFrame == 2 {
-        if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
-          resampler.copyStereoToStereo(fromData: src, toData: dest, numSamples: srcByteCount / 4) {
-            writer.writeAudio(index, outputPTS: outputPTS)
-          }
-        } else {
-          resampler.copyStereoToStereoWithSwap(
-            fromData: src, toData: dest, numSamples: srcByteCount / 4
-          ) {
-            writer.writeAudio(index, outputPTS: outputPTS)
-          }
-        }
+      resamplerRef = screenSameRateSampler
+    }
+    guard var resampler = resamplerRef else { return }
+
+    resampler.reset()
+    guard let fromData = abl.mBuffers.mData else { return }
+    resampler.fromData = UnsafeRawPointer(fromData)
+    resampler.fromNumSamples = Int(abl.mBuffers.mDataByteSize / abl.mBuffers.mNumberChannels / 2)
+    if asbd.mChannelsPerFrame == 1 {
+      if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
+        resampler.copyOperationMode = .monoToStereo
+      } else {
+        resampler.copyOperationMode = .monoToStereoWithSwap
+      }
+    } else if asbd.mChannelsPerFrame == 2 {
+      if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
+        resampler.copyOperationMode = .stereoToStereo
+      } else {
+        resampler.copyOperationMode = .stereoToStereoWithSwap
       }
     } else {
-      fatalError("Sample rate error")
+      return
+    }
+    while resampler.hasNext() {
+      writer.makeFrameWritable(index)
+      resampler.toData = writer.getBaseAddress(index, ofPlane: 0)
+      if !resampler.doCopy() {
+        break
+      }
+      writer.writeAudio(index, outputPTS: outputPTS)
+      outputPTS += Int64(writer.getNumSamples(index))
     }
   }
 
@@ -286,51 +291,43 @@ class SampleHandler: RPBroadcastSampleHandler {
     guard let firstTime = micFirstTime else { return }
     let elapsedCount = CMTimeMultiply(
       CMTimeSubtract(pts, firstTime), multiplier: Int32(spec.micAudioSampleRate))
-    let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+    var outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
-    writer.makeFrameWritable(index)
-    guard let src = abl.mBuffers.mData else { return }
-    let srcByteCount = Int(abl.mBuffers.mDataByteSize)
-    let dest = writer.getBaseAddress(index, ofPlane: 0)
-
-    if abl.mBuffers.mDataByteSize != writer.getNumSamples(index) * 4 {
-      print("Sample size invalid")
-      return
-    }
-
+    var resamplerRef: AudioResampler?
     if Int(asbd.mSampleRate) == spec.micAudioSampleRate {
-      let resampler = SameRateAudioResampler(destNumSamples: writer.getNumSamples(index))
-      if asbd.mChannelsPerFrame == 1 {
-        if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
-          resampler.copyMonoToStereo(
-            fromData: src, toData: dest, numSamples: srcByteCount / 2
-          ) {
-            writer.writeAudio(index, outputPTS: outputPTS)
-          }
-        } else {
-          resampler.copyMonoToStereoWithSwap(
-            fromData: src, toData: dest, numSamples: srcByteCount / 2
-          ) {
-            writer.writeAudio(index, outputPTS: outputPTS)
-          }
-        }
-      } else if asbd.mChannelsPerFrame == 2 {
-        if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
-          resampler.copyStereoToStereo(
-            fromData: src, toData: dest, numSamples: srcByteCount / 4
-          ) {
-            writer.writeAudio(index, outputPTS: outputPTS)
-          }
-        } else {
-          resampler.copyStereoToStereoWithSwap(
-            fromData: src, toData: dest, numSamples: srcByteCount / 4
-          ) {
-            writer.writeAudio(index, outputPTS: outputPTS)
-          }
-        }
+      resamplerRef = micSameRateSampler
+    } else if Int(asbd.mSampleRate) == spec.micAudioSampleRate / 2 {
+      resamplerRef = micDoubleUpsampler
+    }
+    guard var resampler = resamplerRef else { return }
+
+    resampler.reset()
+    guard let fromData = abl.mBuffers.mData else { return }
+    resampler.fromData = UnsafeRawPointer(fromData)
+    resampler.fromNumSamples = Int(abl.mBuffers.mDataByteSize / abl.mBuffers.mNumberChannels / 2)
+    if asbd.mChannelsPerFrame == 1 {
+      if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
+        resampler.copyOperationMode = .monoToStereo
+      } else {
+        resampler.copyOperationMode = .monoToStereoWithSwap
+      }
+    } else if asbd.mChannelsPerFrame == 2 {
+      if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
+        resampler.copyOperationMode = .stereoToStereo
+      } else {
+        resampler.copyOperationMode = .stereoToStereoWithSwap
       }
     } else {
-      fatalError("Sample rate error")
+      return
+    }
+    while resampler.hasNext() {
+      writer.makeFrameWritable(index)
+      resampler.toData = writer.getBaseAddress(index, ofPlane: 0)
+      if !resampler.doCopy() {
+        break
+      }
+      writer.writeAudio(index, outputPTS: outputPTS)
+      outputPTS += Int64(writer.getNumSamples(index))
     }
   }
 
