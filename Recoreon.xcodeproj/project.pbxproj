@@ -258,8 +258,8 @@
 		22966A252AFE47110080324D /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				226A7D7C2B03CDC4000A6FEA /* SameRateAudioResampler.swift */,
 				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
+				226A7D7C2B03CDC4000A6FEA /* SameRateAudioResampler.swift */,
 				224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */,
 				224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */,
 			);
@@ -815,9 +815,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				226A7D7D2B03CDC4000A6FEA /* SameRateAudioResampler.swift in Sources */,
 				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
 				22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */,
+				226A7D7D2B03CDC4000A6FEA /* SameRateAudioResampler.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
 				224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */,
 			);
