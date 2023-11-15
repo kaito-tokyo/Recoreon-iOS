@@ -284,7 +284,8 @@ class SampleHandler: RPBroadcastSampleHandler {
       micFirstTime = CMTimeSubtract(pts, elapsedTime)
     }
     guard let firstTime = micFirstTime else { return }
-    let elapsedCount = CMTimeMultiply(CMTimeSubtract(pts, firstTime), multiplier: Int32(spec.micAudioSampleRate))
+    let elapsedCount = CMTimeMultiply(
+      CMTimeSubtract(pts, firstTime), multiplier: Int32(spec.micAudioSampleRate))
     let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
     writer.makeFrameWritable(index)
