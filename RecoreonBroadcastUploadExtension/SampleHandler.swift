@@ -233,21 +233,27 @@ class SampleHandler: RPBroadcastSampleHandler {
     guard var resampler = resamplerRef else { return }
 
     resampler.reset()
+    guard let fromData = abl.mBuffers.mData else { return }
+    resampler.fromData = UnsafeRawPointer(fromData)
+    resampler.fromNumSamples = Int(abl.mBuffers.mDataByteSize / abl.mBuffers.mNumberChannels / 2)
     if asbd.mChannelsPerFrame == 1 {
       if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
         resampler.copyOperationMode = .monoToStereo
       } else {
         resampler.copyOperationMode = .monoToStereoWithSwap
       }
-    } else {
+    } else  if asbd.mChannelsPerFrame == 2 {
       if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
         resampler.copyOperationMode = .stereoToStereo
       } else {
         resampler.copyOperationMode = .stereoToStereoWithSwap
       }
+    } else {
+      return
     }
     while resampler.hasNext() {
       writer.makeFrameWritable(index)
+      resampler.toData = writer.getBaseAddress(index, ofPlane: 0)
       if !resampler.doCopy() {
         break
       }
@@ -287,35 +293,36 @@ class SampleHandler: RPBroadcastSampleHandler {
       CMTimeSubtract(pts, firstTime), multiplier: Int32(spec.micAudioSampleRate))
     var outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
-    if abl.mBuffers.mDataByteSize != writer.getNumSamples(index) * 4 {
-      print("Sample size invalid")
-      return
-    }
-
     var resamplerRef: AudioResampler?
-    if Int(asbd.mSampleRate) == spec.screenAudioSampleRate {
+    if Int(asbd.mSampleRate) == spec.micAudioSampleRate {
       resamplerRef = micSameRateSampler
-    } else if Int(asbd.mSampleRate) == spec.screenAudioSampleRate / 2 {
+    } else if Int(asbd.mSampleRate) == spec.micAudioSampleRate / 2 {
       resamplerRef = micDoubleUpsampler
     }
     guard var resampler = resamplerRef else { return }
 
     resampler.reset()
+    guard let fromData = abl.mBuffers.mData else { return }
+    resampler.fromData = UnsafeRawPointer(fromData)
+    resampler.fromNumSamples = Int(abl.mBuffers.mDataByteSize / abl.mBuffers.mNumberChannels / 2)
     if asbd.mChannelsPerFrame == 1 {
       if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
         resampler.copyOperationMode = .monoToStereo
       } else {
         resampler.copyOperationMode = .monoToStereoWithSwap
       }
-    } else {
+    } else if asbd.mChannelsPerFrame == 2 {
       if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
         resampler.copyOperationMode = .stereoToStereo
       } else {
         resampler.copyOperationMode = .stereoToStereoWithSwap
       }
+    } else {
+      return
     }
     while resampler.hasNext() {
       writer.makeFrameWritable(index)
+      resampler.toData = writer.getBaseAddress(index, ofPlane: 0)
       if !resampler.doCopy() {
         break
       }
