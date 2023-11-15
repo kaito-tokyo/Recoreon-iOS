@@ -21,7 +21,7 @@ class SameRateAudioResampler {
   ) {
     let fromView = fromData.assumingMemoryBound(to: UInt16.self)
     let toView = toData.assumingMemoryBound(to: UInt16.self)
-    for index in 0..<numSamples {
+    for index in 0..<numSamples * 2 {
       let value = CFSwapInt16BigToHost(fromView[index])
       toView[index] = value
     }

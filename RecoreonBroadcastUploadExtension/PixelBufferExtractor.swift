@@ -58,7 +58,7 @@ class PixelBufferExtractor {
     let chromaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1)
 
     encoder.copy(fromTexture: lumaTexture, bytesPerRow: lumaBytesPerRow, toBuffer: lumaBuffer)
-    encoder.copy(fromTexture: chromaTexture, bytesPerRow: chromaBytesPerRow, toBuffer: lumaBuffer)
+    encoder.copy(fromTexture: chromaTexture, bytesPerRow: chromaBytesPerRow, toBuffer: chromaBuffer)
     encoder.endEncoding()
     commandBuffer.commit()
     commandBuffer.waitUntilCompleted()
