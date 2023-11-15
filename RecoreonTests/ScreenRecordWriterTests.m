@@ -41,6 +41,20 @@ static AudioInfo micAudioInfo1 = {
     .numChannels = 2,
 };
 
+typedef struct VideoFrame {
+  long width;
+  long height;
+  long lumaBytesPerRow;
+  long chromaBytesPerRow;
+  uint8_t *lumaData;
+  uint8_t *chromaData;
+} VideoFrame;
+
+typedef struct AudioFrame {
+  long numSamples;
+  int16_t *data;
+} AudioFrame;
+
 @interface ScreenRecordWriterTests : XCTestCase {
   double t;
   double tincr;
@@ -74,32 +88,21 @@ static AudioInfo micAudioInfo1 = {
   frameIndex = 0;
 }
 
-- (void)fillDummyVideoFrame:(CMSampleBufferRef)sampleBuffer {
-  CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-
-  CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-
-  uint8_t *lumaData = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
-  uint8_t *chromaData = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 1);
-  size_t lumaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
-  size_t chromaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1);
-  size_t width = CVPixelBufferGetWidth(pixelBuffer);
-  size_t height = CVPixelBufferGetHeight(pixelBuffer);
-
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
-      lumaData[y * lumaBytesPerRow + x] = x + y + frameIndex * 3;
+- (void)fillDummyVideoFrame:(VideoFrame *)frame {
+  for (long y = 0; y < frame->height; y++) {
+    for (long x = 0; x < frame->width; x++) {
+      frame->lumaData[y * frame->lumaBytesPerRow + x] = x + y + frameIndex * 3;
     }
   }
 
-  for (int y = 0; y < height / 2; y++) {
-    for (int x = 0; x < width; x += 2) {
-      chromaData[y * chromaBytesPerRow + x] = 128 + y + frameIndex * 2;
-      chromaData[y * chromaBytesPerRow + x + 1] = 64 + x + frameIndex * 5;
+  for (long y = 0; y < frame->height / 2; y++) {
+    for (long x = 0; x < frame->width; x += 2) {
+      frame->chromaData[y * frame->chromaBytesPerRow + x] =
+          128 + y + frameIndex * 2;
+      frame->chromaData[y * frame->chromaBytesPerRow + x + 1] =
+          64 + x + frameIndex * 5;
     }
   }
-
-  CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
 
   frameIndex++;
 }
@@ -110,121 +113,17 @@ static AudioInfo micAudioInfo1 = {
   tincr2 = 2 * M_PI * 330.0 / info->sampleRate / info->sampleRate;
 }
 
-- (int16_t)getDummyAudioSample {
-  t += tincr;
-  tincr += tincr2;
-  return sin(t) * 10000;
+- (void)fillDummyAudioFrame:(AudioFrame *)frame {
+  for (long i = 0; i < frame->numSamples * 2; i += 2) {
+    t += tincr;
+    tincr += tincr2;
+    frame->data[i] = frame->data[i + 1] = sin(t) * 10000;
+  }
 }
-
-- (CMSampleBufferRef)createVideoSample:(VideoInfo *)info {
-  CVPixelBufferRef pixelBuffer;
-  CVPixelBufferCreate(NULL, info->width, info->height,
-                      kCVPixelFormatType_420YpCbCr8BiPlanarFullRange, NULL,
-                      &pixelBuffer);
-
-  CMVideoFormatDescriptionRef format;
-  CMVideoFormatDescriptionCreateForImageBuffer(NULL, pixelBuffer, &format);
-
-  CMSampleTimingInfo timing = {
-      .duration = CMTimeMake(1, info->frameRate),
-      .presentationTimeStamp = CMTimeMake(0, info->frameRate),
-      .decodeTimeStamp = CMTimeMake(0, info->frameRate)};
-
-  CMSampleBufferRef sampleBuffer;
-  XCTAssertEqual(CMSampleBufferCreateForImageBuffer(NULL, pixelBuffer, TRUE,
-                                                    NULL, NULL, format, &timing,
-                                                    &sampleBuffer),
-                 noErr);
-  return sampleBuffer;
-}
-
-- (void)writeVideoSampleToWriter:(ScreenRecordWriter *)writer
-                           index:(int)index
-                    sampleBuffer:(CMSampleBufferRef)sampleBuffer
-                       outputPTS:(int64_t)outputPTS {
-  CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-
-  CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-
-  void *lumaData = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
-  void *chromaData = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 1);
-  size_t lumaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0);
-  size_t chromaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1);
-  size_t height = CVPixelBufferGetHeight(pixelBuffer);
-
-  [writer writeVideo:index
-               lumaData:lumaData
-             chromaData:chromaData
-        lumaBytesPerRow:lumaBytesPerRow
-      chromaBytesPerRow:chromaBytesPerRow
-                 height:height
-              outputPTS:outputPTS];
-
-  CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-}
-
-- (CMSampleBufferRef)createAudioSample:(AudioInfo *)info
-                                   buf:(void *)buf
-                               bufSize:(uint32_t)bufSize {
-  int numSamples = bufSize / info->numChannels / 2;
-
-  AudioStreamBasicDescription asbd = {.mSampleRate = info->sampleRate,
-                                      .mFormatID = kAudioFormatLinearPCM,
-                                      .mFormatFlags =
-                                          kAudioFormatFlagIsSignedInteger |
-                                          kAudioFormatFlagIsPacked,
-                                      .mBytesPerPacket = 2 * info->numChannels,
-                                      .mFramesPerPacket = 1,
-                                      .mBytesPerFrame = 2 * info->numChannels,
-                                      .mChannelsPerFrame = info->numChannels,
-                                      .mBitsPerChannel = 16};
-
-  CMFormatDescriptionRef format;
-  XCTAssertEqual(CMAudioFormatDescriptionCreate(NULL, &asbd, 0, NULL, 0, NULL,
-                                                NULL, &format),
-                 noErr);
-
-  CMSampleTimingInfo timing = {
-      .duration = CMTimeMake(1, info->sampleRate),
-      .presentationTimeStamp = CMTimeMake(0, info->sampleRate),
-      .decodeTimeStamp = CMTimeMake(0, info->sampleRate)};
-
-  CMSampleBufferRef sampleBuffer;
-  XCTAssertEqual(CMSampleBufferCreate(NULL, NULL, false, NULL, NULL, format,
-                                      numSamples, 1, &timing, 0, NULL,
-                                      &sampleBuffer),
-                 noErr);
-
-  AudioBufferList audioBufferList;
-  audioBufferList.mNumberBuffers = 1;
-  audioBufferList.mBuffers[0].mData = buf;
-  audioBufferList.mBuffers[0].mDataByteSize = bufSize;
-  audioBufferList.mBuffers[0].mNumberChannels = info->numChannels;
-
-  XCTAssertEqual(CMSampleBufferSetDataBufferFromAudioBufferList(
-                     sampleBuffer, NULL, NULL, 0, &audioBufferList),
-                 noErr);
-
-  return sampleBuffer;
-}
-
-//- (void)writeAudioSampleToWriter:(ScreenRecordWriter *)writer
-//                           index:(int)index
-//                    sampleBuffer:(CMSampleBufferRef)sampleBuffer
-//                       outputPTS:(int64_t)outputPTS {
-//  AudioBufferList abl;
-//  CMBlockBufferRef blockBuffer;
-//  CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-//      sampleBuffer, NULL, &abl, sizeof(AudioBufferList), NULL, NULL, 0,
-//      &blockBuffer);
-//  CMFormatDescriptionRef format =
-//      CMSampleBufferGetFormatDescription(sampleBuffer);
-//  const AudioStreamBasicDescription *asbd =
-//      CMAudioFormatDescriptionGetStreamBasicDescription(format);
-//  [writer writeAudio:index abl:&abl asbd:asbd outputPTS:outputPTS];
-//}
 
 - (void)testVideoFrame {
+  [self setUpDummyVideo];
+
   ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
 
   NSString *path = [self getOutputPath:@"testVideoFrame.mp4"];
@@ -241,25 +140,33 @@ static AudioInfo micAudioInfo1 = {
   XCTAssertTrue([writer startOutput]);
 
   for (int i = 0; i < 60; i++) {
-    CMSampleBufferRef sampleBuffer = [self createVideoSample:info0];
-    [self fillDummyVideoFrame:sampleBuffer];
-    [self writeVideoSampleToWriter:writer
-                             index:0
-                      sampleBuffer:sampleBuffer
-                         outputPTS:i];
+    XCTAssertTrue([writer makeFrameWritable:0]);
+    VideoFrame frame;
+    frame.width = [writer getWidth:0];
+    frame.height = [writer getHeight:0];
+    frame.lumaData = [writer getBaseAddress:0 ofPlane:0];
+    frame.chromaData = [writer getBaseAddress:0 ofPlane:1];
+    frame.lumaBytesPerRow = [writer getBytesPerRow:0 ofPlane:0];
+    frame.chromaBytesPerRow = [writer getBytesPerRow:0 ofPlane:1];
+
+    [self fillDummyVideoFrame:&frame];
+
+    XCTAssertTrue([writer writeVideo:0 outputPTS:i]);
   }
 
   [writer finishStream:0];
   [writer finishOutput];
-  [writer freeStream:0];
-  [writer freeOutput];
+  [writer closeStream:0];
+  [writer closeOutput];
 }
 
-- (void)testSameSampleRateAudio {
+- (void)testAudioFrame {
+  AudioInfo *info0 = &screenAudioInfo;
+  [self setUpDummyAudio:info0];
+
   ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
 
-  NSString *path = [self getOutputPath:@"testSameSampleRateAudio.mp4"];
-  AudioInfo *info0 = &screenAudioInfo;
+  NSString *path = [self getOutputPath:@"testAudioFrame.mp4"];
 
   XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
   XCTAssertTrue([writer openOutputFile:path]);
@@ -269,62 +176,21 @@ static AudioInfo micAudioInfo1 = {
   XCTAssertTrue([writer openAudio:0]);
   XCTAssertTrue([writer startOutput]);
 
-  XCTAssertTrue([writer prepareFrame:0]);
-  int16_t *data = [writer getBaseAddress:0 ofPlane:0];
-  long byteCount = [writer getByteCountOfAudioPlane:0];
-  long numSamples = byteCount / 4;
-  [self setUpDummyAudio:info0];
   for (int i = 0; i < 43; i++) {
-    for (int j = 0; j < numSamples; j++) {
-      data[j * 2] = data[j * 2 + 1] = [self getDummyAudioSample];
-    }
-    int64_t outputPTS = i * numSamples * 8;
-    [writer writeAudio:0 outputPTS:outputPTS];
+    XCTAssertTrue([writer makeFrameWritable:0]);
+    AudioFrame frame;
+    frame.numSamples = [writer getNumSamples:0];
+    frame.data = [writer getBaseAddress:0 ofPlane:0];
+
+    [self fillDummyAudioFrame:&frame];
+
+    XCTAssertTrue([writer writeAudio:0 outputPTS:i * frame.numSamples]);
   }
 
   [writer finishStream:0];
   [writer finishOutput];
-  [writer freeStream:0];
-  [writer freeOutput];
+  [writer closeStream:0];
+  [writer closeOutput];
 }
-
-//- (void)testResampledAudio {
-//  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
-//
-//  NSString *path = [self getOutputPath:@"testResampledAudio.mp4"];
-//  AudioInfo *info0In = &micAudioInfo1;
-//  AudioInfo *info0Out = &micAudioInfo0;
-//
-//  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
-//  XCTAssertTrue([writer openOutputFile:path]);
-//  XCTAssertTrue([writer addAudioStream:0
-//                            sampleRate:info0Out->sampleRate
-//                               bitRate:info0Out->bitRate]);
-//  XCTAssertTrue([writer openAudio:0]);
-//  XCTAssertTrue([writer startOutput]);
-//
-//  int16_t data[2048];
-//  int numSamples = sizeof(data) / sizeof(int16_t) / 2;
-//  [self setUpDummyAudio:info0In];
-//  for (int i = 0; i < 23; i++) {
-//    for (int j = 0; j < numSamples; j++) {
-//      data[j * 2] = data[j * 2 + 1] = [self getDummyAudioSample];
-//    }
-//    int64_t outputPTS =
-//        i * numSamples * info0Out->sampleRate / info0In->sampleRate;
-//    CMSampleBufferRef sampleBuffer = [self createAudioSample:info0In
-//                                                         buf:data
-//                                                     bufSize:sizeof(data)];
-//    [self writeAudioSampleToWriter:writer
-//                             index:0
-//                      sampleBuffer:sampleBuffer
-//                         outputPTS:outputPTS];
-//  }
-//
-//  [writer finishStream:0];
-//  [writer finishOutput];
-//  [writer freeStream:0];
-//  [writer freeOutput];
-//}
 
 @end

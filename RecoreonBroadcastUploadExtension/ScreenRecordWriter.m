@@ -19,18 +19,6 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
 #endif
 }
 
-static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
-                      size_t srcLinesize, size_t height) {
-  if (dstLinesize == srcLinesize) {
-    memcpy(dst, src, dstLinesize * height);
-  } else {
-    for (int i = 0; i < height; i++) {
-      memcpy(&dst[dstLinesize * i], &src[srcLinesize * i],
-             MIN(srcLinesize, dstLinesize));
-    }
-  }
-}
-
 @implementation ScreenRecordWriter
 - (bool)openVideoCodec:(NSString *__nonnull)name {
   videoCodec = avcodec_find_encoder_by_name([name UTF8String]);
@@ -54,20 +42,20 @@ static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
   }
 }
 
-- (BOOL)openOutputFile:(NSString *__nonnull)filename {
+- (bool)openOutputFile:(NSString *__nonnull)filename {
   _filename = filename;
   const char *path = [filename UTF8String];
   avformat_alloc_output_context2(&formatContext, NULL, NULL, path);
   if (formatContext == NULL) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
                      "Could not open an output file: %@", filename);
-    return NO;
+    return false;
   } else {
-    return YES;
+    return true;
   }
 }
 
-- (bool)addStream:(int)index {
+- (bool)addStream:(long)index {
   OutputStream *os = &outputStreams[index];
 
   os->packet = av_packet_alloc();
@@ -77,117 +65,115 @@ static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
     return false;
   }
 
-  AVStream *stream = avformat_new_stream(formatContext, NULL);
-  if (!stream) {
+  os->stream = avformat_new_stream(formatContext, NULL);
+  if (!os->stream) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
                      "Could not allocate a stream");
     return false;
   }
-  stream->id = index;
-  os->stream = stream;
+  os->stream->id = (int)index;
 
   return true;
 }
 
-- (bool)addVideoStream:(int)index
-                 width:(int)width
-                height:(int)height
-             frameRate:(int)frameRate
-               bitRate:(int)bitRate {
+- (bool)addVideoStream:(long)index
+                 width:(long)width
+                height:(long)height
+             frameRate:(long)frameRate
+               bitRate:(long)bitRate {
   if (![self addStream:index]) {
     return false;
   }
 
   OutputStream *os = &outputStreams[index];
 
-  AVCodecContext *c = avcodec_alloc_context3(videoCodec);
-  if (!c) {
+  AVCodecContext *codecContext = avcodec_alloc_context3(videoCodec);
+  os->codecContext = codecContext;
+  if (!codecContext) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
                      "Could not allocate an video codec context");
     return false;
   }
-  os->codecContext = c;
 
-  c->codec_id = AV_CODEC_ID_H264;
-  c->bit_rate = bitRate;
-  c->width = width;
-  c->height = height;
-  AVRational timeBase = {1, frameRate};
-  c->time_base = os->stream->time_base = timeBase;
-  c->gop_size = 12;
-  c->pix_fmt = AV_PIX_FMT_NV12;
-  c->color_range = AVCOL_RANGE_JPEG;
-  c->color_primaries = AVCOL_PRI_BT709;
+  os->codecContext->codec_id = AV_CODEC_ID_H264;
+  os->codecContext->bit_rate = bitRate;
+  os->codecContext->width = (int)width;
+  os->codecContext->height = (int)height;
+  AVRational timeBase = {1, (int)frameRate};
+  os->codecContext->time_base = timeBase;
+  os->stream->time_base = timeBase;
+  os->codecContext->gop_size = 12;
+  os->codecContext->pix_fmt = AV_PIX_FMT_NV12;
+  os->codecContext->color_range = AVCOL_RANGE_JPEG;
+  os->codecContext->color_primaries = AVCOL_PRI_BT709;
 
   if (formatContext->oformat->flags & AVFMT_GLOBALHEADER) {
-    c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    os->codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
   }
 
   return true;
 }
 
-- (bool)addAudioStream:(int)index
-            sampleRate:(int)sampleRate
-               bitRate:(int)bitRate {
+- (bool)addAudioStream:(long)index
+            sampleRate:(long)sampleRate
+               bitRate:(long)bitRate {
   if (![self addStream:index]) {
     return false;
   }
 
   OutputStream *os = &outputStreams[index];
 
-  AVCodecContext *c = avcodec_alloc_context3(audioCodec);
-  if (!c) {
+  os->codecContext = avcodec_alloc_context3(audioCodec);
+  if (!os->codecContext) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_INFO,
-                     "Could not allocate an video codec context");
+                     "Could not allocate an audio codec context");
     return false;
   }
-  os->codecContext = c;
 
-  c->sample_fmt = AV_SAMPLE_FMT_S16;
-  c->bit_rate = bitRate;
-  c->sample_rate = sampleRate;
+  os->codecContext->sample_fmt = AV_SAMPLE_FMT_S16;
+  os->codecContext->bit_rate = bitRate;
+  os->codecContext->sample_rate = (int)sampleRate;
   AVChannelLayout layout = AV_CHANNEL_LAYOUT_STEREO;
-  av_channel_layout_copy(&c->ch_layout, &layout);
-  AVRational timeBase = {1, sampleRate};
-  c->time_base = os->stream->time_base = timeBase;
+  av_channel_layout_copy(&os->codecContext->ch_layout, &layout);
+  AVRational timeBase = {1, (int)sampleRate};
+  os->codecContext->time_base = timeBase;
+  os->stream->time_base = timeBase;
 
   if (formatContext->oformat->flags & AVFMT_GLOBALHEADER) {
-    c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+    os->codecContext->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
   }
 
   return true;
 }
 
-- (bool)openVideo:(int)index {
+- (bool)openVideo:(long)index {
   OutputStream *os = &outputStreams[index];
-  AVCodecContext *codecContext = os->codecContext;
-  if (avcodec_open2(codecContext, videoCodec, NULL) < 0) {
+  if (avcodec_open2(os->codecContext, videoCodec, NULL) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not open video codec context");
+                     "Could not open the video codec context");
     return false;
   }
 
-  AVFrame *frame = av_frame_alloc();
-  if (frame == NULL) {
+  os->frame = av_frame_alloc();
+  if (os->frame == NULL) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not allocate video frame");
+                     "Could not allocate a video frame");
     return false;
   }
 
-  frame->format = codecContext->pix_fmt;
-  frame->width = codecContext->width;
-  frame->height = codecContext->height;
-  frame->color_range = AVCOL_RANGE_JPEG;
+  os->frame->format = os->codecContext->pix_fmt;
+  os->frame->width = os->codecContext->width;
+  os->frame->height = os->codecContext->height;
+  os->frame->color_range = AVCOL_RANGE_JPEG;
 
-  if (av_frame_get_buffer(frame, 0) < 0) {
+  if (av_frame_get_buffer(os->frame, 0) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not allocate video frame buffer");
+                     "Could not allocate a video frame buffer");
     return false;
   }
 
-  os->frame = frame;
-
-  if (avcodec_parameters_from_context(os->stream->codecpar, codecContext) < 0) {
+  if (avcodec_parameters_from_context(os->stream->codecpar, os->codecContext) <
+      0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not copy the video stream parameters");
     return false;
@@ -196,36 +182,34 @@ static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
   return true;
 }
 
-- (bool)openAudio:(int)index {
+- (bool)openAudio:(long)index {
   OutputStream *os = &outputStreams[index];
-  AVCodecContext *codecContext = os->codecContext;
-  if (avcodec_open2(codecContext, audioCodec, NULL) < 0) {
+  if (avcodec_open2(os->codecContext, audioCodec, NULL) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not open audio codec context");
+                     "Could not open the audio codec context");
     return false;
   }
 
-  AVFrame *frame = av_frame_alloc();
-  if (frame == NULL) {
+  os->frame = av_frame_alloc();
+  if (os->frame == NULL) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not allocate audio frame");
+                     "Could not allocate an audio frame");
     return false;
   }
 
-  frame->format = codecContext->sample_fmt;
-  av_channel_layout_copy(&frame->ch_layout, &codecContext->ch_layout);
-  frame->sample_rate = codecContext->sample_rate;
-  frame->nb_samples = codecContext->frame_size;
+  os->frame->format = os->codecContext->sample_fmt;
+  av_channel_layout_copy(&os->frame->ch_layout, &os->codecContext->ch_layout);
+  os->frame->sample_rate = os->codecContext->sample_rate;
+  os->frame->nb_samples = os->codecContext->frame_size;
 
-  if (av_frame_get_buffer(frame, 0) < 0) {
+  if (av_frame_get_buffer(os->frame, 0) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not allocate video frame buffer");
+                     "Could not allocate an audio frame buffer");
     return false;
   }
 
-  os->frame = frame;
-
-  if (avcodec_parameters_from_context(os->stream->codecpar, codecContext) < 0) {
+  if (avcodec_parameters_from_context(os->stream->codecpar, os->codecContext) <
+      0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Could not copy the audio stream parameters");
     return false;
@@ -236,11 +220,12 @@ static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
 
 - (bool)startOutput {
   const char *path = [_filename UTF8String];
+
   av_dump_format(formatContext, 0, path, 1);
 
   if (avio_open(&formatContext->pb, path, AVIO_FLAG_WRITE) < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not open the file io:%@", _filename);
+                     "Could not open the file io: %s", path);
     return false;
   }
 
@@ -253,49 +238,40 @@ static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
   return true;
 }
 
-- (int)getBytesPerRow:(int)index planeIndex:(int)planeIndex {
+- (bool)makeFrameWritable:(long)index {
+  OutputStream *os = &outputStreams[index];
+  if (av_frame_make_writable(os->frame) < 0) {
+    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
+                     "Could not make the frame writable");
+    return false;
+  }
+  return true;
+}
+
+- (long)getWidth:(long)index {
+  return outputStreams[index].frame->width;
+}
+
+- (long)getHeight:(long)index {
+  return outputStreams[index].frame->height;
+}
+
+- (long)getBytesPerRow:(long)index ofPlane:(long)planeIndex {
   return outputStreams[index].frame->linesize[planeIndex];
 }
 
-- (long)getByteCountOfAudioPlane:(long)index {
-  return outputStreams[index].frame->nb_samples * 4;
-}
-
-- (bool)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer {
-  CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-  if (pixelBuffer == nil) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not get the pixel buffer");
-    return false;
-  }
-
-  OSType pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer);
-  if (pixelFormat != kCVPixelFormatType_420YpCbCr8BiPlanarFullRange) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "The pixel format is not supported: %u", pixelFormat);
-    return false;
-  }
-
-  return true;
-}
-
-- (bool)prepareFrame:(long)index {
-  AVFrame *frame = outputStreams[index].frame;
-  if (av_frame_make_writable(frame) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not make the video frame writable");
-    return false;
-  }
-  return true;
+- (long)getNumSamples:(long)index {
+  return outputStreams[index].frame->nb_samples;
 }
 
 - (void *__nonnull)getBaseAddress:(long)index ofPlane:(long)planeIndex {
   return outputStreams[index].frame->data[planeIndex];
 }
 
-- (bool)writeFrame:(OutputStream *)os {
-  int ret;
-  ret = avcodec_send_frame(os->codecContext, os->frame);
+- (bool)writeFrame:(long)index {
+  OutputStream *os = &outputStreams[index];
+
+  int ret = avcodec_send_frame(os->codecContext, os->frame);
   if (ret < 0) {
     os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
                      "Error sending a frame to the encoder: %s",
@@ -330,62 +306,49 @@ static void copyPlane(uint8_t *dst, size_t dstLinesize, uint8_t *src,
   return true;
 }
 
-- (BOOL)writeVideo:(int)index
-             lumaData:(void *__nonnull)lumaData
-           chromaData:(void *__nonnull)chromaData
-      lumaBytesPerRow:(long)lumaBytesPerRow
-    chromaBytesPerRow:(long)chromaBytesPerRow
-               height:(long)height
-            outputPTS:(int64_t)outputPTS {
-  OutputStream *os = &outputStreams[index];
-  AVFrame *frame = os->frame;
-  if (av_frame_make_writable(frame) < 0) {
-    os_log_with_type(OS_LOG_DEFAULT, OS_LOG_TYPE_ERROR,
-                     "Could not make the video frame writable");
+- (bool)writeVideo:(long)index outputPTS:(int64_t)outputPTS {
+  outputStreams[index].frame->pts = outputPTS;
+
+  if (![self writeFrame:index]) {
     return false;
   }
-
-  copyPlane(frame->data[0], frame->linesize[0], lumaData, lumaBytesPerRow,
-            height);
-  copyPlane(frame->data[1], frame->linesize[1], chromaData, chromaBytesPerRow,
-            height / 2);
-
-  frame->pts = outputPTS;
-
-  [self writeFrame:os];
-
-  return YES;
-}
-
-- (bool)writeAudio:(int)index outputPTS:(int64_t)outputPTS {
-  OutputStream *os = &outputStreams[index];
-
-  os->frame->pts =
-      av_rescale_q(outputPTS, (AVRational){1, os->codecContext->sample_rate},
-                   os->codecContext->time_base);
-  [self writeFrame:os];
 
   return true;
 }
 
-- (void)finishStream:(int)index {
+- (bool)writeAudio:(long)index outputPTS:(int64_t)outputPTS {
   OutputStream *os = &outputStreams[index];
+  AVCodecContext *c = os->codecContext;
+  outputStreams[index].frame->pts =
+      av_rescale_q(outputPTS, (AVRational){1, c->sample_rate}, c->time_base);
+
+  if (![self writeFrame:index]) {
+    return false;
+  }
+
+  return true;
+}
+
+- (void)finishStream:(long)index {
+  OutputStream *os = &outputStreams[index];
+  AVFrame *origFrame = os->frame;
   os->frame = NULL;
-  [self writeFrame:os];
+  [self writeFrame:index];
+  os->frame = origFrame;
 }
 
 - (void)finishOutput {
   av_write_trailer(formatContext);
 }
 
-- (void)freeStream:(int)index {
+- (void)closeStream:(long)index {
   OutputStream *os = &outputStreams[index];
   avcodec_free_context(&os->codecContext);
   av_frame_free(&os->frame);
   av_packet_free(&os->packet);
 }
 
-- (void)freeOutput {
+- (void)closeOutput {
   avio_closep(&formatContext->pb);
   avformat_free_context(formatContext);
 }

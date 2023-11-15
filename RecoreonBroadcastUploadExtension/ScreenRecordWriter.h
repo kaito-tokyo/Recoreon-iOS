@@ -33,39 +33,31 @@ typedef struct OutputStream {
 
 @property(nonatomic, readonly) NSString *__nullable filename;
 
-- (BOOL)openVideoCodec:(NSString *__nonnull)name;
-- (BOOL)openAudioCodec:(NSString *__nonnull)name;
-- (BOOL)openOutputFile:(NSString *__nonnull)filename;
-- (BOOL)addVideoStream:(int)index
-                 width:(int)width
-                height:(int)height
-             frameRate:(int)frameRate
-               bitRate:(int)bitRate;
-- (BOOL)addAudioStream:(int)index
-            sampleRate:(int)sampleRate
-               bitRate:(int)bitRate;
-- (BOOL)openVideo:(int)index;
-- (BOOL)openAudio:(int)index;
-- (BOOL)startOutput;
-- (int)getBytesPerRow:(int)index planeIndex:(int)planeIndex;
-- (long)getByteCountOfAudioPlane:(long)index;
-- (BOOL)checkIfVideoSampleIsValid:(CMSampleBufferRef __nonnull)sampleBuffer;
-- (bool)prepareFrame:(long)index;
+- (bool)openVideoCodec:(NSString *__nonnull)name;
+- (bool)openAudioCodec:(NSString *__nonnull)name;
+- (bool)openOutputFile:(NSString *__nonnull)filename;
+- (bool)addVideoStream:(long)index
+                 width:(long)width
+                height:(long)height
+             frameRate:(long)frameRate
+               bitRate:(long)bitRate;
+- (bool)addAudioStream:(long)index
+            sampleRate:(long)sampleRate
+               bitRate:(long)bitRate;
+- (bool)openVideo:(long)index;
+- (bool)openAudio:(long)index;
+- (bool)startOutput;
+- (bool)makeFrameWritable:(long)index;
+- (long)getWidth:(long)index;
+- (long)getHeight:(long)index;
+- (long)getBytesPerRow:(long)index ofPlane:(long)planeIndex;
+- (long)getNumSamples:(long)index;
 - (void *__nonnull)getBaseAddress:(long)index ofPlane:(long)planeIndex;
-- (BOOL)writeVideo:(int)index
-             lumaData:(void *__nonnull)lumaData
-           chromaData:(void *__nonnull)chromaData
-      lumaBytesPerRow:(long)lumaBytesPerRow
-    chromaBytesPerRow:(long)chromaBytesPerRow
-               height:(long)height
-            outputPTS:(int64_t)outputPTS;
-- (bool)
-    ensureAudioConverterAvailable:(int)index
-                             asbd:(const AudioStreamBasicDescription *__nonnull)
-                                      asbd;
-- (bool)writeAudio:(int)index outputPTS:(int64_t)outputPTS;
-- (void)finishStream:(int)index;
+- (bool)writeFrame:(long)index;
+- (bool)writeVideo:(long)index outputPTS:(int64_t)outputPTS;
+- (bool)writeAudio:(long)index outputPTS:(int64_t)outputPTS;
+- (void)finishStream:(long)index;
 - (void)finishOutput;
-- (void)freeStream:(int)index;
-- (void)freeOutput;
+- (void)closeStream:(long)index;
+- (void)closeOutput;
 @end
