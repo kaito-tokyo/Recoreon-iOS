@@ -267,12 +267,12 @@
 		22966A252AFE47110080324D /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
+				222279922B050CDD006A2588 /* AudioResampler.swift */,
+				2222798F2B04FB33006A2588 /* Int16DoubleUpsampler.swift */,
 				226A7D7C2B03CDC4000A6FEA /* Int16SameRateSampler.swift */,
+				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
 				224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */,
 				224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */,
-				2222798F2B04FB33006A2588 /* Int16DoubleUpsampler.swift */,
-				222279922B050CDD006A2588 /* AudioResampler.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -392,10 +392,10 @@
 		22C3CD0A2AF240B40039750A /* RecoreonTests */ = {
 			isa = PBXGroup;
 			children = (
+				2222798D2B04FB25006A2588 /* AudioResamplerTests.swift */,
 				22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */,
 				22C3CD0B2AF240B40039750A /* RecoreonTests.swift */,
 				22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */,
-				2222798D2B04FB25006A2588 /* AudioResamplerTests.swift */,
 			);
 			path = RecoreonTests;
 			sourceTree = "<group>";
@@ -827,12 +827,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
-				22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */,
+				222279932B050CDD006A2588 /* AudioResampler.swift in Sources */,
 				222279902B04FB33006A2588 /* Int16DoubleUpsampler.swift in Sources */,
 				226A7D7D2B03CDC4000A6FEA /* Int16SameRateSampler.swift in Sources */,
+				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
+				22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
-				222279932B050CDD006A2588 /* AudioResampler.swift in Sources */,
 				224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -874,10 +874,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22AE9D2D2B052344002858FD /* Int16SameRateSampler.swift in Sources */,
 				22AE9D2C2B051756002858FD /* AudioResampler.swift in Sources */,
-				222279912B04FB87006A2588 /* Int16DoubleUpsampler.swift in Sources */,
 				2222798E2B04FB25006A2588 /* AudioResamplerTests.swift in Sources */,
+				222279912B04FB87006A2588 /* Int16DoubleUpsampler.swift in Sources */,
+				22AE9D2D2B052344002858FD /* Int16SameRateSampler.swift in Sources */,
 				22C3CD0C2AF240B40039750A /* RecoreonTests.swift in Sources */,
 				224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */,
 				22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */,

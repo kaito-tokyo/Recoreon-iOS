@@ -13,7 +13,8 @@ final class AudioResamplerTests: XCTestCase {
 
   func setUpWriter(filename: String) -> ScreenRecordWriter {
     let documentsPath = NSHomeDirectory() + "/Documents"
-    try? FileManager.default.createDirectory(atPath: documentsPath, withIntermediateDirectories: true)
+    try? FileManager.default.createDirectory(
+      atPath: documentsPath, withIntermediateDirectories: true)
     let path = "\(documentsPath)/\(filename)"
 
     let writer = ScreenRecordWriter()
