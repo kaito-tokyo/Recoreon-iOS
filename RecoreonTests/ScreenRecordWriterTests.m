@@ -235,8 +235,11 @@ typedef struct AudioFrame {
 
     XCTAssertTrue([writer writeVideo:0 outputPTS:videoOutputPTS]);
 
-    int64_t targetAudioOutputPTS = videoOutputPTS * info1->sampleRate / info0->frameRate;
-    for (int64_t audioOutputPTS = nextAudioOutputPTS; audioOutputPTS < targetAudioOutputPTS; audioOutputPTS += audioNumSamples) {
+    int64_t targetAudioOutputPTS =
+        videoOutputPTS * info1->sampleRate / info0->frameRate;
+    for (int64_t audioOutputPTS = nextAudioOutputPTS;
+         audioOutputPTS < targetAudioOutputPTS;
+         audioOutputPTS += audioNumSamples) {
       XCTAssertTrue([writer makeFrameWritable:1]);
       AudioFrame frame;
       frame.numSamples = audioNumSamples;
