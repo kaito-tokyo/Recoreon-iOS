@@ -89,36 +89,36 @@ final class AudioResamplerTests: XCTestCase {
     }
   }
 
-  func testDoubleUpsamplerMonoToStereo() throws {
+  func testInt16DoubleUpsamplerMonoToStereo() throws {
     setUpDummyAudio(sampleRate: 24000)
-    let writer = setUpWriter(filename: "testDoubleUpsamplerMonoToStereo.mkv")
+    let writer = setUpWriter(filename: "testInt16DoubleUpsamplerMonoToStereo.mkv")
     let resampler = Int16DoubleUpsampler(toNumSamples: writer.getNumSamples(0))
     resampler.copyOperationMode = .monoToStereo
     resample(writer, resampler, sampleRate: 24000, isByteSwapped: false, isMono: true)
     tearDownWriter(writer)
   }
 
-  func testDoubleUpsamplerMonoToStereoWithSwap() throws {
+  func testInt16DoubleUpsamplerMonoToStereoWithSwap() throws {
     setUpDummyAudio(sampleRate: 24000)
-    let writer = setUpWriter(filename: "testDoubleUpsamplerMonoToStereoWithSwap.mkv")
+    let writer = setUpWriter(filename: "testInt16DoubleUpsamplerMonoToStereoWithSwap.mkv")
     let resampler = Int16DoubleUpsampler(toNumSamples: writer.getNumSamples(0))
     resampler.copyOperationMode = .monoToStereoWithSwap
     resample(writer, resampler, sampleRate: 24000, isByteSwapped: true, isMono: true)
     tearDownWriter(writer)
   }
 
-  func testDoubleUpsamplerStereoToStereo() throws {
+  func testInt16DoubleUpsamplerStereoToStereo() throws {
     setUpDummyAudio(sampleRate: 24000)
-    let writer = setUpWriter(filename: "testDoubleUpsamplerStereoToStereo.mkv")
+    let writer = setUpWriter(filename: "testInt16DoubleUpsamplerStereoToStereo.mkv")
     let resampler = Int16DoubleUpsampler(toNumSamples: writer.getNumSamples(0))
     resampler.copyOperationMode = .stereoToStereo
     resample(writer, resampler, sampleRate: 24000, isByteSwapped: false, isMono: false)
     tearDownWriter(writer)
   }
 
-  func testDoubleUpsamplerStereoToStereoWithSwap() throws {
+  func testInt16DoubleUpsamplerStereoToStereoWithSwap() throws {
     setUpDummyAudio(sampleRate: 24000)
-    let writer = setUpWriter(filename: "testDoubleUpsamplerStereoToStereoWithSwap.mkv")
+    let writer = setUpWriter(filename: "testInt16DoubleUpsamplerStereoToStereoWithSwap.mkv")
     let resampler = Int16DoubleUpsampler(toNumSamples: writer.getNumSamples(0))
     resampler.copyOperationMode = .stereoToStereoWithSwap
     resample(writer, resampler, sampleRate: 24000, isByteSwapped: true, isMono: false)
@@ -126,38 +126,38 @@ final class AudioResamplerTests: XCTestCase {
   }
 
   func testInt16SameRateSamplerMonoToStereo() throws {
-    setUpDummyAudio(sampleRate: 24000)
-    let writer = setUpWriter(filename: "testDoubleUpsamplerMonoToStereo.mkv")
+    setUpDummyAudio(sampleRate: 48000)
+    let writer = setUpWriter(filename: "testInt16SameRateSamplerMonoToStereo.mkv")
     let resampler = Int16SameRateSampler(toNumSamples: writer.getNumSamples(0))
     resampler.copyOperationMode = .monoToStereo
-    resample(writer, resampler, sampleRate: 24000, isByteSwapped: false, isMono: true)
+    resample(writer, resampler, sampleRate: 48000, isByteSwapped: false, isMono: true)
     tearDownWriter(writer)
   }
 
   func testInt16SameRateSamplerMonoToStereoWithSwap() throws {
-    setUpDummyAudio(sampleRate: 24000)
-    let writer = setUpWriter(filename: "testDoubleUpsamplerMonoToStereoWithSwap.mkv")
+    setUpDummyAudio(sampleRate: 48000)
+    let writer = setUpWriter(filename: "testInt16SameRateSamplerMonoToStereoWithSwap.mkv")
     let resampler = Int16SameRateSampler(toNumSamples: writer.getNumSamples(0))
     resampler.copyOperationMode = .monoToStereoWithSwap
-    resample(writer, resampler, sampleRate: 24000, isByteSwapped: true, isMono: true)
+    resample(writer, resampler, sampleRate: 48000, isByteSwapped: true, isMono: true)
     tearDownWriter(writer)
   }
 
   func testInt16SameRateSamplerStereoToStereo() throws {
-    setUpDummyAudio(sampleRate: 24000)
-    let writer = setUpWriter(filename: "testDoubleUpsamplerStereoToStereo.mkv")
+    setUpDummyAudio(sampleRate: 48000)
+    let writer = setUpWriter(filename: "testInt16SameRateSamplerStereoToStereo.mkv")
     let resampler = Int16SameRateSampler(toNumSamples: writer.getNumSamples(0))
     resampler.copyOperationMode = .stereoToStereo
-    resample(writer, resampler, sampleRate: 24000, isByteSwapped: false, isMono: false)
+    resample(writer, resampler, sampleRate: 48000, isByteSwapped: false, isMono: false)
     tearDownWriter(writer)
   }
 
   func testInt16SameRateSamplerStereoToStereoWithSwap() throws {
-    setUpDummyAudio(sampleRate: 24000)
-    let writer = setUpWriter(filename: "testDoubleUpsamplerStereoToStereoWithSwap.mkv")
+    setUpDummyAudio(sampleRate: 48000)
+    let writer = setUpWriter(filename: "testInt16SameRateSamplerStereoToStereoWithSwap.mkv")
     let resampler = Int16SameRateSampler(toNumSamples: writer.getNumSamples(0))
     resampler.copyOperationMode = .stereoToStereoWithSwap
-    resample(writer, resampler, sampleRate: 24000, isByteSwapped: true, isMono: false)
+    resample(writer, resampler, sampleRate: 48000, isByteSwapped: true, isMono: false)
     tearDownWriter(writer)
   }
 }
