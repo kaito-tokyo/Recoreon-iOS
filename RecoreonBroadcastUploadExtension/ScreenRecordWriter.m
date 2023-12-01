@@ -329,7 +329,9 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   return true;
 }
 
-- (bool)ensureResamplerIsInitialted:(long)index sampleRate:(double)sampleRate numChannels:(uint32_t)numChannels {
+- (bool)ensureResamplerIsInitialted:(long)index
+                         sampleRate:(double)sampleRate
+                        numChannels:(uint32_t)numChannels {
   OutputStream *os = &outputStreams[index];
   if (os->swrContext == NULL) {
     os->swrContext = swr_alloc();
@@ -346,9 +348,11 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   swr_close(c);
 
   if (numChannels == 1) {
-    av_opt_set_chlayout(c, "in_chlayout", &(AVChannelLayout)AV_CHANNEL_LAYOUT_MONO, 0);
+    av_opt_set_chlayout(c, "in_chlayout",
+                        &(AVChannelLayout)AV_CHANNEL_LAYOUT_MONO, 0);
   } else if (numChannels == 2) {
-    av_opt_set_chlayout(c, "in_chlayout", &(AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO, 0);
+    av_opt_set_chlayout(c, "in_chlayout",
+                        &(AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO, 0);
   }
   av_opt_set_int(c, "in_sample_rate", sampleRate, 0);
   av_opt_set_sample_fmt(c, "in_sample_fmt", AV_SAMPLE_FMT_S16, 0);
@@ -368,13 +372,17 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   return true;
 }
 
-- (bool)writeAudioWithResampling:(long)index outputPTS:(int64_t)outputPTS inData:(const uint8_t *__nonnull)inData inCount:(int)inCount {
+- (bool)writeAudioWithResampling:(long)index
+                       outputPTS:(int64_t)outputPTS
+                          inData:(const uint8_t *__nonnull)inData
+                         inCount:(int)inCount {
   OutputStream *os = &outputStreams[index];
-  
+
   [self makeFrameWritable:index];
   os->frame->pts = outputPTS;
   swr_next_pts(os->swrContext, os->frame->pts * os->sampleRate);
-  if (swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples, &inData, inCount) < 0) {
+  if (swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples,
+                  &inData, inCount) < 0) {
     return false;
   }
   if (![self writeFrame:index]) {
@@ -384,7 +392,8 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   while (swr_get_out_samples(os->swrContext, 0) >= os->frame->nb_samples * 2) {
     [self makeFrameWritable:index];
     os->frame->pts += os->frame->nb_samples;
-    swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples, &inData, 0);
+    swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples, &inData,
+                0);
     if (![self writeFrame:index]) {
       return false;
     }
@@ -400,7 +409,8 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   while (swr_get_out_samples(os->swrContext, 0) >= os->frame->nb_samples * 2) {
     [self makeFrameWritable:index];
     os->frame->pts += os->frame->nb_samples;
-    swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples, (const uint8_t **)dummyData, 0);
+    swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples,
+                (const uint8_t **)dummyData, 0);
     if (![self writeFrame:index]) {
       return false;
     }
