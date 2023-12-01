@@ -329,6 +329,60 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   return true;
 }
 
+- (bool)ensureResamplerIsInitialted:(long)index sampleRate:(double)sampleRate numChannels:(uint32_t)numChannels {
+  OutputStream *os = &outputStreams[index];
+  if (os->swrContext == NULL) {
+    os->swrContext = swr_alloc();
+  }
+  SwrContext *c = os->swrContext;
+  if (c == NULL) {
+    return false;
+  }
+
+  if (sampleRate == os->sampleRate && numChannels == os->numChannels) {
+    return true;
+  }
+
+  swr_close(c);
+
+  if (numChannels == 1) {
+    av_opt_set_chlayout(c, "in_chlayout", &(AVChannelLayout)AV_CHANNEL_LAYOUT_MONO, 0);
+  } else if (numChannels == 2) {
+    av_opt_set_chlayout(c, "in_chlayout", &(AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO, 0);
+  }
+  av_opt_set_int(c, "in_sample_rate", sampleRate, 0);
+  av_opt_set_sample_fmt(c, "in_sample_fmt", AV_SAMPLE_FMT_S16, 0);
+  av_opt_set_chlayout(c, "out_chlayout", &os->codecContext->ch_layout, 0);
+  av_opt_set_int(c, "out_sample_rate", os->codecContext->sample_rate, 0);
+  av_opt_set_sample_fmt(c, "out_sample_fmt", os->codecContext->sample_fmt, 0);
+
+  if (swr_init(c) < 0) {
+    return false;
+  }
+
+  os->sampleRate = sampleRate;
+  os->numChannels = numChannels;
+
+  return true;
+}
+
+- (bool)writeAudioWithResampling:(long)index outputPTS:(int64_t)outputPTS data:(const uint8_t *)inData count:(int)inCount {
+  OutputStream *os = &outputStreams[index];
+  AVCodecContext *c = os->codecContext;
+  outputStreams[index].frame->pts =
+      av_rescale_q(outputPTS, (AVRational){1, c->sample_rate}, c->time_base);
+
+  if (swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples, &inData, inCount) < 0) {
+    return false;
+  }
+
+  if (![self writeFrame:index]) {
+    return false;
+  }
+
+  return true;
+}
+
 - (void)finishStream:(long)index {
   OutputStream *os = &outputStreams[index];
   AVFrame *origFrame = os->frame;

@@ -3,8 +3,11 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <CoreMedia/CoreMedia.h>
 
+#include <libavutil/opt.h>
+#include <libavutil/channel_layout.h>
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+#include <libswresample/swresample.h>
 
 #define MAX_STREAMS 8
 
@@ -14,9 +17,9 @@ typedef struct OutputStream {
   AVFrame *__nullable frame;
   AVPacket *__nullable packet;
 
-  AudioStreamBasicDescription inputASBD;
-  AudioStreamBasicDescription outputASBD;
-  AudioConverterRef __nullable audioConverter;
+  SwrContext *__nullable swrContext;
+  double sampleRate;
+  uint32_t numChannels;
 } OutputStream;
 
 @interface ScreenRecordWriter : NSObject {
