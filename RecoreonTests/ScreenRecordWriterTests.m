@@ -193,4 +193,141 @@ typedef struct AudioFrame {
   [writer closeOutput];
 }
 
+- (void)testMuxedVideo {
+  VideoInfo *info0 = &screenVideoInfo0;
+  AudioInfo *info1 = &screenAudioInfo;
+
+  [self setUpDummyVideo];
+  [self setUpDummyAudio:info1];
+
+  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
+
+  NSString *path = [self getOutputPath:@"testMuxedVideo.mp4"];
+
+  XCTAssertTrue([writer openVideoCodec:@"h264_videotoolbox"]);
+  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
+  XCTAssertTrue([writer openOutputFile:path]);
+  XCTAssertTrue([writer addVideoStream:0
+                                 width:info0->width
+                                height:info0->height
+                             frameRate:info0->frameRate
+                               bitRate:info0->bitRate]);
+  XCTAssertTrue([writer addAudioStream:1
+                            sampleRate:info1->sampleRate
+                               bitRate:info1->bitRate]);
+  XCTAssertTrue([writer openVideo:0]);
+  XCTAssertTrue([writer openAudio:1]);
+  XCTAssertTrue([writer startOutput]);
+
+  int64_t nextAudioOutputPTS = 0;
+  int64_t audioNumSamples = [writer getNumSamples:1];
+  for (int64_t videoOutputPTS = 0; videoOutputPTS < 60; videoOutputPTS++) {
+    XCTAssertTrue([writer makeFrameWritable:0]);
+    VideoFrame frame;
+    frame.width = [writer getWidth:0];
+    frame.height = [writer getHeight:0];
+    frame.lumaData = [writer getBaseAddress:0 ofPlane:0];
+    frame.chromaData = [writer getBaseAddress:0 ofPlane:1];
+    frame.lumaBytesPerRow = [writer getBytesPerRow:0 ofPlane:0];
+    frame.chromaBytesPerRow = [writer getBytesPerRow:0 ofPlane:1];
+
+    [self fillDummyVideoFrame:&frame];
+
+    XCTAssertTrue([writer writeVideo:0 outputPTS:videoOutputPTS]);
+
+    int64_t targetAudioOutputPTS =
+        videoOutputPTS * info1->sampleRate / info0->frameRate;
+    for (int64_t audioOutputPTS = nextAudioOutputPTS;
+         audioOutputPTS < targetAudioOutputPTS;
+         audioOutputPTS += audioNumSamples) {
+      XCTAssertTrue([writer makeFrameWritable:1]);
+      AudioFrame frame;
+      frame.numSamples = audioNumSamples;
+      frame.data = [writer getBaseAddress:1 ofPlane:0];
+
+      [self fillDummyAudioFrame:&frame];
+
+      XCTAssertTrue([writer writeAudio:1 outputPTS:audioOutputPTS]);
+
+      nextAudioOutputPTS = audioOutputPTS + audioNumSamples;
+    }
+  }
+
+  [writer finishStream:0];
+  [writer finishStream:1];
+  [writer finishOutput];
+  [writer closeStream:0];
+  [writer closeStream:1];
+  [writer closeOutput];
+}
+
+- (void)testSparseAudio {
+  VideoInfo *info0 = &screenVideoInfo0;
+  AudioInfo *info1 = &screenAudioInfo;
+
+  [self setUpDummyVideo];
+  [self setUpDummyAudio:info1];
+
+  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
+
+  NSString *path = [self getOutputPath:@"testSparseAudio.mkv"];
+
+  XCTAssertTrue([writer openVideoCodec:@"h264_videotoolbox"]);
+  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
+  XCTAssertTrue([writer openOutputFile:path]);
+  XCTAssertTrue([writer addVideoStream:0
+                                 width:info0->width
+                                height:info0->height
+                             frameRate:info0->frameRate
+                               bitRate:info0->bitRate]);
+  XCTAssertTrue([writer addAudioStream:1
+                            sampleRate:info1->sampleRate
+                               bitRate:info1->bitRate]);
+  XCTAssertTrue([writer openVideo:0]);
+  XCTAssertTrue([writer openAudio:1]);
+  XCTAssertTrue([writer startOutput]);
+
+  int64_t nextAudioOutputPTS = 0;
+  int64_t audioNumSamples = [writer getNumSamples:1];
+  for (int64_t videoOutputPTS = 0; videoOutputPTS < 60; videoOutputPTS++) {
+    XCTAssertTrue([writer makeFrameWritable:0]);
+    VideoFrame frame;
+    frame.width = [writer getWidth:0];
+    frame.height = [writer getHeight:0];
+    frame.lumaData = [writer getBaseAddress:0 ofPlane:0];
+    frame.chromaData = [writer getBaseAddress:0 ofPlane:1];
+    frame.lumaBytesPerRow = [writer getBytesPerRow:0 ofPlane:0];
+    frame.chromaBytesPerRow = [writer getBytesPerRow:0 ofPlane:1];
+
+    [self fillDummyVideoFrame:&frame];
+
+    XCTAssertTrue([writer writeVideo:0 outputPTS:videoOutputPTS]);
+
+    int64_t targetAudioOutputPTS =
+        videoOutputPTS * info1->sampleRate / info0->frameRate;
+    for (int64_t audioOutputPTS = nextAudioOutputPTS;
+         audioOutputPTS < targetAudioOutputPTS;
+         audioOutputPTS += audioNumSamples) {
+      XCTAssertTrue([writer makeFrameWritable:1]);
+      AudioFrame frame;
+      frame.numSamples = audioNumSamples;
+      frame.data = [writer getBaseAddress:1 ofPlane:0];
+
+      if ((audioOutputPTS / audioNumSamples) % 2 == 0) {
+        [self fillDummyAudioFrame:&frame];
+        XCTAssertTrue([writer writeAudio:1 outputPTS:audioOutputPTS]);
+      }
+
+      nextAudioOutputPTS = audioOutputPTS + audioNumSamples;
+    }
+  }
+
+  [writer finishStream:0];
+  [writer finishStream:1];
+  [writer finishOutput];
+  [writer closeStream:0];
+  [writer closeStream:1];
+  [writer closeOutput];
+}
+
 @end
