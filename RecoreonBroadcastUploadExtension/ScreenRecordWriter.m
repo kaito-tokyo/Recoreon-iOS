@@ -382,10 +382,25 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   }
 
   while (swr_get_out_samples(os->swrContext, 0) >= os->frame->nb_samples * 2) {
-    NSLog(@"%d", swr_get_out_samples(os->swrContext, 0));
     [self makeFrameWritable:index];
     os->frame->pts += os->frame->nb_samples;
     swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples, &inData, 0);
+    if (![self writeFrame:index]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+- (bool)flushAudioWithResampling:(long)index {
+  OutputStream *os = &outputStreams[index];
+
+  uint8_t dummyData[1][1];
+  while (swr_get_out_samples(os->swrContext, 0) >= os->frame->nb_samples * 2) {
+    [self makeFrameWritable:index];
+    os->frame->pts += os->frame->nb_samples;
+    swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples, (const uint8_t **)dummyData, 0);
     if (![self writeFrame:index]) {
       return false;
     }

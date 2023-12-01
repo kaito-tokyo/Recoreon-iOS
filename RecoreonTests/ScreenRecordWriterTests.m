@@ -415,6 +415,7 @@ typedef struct AudioFrame {
     int64_t outputPTS = i * frame.numSamples * info0dst.sampleRate / info0src.sampleRate;
     XCTAssertTrue([writer ensureResamplerIsInitialted:0 sampleRate:info0src.sampleRate numChannels:info0src.numChannels]);
     XCTAssertTrue([writer writeAudioWithResampling:0 outputPTS:outputPTS inData:(uint8_t *)frame.data inCount:(int)frame.numSamples]);
+    XCTAssertTrue([writer flushAudioWithResampling:0]);
   }
 
   [writer finishStream:0];
