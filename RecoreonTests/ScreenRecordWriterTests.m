@@ -330,4 +330,48 @@ typedef struct AudioFrame {
   [writer closeOutput];
 }
 
+- (void)testAudioWithResampling {
+  AudioInfo info0dst = {
+      .sampleRate = 48000,
+      .bitRate = 320000,
+      .numChannels = 2,
+  };
+
+  AudioInfo info0src = {
+      .sampleRate = 44100,
+      .bitRate = 320000,
+      .numChannels = 2,
+  };
+
+  [self setUpDummyAudio:&info0src];
+
+  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
+
+  NSString *path = [self getOutputPath:@"testAudioWithResampling.mp4"];
+
+  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
+  XCTAssertTrue([writer openOutputFile:path]);
+  XCTAssertTrue([writer addAudioStream:0
+                            sampleRate:info0dst.sampleRate
+                               bitRate:info0dst.bitRate]);
+  XCTAssertTrue([writer openAudio:0]);
+  XCTAssertTrue([writer startOutput]);
+
+  int16_t data[2048];
+  for (int i = 0; i < 430; i++) {
+    AudioFrame frame = {
+      .numSamples = 1024,
+      .data = data,
+    };
+    [self fillDummyAudioFrame:&frame];
+    int64_t outputPTS = i * frame.numSamples * info0dst.sampleRate / info0src.sampleRate;
+    XCTAssertTrue([writer ensureResamplerIsInitialted:0 sampleRate:info0src.sampleRate numChannels:info0src.numChannels]);
+    XCTAssertTrue([writer writeAudioWithResampling:0 outputPTS:outputPTS inData:(uint8_t *)frame.data inCount:(int)frame.numSamples]);
+  }
+
+  [writer finishStream:0];
+  [writer finishOutput];
+  [writer closeStream:0];
+  [writer closeOutput];
+}
 @end

@@ -59,6 +59,8 @@ typedef struct OutputStream {
 - (bool)writeFrame:(long)index;
 - (bool)writeVideo:(long)index outputPTS:(int64_t)outputPTS;
 - (bool)writeAudio:(long)index outputPTS:(int64_t)outputPTS;
+- (bool)ensureResamplerIsInitialted:(long)index sampleRate:(double)sampleRate numChannels:(uint32_t)numChannels;
+- (bool)writeAudioWithResampling:(long)index outputPTS:(int64_t)outputPTS inData:(const uint8_t *__nonnull)inData inCount:(int)inCount;
 - (void)finishStream:(long)index;
 - (void)finishOutput;
 - (void)closeStream:(long)index;
