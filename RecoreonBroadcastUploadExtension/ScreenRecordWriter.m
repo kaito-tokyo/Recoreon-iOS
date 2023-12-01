@@ -329,6 +329,96 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   return true;
 }
 
+- (bool)ensureResamplerIsInitialted:(long)index
+                         sampleRate:(double)sampleRate
+                        numChannels:(uint32_t)numChannels {
+  OutputStream *os = &outputStreams[index];
+  if (os->swrContext == NULL) {
+    os->swrContext = swr_alloc();
+  }
+  SwrContext *c = os->swrContext;
+  if (c == NULL) {
+    return false;
+  }
+
+  if (sampleRate == os->sampleRate && numChannels == os->numChannels) {
+    return true;
+  }
+
+  swr_close(c);
+
+  if (numChannels == 1) {
+    av_opt_set_chlayout(c, "in_chlayout",
+                        &(AVChannelLayout)AV_CHANNEL_LAYOUT_MONO, 0);
+  } else if (numChannels == 2) {
+    av_opt_set_chlayout(c, "in_chlayout",
+                        &(AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO, 0);
+  }
+  av_opt_set_int(c, "in_sample_rate", sampleRate, 0);
+  av_opt_set_sample_fmt(c, "in_sample_fmt", AV_SAMPLE_FMT_S16, 0);
+  av_opt_set_chlayout(c, "out_chlayout", &os->codecContext->ch_layout, 0);
+  av_opt_set_int(c, "out_sample_rate", os->codecContext->sample_rate, 0);
+  av_opt_set_sample_fmt(c, "out_sample_fmt", os->codecContext->sample_fmt, 0);
+  av_opt_set_double(c, "min_comp", 0, 0);
+  av_opt_set_double(c, "min_hard_comp", 0, 0);
+
+  if (swr_init(c) < 0) {
+    return false;
+  }
+
+  os->sampleRate = sampleRate;
+  os->numChannels = numChannels;
+
+  return true;
+}
+
+- (bool)writeAudioWithResampling:(long)index
+                       outputPTS:(int64_t)outputPTS
+                          inData:(const uint8_t *__nonnull)inData
+                         inCount:(int)inCount {
+  OutputStream *os = &outputStreams[index];
+
+  [self makeFrameWritable:index];
+  os->frame->pts = outputPTS;
+  swr_next_pts(os->swrContext, os->frame->pts * os->sampleRate);
+  if (swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples,
+                  &inData, inCount) < 0) {
+    return false;
+  }
+  if (![self writeFrame:index]) {
+    return false;
+  }
+
+  while (swr_get_out_samples(os->swrContext, 0) >= os->frame->nb_samples * 2) {
+    [self makeFrameWritable:index];
+    os->frame->pts += os->frame->nb_samples;
+    swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples, &inData,
+                0);
+    if (![self writeFrame:index]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+- (bool)flushAudioWithResampling:(long)index {
+  OutputStream *os = &outputStreams[index];
+
+  uint8_t dummyData[1][1];
+  while (swr_get_out_samples(os->swrContext, 0) >= os->frame->nb_samples * 2) {
+    [self makeFrameWritable:index];
+    os->frame->pts += os->frame->nb_samples;
+    swr_convert(os->swrContext, os->frame->data, os->frame->nb_samples,
+                (const uint8_t **)dummyData, 0);
+    if (![self writeFrame:index]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 - (void)finishStream:(long)index {
   OutputStream *os = &outputStreams[index];
   AVFrame *origFrame = os->frame;
