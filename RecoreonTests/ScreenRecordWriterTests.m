@@ -252,360 +252,296 @@ typedef struct AudioFrame {
   [writer closeOutput];
 }
 
-//- (void)testMuxedVideo {
-//  VideoInfo *info0 = &screenVideoInfo0;
-//  AudioInfo *info1 = &screenAudioInfo;
-//
-//  [self setUpDummyVideo];
-//  [self setUpDummyAudio:info1];
-//
-//  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
-//
-//  NSString *path = [self getOutputPath:@"testMuxedVideo.mp4"];
-//
-//  XCTAssertTrue([writer openVideoCodec:@"h264_videotoolbox"]);
-//  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
-//  XCTAssertTrue([writer openOutputFile:path]);
-//  XCTAssertTrue([writer addVideoStream:0
-//                                 width:info0->width
-//                                height:info0->height
-//                             frameRate:info0->frameRate
-//                               bitRate:info0->bitRate]);
-//  XCTAssertTrue([writer addAudioStream:1
-//                            sampleRate:info1->sampleRate
-//                               bitRate:info1->bitRate]);
-//  XCTAssertTrue([writer openVideo:0]);
-//  XCTAssertTrue([writer openAudio:1]);
-//  XCTAssertTrue([writer startOutput]);
-//
-//  int64_t nextAudioOutputPTS = 0;
-//  int64_t audioNumSamples = [writer getNumSamples:1];
-//  for (int64_t videoOutputPTS = 0; videoOutputPTS < 60; videoOutputPTS++) {
-//    XCTAssertTrue([writer makeFrameWritable:0]);
-//    VideoFrame frame;
-//    frame.width = [writer getWidth:0];
-//    frame.height = [writer getHeight:0];
-//    frame.lumaData = [writer getBaseAddress:0 ofPlane:0];
-//    frame.chromaData = [writer getBaseAddress:0 ofPlane:1];
-//    frame.lumaBytesPerRow = [writer getBytesPerRow:0 ofPlane:0];
-//    frame.chromaBytesPerRow = [writer getBytesPerRow:0 ofPlane:1];
-//
-//    [self fillDummyVideoFrame:&frame];
-//
-//    XCTAssertTrue([writer writeVideo:0 outputPTS:videoOutputPTS]);
-//
-//    int64_t targetAudioOutputPTS =
-//        videoOutputPTS * info1->sampleRate / info0->frameRate;
-//    for (int64_t audioOutputPTS = nextAudioOutputPTS;
-//         audioOutputPTS < targetAudioOutputPTS;
-//         audioOutputPTS += audioNumSamples) {
-//      XCTAssertTrue([writer makeFrameWritable:1]);
-//      AudioFrame frame;
-//      frame.numSamples = audioNumSamples;
-//      frame.data = [writer getBaseAddress:1 ofPlane:0];
-//
-//      [self fillDummyAudioFrame:&frame];
-//
-//      XCTAssertTrue([writer writeAudio:1 outputPTS:audioOutputPTS]);
-//
-//      nextAudioOutputPTS = audioOutputPTS + audioNumSamples;
-//    }
-//  }
-//
-//  [writer finishStream:0];
-//  [writer finishStream:1];
-//  [writer finishOutput];
-//  [writer closeStream:0];
-//  [writer closeStream:1];
-//  [writer closeOutput];
-//}
-//
-//- (void)testSparseAudio {
-//  VideoInfo *info0 = &screenVideoInfo0;
-//  AudioInfo *info1 = &screenAudioInfo;
-//
-//  [self setUpDummyVideo];
-//  [self setUpDummyAudio:info1];
-//
-//  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
-//
-//  NSString *path = [self getOutputPath:@"testSparseAudio.mkv"];
-//
-//  XCTAssertTrue([writer openVideoCodec:@"h264_videotoolbox"]);
-//  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
-//  XCTAssertTrue([writer openOutputFile:path]);
-//  XCTAssertTrue([writer addVideoStream:0
-//                                 width:info0->width
-//                                height:info0->height
-//                             frameRate:info0->frameRate
-//                               bitRate:info0->bitRate]);
-//  XCTAssertTrue([writer addAudioStream:1
-//                            sampleRate:info1->sampleRate
-//                               bitRate:info1->bitRate]);
-//  XCTAssertTrue([writer openVideo:0]);
-//  XCTAssertTrue([writer openAudio:1]);
-//  XCTAssertTrue([writer startOutput]);
-//
-//  int64_t nextAudioOutputPTS = 0;
-//  int64_t audioNumSamples = [writer getNumSamples:1];
-//  for (int64_t videoOutputPTS = 0; videoOutputPTS < 60; videoOutputPTS++) {
-//    XCTAssertTrue([writer makeFrameWritable:0]);
-//    VideoFrame frame;
-//    frame.width = [writer getWidth:0];
-//    frame.height = [writer getHeight:0];
-//    frame.lumaData = [writer getBaseAddress:0 ofPlane:0];
-//    frame.chromaData = [writer getBaseAddress:0 ofPlane:1];
-//    frame.lumaBytesPerRow = [writer getBytesPerRow:0 ofPlane:0];
-//    frame.chromaBytesPerRow = [writer getBytesPerRow:0 ofPlane:1];
-//
-//    [self fillDummyVideoFrame:&frame];
-//
-//    XCTAssertTrue([writer writeVideo:0 outputPTS:videoOutputPTS]);
-//
-//    int64_t targetAudioOutputPTS =
-//        videoOutputPTS * info1->sampleRate / info0->frameRate;
-//    for (int64_t audioOutputPTS = nextAudioOutputPTS;
-//         audioOutputPTS < targetAudioOutputPTS;
-//         audioOutputPTS += audioNumSamples) {
-//      XCTAssertTrue([writer makeFrameWritable:1]);
-//      AudioFrame frame;
-//      frame.numSamples = audioNumSamples;
-//      frame.data = [writer getBaseAddress:1 ofPlane:0];
-//
-//      if ((audioOutputPTS / audioNumSamples) % 2 == 0) {
-//        [self fillDummyAudioFrame:&frame];
-//        XCTAssertTrue([writer writeAudio:1 outputPTS:audioOutputPTS]);
-//      }
-//
-//      nextAudioOutputPTS = audioOutputPTS + audioNumSamples;
-//    }
-//  }
-//
-//  [writer finishStream:0];
-//  [writer finishStream:1];
-//  [writer finishOutput];
-//  [writer closeStream:0];
-//  [writer closeStream:1];
-//  [writer closeOutput];
-//}
-//
-//- (void)testAudioWithResampling {
-//  AudioInfo info0dst = {
-//      .sampleRate = 48000,
-//      .bitRate = 320000,
-//      .numChannels = 2,
-//  };
-//
-//  AudioInfo info0src = {
-//      .sampleRate = 44100,
-//      .bitRate = 320000,
-//      .numChannels = 2,
-//  };
-//
-//  [self setUpDummyAudio:&info0src];
-//
-//  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
-//
-//  NSString *path = [self getOutputPath:@"testAudioWithResampling.mp4"];
-//
-//  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
-//  XCTAssertTrue([writer openOutputFile:path]);
-//  XCTAssertTrue([writer addAudioStream:0
-//                            sampleRate:info0dst.sampleRate
-//                               bitRate:info0dst.bitRate]);
-//  XCTAssertTrue([writer openAudio:0]);
-//  XCTAssertTrue([writer startOutput]);
-//
-//  int16_t data[2048];
-//  for (int i = 0; i < 430; i++) {
-//    AudioFrame frame = {
-//        .numSamples = 1024,
-//        .data = data,
-//    };
-//    [self fillDummyAudioFrame:&frame];
-//    int64_t outputPTS =
-//        i * frame.numSamples * info0dst.sampleRate / info0src.sampleRate;
-//    XCTAssertTrue([writer ensureResamplerIsInitialted:0
-//                                           sampleRate:info0src.sampleRate
-//                                          numChannels:info0src.numChannels]);
-//    XCTAssertTrue([writer writeAudioWithResampling:0
-//                                         outputPTS:outputPTS
-//                                            inData:(uint8_t *)frame.data
-//                                           inCount:(int)frame.numSamples]);
-//  }
-//
-//  [writer finishStream:0];
-//  [writer finishOutput];
-//  [writer closeStream:0];
-//  [writer closeOutput];
-//}
-//
-//- (void)testSparseAudioWithResampling {
-//  AudioInfo info0dst = {
-//      .sampleRate = 48000,
-//      .bitRate = 320000,
-//      .numChannels = 2,
-//  };
-//
-//  AudioInfo info0src = {
-//      .sampleRate = 44100,
-//      .bitRate = 320000,
-//      .numChannels = 2,
-//  };
-//
-//  [self setUpDummyAudio:&info0src];
-//
-//  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
-//
-//  NSString *path = [self getOutputPath:@"testSparseAudioWithResampling.mp4"];
-//
-//  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
-//  XCTAssertTrue([writer openOutputFile:path]);
-//  XCTAssertTrue([writer addAudioStream:0
-//                            sampleRate:info0dst.sampleRate
-//                               bitRate:info0dst.bitRate]);
-//  XCTAssertTrue([writer openAudio:0]);
-//  XCTAssertTrue([writer startOutput]);
-//
-//  int16_t data[2048];
-//  for (int i = 0; i < 43; i++) {
-//    AudioFrame frame = {
-//        .numSamples = 1024,
-//        .data = data,
-//    };
-//    [self fillDummyAudioFrame:&frame];
-//    if (i % 2 == 1) {
-//      continue;
-//    }
-//    int64_t outputPTS =
-//        i * frame.numSamples * info0dst.sampleRate / info0src.sampleRate;
-//    XCTAssertTrue([writer ensureResamplerIsInitialted:0
-//                                           sampleRate:info0src.sampleRate
-//                                          numChannels:info0src.numChannels]);
-//    XCTAssertTrue([writer writeAudioWithResampling:0
-//                                         outputPTS:outputPTS
-//                                            inData:(uint8_t *)frame.data
-//                                           inCount:(int)frame.numSamples]);
-//    XCTAssertTrue([writer flushAudioWithResampling:0]);
-//  }
-//
-//  [writer finishStream:0];
-//  [writer finishOutput];
-//  [writer closeStream:0];
-//  [writer closeOutput];
-//}
-//
-//- (void)testVideoAndEmptyAudio {
-//  VideoInfo info0 = {
-//      .width = 888,
-//      .height = 1920,
-//      .frameRate = 60,
-//      .bitRate = 8000000,
-//  };
-//  AudioInfo info1 = {
-//      .sampleRate = 48000,
-//      .bitRate = 320000,
-//      .numChannels = 2,
-//  };
-//
-//  [self setUpDummyVideo];
-//  [self setUpDummyAudio:&info1];
-//
-//  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
-//
-//  NSString *path = [self getOutputPath:@"testVideoAndSparseAudio.mkv"];
-//
-//  XCTAssertTrue([writer openVideoCodec:@"h264_videotoolbox"]);
-//  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
-//  XCTAssertTrue([writer openOutputFile:path]);
-//  XCTAssertTrue([writer addVideoStream:0
-//                                 width:info0.width
-//                                height:info0.height
-//                             frameRate:info0.frameRate
-//                               bitRate:info0.bitRate]);
-//  XCTAssertTrue([writer addAudioStream:1
-//                            sampleRate:info1.sampleRate
-//                               bitRate:info1.bitRate]);
-//  XCTAssertTrue([writer openVideo:0]);
-//  XCTAssertTrue([writer openAudio:1]);
-//  XCTAssertTrue([writer startOutput]);
-//  XCTAssertTrue([writer ensureResamplerIsInitialted:1
-//                                         sampleRate:info1.sampleRate
-//                                        numChannels:info1.numChannels]);
-//
-//  for (int64_t videoOutputPTS = 0; videoOutputPTS < 60; videoOutputPTS++) {
-//    XCTAssertTrue([writer makeFrameWritable:0]);
-//    VideoFrame frame = {
-//        .width = [writer getWidth:0],
-//        .height = [writer getHeight:0],
-//        .lumaData = [writer getBaseAddress:0 ofPlane:0],
-//        .chromaData = [writer getBaseAddress:0 ofPlane:1],
-//        .lumaBytesPerRow = [writer getBytesPerRow:0 ofPlane:0],
-//        .chromaBytesPerRow = [writer getBytesPerRow:0 ofPlane:1],
-//    };
-//
-//    [self fillDummyVideoFrame:&frame];
-//
-//    XCTAssertTrue([writer writeVideo:0 outputPTS:videoOutputPTS]);
-//
-//    XCTAssertTrue([writer flushAudioWithResampling:1]);
-//  }
-//
-//  [writer finishStream:0];
-//  [writer finishStream:1];
-//  [writer finishOutput];
-//  [writer closeStream:0];
-//  [writer closeStream:1];
-//  [writer closeOutput];
-//}
-//
-//- (void)testSwappedAudio {
-//  AudioInfo info0 = {
-//      .sampleRate = 48000,
-//      .bitRate = 320000,
-//      .numChannels = 2,
-//  };
-//
-//  [self setUpDummyAudio:&info0];
-//
-//  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
-//
-//  NSString *path = [self getOutputPath:@"testSwappedAudio.mp4"];
-//
-//  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
-//  XCTAssertTrue([writer openOutputFile:path]);
-//  XCTAssertTrue([writer addAudioStream:0
-//                            sampleRate:info0.sampleRate
-//                               bitRate:info0.bitRate]);
-//  XCTAssertTrue([writer openAudio:0]);
-//  XCTAssertTrue([writer startOutput]);
-//
-//  for (int i = 0; i < 43; i++) {
-//    XCTAssertTrue([writer makeFrameWritable:0]);
-//    AudioFrame frame = {
-//        .numSamples = [writer getNumSamples:0],
-//        .data = [writer getBaseAddress:0 ofPlane:0],
-//    };
-//
-//    [self fillDummyAudioFrame:&frame];
-//
-//    uint8_t *dataView = (uint8_t *)frame.data;
-//    for (int i = 0; i < frame.numSamples; i++) {
-//      uint8_t tmp = dataView[i * 2];
-//      dataView[i * 2] = dataView[i * 2 + 1];
-//      dataView[i * 2 + 1] = tmp;
-//    }
-//
-//    [writer swapInt16Bytes:(uint16_t *)frame.data
-//                      from:(uint16_t *)frame.data
-//                  numBytes:frame.numSamples * info0.numChannels];
-//
-//    XCTAssertTrue([writer writeAudio:0 outputPTS:i * frame.numSamples]);
-//  }
-//
-//  [writer finishStream:0];
-//  [writer finishOutput];
-//  [writer closeStream:0];
-//  [writer closeOutput];
-//}
+- (void)testMuxedMedia {
+  VideoInfo info0 = {
+      .width = 888,
+      .height = 1920,
+      .frameRate = 60,
+      .bitRate = 8000000,
+  };
+
+  AudioInfo info1 = {
+      .sampleRate = 44100,
+      .bitRate = 320000,
+      .numChannels = 2,
+  };
+
+  [self setUpDummyVideo];
+  [self setUpDummyAudio:&info1];
+  NSString *path = [self getOutputPath:@"testMuxedMedia.mp4"];
+
+  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
+
+  XCTAssertTrue([writer openVideoCodec:@"h264_videotoolbox"]);
+  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
+  XCTAssertTrue([writer openOutputFile:path]);
+  XCTAssertTrue([writer addVideoStream:0
+                                 width:info0.width
+                                height:info0.height
+                             frameRate:info0.frameRate
+                               bitRate:info0.bitRate]);
+  XCTAssertTrue([writer addAudioStream:1
+                            sampleRate:info1.sampleRate
+                               bitRate:info1.bitRate]);
+  XCTAssertTrue([writer openVideo:0]);
+  XCTAssertTrue([writer openAudio:1]);
+  XCTAssertTrue([writer startOutput]);
+
+  int64_t nextAudioOutputPTS = 0;
+  int64_t audioNumSamples = [writer getNumSamples:1];
+  for (int64_t videoOutputPTS = 0; videoOutputPTS < 60; videoOutputPTS++) {
+    XCTAssertTrue([writer makeFrameWritable:0]);
+
+    VideoFrame frame = {
+      .width = [writer getWidth:0],
+      .height = [writer getHeight:0],
+      .lumaData = [writer getBaseAddress:0 ofPlane:0],
+      .chromaData = [writer getBaseAddress:0 ofPlane:1],
+      .lumaBytesPerRow = [writer getBytesPerRow:0 ofPlane:0],
+      .chromaBytesPerRow = [writer getBytesPerRow:0 ofPlane:1],
+    };
+
+    [self fillDummyVideoFrame:&frame];
+
+    XCTAssertTrue([writer writeVideo:0 outputPTS:videoOutputPTS]);
+
+    int64_t targetAudioOutputPTS =
+        videoOutputPTS * info1.sampleRate / info0.frameRate;
+    for (int64_t audioOutputPTS = nextAudioOutputPTS;
+         audioOutputPTS < targetAudioOutputPTS;
+         audioOutputPTS += audioNumSamples) {
+      XCTAssertTrue([writer makeFrameWritable:1]);
+
+      AudioFrame frame = {
+        .numSamples = audioNumSamples,
+        .numChannels = 2,
+        .data = [writer getBaseAddress:1 ofPlane:0],
+      };
+
+      [self fillDummyAudioFrame:&frame isSwapped:false];
+
+      XCTAssertTrue([writer writeAudio:1 outputPTS:audioOutputPTS]);
+
+      nextAudioOutputPTS = audioOutputPTS + audioNumSamples;
+    }
+  }
+
+  [writer finishStream:0];
+  [writer finishStream:1];
+  [writer finishOutput];
+  [writer closeStream:0];
+  [writer closeStream:1];
+  [writer closeOutput];
+}
+
+- (void)testStereoAudioWithResampling {
+  AudioInfo info0dst = {
+      .sampleRate = 48000,
+      .bitRate = 320000,
+      .numChannels = 2,
+  };
+
+  AudioInfo info0src = {
+      .sampleRate = 44100,
+      .bitRate = 320000,
+      .numChannels = 2,
+  };
+
+  [self setUpDummyAudio:&info0src];
+  NSString *path = [self getOutputPath:@"testAudioWithResampling.mp4"];
+
+  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
+
+  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
+  XCTAssertTrue([writer openOutputFile:path]);
+  XCTAssertTrue([writer addAudioStream:0
+                            sampleRate:info0dst.sampleRate
+                               bitRate:info0dst.bitRate]);
+  XCTAssertTrue([writer openAudio:0]);
+  XCTAssertTrue([writer startOutput]);
+
+  int16_t data[2048];
+  for (int i = 0; i < 430; i++) {
+    AudioFrame frame = {
+        .numSamples = 1024,
+        .numChannels = info0src.numChannels,
+        .data = data,
+    };
+    [self fillDummyAudioFrame:&frame isSwapped:false];
+    int64_t outputPTS =
+        i * frame.numSamples * info0dst.sampleRate / info0src.sampleRate;
+    XCTAssertTrue([writer ensureResamplerIsInitialted:0
+                                           sampleRate:info0src.sampleRate
+                                          numChannels:info0src.numChannels]);
+    XCTAssertTrue([writer writeAudioWithResampling:0
+                                         outputPTS:outputPTS
+                                            inData:(uint8_t *)data
+                                           inCount:(int)frame.numSamples]);
+    XCTAssertTrue([writer flushAudioWithResampling:0]);
+  }
+
+  [writer finishStream:0];
+  [writer finishOutput];
+  [writer closeStream:0];
+  [writer closeOutput];
+}
+
+- (void)testSwappedStereoAudioWithResampling {
+  AudioInfo info0dst = {
+      .sampleRate = 48000,
+      .bitRate = 320000,
+      .numChannels = 2,
+  };
+
+  AudioInfo info0src = {
+      .sampleRate = 44100,
+      .bitRate = 320000,
+      .numChannels = 2,
+  };
+
+  [self setUpDummyAudio:&info0src];
+  NSString *path = [self getOutputPath:@"testSwappedStereoAudioWithResampling.mp4"];
+
+  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
+
+  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
+  XCTAssertTrue([writer openOutputFile:path]);
+  XCTAssertTrue([writer addAudioStream:0
+                            sampleRate:info0dst.sampleRate
+                               bitRate:info0dst.bitRate]);
+  XCTAssertTrue([writer openAudio:0]);
+  XCTAssertTrue([writer startOutput]);
+
+  int16_t data[2048], swappedData[2048];
+  for (int i = 0; i < 430; i++) {
+    AudioFrame frame = {
+        .numSamples = 1024,
+        .numChannels = info0src.numChannels,
+        .data = data,
+    };
+    [self fillDummyAudioFrame:&frame isSwapped:true];
+    int64_t outputPTS =
+        i * frame.numSamples * info0dst.sampleRate / info0src.sampleRate;
+    XCTAssertTrue([writer ensureResamplerIsInitialted:0
+                                           sampleRate:info0src.sampleRate
+                                          numChannels:info0src.numChannels]);
+
+    [writer swapInt16Bytes:(uint16_t *)swappedData from:(uint16_t *)data numBytes:frame.numSamples * frame.numChannels * 2];
+    XCTAssertTrue([writer writeAudioWithResampling:0
+                                         outputPTS:outputPTS
+                                            inData:(uint8_t *)swappedData
+                                           inCount:(int)frame.numSamples]);
+    XCTAssertTrue([writer flushAudioWithResampling:0]);
+  }
+
+  [writer finishStream:0];
+  [writer finishOutput];
+  [writer closeStream:0];
+  [writer closeOutput];
+}
+
+- (void)testMonoAudioWithResampling {
+  AudioInfo info0dst = {
+      .sampleRate = 48000,
+      .bitRate = 320000,
+      .numChannels = 2,
+  };
+
+  AudioInfo info0src = {
+      .sampleRate = 44100,
+      .bitRate = 320000,
+      .numChannels = 1,
+  };
+
+  [self setUpDummyAudio:&info0src];
+  NSString *path = [self getOutputPath:@"testMonoAudioWithResampling.mp4"];
+
+  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
+
+  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
+  XCTAssertTrue([writer openOutputFile:path]);
+  XCTAssertTrue([writer addAudioStream:0
+                            sampleRate:info0dst.sampleRate
+                               bitRate:info0dst.bitRate]);
+  XCTAssertTrue([writer openAudio:0]);
+  XCTAssertTrue([writer startOutput]);
+
+  int16_t data[2048];
+  for (int i = 0; i < 215; i++) {
+    AudioFrame frame = {
+        .numSamples = 2048,
+        .numChannels = info0src.numChannels,
+        .data = data,
+    };
+    [self fillDummyAudioFrame:&frame isSwapped:false];
+    int64_t outputPTS =
+        i * frame.numSamples * info0dst.sampleRate / info0src.sampleRate;
+    XCTAssertTrue([writer ensureResamplerIsInitialted:0
+                                           sampleRate:info0src.sampleRate
+                                          numChannels:info0src.numChannels]);
+    XCTAssertTrue([writer writeAudioWithResampling:0
+                                         outputPTS:outputPTS
+                                            inData:(uint8_t *)data
+                                           inCount:(int)frame.numSamples]);
+    XCTAssertTrue([writer flushAudioWithResampling:0]);
+  }
+
+  [writer finishStream:0];
+  [writer finishOutput];
+  [writer closeStream:0];
+  [writer closeOutput];
+}
+
+- (void)testSwappedMonoAudioWithResampling {
+  AudioInfo info0dst = {
+      .sampleRate = 48000,
+      .bitRate = 320000,
+      .numChannels = 2,
+  };
+
+  AudioInfo info0src = {
+      .sampleRate = 44100,
+      .bitRate = 320000,
+      .numChannels = 1,
+  };
+
+  [self setUpDummyAudio:&info0src];
+  NSString *path = [self getOutputPath:@"testSwappedMonoAudioWithResampling.mp4"];
+
+  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
+
+  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
+  XCTAssertTrue([writer openOutputFile:path]);
+  XCTAssertTrue([writer addAudioStream:0
+                            sampleRate:info0dst.sampleRate
+                               bitRate:info0dst.bitRate]);
+  XCTAssertTrue([writer openAudio:0]);
+  XCTAssertTrue([writer startOutput]);
+
+  int16_t data[2048], swappedData[2048];
+  for (int i = 0; i < 215; i++) {
+    AudioFrame frame = {
+        .numSamples = 2048,
+        .numChannels = info0src.numChannels,
+        .data = data,
+    };
+    [self fillDummyAudioFrame:&frame isSwapped:true];
+    int64_t outputPTS =
+        i * frame.numSamples * info0dst.sampleRate / info0src.sampleRate;
+    XCTAssertTrue([writer ensureResamplerIsInitialted:0
+                                           sampleRate:info0src.sampleRate
+                                          numChannels:info0src.numChannels]);
+    [writer swapInt16Bytes:(uint16_t *)swappedData from:(uint16_t *)data numBytes:frame.numSamples * frame.numChannels * 2];
+    XCTAssertTrue([writer writeAudioWithResampling:0
+                                         outputPTS:outputPTS
+                                            inData:(uint8_t *)swappedData
+                                           inCount:(int)frame.numSamples]);
+    XCTAssertTrue([writer flushAudioWithResampling:0]);
+  }
+
+  [writer finishStream:0];
+  [writer finishOutput];
+  [writer closeStream:0];
+  [writer closeOutput];
+}
 @end
