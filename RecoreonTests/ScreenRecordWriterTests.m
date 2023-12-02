@@ -16,31 +16,6 @@ typedef struct AudioInfo {
   int numChannels;
 } AudioInfo;
 
-static VideoInfo screenVideoInfo0 = {
-    .width = 888,
-    .height = 1920,
-    .frameRate = 60,
-    .bitRate = 8000000,
-};
-
-static AudioInfo screenAudioInfo = {
-    .sampleRate = 44100,
-    .bitRate = 320000,
-    .numChannels = 2,
-};
-
-static AudioInfo micAudioInfo0 = {
-    .sampleRate = 48000,
-    .bitRate = 320000,
-    .numChannels = 2,
-};
-
-static AudioInfo micAudioInfo1 = {
-    .sampleRate = 24000,
-    .bitRate = 320000,
-    .numChannels = 2,
-};
-
 typedef struct VideoFrame {
   long width;
   long height;
