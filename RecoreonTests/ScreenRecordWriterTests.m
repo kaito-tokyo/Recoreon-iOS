@@ -500,4 +500,53 @@ typedef struct AudioFrame {
   [writer closeOutput];
 }
 
+- (void)testSwappedAudio {
+  AudioInfo info0 = {
+      .sampleRate = 48000,
+      .bitRate = 320000,
+      .numChannels = 2,
+  };
+
+  [self setUpDummyAudio:&info0];
+
+  ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
+
+  NSString *path = [self getOutputPath:@"testSwappedAudio.mp4"];
+
+  XCTAssertTrue([writer openAudioCodec:@"aac_at"]);
+  XCTAssertTrue([writer openOutputFile:path]);
+  XCTAssertTrue([writer addAudioStream:0
+                            sampleRate:info0.sampleRate
+                               bitRate:info0.bitRate]);
+  XCTAssertTrue([writer openAudio:0]);
+  XCTAssertTrue([writer startOutput]);
+
+  for (int i = 0; i < 43; i++) {
+    XCTAssertTrue([writer makeFrameWritable:0]);
+    AudioFrame frame = {
+        .numSamples = [writer getNumSamples:0],
+        .data = [writer getBaseAddress:0 ofPlane:0],
+    };
+
+    [self fillDummyAudioFrame:&frame];
+
+    uint8_t *dataView = (uint8_t *)frame.data;
+    for (int i = 0; i < frame.numSamples; i++) {
+      uint8_t tmp = dataView[i * 2];
+      dataView[i * 2] = dataView[i * 2 + 1];
+      dataView[i * 2 + 1] = tmp;
+    }
+
+    [writer swapInt16Bytes:(uint16_t *)frame.data
+                      from:(uint16_t *)frame.data
+                  numBytes:frame.numSamples * info0.numChannels];
+
+    XCTAssertTrue([writer writeAudio:0 outputPTS:i * frame.numSamples]);
+  }
+
+  [writer finishStream:0];
+  [writer finishOutput];
+  [writer closeStream:0];
+  [writer closeOutput];
+}
 @end
