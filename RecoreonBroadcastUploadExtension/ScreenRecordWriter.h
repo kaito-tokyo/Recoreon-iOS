@@ -62,7 +62,9 @@ typedef struct OutputStream {
 - (bool)ensureResamplerIsInitialted:(long)index
                          sampleRate:(double)sampleRate
                         numChannels:(uint32_t)numChannels;
-- (void)swapInt16Bytes:(uint16_t *__nonnull)dst from:(uint16_t *__nonnull)src numBytes:(long)numBytes;
+- (void)swapInt16Bytes:(uint16_t *__nonnull)dst
+                  from:(uint16_t *__nonnull)src
+              numBytes:(long)numBytes;
 - (bool)writeAudioWithResampling:(long)index
                        outputPTS:(int64_t)outputPTS
                           inData:(const uint8_t *__nonnull)inData

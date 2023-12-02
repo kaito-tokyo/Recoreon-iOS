@@ -524,8 +524,8 @@ typedef struct AudioFrame {
   for (int i = 0; i < 43; i++) {
     XCTAssertTrue([writer makeFrameWritable:0]);
     AudioFrame frame = {
-      .numSamples = [writer getNumSamples:0],
-      .data = [writer getBaseAddress:0 ofPlane:0],
+        .numSamples = [writer getNumSamples:0],
+        .data = [writer getBaseAddress:0 ofPlane:0],
     };
 
     [self fillDummyAudioFrame:&frame];
@@ -537,7 +537,9 @@ typedef struct AudioFrame {
       dataView[i * 2 + 1] = tmp;
     }
 
-    [writer swapInt16Bytes:(uint16_t *)frame.data from:(uint16_t *)frame.data numBytes:frame.numSamples * info0.numChannels];
+    [writer swapInt16Bytes:(uint16_t *)frame.data
+                      from:(uint16_t *)frame.data
+                  numBytes:frame.numSamples * info0.numChannels];
 
     XCTAssertTrue([writer writeAudio:0 outputPTS:i * frame.numSamples]);
   }
