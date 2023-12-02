@@ -217,7 +217,9 @@ typedef struct AudioFrame {
     };
     [self fillDummyAudioFrame:&frame isSwapped:true];
 
-    [writer swapInt16Bytes:(uint16_t *)frame.data from:(uint16_t *)frame.data numBytes:frame.numSamples * frame.numChannels * 2];
+    [writer swapInt16Bytes:(uint16_t *)frame.data
+                      from:(uint16_t *)frame.data
+                  numBytes:frame.numSamples * frame.numChannels * 2];
     XCTAssertTrue([writer writeAudio:0 outputPTS:i * frame.numSamples]);
   }
 
@@ -268,12 +270,12 @@ typedef struct AudioFrame {
     XCTAssertTrue([writer makeFrameWritable:0]);
 
     VideoFrame frame = {
-      .width = [writer getWidth:0],
-      .height = [writer getHeight:0],
-      .lumaData = [writer getBaseAddress:0 ofPlane:0],
-      .chromaData = [writer getBaseAddress:0 ofPlane:1],
-      .lumaBytesPerRow = [writer getBytesPerRow:0 ofPlane:0],
-      .chromaBytesPerRow = [writer getBytesPerRow:0 ofPlane:1],
+        .width = [writer getWidth:0],
+        .height = [writer getHeight:0],
+        .lumaData = [writer getBaseAddress:0 ofPlane:0],
+        .chromaData = [writer getBaseAddress:0 ofPlane:1],
+        .lumaBytesPerRow = [writer getBytesPerRow:0 ofPlane:0],
+        .chromaBytesPerRow = [writer getBytesPerRow:0 ofPlane:1],
     };
 
     [self fillDummyVideoFrame:&frame];
@@ -288,9 +290,9 @@ typedef struct AudioFrame {
       XCTAssertTrue([writer makeFrameWritable:1]);
 
       AudioFrame frame = {
-        .numSamples = audioNumSamples,
-        .numChannels = 2,
-        .data = [writer getBaseAddress:1 ofPlane:0],
+          .numSamples = audioNumSamples,
+          .numChannels = 2,
+          .data = [writer getBaseAddress:1 ofPlane:0],
       };
 
       [self fillDummyAudioFrame:&frame isSwapped:false];
@@ -375,7 +377,8 @@ typedef struct AudioFrame {
   };
 
   [self setUpDummyAudio:&info0src];
-  NSString *path = [self getOutputPath:@"testSwappedStereoAudioWithResampling.mp4"];
+  NSString *path =
+      [self getOutputPath:@"testSwappedStereoAudioWithResampling.mp4"];
 
   ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
 
@@ -401,7 +404,9 @@ typedef struct AudioFrame {
                                            sampleRate:info0src.sampleRate
                                           numChannels:info0src.numChannels]);
 
-    [writer swapInt16Bytes:(uint16_t *)swappedData from:(uint16_t *)data numBytes:frame.numSamples * frame.numChannels * 2];
+    [writer swapInt16Bytes:(uint16_t *)swappedData
+                      from:(uint16_t *)data
+                  numBytes:frame.numSamples * frame.numChannels * 2];
     XCTAssertTrue([writer writeAudioWithResampling:0
                                          outputPTS:outputPTS
                                             inData:(uint8_t *)swappedData
@@ -481,7 +486,8 @@ typedef struct AudioFrame {
   };
 
   [self setUpDummyAudio:&info0src];
-  NSString *path = [self getOutputPath:@"testSwappedMonoAudioWithResampling.mp4"];
+  NSString *path =
+      [self getOutputPath:@"testSwappedMonoAudioWithResampling.mp4"];
 
   ScreenRecordWriter *writer = [[ScreenRecordWriter alloc] init];
 
@@ -506,7 +512,9 @@ typedef struct AudioFrame {
     XCTAssertTrue([writer ensureResamplerIsInitialted:0
                                            sampleRate:info0src.sampleRate
                                           numChannels:info0src.numChannels]);
-    [writer swapInt16Bytes:(uint16_t *)swappedData from:(uint16_t *)data numBytes:frame.numSamples * frame.numChannels * 2];
+    [writer swapInt16Bytes:(uint16_t *)swappedData
+                      from:(uint16_t *)data
+                  numBytes:frame.numSamples * frame.numChannels * 2];
     XCTAssertTrue([writer writeAudioWithResampling:0
                                          outputPTS:outputPTS
                                             inData:(uint8_t *)swappedData
