@@ -306,8 +306,10 @@ class SampleHandler: RPBroadcastSampleHandler {
       inData = UnsafePointer<UInt8>(micAudioBuf.assumingMemoryBound(to: UInt8.self))
     }
 
-    writer.ensureResamplerIsInitialted(index, sampleRate: asbd.mSampleRate, numChannels: asbd.mChannelsPerFrame)
-    writer.writeAudio(withResampling: index, outputPTS: outputPTS, inData: inData, inCount: Int32(numBytes))
+    writer.ensureResamplerIsInitialted(
+      index, sampleRate: asbd.mSampleRate, numChannels: asbd.mChannelsPerFrame)
+    writer.writeAudio(
+      withResampling: index, outputPTS: outputPTS, inData: inData, inCount: Int32(numBytes))
     writer.flushAudio(withResampling: index)
   }
 
