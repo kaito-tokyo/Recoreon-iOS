@@ -372,10 +372,9 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   return true;
 }
 
-- (void)swapInt16Bytes:(uint16_t *__nonnull)data numBytes:(long)numBytes {
+- (void)swapInt16Bytes:(uint16_t *__nonnull)dst from:(uint16_t *__nonnull)src numBytes:(long)numBytes {
   for (long i = 0; i < numBytes / 2; i++) {
-    uint16_t value = (data[i] << 8) | (data[i] >> 8);
-    data[i] = value;
+    dst[i] = (src[i] << 8) | (src[i] >> 8);
   }
 }
 
