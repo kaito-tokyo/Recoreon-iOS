@@ -41,7 +41,6 @@ private func copyPlane(
 }
 // swiftlint:enable function_parameter_count
 
-// swiftlint:disable type_body_length function_body_length cyclomatic_complexity
 class SampleHandler: RPBroadcastSampleHandler {
   struct Spec {
     let frameRate: Int
@@ -254,4 +253,3 @@ class SampleHandler: RPBroadcastSampleHandler {
     writer.closeOutput()
   }
 }
-// swiftlint:enable type_body_length function_body_length cyclomatic_complexity
