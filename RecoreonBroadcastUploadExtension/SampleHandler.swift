@@ -205,41 +205,41 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   func processAudioSample(index: Int, outputPTS: Int64, _ sampleBuffer: CMSampleBuffer) {
-      var blockBuffer: CMBlockBuffer?
-      var abl = AudioBufferList()
-      CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-        sampleBuffer,
-        bufferListSizeNeededOut: nil,
-        bufferListOut: &abl,
-        bufferListSize: MemoryLayout<AudioBufferList>.size,
-        blockBufferAllocator: nil,
-        blockBufferMemoryAllocator: nil,
-        flags: 0,
-        blockBufferOut: &blockBuffer
-      )
+    var blockBuffer: CMBlockBuffer?
+    var abl = AudioBufferList()
+    CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
+      sampleBuffer,
+      bufferListSizeNeededOut: nil,
+      bufferListOut: &abl,
+      bufferListSize: MemoryLayout<AudioBufferList>.size,
+      blockBufferAllocator: nil,
+      blockBufferMemoryAllocator: nil,
+      flags: 0,
+      blockBufferOut: &blockBuffer
+    )
 
-      guard
-        let format = CMSampleBufferGetFormatDescription(sampleBuffer),
-        let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee,
-        let buf = abl.mBuffers.mData
-      else { return }
+    guard
+      let format = CMSampleBufferGetFormatDescription(sampleBuffer),
+      let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee,
+      let buf = abl.mBuffers.mData
+    else { return }
 
-      var inData: UnsafePointer<UInt8>
-      let numBytes = abl.mBuffers.mDataByteSize
-      if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
-        inData = UnsafePointer<UInt8>(buf.assumingMemoryBound(to: UInt8.self))
-      } else {
-        let audioBufView = swapBuf.assumingMemoryBound(to: UInt16.self)
-        let bufView = buf.assumingMemoryBound(to: UInt16.self)
-        writer.swapInt16Bytes(audioBufView, from: bufView, numBytes: Int(numBytes))
-        inData = UnsafePointer<UInt8>(swapBuf.assumingMemoryBound(to: UInt8.self))
-      }
+    var inData: UnsafePointer<UInt8>
+    let numBytes = abl.mBuffers.mDataByteSize
+    if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
+      inData = UnsafePointer<UInt8>(buf.assumingMemoryBound(to: UInt8.self))
+    } else {
+      let audioBufView = swapBuf.assumingMemoryBound(to: UInt16.self)
+      let bufView = buf.assumingMemoryBound(to: UInt16.self)
+      writer.swapInt16Bytes(audioBufView, from: bufView, numBytes: Int(numBytes))
+      inData = UnsafePointer<UInt8>(swapBuf.assumingMemoryBound(to: UInt8.self))
+    }
 
-      writer.ensureResamplerIsInitialted(
-        index, sampleRate: asbd.mSampleRate, numChannels: asbd.mChannelsPerFrame)
-      writer.writeAudio(
-        withResampling: index, outputPTS: outputPTS, inData: inData, inCount: Int32(numBytes))
-      writer.flushAudio(withResampling: index)
+    writer.ensureResamplerIsInitialted(
+      index, sampleRate: asbd.mSampleRate, numChannels: asbd.mChannelsPerFrame)
+    writer.writeAudio(
+      withResampling: index, outputPTS: outputPTS, inData: inData, inCount: Int32(numBytes))
+    writer.flushAudio(withResampling: index)
   }
 
   func stopRecording() {
