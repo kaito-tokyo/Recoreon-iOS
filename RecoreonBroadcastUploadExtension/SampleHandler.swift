@@ -63,10 +63,7 @@ class SampleHandler: RPBroadcastSampleHandler {
 
   let writer = ScreenRecordWriter()
   var pixelBufferExtractorRef: PixelBufferExtractor?
-  var screenSameRateSampler: Int16SameRateSampler?
-  var micSameRateSampler: Int16SameRateSampler?
-  var micDoubleUpsampler: Int16DoubleUpsampler?
-  let micAudioBuf = UnsafeMutableRawPointer.allocate(byteCount: 4096, alignment: 2)
+  let swapBuf = UnsafeMutableRawPointer.allocate(byteCount: 4096, alignment: 2)
 
   var isOutputStarted: Bool = false
 
@@ -93,9 +90,25 @@ class SampleHandler: RPBroadcastSampleHandler {
     case RPSampleBufferType.video:
       processScreenVideoSample(sampleBuffer)
     case RPSampleBufferType.audioApp:
-      processScreenAudioSample(sampleBuffer)
+      let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+      guard let firstTime = screenFirstTime else { return }
+      let elapsedTime = CMTimeSubtract(pts, firstTime)
+      let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: Int32(spec.screenAudioSampleRate))
+      let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+
+      processAudioSample(index: 1, outputPTS: outputPTS, sampleBuffer)
     case RPSampleBufferType.audioMic:
-      processMicAudioSample(sampleBuffer)
+      let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+      if micFirstTime == nil {
+        guard let elapsedTime = screenElapsedTime else { return }
+        micFirstTime = CMTimeSubtract(pts, elapsedTime)
+      }
+      guard let firstTime = micFirstTime else { return }
+      let elapsedCount = CMTimeMultiply(
+        CMTimeSubtract(pts, firstTime), multiplier: Int32(spec.micAudioSampleRate))
+      let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+
+      processAudioSample(index: 2, outputPTS: outputPTS, sampleBuffer)
     @unknown default:
       fatalError("Unknown type of sample buffer")
     }
@@ -138,10 +151,6 @@ class SampleHandler: RPBroadcastSampleHandler {
       lumaBytesPerRow: lumaBytesPerRow,
       chromaBytesPerRow: chromaBytesPerRow
     )
-
-    screenSameRateSampler = Int16SameRateSampler(toNumSamples: writer.getNumSamples(1))
-    micSameRateSampler = Int16SameRateSampler(toNumSamples: writer.getNumSamples(2))
-    micDoubleUpsampler = Int16DoubleUpsampler(toNumSamples: writer.getNumSamples(2))
   }
 
   func processScreenVideoSample(_ sampleBuffer: CMSampleBuffer) {
@@ -196,121 +205,42 @@ class SampleHandler: RPBroadcastSampleHandler {
     writer.writeVideo(index, outputPTS: outputPTS)
   }
 
-  func processScreenAudioSample(_ sampleBuffer: CMSampleBuffer) {
-    let index = 1
-    var blockBuffer: CMBlockBuffer?
-    var abl = AudioBufferList()
-    CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-      sampleBuffer,
-      bufferListSizeNeededOut: nil,
-      bufferListOut: &abl,
-      bufferListSize: MemoryLayout<AudioBufferList>.size,
-      blockBufferAllocator: nil,
-      blockBufferMemoryAllocator: nil,
-      flags: 0,
-      blockBufferOut: &blockBuffer
-    )
+  func processAudioSample(index: Int, outputPTS: Int64, _ sampleBuffer: CMSampleBuffer) {
+      var blockBuffer: CMBlockBuffer?
+      var abl = AudioBufferList()
+      CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
+        sampleBuffer,
+        bufferListSizeNeededOut: nil,
+        bufferListOut: &abl,
+        bufferListSize: MemoryLayout<AudioBufferList>.size,
+        blockBufferAllocator: nil,
+        blockBufferMemoryAllocator: nil,
+        flags: 0,
+        blockBufferOut: &blockBuffer
+      )
 
-    let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-    guard let firstTime = screenFirstTime else { return }
-    let elapsedTime = CMTimeSubtract(pts, firstTime)
-    let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: Int32(spec.screenAudioSampleRate))
-    var outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+      guard
+        let format = CMSampleBufferGetFormatDescription(sampleBuffer),
+        let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee,
+        let buf = abl.mBuffers.mData
+      else { return }
 
-    guard
-      let format = CMSampleBufferGetFormatDescription(sampleBuffer),
-      let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee
-    else { return }
-
-    if abl.mBuffers.mDataByteSize != writer.getNumSamples(index) * 4 {
-      print("Sample size invalid")
-      return
-    }
-
-    var resamplerRef: AudioResampler?
-    if Int(asbd.mSampleRate) == spec.screenAudioSampleRate {
-      resamplerRef = screenSameRateSampler
-    }
-    guard var resampler = resamplerRef else { return }
-
-    resampler.reset()
-    guard let fromData = abl.mBuffers.mData else { return }
-    resampler.fromData = UnsafeRawPointer(fromData)
-    resampler.fromNumSamples = Int(abl.mBuffers.mDataByteSize / abl.mBuffers.mNumberChannels / 2)
-    if asbd.mChannelsPerFrame == 1 {
+      var inData: UnsafePointer<UInt8>
+      let numBytes = abl.mBuffers.mDataByteSize
       if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
-        resampler.copyOperationMode = .monoToStereo
+        inData = UnsafePointer<UInt8>(buf.assumingMemoryBound(to: UInt8.self))
       } else {
-        resampler.copyOperationMode = .monoToStereoWithSwap
+        let audioBufView = swapBuf.assumingMemoryBound(to: UInt16.self)
+        let bufView = buf.assumingMemoryBound(to: UInt16.self)
+        writer.swapInt16Bytes(audioBufView, from: bufView, numBytes: Int(numBytes))
+        inData = UnsafePointer<UInt8>(swapBuf.assumingMemoryBound(to: UInt8.self))
       }
-    } else if asbd.mChannelsPerFrame == 2 {
-      if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
-        resampler.copyOperationMode = .stereoToStereo
-      } else {
-        resampler.copyOperationMode = .stereoToStereoWithSwap
-      }
-    } else {
-      return
-    }
-    while resampler.hasNext() {
-      writer.makeFrameWritable(index)
-      resampler.toData = writer.getBaseAddress(index, ofPlane: 0)
-      if !resampler.doCopy() {
-        break
-      }
-      writer.writeAudio(index, outputPTS: outputPTS)
-      outputPTS += Int64(writer.getNumSamples(index))
-    }
-  }
 
-  func processMicAudioSample(_ sampleBuffer: CMSampleBuffer) {
-    let index = 2
-
-    var blockBuffer: CMBlockBuffer?
-    var abl = AudioBufferList()
-    CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-      sampleBuffer,
-      bufferListSizeNeededOut: nil,
-      bufferListOut: &abl,
-      bufferListSize: MemoryLayout<AudioBufferList>.size,
-      blockBufferAllocator: nil,
-      blockBufferMemoryAllocator: nil,
-      flags: 0,
-      blockBufferOut: &blockBuffer
-    )
-
-    let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-    if micFirstTime == nil {
-      guard let elapsedTime = screenElapsedTime else { return }
-      micFirstTime = CMTimeSubtract(pts, elapsedTime)
-    }
-    guard let firstTime = micFirstTime else { return }
-    let elapsedCount = CMTimeMultiply(
-      CMTimeSubtract(pts, firstTime), multiplier: Int32(spec.micAudioSampleRate))
-    var outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
-
-    guard
-      let format = CMSampleBufferGetFormatDescription(sampleBuffer),
-      let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee,
-      let buf = abl.mBuffers.mData
-    else { return }
-
-    var inData: UnsafePointer<UInt8>
-    let numBytes = abl.mBuffers.mDataByteSize
-    if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
-      inData = UnsafePointer<UInt8>(buf.assumingMemoryBound(to: UInt8.self))
-    } else {
-      let audioBufView = micAudioBuf.assumingMemoryBound(to: UInt16.self)
-      let bufView = buf.assumingMemoryBound(to: UInt16.self)
-      writer.swapInt16Bytes(audioBufView, from: bufView, numBytes: Int(numBytes))
-      inData = UnsafePointer<UInt8>(micAudioBuf.assumingMemoryBound(to: UInt8.self))
-    }
-
-    writer.ensureResamplerIsInitialted(
-      index, sampleRate: asbd.mSampleRate, numChannels: asbd.mChannelsPerFrame)
-    writer.writeAudio(
-      withResampling: index, outputPTS: outputPTS, inData: inData, inCount: Int32(numBytes))
-    writer.flushAudio(withResampling: index)
+      writer.ensureResamplerIsInitialted(
+        index, sampleRate: asbd.mSampleRate, numChannels: asbd.mChannelsPerFrame)
+      writer.writeAudio(
+        withResampling: index, outputPTS: outputPTS, inData: inData, inCount: Int32(numBytes))
+      writer.flushAudio(withResampling: index)
   }
 
   func stopRecording() {
