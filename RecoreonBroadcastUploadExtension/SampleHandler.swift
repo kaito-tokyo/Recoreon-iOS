@@ -205,7 +205,9 @@ class SampleHandler: RPBroadcastSampleHandler {
     writer.writeVideo(index, outputPTS: outputPTS)
   }
 
-  func processAudioSample(index: Int, outputPTS: Int64, _ sampleBuffer: CMSampleBuffer, swapBuf: UnsafeMutableRawPointer) {
+  func processAudioSample(
+    index: Int, outputPTS: Int64, _ sampleBuffer: CMSampleBuffer, swapBuf: UnsafeMutableRawPointer
+  ) {
     var blockBuffer: CMBlockBuffer?
     var abl = AudioBufferList()
     CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
@@ -239,8 +241,7 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     writer.ensureResamplerIsInitialted(
       index, sampleRate: asbd.mSampleRate, numChannels: asbd.mChannelsPerFrame)
-    writer.writeAudio(
-      withResampling: index, outputPTS: outputPTS, inData: inData, inCount: Int32(numSamples))
+    writer.writeAudio(index, outputPTS: outputPTS, inData: inData, inCount: Int32(numSamples))
     writer.flushAudio(withResampling: index)
   }
 

@@ -58,17 +58,16 @@ typedef struct OutputStream {
 - (void *__nonnull)getBaseAddress:(long)index ofPlane:(long)planeIndex;
 - (bool)writeFrame:(long)index;
 - (bool)writeVideo:(long)index outputPTS:(int64_t)outputPTS;
-- (bool)writeAudio:(long)index outputPTS:(int64_t)outputPTS;
 - (bool)ensureResamplerIsInitialted:(long)index
                          sampleRate:(double)sampleRate
                         numChannels:(uint32_t)numChannels;
 - (void)swapInt16Bytes:(uint16_t *__nonnull)dst
                   from:(uint16_t *__nonnull)src
               numBytes:(long)numBytes;
-- (bool)writeAudioWithResampling:(long)index
-                       outputPTS:(int64_t)outputPTS
-                          inData:(const uint8_t *__nonnull)inData
-                         inCount:(int)inCount;
+- (bool)writeAudio:(long)index
+         outputPTS:(int64_t)outputPTS
+            inData:(const uint8_t *__nonnull)inData
+           inCount:(int)inCount;
 - (bool)flushAudioWithResampling:(long)index;
 - (void)finishStream:(long)index;
 - (void)finishOutput;
