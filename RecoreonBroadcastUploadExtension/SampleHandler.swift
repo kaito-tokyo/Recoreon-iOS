@@ -62,8 +62,7 @@ class SampleHandler: RPBroadcastSampleHandler {
 
   let writer = ScreenRecordWriter()
   var pixelBufferExtractorRef: PixelBufferExtractor?
-  let appSwapBuf = UnsafeMutableRawPointer.allocate(byteCount: 4096, alignment: 2)
-  let micSwapBuf = UnsafeMutableRawPointer.allocate(byteCount: 4096, alignment: 2)
+  let swapBuf = UnsafeMutableRawPointer.allocate(byteCount: 4096, alignment: 2)
 
   var isOutputStarted: Bool = false
 
@@ -96,7 +95,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: Int32(spec.screenAudioSampleRate))
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
-      processAudioSample(index: 1, outputPTS: outputPTS, sampleBuffer, swapBuf: appSwapBuf)
+      processAudioSample(index: 1, outputPTS: outputPTS, sampleBuffer)
     case RPSampleBufferType.audioMic:
       let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
       if micFirstTime == nil {
@@ -108,7 +107,7 @@ class SampleHandler: RPBroadcastSampleHandler {
         CMTimeSubtract(pts, firstTime), multiplier: Int32(spec.micAudioSampleRate))
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
-      processAudioSample(index: 2, outputPTS: outputPTS, sampleBuffer, swapBuf: micSwapBuf)
+      processAudioSample(index: 2, outputPTS: outputPTS, sampleBuffer)
     @unknown default:
       fatalError("Unknown type of sample buffer")
     }
@@ -206,7 +205,7 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   func processAudioSample(
-    index: Int, outputPTS: Int64, _ sampleBuffer: CMSampleBuffer, swapBuf: UnsafeMutableRawPointer
+    index: Int, outputPTS: Int64, _ sampleBuffer: CMSampleBuffer
   ) {
     var blockBuffer: CMBlockBuffer?
     var abl = AudioBufferList()
