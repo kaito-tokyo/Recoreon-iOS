@@ -41,6 +41,30 @@ private func copyPlane(
 }
 // swiftlint:enable function_parameter_count
 
+enum SampleHandlerError: LocalizedError {
+  case videoCodecOpeningError
+  case audioCodecOpeningError
+  case outputFileOpeningError
+  case videoStreamAddingError
+  case audioStreamAddingError
+  case videoOpeningError
+  case audioOpeningError
+  case outputStartingError
+
+  var localizedDescription: String {
+    switch self {
+    case .videoCodecOpeningError: return "Could not open the video codec!"
+    case .audioCodecOpeningError: return "Could not open the audio codec!"
+    case .outputFileOpeningError: return "Could not open the output file!"
+    case .videoStreamAddingError: return "Could not add a video stream!"
+    case .audioStreamAddingError: return "Could not add an audio stream!"
+    case .videoOpeningError: return "Could not open the video!"
+    case .audioOpeningError: return "Could not open the audio!"
+    case .outputStartingError: return "Could not start the output!"
+    }
+  }
+}
+
 class SampleHandler: RPBroadcastSampleHandler {
   struct Spec {
     let frameRate: Int
@@ -127,21 +151,55 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     let url = paths.appGroupRecordsDir.appending(
       path: generateFileName(date: Date()), directoryHint: .notDirectory)
-    writer.openVideoCodec("h264_videotoolbox")
-    writer.openAudioCodec("aac_at")
-    writer.openOutputFile(url.path())
+    if !writer.openVideoCodec("h264_videotoolbox") {
+      finishBroadcastWithError(SampleHandlerError.videoCodecOpeningError)
+      return
+    }
+    if !writer.openAudioCodec("aac_at") {
+      finishBroadcastWithError(SampleHandlerError.audioCodecOpeningError)
+      return
+    }
+    if !writer.openOutputFile(url.path()) {
+      finishBroadcastWithError(SampleHandlerError.outputFileOpeningError)
+      return
+    }
   }
 
   func initAllStreams(width: Int, height: Int) {
-    writer.addVideoStream(
+    if !writer.addVideoStream(
       0, width: width, height: height, frameRate: spec.frameRate, bitRate: spec.videoBitRate)
-    writer.addAudioStream(
+    {
+      finishBroadcastWithError(SampleHandlerError.videoStreamAddingError)
+      return
+    }
+    if !writer.addAudioStream(
       1, sampleRate: spec.screenAudioSampleRate, bitRate: spec.screenAudioBitRate)
-    writer.addAudioStream(2, sampleRate: spec.micAudioSampleRate, bitRate: spec.micAudioBitRate)
-    writer.openVideo(0)
-    writer.openAudio(1)
-    writer.openAudio(2)
-    writer.startOutput()
+    {
+      finishBroadcastWithError(SampleHandlerError.audioStreamAddingError)
+      return
+    }
+    if !writer.addAudioStream(2, sampleRate: spec.micAudioSampleRate, bitRate: spec.micAudioBitRate)
+    {
+      finishBroadcastWithError(SampleHandlerError.audioStreamAddingError)
+      return
+    }
+    if !writer.openVideo(0) {
+      finishBroadcastWithError(SampleHandlerError.videoOpeningError)
+      return
+    }
+    if !writer.openAudio(1) {
+      finishBroadcastWithError(SampleHandlerError.audioOpeningError)
+      return
+    }
+    if !writer.openAudio(2) {
+      finishBroadcastWithError(SampleHandlerError.audioOpeningError)
+      return
+    }
+    if !writer.startOutput() {
+
+      finishBroadcastWithError(SampleHandlerError.outputStartingError)
+      return
+    }
 
     let lumaBytesPerRow = writer.getBytesPerRow(0, ofPlane: 0)
     let chromaBytesPerRow = writer.getBytesPerRow(0, ofPlane: 1)
