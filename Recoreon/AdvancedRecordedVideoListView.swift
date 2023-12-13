@@ -2,6 +2,12 @@ import AVKit
 import ReplayKit
 import SwiftUI
 
+let byteCountFormatter = {
+  let bcf = ByteCountFormatter()
+  bcf.allowedUnits = [.useMB, .useGB]
+  return bcf
+}()
+
 struct AdvancedRecordedVideoListView: View {
   let recordedVideoService: RecordedVideoService
   @ObservedObject var recordedVideoStore: RecordedVideoStore
@@ -22,8 +28,8 @@ struct AdvancedRecordedVideoListView: View {
                 Spacer()
               }
               HStack {
-                Text(Date().formatted())
-                Text("1GB")
+                Text(entry.creationDate.formatted())
+                Text(byteCountFormatter.string(fromByteCount: Int64(entry.size)))
                 Spacer()
               }
             }
