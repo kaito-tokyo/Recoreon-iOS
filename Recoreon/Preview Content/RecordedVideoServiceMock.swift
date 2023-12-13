@@ -9,12 +9,16 @@ class RecordedVideoServiceMock: RecordedVideoService {
   }()
 
   override func listRecordedVideoEntries() -> [RecordedVideoEntry] {
+    let record01url = Bundle.main.url(forResource: "Record01", withExtension: "mkv")!
+    let record01attrs = try? FileManager.default.attributesOfItem(atPath: record01url.path)
     return [
       RecordedVideoEntry(
-        url: Bundle.main.url(forResource: "Record01", withExtension: "mkv")!,
+        url: record01url,
         encodedVideoCollection: EncodedVideoCollection(encodedVideoURLs: [
           .fourTimeSpeedLowQuality: Bundle.main.url(forResource: "Preview01", withExtension: "mp4")!
-        ])
+        ]),
+        size: record01attrs?[.size] as? UInt64 ?? 0,
+        creationDate: record01attrs?[.creationDate] as? Date ?? Date(timeIntervalSince1970: 0)
       )
     ]
   }

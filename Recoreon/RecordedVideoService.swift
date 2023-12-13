@@ -25,9 +25,12 @@ class RecordedVideoService {
     paths.ensureSandboxDirectoriesExists()
 
     return paths.listRecordURLs().map { url in
-      RecordedVideoEntry(
+      let attrs = try? fileManager.attributesOfItem(atPath: url.path())
+      return RecordedVideoEntry(
         url: url,
-        encodedVideoCollection: getEncodedVideoCollection(url)
+        encodedVideoCollection: getEncodedVideoCollection(url),
+        size: attrs?[.size] as? UInt64 ?? 0,
+        creationDate: attrs?[.creationDate] as? Date ?? Date(timeIntervalSince1970: 0)
       )
     }
   }

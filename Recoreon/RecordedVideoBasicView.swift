@@ -10,7 +10,9 @@ struct RecordedVideoBasicView: View {
 
   @State var encodingEntry = RecordedVideoEntry(
     url: URL(fileURLWithPath: ""),
-    encodedVideoCollection: EncodedVideoCollection(encodedVideoURLs: [:])
+    encodedVideoCollection: EncodedVideoCollection(encodedVideoURLs: [:]),
+    size: 0,
+    creationDate: Date(timeIntervalSince1970: 0)
   )
 
   @State var selection: Set<URL> = []
