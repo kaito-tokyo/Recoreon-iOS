@@ -13,30 +13,56 @@ struct AdvancedRecordedVideoListView: View {
   @ObservedObject var recordedVideoStore: RecordedVideoStore
   @Binding var path: NavigationPath
 
+  @State var selection = Set<URL>()
+
   var body: some View {
     NavigationStack(path: $path) {
-      List {
-        ForEach(recordedVideoStore.recordedVideoEntries) { entry in
-          NavigationLink(
-            value: AdvancedRecordedVideoDetailViewRoute(
-              recordedVideoEntry: entry
-            )
-          ) {
-            VStack {
-              HStack {
-                Text(entry.url.lastPathComponent)
-                Spacer()
-              }
-              HStack {
-                Text(entry.creationDate.formatted())
-                Text(byteCountFormatter.string(fromByteCount: Int64(entry.size)))
-                Spacer()
+      ZStack {
+        List(selection: $selection) {
+          ForEach(recordedVideoStore.recordedVideoEntries) { entry in
+            NavigationLink(
+              value: AdvancedRecordedVideoDetailViewRoute(
+                recordedVideoEntry: entry
+              )
+            ) {
+              VStack {
+                HStack {
+                  Text(entry.url.lastPathComponent)
+                  Spacer()
+                }
+                HStack {
+                  Text(entry.creationDate.formatted())
+                  Text(byteCountFormatter.string(fromByteCount: Int64(entry.size)))
+                  Spacer()
+                }
               }
             }
           }
         }
+        HStack {
+          Spacer()
+          VStack {
+            Spacer()
+            ShareLink(
+              items: Array(selection),
+              label: {
+                Image(systemName: "square.and.arrow.up")
+                  .resizable()
+                  .scaledToFill()
+                  .frame(width: 32, height: 32)
+                  .tint(Color.white)
+                  .padding(.all, 20)
+                  .background(selection.isEmpty ? Color.gray : Color.blue)
+                  .clipShape(Circle())
+              }
+            )
+            .disabled(selection.isEmpty)
+            .padding(.trailing, 10)
+            .padding(.bottom, 10)
+          }
+        }
       }
-      .navigationTitle("List of recorded videos")
+      .navigationTitle("List")
       .navigationBarTitleDisplayMode(.inline)
       .navigationDestination(for: AdvancedRecordedVideoDetailViewRoute.self) { route in
         AdvancedRecordedVideoDetailView(
@@ -45,6 +71,9 @@ struct AdvancedRecordedVideoListView: View {
           path: $path,
           recordedVideoEntry: route.recordedVideoEntry
         )
+      }
+      .toolbar {
+        EditButton()
       }
     }
   }
