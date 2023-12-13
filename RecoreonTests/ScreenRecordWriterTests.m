@@ -179,7 +179,9 @@ typedef struct AudioFrame {
     };
     [self fillDummyAudioFrame:&frame isSwapped:false];
 
-    XCTAssertTrue([writer ensureResamplerIsInitialted:0 sampleRate:info0.sampleRate numChannels:2]);
+    XCTAssertTrue([writer ensureResamplerIsInitialted:0
+                                           sampleRate:info0.sampleRate
+                                          numChannels:2]);
     XCTAssertTrue([writer writeAudio:0
                            outputPTS:i * frame.numSamples
                               inData:(uint8_t *)frame.data
@@ -224,7 +226,9 @@ typedef struct AudioFrame {
     [writer swapInt16Bytes:(uint16_t *)frame.data
                       from:(uint16_t *)frame.data
                   numBytes:frame.numSamples * frame.numChannels * 2];
-    XCTAssertTrue([writer ensureResamplerIsInitialted:0 sampleRate:info0.sampleRate numChannels:2]);
+    XCTAssertTrue([writer ensureResamplerIsInitialted:0
+                                           sampleRate:info0.sampleRate
+                                          numChannels:2]);
     XCTAssertTrue([writer writeAudio:0
                            outputPTS:i * frame.numSamples
                               inData:(uint8_t *)frame.data
@@ -304,7 +308,9 @@ typedef struct AudioFrame {
 
       [self fillDummyAudioFrame:&frame isSwapped:false];
 
-      XCTAssertTrue([writer ensureResamplerIsInitialted:1 sampleRate:info1.sampleRate numChannels:2]);
+      XCTAssertTrue([writer ensureResamplerIsInitialted:1
+                                             sampleRate:info1.sampleRate
+                                            numChannels:2]);
       XCTAssertTrue([writer writeAudio:1
                              outputPTS:audioOutputPTS
                                 inData:(uint8_t *)frame.data
