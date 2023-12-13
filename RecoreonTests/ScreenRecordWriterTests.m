@@ -170,16 +170,22 @@ typedef struct AudioFrame {
   XCTAssertTrue([writer openAudio:0]);
   XCTAssertTrue([writer startOutput]);
 
+  int16_t data[2048];
   for (int i = 0; i < 43; i++) {
-    XCTAssertTrue([writer makeFrameWritable:0]);
     AudioFrame frame = {
-        .numSamples = [writer getNumSamples:0],
+        .numSamples = 1024,
         .numChannels = 2,
-        .data = [writer getBaseAddress:0 ofPlane:0],
+        .data = data,
     };
     [self fillDummyAudioFrame:&frame isSwapped:false];
 
-    XCTAssertTrue([writer writeAudio:0 outputPTS:i * frame.numSamples]);
+    XCTAssertTrue([writer ensureResamplerIsInitialted:0
+                                           sampleRate:info0.sampleRate
+                                          numChannels:2]);
+    XCTAssertTrue([writer writeAudio:0
+                           outputPTS:i * frame.numSamples
+                              inData:(uint8_t *)frame.data
+                             inCount:(int)frame.numSamples]);
   }
 
   [writer finishStream:0];
@@ -208,19 +214,25 @@ typedef struct AudioFrame {
   XCTAssertTrue([writer openAudio:0]);
   XCTAssertTrue([writer startOutput]);
 
+  int16_t data[2048];
   for (int i = 0; i < 43; i++) {
-    XCTAssertTrue([writer makeFrameWritable:0]);
     AudioFrame frame = {
-        .numSamples = [writer getNumSamples:0],
+        .numSamples = 1024,
         .numChannels = 2,
-        .data = [writer getBaseAddress:0 ofPlane:0],
+        .data = data,
     };
     [self fillDummyAudioFrame:&frame isSwapped:true];
 
     [writer swapInt16Bytes:(uint16_t *)frame.data
                       from:(uint16_t *)frame.data
                   numBytes:frame.numSamples * frame.numChannels * 2];
-    XCTAssertTrue([writer writeAudio:0 outputPTS:i * frame.numSamples]);
+    XCTAssertTrue([writer ensureResamplerIsInitialted:0
+                                           sampleRate:info0.sampleRate
+                                          numChannels:2]);
+    XCTAssertTrue([writer writeAudio:0
+                           outputPTS:i * frame.numSamples
+                              inData:(uint8_t *)frame.data
+                             inCount:(int)frame.numSamples]);
   }
 
   [writer finishStream:0];
@@ -284,20 +296,25 @@ typedef struct AudioFrame {
 
     int64_t targetAudioOutputPTS =
         videoOutputPTS * info1.sampleRate / info0.frameRate;
+    int16_t data[2048];
     for (int64_t audioOutputPTS = nextAudioOutputPTS;
          audioOutputPTS < targetAudioOutputPTS;
          audioOutputPTS += audioNumSamples) {
-      XCTAssertTrue([writer makeFrameWritable:1]);
-
       AudioFrame frame = {
           .numSamples = audioNumSamples,
           .numChannels = 2,
-          .data = [writer getBaseAddress:1 ofPlane:0],
+          .data = data,
       };
 
       [self fillDummyAudioFrame:&frame isSwapped:false];
 
-      XCTAssertTrue([writer writeAudio:1 outputPTS:audioOutputPTS]);
+      XCTAssertTrue([writer ensureResamplerIsInitialted:1
+                                             sampleRate:info1.sampleRate
+                                            numChannels:2]);
+      XCTAssertTrue([writer writeAudio:1
+                             outputPTS:audioOutputPTS
+                                inData:(uint8_t *)frame.data
+                               inCount:(int)frame.numSamples]);
 
       nextAudioOutputPTS = audioOutputPTS + audioNumSamples;
     }
@@ -350,10 +367,10 @@ typedef struct AudioFrame {
     XCTAssertTrue([writer ensureResamplerIsInitialted:0
                                            sampleRate:info0src.sampleRate
                                           numChannels:info0src.numChannels]);
-    XCTAssertTrue([writer writeAudioWithResampling:0
-                                         outputPTS:outputPTS
-                                            inData:(uint8_t *)data
-                                           inCount:(int)frame.numSamples]);
+    XCTAssertTrue([writer writeAudio:0
+                           outputPTS:outputPTS
+                              inData:(uint8_t *)data
+                             inCount:(int)frame.numSamples]);
     XCTAssertTrue([writer flushAudioWithResampling:0]);
   }
 
@@ -407,10 +424,10 @@ typedef struct AudioFrame {
     [writer swapInt16Bytes:(uint16_t *)swappedData
                       from:(uint16_t *)data
                   numBytes:frame.numSamples * frame.numChannels * 2];
-    XCTAssertTrue([writer writeAudioWithResampling:0
-                                         outputPTS:outputPTS
-                                            inData:(uint8_t *)swappedData
-                                           inCount:(int)frame.numSamples]);
+    XCTAssertTrue([writer writeAudio:0
+                           outputPTS:outputPTS
+                              inData:(uint8_t *)swappedData
+                             inCount:(int)frame.numSamples]);
     XCTAssertTrue([writer flushAudioWithResampling:0]);
   }
 
@@ -459,10 +476,10 @@ typedef struct AudioFrame {
     XCTAssertTrue([writer ensureResamplerIsInitialted:0
                                            sampleRate:info0src.sampleRate
                                           numChannels:info0src.numChannels]);
-    XCTAssertTrue([writer writeAudioWithResampling:0
-                                         outputPTS:outputPTS
-                                            inData:(uint8_t *)data
-                                           inCount:(int)frame.numSamples]);
+    XCTAssertTrue([writer writeAudio:0
+                           outputPTS:outputPTS
+                              inData:(uint8_t *)data
+                             inCount:(int)frame.numSamples]);
     XCTAssertTrue([writer flushAudioWithResampling:0]);
   }
 
@@ -515,10 +532,10 @@ typedef struct AudioFrame {
     [writer swapInt16Bytes:(uint16_t *)swappedData
                       from:(uint16_t *)data
                   numBytes:frame.numSamples * frame.numChannels * 2];
-    XCTAssertTrue([writer writeAudioWithResampling:0
-                                         outputPTS:outputPTS
-                                            inData:(uint8_t *)swappedData
-                                           inCount:(int)frame.numSamples]);
+    XCTAssertTrue([writer writeAudio:0
+                           outputPTS:outputPTS
+                              inData:(uint8_t *)swappedData
+                             inCount:(int)frame.numSamples]);
     XCTAssertTrue([writer flushAudioWithResampling:0]);
   }
 

@@ -316,19 +316,6 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   return true;
 }
 
-- (bool)writeAudio:(long)index outputPTS:(int64_t)outputPTS {
-  OutputStream *os = &outputStreams[index];
-  AVCodecContext *c = os->codecContext;
-  outputStreams[index].frame->pts =
-      av_rescale_q(outputPTS, (AVRational){1, c->sample_rate}, c->time_base);
-
-  if (![self writeFrame:index]) {
-    return false;
-  }
-
-  return true;
-}
-
 - (bool)ensureResamplerIsInitialted:(long)index
                          sampleRate:(double)sampleRate
                         numChannels:(uint32_t)numChannels {
@@ -360,7 +347,7 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   av_opt_set_int(c, "out_sample_rate", os->codecContext->sample_rate, 0);
   av_opt_set_sample_fmt(c, "out_sample_fmt", os->codecContext->sample_fmt, 0);
   av_opt_set_double(c, "min_comp", 0, 0);
-  av_opt_set_double(c, "min_hard_comp", 0, 0);
+  av_opt_set_double(c, "min_hard_comp", 0.1, 0);
 
   if (swr_init(c) < 0) {
     return false;
@@ -380,10 +367,10 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   }
 }
 
-- (bool)writeAudioWithResampling:(long)index
-                       outputPTS:(int64_t)outputPTS
-                          inData:(const uint8_t *__nonnull)inData
-                         inCount:(int)inCount {
+- (bool)writeAudio:(long)index
+         outputPTS:(int64_t)outputPTS
+            inData:(const uint8_t *__nonnull)inData
+           inCount:(int)inCount {
   OutputStream *os = &outputStreams[index];
 
   [self makeFrameWritable:index];

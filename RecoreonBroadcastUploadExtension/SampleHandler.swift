@@ -204,7 +204,9 @@ class SampleHandler: RPBroadcastSampleHandler {
     writer.writeVideo(index, outputPTS: outputPTS)
   }
 
-  func processAudioSample(index: Int, outputPTS: Int64, _ sampleBuffer: CMSampleBuffer) {
+  func processAudioSample(
+    index: Int, outputPTS: Int64, _ sampleBuffer: CMSampleBuffer
+  ) {
     var blockBuffer: CMBlockBuffer?
     var abl = AudioBufferList()
     CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
@@ -226,19 +228,19 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     var inData: UnsafePointer<UInt8>
     let numBytes = abl.mBuffers.mDataByteSize
+    let numSamples = numBytes / 2 / asbd.mChannelsPerFrame
     if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
       inData = UnsafePointer<UInt8>(buf.assumingMemoryBound(to: UInt8.self))
     } else {
-      let audioBufView = swapBuf.assumingMemoryBound(to: UInt16.self)
-      let bufView = buf.assumingMemoryBound(to: UInt16.self)
-      writer.swapInt16Bytes(audioBufView, from: bufView, numBytes: Int(numBytes))
+      let dstView = swapBuf.assumingMemoryBound(to: UInt16.self)
+      let srcView = buf.assumingMemoryBound(to: UInt16.self)
+      writer.swapInt16Bytes(dstView, from: srcView, numBytes: Int(numBytes))
       inData = UnsafePointer<UInt8>(swapBuf.assumingMemoryBound(to: UInt8.self))
     }
 
     writer.ensureResamplerIsInitialted(
       index, sampleRate: asbd.mSampleRate, numChannels: asbd.mChannelsPerFrame)
-    writer.writeAudio(
-      withResampling: index, outputPTS: outputPTS, inData: inData, inCount: Int32(numBytes))
+    writer.writeAudio(index, outputPTS: outputPTS, inData: inData, inCount: Int32(numSamples))
     writer.flushAudio(withResampling: index)
   }
 
