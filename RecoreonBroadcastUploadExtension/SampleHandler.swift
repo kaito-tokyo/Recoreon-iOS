@@ -52,16 +52,16 @@ enum SampleHandlerError: LocalizedError {
   case outputStartingError
 
   var localizedDescription: String {
-      switch self {
-      case .videoCodecOpeningError: return "Could not open the video codec!"
-      case .audioCodecOpeningError: return "Could not open the audio codec!"
-      case .outputFileOpeningError: return "Could not open the output file!"
-      case .videoStreamAddingError: return "Could not add a video stream!"
-      case .audioStreamAddingError: return "Could not add an audio stream!"
-      case .videoOpeningError: return "Could not open the video!"
-      case .audioOpeningError: return "Could not open the audio!"
-      case .outputStartingError: return "Could not start the output!"
-      }
+    switch self {
+    case .videoCodecOpeningError: return "Could not open the video codec!"
+    case .audioCodecOpeningError: return "Could not open the audio codec!"
+    case .outputFileOpeningError: return "Could not open the output file!"
+    case .videoStreamAddingError: return "Could not add a video stream!"
+    case .audioStreamAddingError: return "Could not add an audio stream!"
+    case .videoOpeningError: return "Could not open the video!"
+    case .audioOpeningError: return "Could not open the audio!"
+    case .outputStartingError: return "Could not start the output!"
+    }
   }
 }
 
@@ -156,27 +156,30 @@ class SampleHandler: RPBroadcastSampleHandler {
       return
     }
     if !writer.openAudioCodec("aac_at") {
-        finishBroadcastWithError(SampleHandlerError.audioCodecOpeningError)
+      finishBroadcastWithError(SampleHandlerError.audioCodecOpeningError)
       return
     }
     if !writer.openOutputFile(url.path()) {
-          finishBroadcastWithError(SampleHandlerError.outputFileOpeningError)
+      finishBroadcastWithError(SampleHandlerError.outputFileOpeningError)
       return
     }
   }
 
   func initAllStreams(width: Int, height: Int) {
     if !writer.addVideoStream(
-      0, width: width, height: height, frameRate: spec.frameRate, bitRate: spec.videoBitRate) {
+      0, width: width, height: height, frameRate: spec.frameRate, bitRate: spec.videoBitRate)
+    {
       finishBroadcastWithError(SampleHandlerError.videoStreamAddingError)
       return
     }
     if !writer.addAudioStream(
-      1, sampleRate: spec.screenAudioSampleRate, bitRate: spec.screenAudioBitRate) {
+      1, sampleRate: spec.screenAudioSampleRate, bitRate: spec.screenAudioBitRate)
+    {
       finishBroadcastWithError(SampleHandlerError.audioStreamAddingError)
       return
     }
-    if !writer.addAudioStream(2, sampleRate: spec.micAudioSampleRate, bitRate: spec.micAudioBitRate) {
+    if !writer.addAudioStream(2, sampleRate: spec.micAudioSampleRate, bitRate: spec.micAudioBitRate)
+    {
       finishBroadcastWithError(SampleHandlerError.audioStreamAddingError)
       return
     }
@@ -185,17 +188,17 @@ class SampleHandler: RPBroadcastSampleHandler {
       return
     }
     if !writer.openAudio(1) {
-        finishBroadcastWithError(SampleHandlerError.audioOpeningError)
-        return
+      finishBroadcastWithError(SampleHandlerError.audioOpeningError)
+      return
     }
     if !writer.openAudio(2) {
-          finishBroadcastWithError(SampleHandlerError.audioOpeningError)
-          return
+      finishBroadcastWithError(SampleHandlerError.audioOpeningError)
+      return
     }
     if !writer.startOutput() {
 
-            finishBroadcastWithError(SampleHandlerError.outputStartingError)
-            return
+      finishBroadcastWithError(SampleHandlerError.outputStartingError)
+      return
     }
 
     let lumaBytesPerRow = writer.getBytesPerRow(0, ofPlane: 0)
