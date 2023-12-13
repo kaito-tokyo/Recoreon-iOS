@@ -43,16 +43,19 @@ struct AdvancedRecordedVideoListView: View {
           Spacer()
           VStack {
             Spacer()
-            ShareLink(items: Array(selection), label: {
-              Image(systemName: "square.and.arrow.up")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 32, height: 32)
-                .tint(Color.white)
-                .padding(.all, 20)
-                .background(selection.isEmpty ? Color.gray : Color.blue)
-                .clipShape(Circle())
-            })
+            ShareLink(
+              items: Array(selection),
+              label: {
+                Image(systemName: "square.and.arrow.up")
+                  .resizable()
+                  .scaledToFill()
+                  .frame(width: 32, height: 32)
+                  .tint(Color.white)
+                  .padding(.all, 20)
+                  .background(selection.isEmpty ? Color.gray : Color.blue)
+                  .clipShape(Circle())
+              }
+            )
             .disabled(selection.isEmpty)
             .padding(.trailing, 10)
             .padding(.bottom, 10)
