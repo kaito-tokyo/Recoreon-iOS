@@ -37,6 +37,12 @@ struct AdvancedRecordedVideoListView: View {
                 }
               }
             }
+          }.onDelete { indexSet in
+            for index in indexSet {
+              let entry = recordedVideoStore.recordedVideoEntries[index]
+              recordedVideoService.removeRecordedVideo(recordedVideoEntry: entry)
+            }
+            recordedVideoStore.update()
           }
         }
         HStack {
