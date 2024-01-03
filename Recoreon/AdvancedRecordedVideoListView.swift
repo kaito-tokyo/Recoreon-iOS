@@ -16,71 +16,69 @@ struct AdvancedRecordedVideoListView: View {
   @State var selection = Set<URL>()
 
   var body: some View {
-    NavigationStack(path: $path) {
-      ZStack {
-        List(selection: $selection) {
-          ForEach(recordedVideoStore.recordedVideoEntries) { entry in
-            NavigationLink(
-              value: AdvancedRecordedVideoDetailViewRoute(
-                recordedVideoEntry: entry
-              )
-            ) {
-              VStack {
-                HStack {
-                  Text(entry.url.lastPathComponent)
-                  Spacer()
-                }
-                HStack {
-                  Text(entry.creationDate.formatted())
-                  Text(byteCountFormatter.string(fromByteCount: Int64(entry.size)))
-                  Spacer()
-                }
-              }
-            }
-          }.onDelete { indexSet in
-            for index in indexSet {
-              let entry = recordedVideoStore.recordedVideoEntries[index]
-              recordedVideoService.removeRecordedVideo(recordedVideoEntry: entry)
-            }
-            recordedVideoStore.update()
-          }
-        }
-        HStack {
-          Spacer()
-          VStack {
-            Spacer()
-            ShareLink(
-              items: Array(selection),
-              label: {
-                Image(systemName: "square.and.arrow.up")
-                  .resizable()
-                  .scaledToFill()
-                  .frame(width: 32, height: 32)
-                  .tint(Color.white)
-                  .padding(.all, 20)
-                  .background(selection.isEmpty ? Color.gray : Color.blue)
-                  .clipShape(Circle())
-              }
+    ZStack {
+      List(selection: $selection) {
+        ForEach(recordedVideoStore.recordedVideoEntries) { entry in
+          NavigationLink(
+            value: AdvancedRecordedVideoDetailViewRoute(
+              recordedVideoEntry: entry
             )
-            .disabled(selection.isEmpty)
-            .padding(.trailing, 10)
-            .padding(.bottom, 10)
+          ) {
+            VStack {
+              HStack {
+                Text(entry.url.lastPathComponent)
+                Spacer()
+              }
+              HStack {
+                Text(entry.creationDate.formatted())
+                Text(byteCountFormatter.string(fromByteCount: Int64(entry.size)))
+                Spacer()
+              }
+            }
           }
+        }.onDelete { indexSet in
+          for index in indexSet {
+            let entry = recordedVideoStore.recordedVideoEntries[index]
+            recordedVideoService.removeRecordedVideo(recordedVideoEntry: entry)
+          }
+          recordedVideoStore.update()
         }
       }
-      .navigationTitle("List")
-      .navigationBarTitleDisplayMode(.inline)
-      .navigationDestination(for: AdvancedRecordedVideoDetailViewRoute.self) { route in
-        AdvancedRecordedVideoDetailView(
-          recordedVideoService: recordedVideoService,
-          recordedVideoStore: recordedVideoStore,
-          path: $path,
-          recordedVideoEntry: route.recordedVideoEntry
-        )
+      HStack {
+        Spacer()
+        VStack {
+          Spacer()
+          ShareLink(
+            items: Array(selection),
+            label: {
+              Image(systemName: "square.and.arrow.up")
+                .resizable()
+                .scaledToFill()
+                .frame(width: 32, height: 32)
+                .tint(Color.white)
+                .padding(.all, 20)
+                .background(selection.isEmpty ? Color.gray : Color.blue)
+                .clipShape(Circle())
+            }
+          )
+          .disabled(selection.isEmpty)
+          .padding(.trailing, 10)
+          .padding(.bottom, 10)
+        }
       }
-      .toolbar {
-        EditButton()
-      }
+    }
+    .navigationTitle("List")
+    .navigationBarTitleDisplayMode(.inline)
+    .navigationDestination(for: AdvancedRecordedVideoDetailViewRoute.self) { route in
+      AdvancedRecordedVideoDetailView(
+        recordedVideoService: recordedVideoService,
+        recordedVideoStore: recordedVideoStore,
+        path: $path,
+        recordedVideoEntry: route.recordedVideoEntry
+      )
+    }
+    .toolbar {
+      EditButton()
     }
   }
 }
