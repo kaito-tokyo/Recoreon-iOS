@@ -167,16 +167,19 @@ class SampleHandler: RPBroadcastSampleHandler {
 
   func initAllStreams(width: Int, height: Int) {
     if !writer.addVideoStream(
-      0, width: width, height: height, frameRate: spec.frameRate, bitRate: spec.videoBitRate) {
+      0, width: width, height: height, frameRate: spec.frameRate, bitRate: spec.videoBitRate)
+    {
       finishBroadcastWithError(SampleHandlerError.videoStreamAddingError)
       return
     }
     if !writer.addAudioStream(
-      1, sampleRate: spec.screenAudioSampleRate, bitRate: spec.screenAudioBitRate) {
+      1, sampleRate: spec.screenAudioSampleRate, bitRate: spec.screenAudioBitRate)
+    {
       finishBroadcastWithError(SampleHandlerError.audioStreamAddingError)
       return
     }
-    if !writer.addAudioStream(2, sampleRate: spec.micAudioSampleRate, bitRate: spec.micAudioBitRate) {
+    if !writer.addAudioStream(2, sampleRate: spec.micAudioSampleRate, bitRate: spec.micAudioBitRate)
+    {
       finishBroadcastWithError(SampleHandlerError.audioStreamAddingError)
       return
     }
