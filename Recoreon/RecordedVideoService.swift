@@ -251,11 +251,11 @@ class RecordedVideoService {
     )
   }
 
-  func removeRecordedVideo(recordedVideoEntry: RecordedVideoEntry) {
+  func removeRecordedVideo(_ recordedVideoEntry: RecordedVideoEntry) {
     try? fileManager.removeItem(at: recordedVideoEntry.url)
   }
 
-  func removeEncodedVideos(recordedVideoEntry: RecordedVideoEntry) {
+  func removeEncodedVideos(_ recordedVideoEntry: RecordedVideoEntry) {
     for preset in EncodingPreset.allPresets {
       let url = generateEncodedVideoURL(
         recordedVideoURL: recordedVideoEntry.url, encodingPreset: preset)
@@ -263,12 +263,12 @@ class RecordedVideoService {
     }
   }
 
-  func removeThumbnail(recordedVideoEntry: RecordedVideoEntry) {
+  func removeThumbnail(_ recordedVideoEntry: RecordedVideoEntry) {
     let url = paths.getThumbnailURL(recordedVideoEntry.url)
     try? fileManager.removeItem(at: url)
   }
 
-  func removePreviewVideo(recordedVideoEntry: RecordedVideoEntry) {
+  func removePreviewVideo(_ recordedVideoEntry: RecordedVideoEntry) {
     let url = paths.getPreviewVideoURL(recordedVideoEntry.url)
     try? fileManager.removeItem(at: url)
   }
