@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct AdvencedVideoEncoderViewRoute: Hashable {
+struct RecordedVideoEncoderViewRoute: Hashable {
   let recordedVideoEntry: RecordedVideoEntry
 }
 
-struct AdvancedVideoEncoderView: View {
+struct RecordedVideoEncoderView: View {
   let recordedVideoService: RecordedVideoService
   @State var recordedVideoEntry: RecordedVideoEntry
   @State var recordedVideoThumbnail: UIImage
@@ -70,7 +70,7 @@ struct AdvancedVideoEncoderView: View {
     let entry = entries.first!
     let thumbnail = service.getThumbnailImage(entry.url)
 
-    return AdvancedVideoEncoderView(
+    return RecordedVideoEncoderView(
       recordedVideoService: service,
       recordedVideoEntry: entry,
       recordedVideoThumbnail: thumbnail

@@ -17,7 +17,7 @@ struct ContentView: View {
     TabView {
       RecorderView()
         .tabItem { Image(systemName: "record.circle") }
-      AdvancedRecordedVideoView(
+      RecordedVideoView(
         recordedVideoService: recordedVideoService,
         recordedVideoStore: recordedVideoStore
       )
