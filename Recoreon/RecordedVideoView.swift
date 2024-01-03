@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AdvancedRecordedVideoView: View {
+struct RecordedVideoView: View {
   let recordedVideoService: RecordedVideoService
   @ObservedObject var recordedVideoStore: RecordedVideoStore
 
@@ -8,7 +8,7 @@ struct AdvancedRecordedVideoView: View {
 
   var body: some View {
     NavigationStack(path: $path) {
-      AdvancedRecordedVideoListView(
+      RecordedVideoListView(
         recordedVideoService: recordedVideoService,
         recordedVideoStore: recordedVideoStore,
         path: $path

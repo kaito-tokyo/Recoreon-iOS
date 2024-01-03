@@ -8,7 +8,7 @@ let byteCountFormatter = {
   return bcf
 }()
 
-struct AdvancedRecordedVideoListView: View {
+struct RecordedVideoListView: View {
   let recordedVideoService: RecordedVideoService
   @ObservedObject var recordedVideoStore: RecordedVideoStore
   @Binding var path: NavigationPath
@@ -20,7 +20,7 @@ struct AdvancedRecordedVideoListView: View {
       List(selection: $selection) {
         ForEach(recordedVideoStore.recordedVideoEntries) { entry in
           NavigationLink(
-            value: AdvancedRecordedVideoDetailViewRoute(
+            value: RecordedVideoDetailViewRoute(
               recordedVideoEntry: entry
             )
           ) {
@@ -69,8 +69,8 @@ struct AdvancedRecordedVideoListView: View {
     }
     .navigationTitle("List")
     .navigationBarTitleDisplayMode(.inline)
-    .navigationDestination(for: AdvancedRecordedVideoDetailViewRoute.self) { route in
-      AdvancedRecordedVideoDetailView(
+    .navigationDestination(for: RecordedVideoDetailViewRoute.self) { route in
+      RecordedVideoDetailView(
         recordedVideoService: recordedVideoService,
         recordedVideoStore: recordedVideoStore,
         path: $path,
@@ -91,7 +91,7 @@ struct AdvancedRecordedVideoListView: View {
     @StateObject var store = RecordedVideoStore(recordedVideoService: service)
 
     return NavigationStack {
-      AdvancedRecordedVideoListView(
+      RecordedVideoListView(
         recordedVideoService: service,
         recordedVideoStore: store,
         path: $path
