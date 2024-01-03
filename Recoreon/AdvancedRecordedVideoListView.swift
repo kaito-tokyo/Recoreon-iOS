@@ -13,7 +13,10 @@ struct AdvancedRecordedVideoListView: View {
   @ObservedObject var recordedVideoStore: RecordedVideoStore
   @Binding var path: NavigationPath
 
-  @State var selection = Set<URL>()
+  @State private var selection = Set<URL>()
+  @State private var storedSelection = Set<URL>()
+
+  @Environment(\.scenePhase) private var scenePhase
 
   var body: some View {
     NavigationStack(path: $path) {
@@ -43,6 +46,12 @@ struct AdvancedRecordedVideoListView: View {
               recordedVideoService.removeRecordedVideo(recordedVideoEntry: entry)
             }
             recordedVideoStore.update()
+          }.onChange(of: scenePhase) { phase in
+            if phase == .background {
+              storedSelection = selection
+            } else if phase == .inactive {
+              selection = storedSelection
+            }
           }
         }
         HStack {
