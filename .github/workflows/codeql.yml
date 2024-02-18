@@ -20,12 +20,6 @@ jobs:
       actions: "read"
       contents: "read"
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language:
-          - "swift"
-
     steps:
       - name: "Checkout repository"
         uses: "actions/checkout@v4"
@@ -33,11 +27,12 @@ jobs:
       - name: "Initialize CodeQL"
         uses: "github/codeql-action/init@v3"
         with:
-          languages: "${{ matrix.language }}"
+          languages: "swift"
 
       - name: "Build"
-        run: "xcodebuild"
+        run: "xcodebuild -sdk iphonesimulator -workspace Recoreon.xcworkspace -scheme Recoreon"
+
       - name: "Perform CodeQL Analysis"
         uses: "github/codeql-action/analyze@v3"
         with:
-          category: "/language:${{matrix.language}}"
+          category: "/language:swift"
