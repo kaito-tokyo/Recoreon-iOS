@@ -1,3 +1,4 @@
+---
 name: "CodeQL"
 
 on:
@@ -30,7 +31,10 @@ jobs:
           languages: "swift"
 
       - name: "Build"
-        run: "xcodebuild -sdk iphonesimulator -workspace Recoreon.xcworkspace -scheme Recoreon"
+        run: |
+          xcodebuild -sdk iphonesimulator \
+            -workspace Recoreon.xcworkspace \
+            -scheme Recoreon
 
       - name: "Perform CodeQL Analysis"
         uses: "github/codeql-action/analyze@v3"
