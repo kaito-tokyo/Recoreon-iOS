@@ -38,7 +38,7 @@ jobs:
 
       - name: "Build"
         run: |
-          arch -arm64 xcodebuild \
+          xcodebuild \
             -sdk iphonesimulator \
             -workspace Recoreon.xcworkspace \
             -scheme Recoreon
