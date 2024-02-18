@@ -34,7 +34,7 @@ jobs:
           languages: "swift"
 
       - name: "Install CocoaPods"
-        run: "brew install cocoapods"
+        run: "brew install --overwrite cocoapods"
 
       - name: "Install Pods"
         run: "pod install"
