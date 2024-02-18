@@ -37,10 +37,10 @@ jobs:
         run: "softwareupdate --install-rosetta --agree-to-license"
 
       - name: "Install CocoaPods"
-        run: "arch -arm64 brew install cocoapods"
+        run: "brew install cocoapods"
 
       - name: "Install Pods"
-        run: "arch -arm64 pod install"
+        run: "pod install"
 
       - name: "Build"
         run: |
