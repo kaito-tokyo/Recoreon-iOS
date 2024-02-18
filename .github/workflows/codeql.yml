@@ -1,0 +1,52 @@
+---
+name: "CodeQL"
+
+"on":
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+  schedule:
+    - cron: "44 16 * * 4"
+
+env:
+  DEVELOPER_DIR: "/Applications/Xcode_15.2.app"
+
+jobs:
+  analyze:
+    name: "Analyze"
+    runs-on: "macos-13"
+    timeout-minutes: 120
+    permissions:
+      security-events: "write"
+      actions: "read"
+      contents: "read"
+
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v4"
+
+      - name: "Initialize CodeQL"
+        uses: "github/codeql-action/init@v3"
+        with:
+          languages: "swift"
+
+      - name: "Install CocoaPods"
+        run: "brew install --overwrite cocoapods"
+
+      - name: "Install Pods"
+        run: "pod install"
+
+      - name: "Build"
+        run: |
+          xcodebuild \
+            -sdk iphonesimulator \
+            -workspace Recoreon.xcworkspace \
+            -scheme Recoreon
+
+      - name: "Perform CodeQL Analysis"
+        uses: "github/codeql-action/analyze@v3"
+        with:
+          category: "/language:swift"
