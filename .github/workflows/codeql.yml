@@ -30,6 +30,9 @@ jobs:
         with:
           languages: "swift"
 
+      - name: "Install Pods"
+        run: "pod install"
+
       - name: "Build"
         run: |
           xcodebuild -sdk iphonesimulator \
