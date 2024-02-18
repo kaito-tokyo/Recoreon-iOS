@@ -33,6 +33,9 @@ jobs:
         with:
           languages: "swift"
 
+      - name: "Install Rosetta"
+        run: "softwareupdate --install-rosetta --agree-to-license"
+
       - name: "Install CocoaPods"
         run: "arch -arm64 brew install cocoapods"
 
