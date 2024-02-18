@@ -33,15 +33,13 @@ jobs:
         with:
           languages: "swift"
 
-      - name: "Install CocoaPods"
-        run: "brew install cocoapods && brew info cocoapods"
-
       - name: "Install Pods"
-        run: "pod install"
+        run: "arch -arm64 pod install"
 
       - name: "Build"
         run: |
-          xcodebuild -sdk iphonesimulator \
+          arch -arm64 xcodebuild \
+            -sdk iphonesimulator \
             -workspace Recoreon.xcworkspace \
             -scheme Recoreon
 
