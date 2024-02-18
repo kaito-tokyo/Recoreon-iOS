@@ -1,7 +1,7 @@
 ---
 name: "CodeQL"
 
-on:
+"on":
   push:
     branches:
       - "main"
@@ -32,6 +32,9 @@ jobs:
         uses: "github/codeql-action/init@v3"
         with:
           languages: "swift"
+
+      - name: "Install CocoaPods"
+        run: "brew install cocoapods && brew info cocoapods"
 
       - name: "Install Pods"
         run: "pod install"
