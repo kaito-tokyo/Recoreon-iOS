@@ -94,6 +94,9 @@ class SampleHandler: RPBroadcastSampleHandler {
   var screenElapsedTime: CMTime?
   var micFirstTime: CMTime?
 
+  var screenStartupCount = 10
+  let screenStartupThrottlingFactor = 2
+
   override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
     startRecording()
   }
@@ -218,6 +221,14 @@ class SampleHandler: RPBroadcastSampleHandler {
       let height = CVPixelBufferGetHeight(pixelBuffer)
       initAllStreams(width: width, height: height)
       isOutputStarted = true
+    }
+
+    if screenStartupCount > 0 {
+      let value = screenStartupCount % screenStartupThrottlingFactor
+      screenStartupCount -= 1
+      if value > 0 {
+        return
+      }
     }
 
     let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
