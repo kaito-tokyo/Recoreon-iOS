@@ -33,12 +33,6 @@ jobs:
         with:
           languages: "swift"
 
-      - name: "Install CocoaPods"
-        run: "brew install --overwrite cocoapods"
-
-      - name: "Install Pods"
-        run: "pod install"
-
       - name: "Build"
         run: |
           xcodebuild \
