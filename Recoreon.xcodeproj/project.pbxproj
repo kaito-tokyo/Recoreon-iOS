@@ -43,6 +43,7 @@
 		22C3CD182AF240B40039750A /* RecoreonUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CD172AF240B40039750A /* RecoreonUITestsLaunchTests.swift */; };
 		22F103CF2B8F212600F192E6 /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 22F103CE2B8F212600F192E6 /* FFmpegKit */; };
 		22F103D22B8F22C900F192E6 /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 22F103D12B8F22C900F192E6 /* FFmpegKit */; };
+		22F103D82B8F2CF400F192E6 /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 22F103D72B8F2CF400F192E6 /* FFmpegKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -168,6 +169,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22F103D82B8F2CF400F192E6 /* FFmpegKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,6 +449,9 @@
 				22C3CD092AF240B40039750A /* PBXTargetDependency */,
 			);
 			name = RecoreonTests;
+			packageProductDependencies = (
+				22F103D72B8F2CF400F192E6 /* FFmpegKit */,
+			);
 			productName = RecoreonTests;
 			productReference = 22C3CD072AF240B40039750A /* RecoreonTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -1000,7 +1005,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1023,7 +1027,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1148,6 +1151,11 @@
 			productName = FFmpegKit;
 		};
 		22F103D12B8F22C900F192E6 /* FFmpegKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
+			productName = FFmpegKit;
+		};
+		22F103D72B8F2CF400F192E6 /* FFmpegKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
 			productName = FFmpegKit;
