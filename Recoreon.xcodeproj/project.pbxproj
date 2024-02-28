@@ -1139,7 +1139,7 @@
 			repositoryURL = "https://github.com/kaito-tokyo/ffmpeg-kit-spm.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 6.0.1;
+				minimumVersion = 6.0.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
