@@ -37,7 +37,7 @@ jobs:
         run: |
           xcodebuild \
             -sdk iphonesimulator \
-            -workspace Recoreon.xcworkspace \
+            -project Recoreon.xcodeproj \
             -scheme Recoreon
 
       - name: "Perform CodeQL Analysis"
