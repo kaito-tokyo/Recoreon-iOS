@@ -30,10 +30,7 @@
 		22966A302AFE79200080324D /* EncodedVideoCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A2F2AFE79200080324D /* EncodedVideoCollection.swift */; };
 		22966A332AFE8D1B0080324D /* RecordedVideoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A322AFE8D1B0080324D /* RecordedVideoStore.swift */; };
 		22BBF4EE2AFAE1DA0093AA57 /* RecoreonPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 228B5AAD2AFA3CDB0016CAF2 /* RecoreonPaths.swift */; };
-		22C18AE32AF2B08B00C41B49 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */; };
 		22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */; };
-		22C18AED2AF2B08C00C41B49 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */; };
-		22C18AEE2AF2B08C00C41B49 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C18AC02AF2AEAA00C41B49 /* UIKit.framework */; };
 		22C18AF12AF2B08C00C41B49 /* BroadcastSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AF02AF2B08C00C41B49 /* BroadcastSetupViewController.swift */; };
 		22C18AF52AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 22C18AEC2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		22C18AF82AF2B08C00C41B49 /* RecoreonBroadcastUploadExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -44,11 +41,9 @@
 		22C3CD0C2AF240B40039750A /* RecoreonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CD0B2AF240B40039750A /* RecoreonTests.swift */; };
 		22C3CD162AF240B40039750A /* RecoreonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CD152AF240B40039750A /* RecoreonUITests.swift */; };
 		22C3CD182AF240B40039750A /* RecoreonUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CD172AF240B40039750A /* RecoreonUITestsLaunchTests.swift */; };
-		4F179A3420E857055C5B9FF6 /* Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67EE69F63EAE3CAC1C6E8041 /* Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework */; };
-		61EE899430438D2BA41FCC42 /* Pods_Recoreon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1AB3933CE8D82BA68F94B36 /* Pods_Recoreon.framework */; };
-		85AC0D23B71266CB4300873A /* Pods_Recoreon_RecoreonTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 403780D9CD9FC96873A85CEC /* Pods_Recoreon_RecoreonTests.framework */; };
-		A2ACF2631FE42EA383DB083A /* Pods_Recoreon_RecoreonUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C0416396D33F9CF52DF5D6D /* Pods_Recoreon_RecoreonUITests.framework */; };
-		A8C3FC58A6C2F51AED8C4DCF /* Pods_Recoreon_RecoreonBroadcastUploadExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3C5AF681C81615562327694 /* Pods_Recoreon_RecoreonBroadcastUploadExtension.framework */; };
+		22F103CF2B8F212600F192E6 /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 22F103CE2B8F212600F192E6 /* FFmpegKit */; };
+		22F103D22B8F22C900F192E6 /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 22F103D12B8F22C900F192E6 /* FFmpegKit */; };
+		22F103D82B8F2CF400F192E6 /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 22F103D72B8F2CF400F192E6 /* FFmpegKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,10 +93,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		004FAD9530C817772E8284F7 /* Pods-Recoreon-RecoreonTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonTests.debug.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonTests/Pods-Recoreon-RecoreonTests.debug.xcconfig"; sourceTree = "<group>"; };
-		1572C7C0B2AC1062995A3A79 /* Pods-RecoreonTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RecoreonTests.release.xcconfig"; path = "Target Support Files/Pods-RecoreonTests/Pods-RecoreonTests.release.xcconfig"; sourceTree = "<group>"; };
-		1CEEDF33F3DF9E6CF87BA072 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtension/Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig"; sourceTree = "<group>"; };
-		21494B872F6439D163F2B227 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig"; sourceTree = "<group>"; };
 		2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonBroadcastPickerRepresentable.swift; sourceTree = "<group>"; };
 		2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PixelBufferExtractor.swift; path = RecoreonBroadcastUploadExtension/PixelBufferExtractor.swift; sourceTree = SOURCE_ROOT; };
 		2232A9502AFD452600330C23 /* RecordedVideoBasicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoBasicView.swift; sourceTree = "<group>"; };
@@ -126,8 +117,6 @@
 		22966A2D2AFE756F0080324D /* RecordedVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoView.swift; sourceTree = "<group>"; };
 		22966A2F2AFE79200080324D /* EncodedVideoCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoCollection.swift; sourceTree = "<group>"; };
 		22966A322AFE8D1B0080324D /* RecordedVideoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordedVideoStore.swift; sourceTree = "<group>"; };
-		22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
-		22C18AC02AF2AEAA00C41B49 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecoreonBroadcastUploadExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
 		22C18AE72AF2B08B00C41B49 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -150,19 +139,6 @@
 		22C3CD172AF240B40039750A /* RecoreonUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		22C3CD242AF241140039750A /* Recoreon-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Recoreon-Bridging-Header.h"; sourceTree = "<group>"; };
 		22C3CD2A2AF28CED0039750A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		273E6C1050F80A3D90C6C8B1 /* Pods-Recoreon-RecoreonTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonTests.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonTests/Pods-Recoreon-RecoreonTests.release.xcconfig"; sourceTree = "<group>"; };
-		3EC10D9E365CDB0104450C2E /* Pods-Recoreon-RecoreonUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonUITests.debug.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonUITests/Pods-Recoreon-RecoreonUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		403780D9CD9FC96873A85CEC /* Pods_Recoreon_RecoreonTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Recoreon_RecoreonTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		48F4DEA343A80AA53D8998E9 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtension.debug.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtension/Pods-Recoreon-RecoreonBroadcastUploadExtension.debug.xcconfig"; sourceTree = "<group>"; };
-		4C0416396D33F9CF52DF5D6D /* Pods_Recoreon_RecoreonUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Recoreon_RecoreonUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		59F2603F497C749216BA3E94 /* Pods-RecoreonTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RecoreonTests.debug.xcconfig"; path = "Target Support Files/Pods-RecoreonTests/Pods-RecoreonTests.debug.xcconfig"; sourceTree = "<group>"; };
-		658CAD6469F2B522F9F90C33 /* Pods-Recoreon-RecoreonUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonUITests.release.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonUITests/Pods-Recoreon-RecoreonUITests.release.xcconfig"; sourceTree = "<group>"; };
-		673948922AD5439F33B95426 /* Pods-Recoreon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon.debug.xcconfig"; path = "Target Support Files/Pods-Recoreon/Pods-Recoreon.debug.xcconfig"; sourceTree = "<group>"; };
-		67EE69F63EAE3CAC1C6E8041 /* Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7789E3C6ACBA360752D869B3 /* Pods-Recoreon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon.release.xcconfig"; path = "Target Support Files/Pods-Recoreon/Pods-Recoreon.release.xcconfig"; sourceTree = "<group>"; };
-		A1AB3933CE8D82BA68F94B36 /* Pods_Recoreon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Recoreon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D1409A3B78F24B76E0F23C62 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.debug.xcconfig"; path = "Target Support Files/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.debug.xcconfig"; sourceTree = "<group>"; };
-		D3C5AF681C81615562327694 /* Pods_Recoreon_RecoreonBroadcastUploadExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Recoreon_RecoreonBroadcastUploadExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,8 +146,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A8C3FC58A6C2F51AED8C4DCF /* Pods_Recoreon_RecoreonBroadcastUploadExtension.framework in Frameworks */,
-				22C18AE32AF2B08B00C41B49 /* ReplayKit.framework in Frameworks */,
+				22F103D22B8F22C900F192E6 /* FFmpegKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,9 +154,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4F179A3420E857055C5B9FF6 /* Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework in Frameworks */,
-				22C18AED2AF2B08C00C41B49 /* ReplayKit.framework in Frameworks */,
-				22C18AEE2AF2B08C00C41B49 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,7 +161,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				61EE899430438D2BA41FCC42 /* Pods_Recoreon.framework in Frameworks */,
+				22F103CF2B8F212600F192E6 /* FFmpegKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,7 +169,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				85AC0D23B71266CB4300873A /* Pods_Recoreon_RecoreonTests.framework in Frameworks */,
+				22F103D82B8F2CF400F192E6 /* FFmpegKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,7 +177,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A2ACF2631FE42EA383DB083A /* Pods_Recoreon_RecoreonUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,8 +301,7 @@
 				22C18AE42AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */,
 				22C18AEF2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI */,
 				22C3CCF82AF240B30039750A /* Products */,
-				ED2FA51DA7EE9C023CCD5891 /* Pods */,
-				77569B754D85ED56D4EA9FDE /* Frameworks */,
+				22F103D02B8F22C900F192E6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -394,37 +364,11 @@
 			path = RecoreonUITests;
 			sourceTree = "<group>";
 		};
-		77569B754D85ED56D4EA9FDE /* Frameworks */ = {
+		22F103D02B8F22C900F192E6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A1AB3933CE8D82BA68F94B36 /* Pods_Recoreon.framework */,
-				D3C5AF681C81615562327694 /* Pods_Recoreon_RecoreonBroadcastUploadExtension.framework */,
-				67EE69F63EAE3CAC1C6E8041 /* Pods_Recoreon_RecoreonBroadcastUploadExtensionSetupUI.framework */,
-				403780D9CD9FC96873A85CEC /* Pods_Recoreon_RecoreonTests.framework */,
-				4C0416396D33F9CF52DF5D6D /* Pods_Recoreon_RecoreonUITests.framework */,
-				22C18ABE2AF2AEAA00C41B49 /* ReplayKit.framework */,
-				22C18AC02AF2AEAA00C41B49 /* UIKit.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		ED2FA51DA7EE9C023CCD5891 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				48F4DEA343A80AA53D8998E9 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.debug.xcconfig */,
-				1CEEDF33F3DF9E6CF87BA072 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig */,
-				D1409A3B78F24B76E0F23C62 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.debug.xcconfig */,
-				21494B872F6439D163F2B227 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig */,
-				004FAD9530C817772E8284F7 /* Pods-Recoreon-RecoreonTests.debug.xcconfig */,
-				273E6C1050F80A3D90C6C8B1 /* Pods-Recoreon-RecoreonTests.release.xcconfig */,
-				3EC10D9E365CDB0104450C2E /* Pods-Recoreon-RecoreonUITests.debug.xcconfig */,
-				658CAD6469F2B522F9F90C33 /* Pods-Recoreon-RecoreonUITests.release.xcconfig */,
-				673948922AD5439F33B95426 /* Pods-Recoreon.debug.xcconfig */,
-				7789E3C6ACBA360752D869B3 /* Pods-Recoreon.release.xcconfig */,
-				59F2603F497C749216BA3E94 /* Pods-RecoreonTests.debug.xcconfig */,
-				1572C7C0B2AC1062995A3A79 /* Pods-RecoreonTests.release.xcconfig */,
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -434,7 +378,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22C18AFC2AF2B08C00C41B49 /* Build configuration list for PBXNativeTarget "RecoreonBroadcastUploadExtension" */;
 			buildPhases = (
-				6B62FB327B609FF670945167 /* [CP] Check Pods Manifest.lock */,
 				22C18ADE2AF2B08B00C41B49 /* Sources */,
 				22C18ADF2AF2B08B00C41B49 /* Frameworks */,
 				22C18AE02AF2B08B00C41B49 /* Resources */,
@@ -444,6 +387,9 @@
 			dependencies = (
 			);
 			name = RecoreonBroadcastUploadExtension;
+			packageProductDependencies = (
+				22F103D12B8F22C900F192E6 /* FFmpegKit */,
+			);
 			productName = RecoreonBroadcastUploadExtension;
 			productReference = 22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -452,7 +398,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22C18AF92AF2B08C00C41B49 /* Build configuration list for PBXNativeTarget "RecoreonBroadcastUploadExtensionSetupUI" */;
 			buildPhases = (
-				944E231064B08440A15B6EA5 /* [CP] Check Pods Manifest.lock */,
 				22C18AE82AF2B08B00C41B49 /* Sources */,
 				22C18AE92AF2B08B00C41B49 /* Frameworks */,
 				22C18AEA2AF2B08B00C41B49 /* Resources */,
@@ -470,11 +415,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22C3CD1B2AF240B40039750A /* Build configuration list for PBXNativeTarget "Recoreon" */;
 			buildPhases = (
-				F7FA77BFE44BDB682F65BDE1 /* [CP] Check Pods Manifest.lock */,
 				22C3CCF32AF240B30039750A /* Sources */,
 				22C3CCF42AF240B30039750A /* Frameworks */,
 				22C3CCF52AF240B30039750A /* Resources */,
-				08668E884FBDB79A099C3A98 /* [CP] Embed Pods Frameworks */,
 				22C18AC92AF2AEAA00C41B49 /* Embed Foundation Extensions */,
 				22BBF4EB2AFADDF00093AA57 /* ShellScript */,
 			);
@@ -485,6 +428,9 @@
 				22C18AF72AF2B08C00C41B49 /* PBXTargetDependency */,
 			);
 			name = Recoreon;
+			packageProductDependencies = (
+				22F103CE2B8F212600F192E6 /* FFmpegKit */,
+			);
 			productName = Recoreon;
 			productReference = 22C3CCF72AF240B30039750A /* Recoreon.app */;
 			productType = "com.apple.product-type.application";
@@ -493,11 +439,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22C3CD1E2AF240B40039750A /* Build configuration list for PBXNativeTarget "RecoreonTests" */;
 			buildPhases = (
-				557750D6ABCD54266D72FCE0 /* [CP] Check Pods Manifest.lock */,
 				22C3CD032AF240B40039750A /* Sources */,
 				22C3CD042AF240B40039750A /* Frameworks */,
 				22C3CD052AF240B40039750A /* Resources */,
-				4891C5D19AAA569A063CC55C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -505,6 +449,9 @@
 				22C3CD092AF240B40039750A /* PBXTargetDependency */,
 			);
 			name = RecoreonTests;
+			packageProductDependencies = (
+				22F103D72B8F2CF400F192E6 /* FFmpegKit */,
+			);
 			productName = RecoreonTests;
 			productReference = 22C3CD072AF240B40039750A /* RecoreonTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -513,11 +460,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22C3CD212AF240B40039750A /* Build configuration list for PBXNativeTarget "RecoreonUITests" */;
 			buildPhases = (
-				37F577802292D31A1BFBE83B /* [CP] Check Pods Manifest.lock */,
 				22C3CD0D2AF240B40039750A /* Sources */,
 				22C3CD0E2AF240B40039750A /* Frameworks */,
 				22C3CD0F2AF240B40039750A /* Resources */,
-				B7D68B1BFA322396FBDB35E5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -570,6 +515,9 @@
 				Base,
 			);
 			mainGroup = 22C3CCEE2AF240B30039750A;
+			packageReferences = (
+				22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */,
+			);
 			productRefGroup = 22C3CCF82AF240B30039750A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -626,23 +574,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		08668E884FBDB79A099C3A98 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Recoreon/Pods-Recoreon-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Recoreon/Pods-Recoreon-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Recoreon/Pods-Recoreon-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		22BBF4EB2AFADDF00093AA57 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -660,150 +591,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif command -v swiftlint > /dev/null\nthen\n  swiftlint\nfi\n";
-		};
-		37F577802292D31A1BFBE83B /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Recoreon-RecoreonUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4891C5D19AAA569A063CC55C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Recoreon-RecoreonTests/Pods-Recoreon-RecoreonTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Recoreon-RecoreonTests/Pods-Recoreon-RecoreonTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Recoreon-RecoreonTests/Pods-Recoreon-RecoreonTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		557750D6ABCD54266D72FCE0 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Recoreon-RecoreonTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6B62FB327B609FF670945167 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Recoreon-RecoreonBroadcastUploadExtension-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		944E231064B08440A15B6EA5 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B7D68B1BFA322396FBDB35E5 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Recoreon-RecoreonUITests/Pods-Recoreon-RecoreonUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Recoreon-RecoreonUITests/Pods-Recoreon-RecoreonUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Recoreon-RecoreonUITests/Pods-Recoreon-RecoreonUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F7FA77BFE44BDB682F65BDE1 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Recoreon-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -899,7 +686,6 @@
 /* Begin XCBuildConfiguration section */
 		22C18AFA2AF2B08C00C41B49 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D1409A3B78F24B76E0F23C62 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtensionSetupUI/RecoreonBroadcastUploadExtensionSetupUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -927,7 +713,6 @@
 		};
 		22C18AFB2AF2B08C00C41B49 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 21494B872F6439D163F2B227 /* Pods-Recoreon-RecoreonBroadcastUploadExtensionSetupUI.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtensionSetupUI/RecoreonBroadcastUploadExtensionSetupUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -955,7 +740,6 @@
 		};
 		22C18AFD2AF2B08C00C41B49 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 48F4DEA343A80AA53D8998E9 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension.entitlements;
@@ -988,7 +772,6 @@
 		};
 		22C18AFE2AF2B08C00C41B49 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1CEEDF33F3DF9E6CF87BA072 /* Pods-Recoreon-RecoreonBroadcastUploadExtension.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension.entitlements;
@@ -1035,7 +818,7 @@
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -1044,7 +827,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1098,7 +881,7 @@
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -1107,7 +890,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1139,7 +922,6 @@
 		};
 		22C3CD1C2AF240B40039750A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 673948922AD5439F33B95426 /* Pods-Recoreon.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -1178,7 +960,6 @@
 		};
 		22C3CD1D2AF240B40039750A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7789E3C6ACBA360752D869B3 /* Pods-Recoreon.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -1216,7 +997,6 @@
 		};
 		22C3CD1F2AF240B40039750A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 004FAD9530C817772E8284F7 /* Pods-Recoreon-RecoreonTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1225,7 +1005,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1240,7 +1019,6 @@
 		};
 		22C3CD202AF240B40039750A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 273E6C1050F80A3D90C6C8B1 /* Pods-Recoreon-RecoreonTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1249,7 +1027,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1263,7 +1040,6 @@
 		};
 		22C3CD222AF240B40039750A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3EC10D9E365CDB0104450C2E /* Pods-Recoreon-RecoreonUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1282,7 +1058,6 @@
 		};
 		22C3CD232AF240B40039750A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 658CAD6469F2B522F9F90C33 /* Pods-Recoreon-RecoreonUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1357,6 +1132,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kaito-tokyo/ffmpeg-kit-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		22F103CE2B8F212600F192E6 /* FFmpegKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
+			productName = FFmpegKit;
+		};
+		22F103D12B8F22C900F192E6 /* FFmpegKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
+			productName = FFmpegKit;
+		};
+		22F103D72B8F2CF400F192E6 /* FFmpegKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
+			productName = FFmpegKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 22C3CCEF2AF240B30039750A /* Project object */;
 }
