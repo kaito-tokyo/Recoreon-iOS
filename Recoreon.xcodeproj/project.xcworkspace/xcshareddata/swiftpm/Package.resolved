@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kaito-tokyo/ffmpeg-kit-spm.git",
       "state" : {
-        "revision" : "7a83e70c1135cf3921f5acc1ac7ee2288fca304c",
-        "version" : "6.0.2"
+        "revision" : "3f9c7b0968299cb49fca2d86e66a9e1fcc2f19f0",
+        "version" : "6.0.3"
       }
     }
   ],
