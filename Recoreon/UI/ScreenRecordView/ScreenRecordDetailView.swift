@@ -11,10 +11,20 @@ struct ScreenRecordDetailView: View {
   @Binding var path: NavigationPath
   let screenRecordEntry: ScreenRecordEntry
 
+  @StateObject var recordNoteStore: RecordNoteStore
+
   @State var isShowingRemoveConfirmation = false
 
+  init(screenRecordService: ScreenRecordService, screenRecordStore: ScreenRecordStore, path: Binding<NavigationPath>, screenRecordEntry: ScreenRecordEntry) {
+    self.screenRecordService = screenRecordService
+    self.screenRecordStore = screenRecordStore
+    self._path = path
+    self.screenRecordEntry = screenRecordEntry
+    let recordNoteStore = RecordNoteStore(screenRecordService, screenRecordEntry)
+    self._recordNoteStore = StateObject(wrappedValue: recordNoteStore)
+  }
+
   var body: some View {
-    let recordNoteEntries = screenRecordService.listRecordNote(screenRecordEntry)
     Text(screenRecordEntry.url.lastPathComponent)
     Form {
       Section(header: Text("Operations")) {
@@ -64,7 +74,7 @@ struct ScreenRecordDetailView: View {
         RecordNoteListView(
           screenRecordService: screenRecordService,
           screenRecordEntry: screenRecordEntry,
-          recordNoteEntries: recordNoteEntries
+          recordNoteStore: recordNoteStore
         )
       }
     }

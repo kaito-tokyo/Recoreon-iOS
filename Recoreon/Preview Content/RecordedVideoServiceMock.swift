@@ -88,7 +88,7 @@ class ScreenRecordServiceMock: ScreenRecordService {
     }
   }
 
-  override func addRecordNote(_ screenRecordEntry: ScreenRecordEntry, shortName: String, body: String) {
-    
+  override func listRecordNoteEntries(_ screenRecordEntry: ScreenRecordEntry) -> [RecordNoteEntry] {
+    return recordNoteEntries
   }
 }

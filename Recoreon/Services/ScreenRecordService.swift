@@ -274,7 +274,7 @@ class ScreenRecordService {
     try? fileManager.removeItem(at: url)
   }
 
-  func listRecordNote(_ screenRecordEntry: ScreenRecordEntry) -> [RecordNoteEntry] {
+  func listRecordNoteEntries(_ screenRecordEntry: ScreenRecordEntry) -> [RecordNoteEntry] {
     return []
   }
 

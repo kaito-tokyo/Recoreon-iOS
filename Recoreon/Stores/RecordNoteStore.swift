@@ -1,0 +1,17 @@
+import SwiftUI
+
+class RecordNoteStore: ObservableObject {
+  let screenRecordService: ScreenRecordService
+  let screenRecordEntry: ScreenRecordEntry
+
+  @Published var recordNoteBodies: [URL: String] = [:]
+
+  init(_ screenRecordService: ScreenRecordService, _ screenRecordEntry: ScreenRecordEntry) {
+    self.screenRecordService = screenRecordService
+    self.screenRecordEntry = screenRecordEntry
+    let recordNoteEntries = screenRecordService.listRecordNoteEntries(screenRecordEntry)
+    self.recordNoteBodies = Dictionary(uniqueKeysWithValues: recordNoteEntries.map {
+      ($0.url, $0.body)
+    })
+  }
+}

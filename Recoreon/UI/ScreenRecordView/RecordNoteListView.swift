@@ -3,7 +3,7 @@ import SwiftUI
 struct RecordNoteListView: View {
   let screenRecordService: ScreenRecordService
   let screenRecordEntry: ScreenRecordEntry
-  let recordNoteEntries: [RecordNoteEntry]
+  @ObservedObject var recordNoteStore: RecordNoteStore
 
   @State var isAskingNewFilename = false
   @State var newFilename = ""
@@ -14,6 +14,9 @@ struct RecordNoteListView: View {
 
   var body: some View {
     List {
+      let recordNoteEntries = recordNoteStore.recordNoteBodies.map {
+        RecordNoteEntry(url: $0.key, body: $0.value)
+      }
       ForEach(recordNoteEntries) { noteEntry in
         Button {
           isEditingNote = true
@@ -64,13 +67,13 @@ struct RecordNoteListView: View {
     let service = ScreenRecordServiceMock()
     let screenRecordEntries = service.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
-    let recordNoteEntries = service.listRecordNote(screenRecordEntry)
+    @StateObject var recordNoteStore = RecordNoteStore(service, screenRecordEntry)
 
     return Form {
       RecordNoteListView(
         screenRecordService: service,
         screenRecordEntry: screenRecordEntry,
-        recordNoteEntries: recordNoteEntries
+        recordNoteStore: recordNoteStore
       )
     }
   }
