@@ -11,25 +11,7 @@
 
     },
     "Are you sure to remove this video?" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "本当にこの動画"
-          }
-        }
-      }
-    },
-    "Copy" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "コピー"
-          }
-        }
-      }
+
     },
     "Encode" : {
       "localizations" : {
@@ -37,28 +19,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "エンコード"
-          }
-        }
-      }
-    },
-    "Encoding completed!" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "エンコードが完了しました！"
-          }
-        }
-      }
-    },
-    "Encoding failed!" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "エンコードが失敗しました！"
           }
         }
       }
@@ -88,6 +48,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "プリセット"
+          }
+        }
+      }
+    },
+    "Preview" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレビュー"
           }
         }
       }

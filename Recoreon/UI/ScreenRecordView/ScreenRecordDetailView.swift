@@ -27,61 +27,11 @@ struct ScreenRecordDetailView: View {
   @State var isShowingRemoveConfirmation = false
 
   var body: some View {
-    VStack {
-      Button {
-        Task {
-          isRemuxing = true
-          guard let previewURL = await screenRecordService.remux(screenRecordEntry.url) else {
-            isRemuxingFailed = true
-            isRemuxing = false
-            return
-          }
-          player.replaceCurrentItem(with: AVPlayerItem(url: previewURL))
-          isVideoPlayerPresented = true
-          isRemuxing = false
-        }
-      } label: {
-        ZStack {
-          Image(
-            uiImage: thumbnailImage
-          ).resizable().scaledToFit()
-          Image(systemName: "play.fill").font(.system(size: 200))
-          if isRemuxing {
-            ProgressView()
-              .tint(.white)
-              .scaleEffect(CGSize(width: 10, height: 10))
-          }
-        }
-        .onAppear {
-          Task {
-            var imageRef = screenRecordService.getThumbnailImage(screenRecordEntry.url)
-            if imageRef == nil {
-              await screenRecordService.generateThumbnail(screenRecordEntry.url)
-              imageRef = screenRecordService.getThumbnailImage(screenRecordEntry.url)
-            }
-            if let image = imageRef {
-              thumbnailImage = image
-            } else {
-              thumbnailImage = getThumbnailUnavailableImage()
-            }
-          }
-        }
-      }
-      .disabled(isRemuxing)
-      .sheet(isPresented: $isVideoPlayerPresented) {
-        GeometryReader { geometry in
-          VideoPlayer(player: player)
-            .onAppear {
-              player.play()
-            }
-            .onDisappear {
-              player.pause()
-            }
-            .frame(height: geometry.size.height)
-        }
-      }
-    }
     List {
+      NavigationLink(value: ScreenRecordPreviewViewRoute(screenRecordEntry: screenRecordEntry)
+      ) {
+        Button {} label: { Label("Preview", systemImage: "play") }
+      }
       NavigationLink(
         value: ScreenRecordEncoderViewRoute(screenRecordEntry: screenRecordEntry)
       ) {
@@ -113,6 +63,11 @@ struct ScreenRecordDetailView: View {
           secondaryButton: .cancel()
         )
       }
+    }
+    .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
+      ScreenRecordPreviewView(
+        screenRecordService: screenRecordService, screenRecordStore: screenRecordStore, path: $path, screenRecordEntry: route.screenRecordEntry
+      )
     }
     .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
       ScreenRecordEncoderView(
