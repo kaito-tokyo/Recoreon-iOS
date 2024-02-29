@@ -7,13 +7,13 @@
     "4x Speed Low Quality" : {
 
     },
+    "Add" : {
+
+    },
     "Are you sure to remove all of the selected videos?" : {
 
     },
     "Are you sure to remove this video?" : {
-
-    },
-    "Editor" : {
 
     },
     "Encode" : {
@@ -27,6 +27,9 @@
       }
     },
     "Encoding progress" : {
+
+    },
+    "Enter the note text here." : {
 
     },
     "Filename:" : {
@@ -85,6 +88,9 @@
       }
     },
     "Rename" : {
+
+    },
+    "Save" : {
 
     }
   },

@@ -78,36 +78,12 @@ struct ScreenRecordDetailView: View {
         }
       }
       Section(header: Text("Notes")) {
-        List {
-          ForEach(screenRecordEntry.noteEntries) { noteEntry in
-            Button {
-              isEditingNote = true
-              editingNoteEntry = noteEntry
-              editingNoteBody = noteEntry.body
-            } label: {
-              Label(noteEntry.shortName, systemImage: "doc")
-            }
-          }
-          Button {
-
-          } label: {
-            Label("Add", systemImage: "doc.badge.plus")
-          }
-        }
-        .sheet(isPresented: $isEditingNote) {
-          Form {
-            HStack {
-              Text("Filename:")
-              Text(editingNoteEntry.url.lastPathComponent)
-            }
-            Button {
-
-            } label: {
-              Text("Rename")
-            }
-            TextField("Enter the note text here.", text: $editingNoteBody, axis: .vertical)
-          }
-        }
+        RecordNoteListView(
+          screenRecordService: screenRecordService,
+          screenRecordStore: screenRecordStore,
+          path: $path,
+          screenRecordEntry: screenRecordEntry
+        )
       }
     }
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in

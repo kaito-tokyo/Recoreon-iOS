@@ -16,6 +16,7 @@
 		223B05862B90CC3400A16852 /* ScreenRecordNoteEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B05852B90CC3400A16852 /* ScreenRecordNoteEntry.swift */; };
 		223B05892B90D5D800A16852 /* Record01-1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05872B90CD8700A16852 /* Record01-1.txt */; };
 		223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05882B90CDA400A16852 /* Record01-2.txt */; };
+		223B058C2B90DE3800A16852 /* RecordNoteListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B058B2B90DE3800A16852 /* RecordNoteListView.swift */; };
 		22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */; };
 		224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
 		224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
@@ -105,6 +106,7 @@
 		223B05852B90CC3400A16852 /* ScreenRecordNoteEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordNoteEntry.swift; sourceTree = "<group>"; };
 		223B05872B90CD8700A16852 /* Record01-1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-1.txt"; sourceTree = "<group>"; };
 		223B05882B90CDA400A16852 /* Record01-2.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-2.txt"; sourceTree = "<group>"; };
+		223B058B2B90DE3800A16852 /* RecordNoteListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteListView.swift; sourceTree = "<group>"; };
 		22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriterTests.m; sourceTree = "<group>"; };
 		224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 				2232A9542AFD46ED00330C23 /* ScreenRecordListView.swift */,
 				223B05812B90C34700A16852 /* ScreenRecordPreviewView.swift */,
 				22966A2D2AFE756F0080324D /* ScreenRecordView.swift */,
+				223B058B2B90DE3800A16852 /* RecordNoteListView.swift */,
 			);
 			path = ScreenRecordView;
 			sourceTree = "<group>";
@@ -618,6 +621,7 @@
 				22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */,
 				22966A302AFE79200080324D /* EncodedVideoCollection.swift in Sources */,
 				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
+				223B058C2B90DE3800A16852 /* RecordNoteListView.swift in Sources */,
 				226A898F2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift in Sources */,
 				223B05862B90CC3400A16852 /* ScreenRecordNoteEntry.swift in Sources */,
 				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,
