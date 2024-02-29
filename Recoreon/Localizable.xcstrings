@@ -13,6 +13,9 @@
     "Are you sure to remove this video?" : {
 
     },
+    "Editor" : {
+
+    },
     "Encode" : {
       "localizations" : {
         "ja" : {
@@ -24,6 +27,9 @@
       }
     },
     "Encoding progress" : {
+
+    },
+    "Filename:" : {
 
     },
     "List" : {
@@ -77,6 +83,9 @@
           }
         }
       }
+    },
+    "Rename" : {
+
     }
   },
   "version" : "1.0"

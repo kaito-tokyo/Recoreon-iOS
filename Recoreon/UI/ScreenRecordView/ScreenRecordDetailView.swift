@@ -27,7 +27,7 @@ struct ScreenRecordDetailView: View {
   @State var isShowingRemoveConfirmation = false
 
   @State var isEditingNote = false
-  @State var editingNote: ScreenRecordNoteEntry? = nil
+  @State var editingNoteEntry: ScreenRecordNoteEntry = ScreenRecordNoteEntry(url: URL(string: "invalid")!, body: "")
   @State var editingNoteBody: String = ""
 
 
@@ -79,15 +79,34 @@ struct ScreenRecordDetailView: View {
       }
       Section(header: Text("Notes")) {
         List {
+          ForEach(screenRecordEntry.noteEntries) { noteEntry in
+            Button {
+              isEditingNote = true
+              editingNoteEntry = noteEntry
+              editingNoteBody = noteEntry.body
+            } label: {
+              Label(noteEntry.shortName, systemImage: "doc")
+            }
+          }
           Button {
-            isEditingNote = true
+
           } label: {
-            Text("a.txt")
+            Label("Add", systemImage: "doc.badge.plus")
           }
         }
         .sheet(isPresented: $isEditingNote) {
+          Form {
+            HStack {
+              Text("Filename:")
+              Text(editingNoteEntry.url.lastPathComponent)
+            }
+            Button {
 
-          TextEditor(text: $editingNoteBody)
+            } label: {
+              Text("Rename")
+            }
+            TextField("Enter the note text here.", text: $editingNoteBody, axis: .vertical)
+          }
         }
       }
     }

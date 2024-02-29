@@ -11,9 +11,10 @@ class ScreenRecordServiceMock: ScreenRecordService {
   override func listScreenRecordEntries() -> [ScreenRecordEntry] {
     let record01url = Bundle.main.url(forResource: "Record01", withExtension: "mkv")!
     let record01attrs = try? FileManager.default.attributesOfItem(atPath: record01url.path)
-//    let record01note1content = try? String(contentsOf: record01note1url)
-//    let record01note2url = Bundle.main.url(forResource: "Record01-2", withExtension: "txt")!
-//    let record01note2content = try? String(contentsOf: record01note2url)
+    let record01note1url = Bundle.main.url(forResource: "Record01-1", withExtension: "txt")!
+    let record01note1content = try? String(contentsOf: record01note1url)
+    let record01note2url = Bundle.main.url(forResource: "Record01-2", withExtension: "txt")!
+    let record01note2content = try? String(contentsOf: record01note2url)
     return [
       ScreenRecordEntry(
         url: record01url,
@@ -23,8 +24,8 @@ class ScreenRecordServiceMock: ScreenRecordService {
         size: record01attrs?[.size] as? UInt64 ?? 0,
         creationDate: record01attrs?[.creationDate] as? Date ?? Date(timeIntervalSince1970: 0),
         noteEntries: [
-//          ScreenRecordNoteEntry(url: record01note1url, content: "a"),
-//          ScreenRecordNoteEntry(url: record01note2url, content: "b")
+          ScreenRecordNoteEntry(url: record01note1url, body: record01note1content!),
+          ScreenRecordNoteEntry(url: record01note2url, body: record01note2content!)
         ]
       )
     ]

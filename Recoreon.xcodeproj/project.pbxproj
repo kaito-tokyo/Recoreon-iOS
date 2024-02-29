@@ -14,6 +14,8 @@
 		2232A95C2AFD80A200330C23 /* Preview01.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2232A95A2AFD80A200330C23 /* Preview01.mp4 */; };
 		223B05822B90C34700A16852 /* ScreenRecordPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B05812B90C34700A16852 /* ScreenRecordPreviewView.swift */; };
 		223B05862B90CC3400A16852 /* ScreenRecordNoteEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B05852B90CC3400A16852 /* ScreenRecordNoteEntry.swift */; };
+		223B05892B90D5D800A16852 /* Record01-1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05872B90CD8700A16852 /* Record01-1.txt */; };
+		223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05882B90CDA400A16852 /* Record01-2.txt */; };
 		22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */; };
 		224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
 		224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
@@ -542,6 +544,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				223B05892B90D5D800A16852 /* Record01-1.txt in Resources */,
+				223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */,
 				22C3CCFF2AF240B30039750A /* Assets.xcassets in Resources */,
 				22AAC7F32B90B7B500078129 /* Localizable.xcstrings in Resources */,
 				22C3CD022AF240B30039750A /* Preview Assets.xcassets in Resources */,
