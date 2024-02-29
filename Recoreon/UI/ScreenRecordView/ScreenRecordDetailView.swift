@@ -26,6 +26,11 @@ struct ScreenRecordDetailView: View {
 
   @State var isShowingRemoveConfirmation = false
 
+  @State var isEditingNote = false
+  @State var editingNote: ScreenRecordNoteEntry? = nil
+  @State var editingNoteBody: String = ""
+
+
   var body: some View {
     Text(screenRecordEntry.url.lastPathComponent)
     Form {
@@ -74,9 +79,15 @@ struct ScreenRecordDetailView: View {
       }
       Section(header: Text("Notes")) {
         List {
-          ForEach(screenRecordEntry.noteEntries) { entry in
-            Text(entry.url.lastPathComponent)
+          Button {
+            isEditingNote = true
+          } label: {
+            Text("a.txt")
           }
+        }
+        .sheet(isPresented: $isEditingNote) {
+
+          TextEditor(text: $editingNoteBody)
         }
       }
     }
