@@ -21,6 +21,7 @@
       }
     },
     "Copy" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -41,6 +42,7 @@
       }
     },
     "Encoding completed!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -51,6 +53,7 @@
       }
     },
     "Encoding failed!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -64,9 +67,6 @@
 
     },
     "List" : {
-
-    },
-    "List of recorded videos" : {
 
     },
     "Low Quality" : {
@@ -101,12 +101,6 @@
           }
         }
       }
-    },
-    "The original file of this video was successfully copied to the File app!" : {
-
-    },
-    "Unable to copy the original file of this video to the File app!" : {
-
     }
   },
   "version" : "1.0"
