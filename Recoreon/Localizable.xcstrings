@@ -32,6 +32,9 @@
     "Low Quality" : {
 
     },
+    "Notes" : {
+
+    },
     "OK" : {
       "localizations" : {
         "ja" : {
@@ -41,6 +44,9 @@
           }
         }
       }
+    },
+    "Operations" : {
+
     },
     "Preset" : {
       "localizations" : {

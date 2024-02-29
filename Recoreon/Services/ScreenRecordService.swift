@@ -31,7 +31,8 @@ class ScreenRecordService {
         url: url,
         encodedVideoCollection: getEncodedVideoCollection(url),
         size: attrs?[.size] as? UInt64 ?? 0,
-        creationDate: attrs?[.creationDate] as? Date ?? Date(timeIntervalSince1970: 0)
+        creationDate: attrs?[.creationDate] as? Date ?? Date(timeIntervalSince1970: 0),
+        noteEntries: []
       )
     }
   }

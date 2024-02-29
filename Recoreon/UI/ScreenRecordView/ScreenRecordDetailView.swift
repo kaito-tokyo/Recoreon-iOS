@@ -74,9 +74,9 @@ struct ScreenRecordDetailView: View {
       }
       Section(header: Text("Notes")) {
         List {
-          Text("aaa")
-          Text("bbb")
-          Text("ccc")
+          ForEach(screenRecordEntry.noteEntries) { entry in
+            Text(entry.url.lastPathComponent)
+          }
         }
       }
     }
