@@ -16,6 +16,8 @@ struct RecordNoteListView: View {
     List {
       let recordNoteEntries = recordNoteStore.recordNoteBodies.map {
         RecordNoteEntry(url: $0.key, body: $0.value)
+      }.sorted {
+        $0.url.lastPathComponent.compare($1.url.lastPathComponent) == .orderedAscending
       }
       ForEach(recordNoteEntries) { noteEntry in
         Button {
@@ -32,9 +34,10 @@ struct RecordNoteListView: View {
         Label("Add", systemImage: "doc.badge.plus")
       }
       .alert("Enter a new note name", isPresented: $isAskingNewFilename) {
-        TextField("Enter a new note name.", text: $newFilename)
+        TextField("Name", text: $newFilename)
         Button {
-
+          recordNoteStore.addNote(shortName: newFilename)
+          newFilename = ""
         } label: {
           Text("OK")
         }

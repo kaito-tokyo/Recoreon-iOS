@@ -14,4 +14,9 @@ class RecordNoteStore: ObservableObject {
       ($0.url, $0.body)
     })
   }
+
+  func addNote(shortName: String) {
+    let recordNoteURL = screenRecordService.getRecordNoteURL(screenRecordEntry, shortName: shortName)
+    recordNoteBodies[recordNoteURL] = ""
+  }
 }
