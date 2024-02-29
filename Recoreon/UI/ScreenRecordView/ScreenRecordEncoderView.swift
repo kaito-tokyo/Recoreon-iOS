@@ -6,8 +6,7 @@ struct ScreenRecordEncoderViewRoute: Hashable {
 
 struct ScreenRecordEncoderView: View {
   let screenRecordService: ScreenRecordService
-  @State var screenRecordEntry: ScreenRecordEntry
-  @State var screenRecordThumbnail: UIImage
+  let screenRecordEntry: ScreenRecordEntry
 
   @State private var encodingPreset: EncodingPreset = .lowQuality
   @State private var encodingProgress: Double = 0.0
@@ -15,7 +14,6 @@ struct ScreenRecordEncoderView: View {
 
   var body: some View {
     VStack {
-      Image(uiImage: screenRecordThumbnail).resizable().scaledToFit()
       Form {
         Picker("Preset", selection: $encodingPreset) {
           Text("Low Quality").tag(EncodingPreset.lowQuality)
@@ -72,8 +70,7 @@ struct ScreenRecordEncoderView: View {
 
     return ScreenRecordEncoderView(
       screenRecordService: service,
-      screenRecordEntry: entry,
-      screenRecordThumbnail: thumbnail
+      screenRecordEntry: entry
     )
   }
 #endif

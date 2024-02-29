@@ -1,11 +1,6 @@
 import AVKit
 import SwiftUI
 
-private func getThumbnailUnavailableImage() -> UIImage {
-  let config = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 200))
-  return UIImage(systemName: "xmark.circle", withConfiguration: config)!
-}
-
 struct ScreenRecordDetailViewRoute: Hashable {
   let screenRecordEntry: ScreenRecordEntry
 }
@@ -16,19 +11,7 @@ struct ScreenRecordDetailView: View {
   @Binding var path: NavigationPath
   let screenRecordEntry: ScreenRecordEntry
 
-  let player = AVPlayer()
-
-  @State var isVideoPlayerPresented: Bool = false
-  @State var isRemuxing: Bool = false
-  @State var isRemuxingFailed: Bool = false
-
-  @State var thumbnailImage: UIImage = getThumbnailUnavailableImage()
-
   @State var isShowingRemoveConfirmation = false
-
-  @State var isEditingNote = false
-  @State var editingNoteEntry: RecordNoteEntry = RecordNoteEntry(url: URL(string: "invalid")!, body: "")
-  @State var editingNoteBody: String = ""
 
   var body: some View {
     let recordNoteEntries = screenRecordService.listRecordNote(screenRecordEntry)
@@ -94,8 +77,7 @@ struct ScreenRecordDetailView: View {
     .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
       ScreenRecordEncoderView(
         screenRecordService: screenRecordService,
-        screenRecordEntry: route.screenRecordEntry,
-        screenRecordThumbnail: thumbnailImage
+        screenRecordEntry: route.screenRecordEntry
       )
     }
   }
