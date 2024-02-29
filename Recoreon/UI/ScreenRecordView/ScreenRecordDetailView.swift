@@ -27,9 +27,8 @@ struct ScreenRecordDetailView: View {
   @State var isShowingRemoveConfirmation = false
 
   @State var isEditingNote = false
-  @State var editingNoteEntry: ScreenRecordNoteEntry = ScreenRecordNoteEntry(url: URL(string: "invalid")!, body: "")
+  @State var editingNoteEntry: RecordNoteEntry = RecordNoteEntry(url: URL(string: "invalid")!, body: "")
   @State var editingNoteBody: String = ""
-
 
   var body: some View {
     Text(screenRecordEntry.url.lastPathComponent)

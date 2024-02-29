@@ -1,4 +1,4 @@
-struct ScreenRecordNoteEntry: Identifiable, Hashable {
+struct RecordNoteEntry: Identifiable, Hashable {
   let url: URL
   let body: String
   var shortName: String {

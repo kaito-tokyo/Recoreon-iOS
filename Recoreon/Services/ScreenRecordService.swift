@@ -31,8 +31,7 @@ class ScreenRecordService {
         url: url,
         encodedVideoCollection: getEncodedVideoCollection(url),
         size: attrs?[.size] as? UInt64 ?? 0,
-        creationDate: attrs?[.creationDate] as? Date ?? Date(timeIntervalSince1970: 0),
-        noteEntries: []
+        creationDate: attrs?[.creationDate] as? Date ?? Date(timeIntervalSince1970: 0)
       )
     }
   }
@@ -273,5 +272,13 @@ class ScreenRecordService {
   func removePreviewVideo(_ screenRecordEntry: ScreenRecordEntry) {
     let url = paths.getPreviewVideoURL(screenRecordEntry.url)
     try? fileManager.removeItem(at: url)
+  }
+
+  func listRecordNote(_ screenRecordEntry: ScreenRecordEntry) -> [RecordNoteEntry] {
+    return []
+  }
+
+  func addRecordNote(_ screenRecordEntry: ScreenRecordEntry, shortName: String, body: String) {
+
   }
 }

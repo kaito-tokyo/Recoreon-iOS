@@ -10,33 +10,33 @@ struct RecordNoteListView: View {
   @State var newFilename = ""
 
   @State var isEditingNote = false
-  @State var editingNoteEntry = ScreenRecordNoteEntry(url: URL(string: "invalid")!, body: "")
+  @State var editingNoteEntry = RecordNoteEntry(url: URL(string: "invalid")!, body: "")
   @State var editingNoteBody = ""
 
   var body: some View {
     List {
-      ForEach(screenRecordEntry.noteEntries) { noteEntry in
-        Button {
-          isEditingNote = true
-          editingNoteEntry = noteEntry
-          editingNoteBody = noteEntry.body
-        } label: {
-          Label(noteEntry.shortName, systemImage: "doc")
-        }
-      }
-      Button {
-        isAskingNewFilename = true
-      } label: {
-        Label("Add", systemImage: "doc.badge.plus")
-      }
-      .alert("Enter a new note name", isPresented: $isAskingNewFilename) {
-        TextField("Enter a new note name.", text: $newFilename)
-        Button {
-
-        } label: {
-          Text("OK")
-        }
-      }
+//      ForEach(screenRecordEntry.noteEntries) { noteEntry in
+//        Button {
+//          isEditingNote = true
+//          editingNoteEntry = noteEntry
+//          editingNoteBody = noteEntry.body
+//        } label: {
+//          Label(noteEntry.shortName, systemImage: "doc")
+//        }
+//      }
+//      Button {
+//        isAskingNewFilename = true
+//      } label: {
+//        Label("Add", systemImage: "doc.badge.plus")
+//      }
+//      .alert("Enter a new note name", isPresented: $isAskingNewFilename) {
+//        TextField("Enter a new note name.", text: $newFilename)
+//        Button {
+//
+//        } label: {
+//          Text("OK")
+//        }
+//      }
     }
     .sheet(isPresented: $isEditingNote) {
       Form {

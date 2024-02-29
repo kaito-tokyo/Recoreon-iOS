@@ -13,7 +13,7 @@
 		2232A9552AFD46ED00330C23 /* ScreenRecordListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9542AFD46ED00330C23 /* ScreenRecordListView.swift */; };
 		2232A95C2AFD80A200330C23 /* Preview01.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2232A95A2AFD80A200330C23 /* Preview01.mp4 */; };
 		223B05822B90C34700A16852 /* ScreenRecordPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B05812B90C34700A16852 /* ScreenRecordPreviewView.swift */; };
-		223B05862B90CC3400A16852 /* ScreenRecordNoteEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B05852B90CC3400A16852 /* ScreenRecordNoteEntry.swift */; };
+		223B05862B90CC3400A16852 /* RecordNoteEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B05852B90CC3400A16852 /* RecordNoteEntry.swift */; };
 		223B05892B90D5D800A16852 /* Record01-1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05872B90CD8700A16852 /* Record01-1.txt */; };
 		223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05882B90CDA400A16852 /* Record01-2.txt */; };
 		223B058C2B90DE3800A16852 /* RecordNoteListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B058B2B90DE3800A16852 /* RecordNoteListView.swift */; };
@@ -103,7 +103,7 @@
 		2232A9542AFD46ED00330C23 /* ScreenRecordListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordListView.swift; sourceTree = "<group>"; };
 		2232A95A2AFD80A200330C23 /* Preview01.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Preview01.mp4; sourceTree = "<group>"; };
 		223B05812B90C34700A16852 /* ScreenRecordPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordPreviewView.swift; sourceTree = "<group>"; };
-		223B05852B90CC3400A16852 /* ScreenRecordNoteEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordNoteEntry.swift; sourceTree = "<group>"; };
+		223B05852B90CC3400A16852 /* RecordNoteEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEntry.swift; sourceTree = "<group>"; };
 		223B05872B90CD8700A16852 /* Record01-1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-1.txt"; sourceTree = "<group>"; };
 		223B05882B90CDA400A16852 /* Record01-2.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-2.txt"; sourceTree = "<group>"; };
 		223B058B2B90DE3800A16852 /* RecordNoteListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteListView.swift; sourceTree = "<group>"; };
@@ -225,7 +225,7 @@
 				22966A2F2AFE79200080324D /* EncodedVideoCollection.swift */,
 				226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */,
 				226A89912AFB30D900EBD2CA /* ScreenRecordEntry.swift */,
-				223B05852B90CC3400A16852 /* ScreenRecordNoteEntry.swift */,
+				223B05852B90CC3400A16852 /* RecordNoteEntry.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -623,7 +623,7 @@
 				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
 				223B058C2B90DE3800A16852 /* RecordNoteListView.swift in Sources */,
 				226A898F2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift in Sources */,
-				223B05862B90CC3400A16852 /* ScreenRecordNoteEntry.swift in Sources */,
+				223B05862B90CC3400A16852 /* RecordNoteEntry.swift in Sources */,
 				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
 				2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
