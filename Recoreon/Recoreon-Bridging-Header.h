@@ -1,4 +1,4 @@
-#import "ThumbnailExtractor.h"
+#import "Services/ThumbnailExtractor.h"
 
 #include <ffmpegkit/FFmpegKit.h>
 #include <ffmpegkit/FFprobeKit.h>

@@ -67,7 +67,7 @@ class RecoreonPaths {
     return encodedVideosDir.appending(path: filename, directoryHint: .notDirectory)
   }
 
-  func getSharedRecordedVideoURL(_ recordedVideoURL: URL) -> URL {
+  func getSharedScreenRecordURL(_ recordedVideoURL: URL) -> URL {
     let filename = recordedVideoURL.lastPathComponent
     return recordsDir.appending(path: filename, directoryHint: .notDirectory)
   }

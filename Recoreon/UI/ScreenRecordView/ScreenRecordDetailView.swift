@@ -6,15 +6,15 @@ private func getThumbnailUnavailableImage() -> UIImage {
   return UIImage(systemName: "xmark.circle", withConfiguration: config)!
 }
 
-struct RecordedVideoDetailViewRoute: Hashable {
-  let recordedVideoEntry: RecordedVideoEntry
+struct ScreenRecordDetailViewRoute: Hashable {
+  let screenRecordEntry: ScreenRecordEntry
 }
 
-struct RecordedVideoDetailView: View {
-  let recordedVideoService: RecordedVideoService
-  @ObservedObject var recordedVideoStore: RecordedVideoStore
+struct ScreenRecordDetailView: View {
+  let screenRecordService: ScreenRecordService
+  @ObservedObject var screenRecordStore: ScreenRecordStore
   @Binding var path: NavigationPath
-  let recordedVideoEntry: RecordedVideoEntry
+  let screenRecordEntry: ScreenRecordEntry
 
   let player = AVPlayer()
 
@@ -31,7 +31,7 @@ struct RecordedVideoDetailView: View {
       Button {
         Task {
           isRemuxing = true
-          guard let previewURL = await recordedVideoService.remux(recordedVideoEntry.url) else {
+          guard let previewURL = await screenRecordService.remux(screenRecordEntry.url) else {
             isRemuxingFailed = true
             isRemuxing = false
             return
@@ -54,10 +54,10 @@ struct RecordedVideoDetailView: View {
         }
         .onAppear {
           Task {
-            var imageRef = recordedVideoService.getThumbnailImage(recordedVideoEntry.url)
+            var imageRef = screenRecordService.getThumbnailImage(screenRecordEntry.url)
             if imageRef == nil {
-              await recordedVideoService.generateThumbnail(recordedVideoEntry.url)
-              imageRef = recordedVideoService.getThumbnailImage(recordedVideoEntry.url)
+              await screenRecordService.generateThumbnail(screenRecordEntry.url)
+              imageRef = screenRecordService.getThumbnailImage(screenRecordEntry.url)
             }
             if let image = imageRef {
               thumbnailImage = image
@@ -83,14 +83,14 @@ struct RecordedVideoDetailView: View {
     }
     List {
       NavigationLink(
-        value: RecordedVideoEncoderViewRoute(recordedVideoEntry: recordedVideoEntry)
+        value: ScreenRecordEncoderViewRoute(screenRecordEntry: screenRecordEntry)
       ) {
         Button {
         } label: {
           Label("Encode", systemImage: "film")
         }
       }
-      ShareLink(item: recordedVideoEntry.url)
+      ShareLink(item: screenRecordEntry.url)
       Button {
         isShowingRemoveConfirmation = true
       } label: {
@@ -103,22 +103,22 @@ struct RecordedVideoDetailView: View {
         Alert(
           title: Text("Are you sure to remove this video?"),
           primaryButton: .destructive(Text("OK")) {
-            recordedVideoService.removeThumbnail(recordedVideoEntry)
-            recordedVideoService.removePreviewVideo(recordedVideoEntry)
-            recordedVideoService.removeRecordedVideo(recordedVideoEntry)
-            recordedVideoService.removeEncodedVideos(recordedVideoEntry)
-            recordedVideoStore.update()
+            screenRecordService.removeThumbnail(screenRecordEntry)
+            screenRecordService.removePreviewVideo(screenRecordEntry)
+            screenRecordService.removeScreenRecord(screenRecordEntry)
+            screenRecordService.removeEncodedVideos(screenRecordEntry)
+            screenRecordStore.update()
             path.removeLast()
           },
           secondaryButton: .cancel()
         )
       }
     }
-    .navigationDestination(for: RecordedVideoEncoderViewRoute.self) { route in
-      RecordedVideoEncoderView(
-        recordedVideoService: recordedVideoService,
-        recordedVideoEntry: route.recordedVideoEntry,
-        recordedVideoThumbnail: thumbnailImage
+    .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
+      ScreenRecordEncoderView(
+        screenRecordService: screenRecordService,
+        screenRecordEntry: route.screenRecordEntry,
+        screenRecordThumbnail: thumbnailImage
       )
     }
   }
@@ -126,18 +126,18 @@ struct RecordedVideoDetailView: View {
 
 #if DEBUG
   #Preview {
-    let service = RecordedVideoServiceMock()
-    let entries = service.listRecordedVideoEntries()
+    let service = ScreenRecordServiceMock()
+    let entries = service.listScreenRecordEntries()
     @State var selectedEntry = entries.first!
     @State var path: NavigationPath = NavigationPath()
-    @StateObject var store = RecordedVideoStore(recordedVideoService: service)
+    @StateObject var store = ScreenRecordStore(screenRecordService: service)
 
     return NavigationStack {
-      RecordedVideoDetailView(
-        recordedVideoService: service,
-        recordedVideoStore: store,
+      ScreenRecordDetailView(
+        screenRecordService: service,
+        screenRecordStore: store,
         path: $path,
-        recordedVideoEntry: selectedEntry
+        screenRecordEntry: selectedEntry
       )
     }
   }

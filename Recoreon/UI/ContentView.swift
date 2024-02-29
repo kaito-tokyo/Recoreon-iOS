@@ -2,22 +2,22 @@ import ReplayKit
 import SwiftUI
 
 struct ContentView: View {
-  let recordedVideoService: RecordedVideoService
+  let screenRecordService: ScreenRecordService
 
-  @StateObject private var recordedVideoStore: RecordedVideoStore
+  @StateObject private var screenRecordStore: ScreenRecordStore
 
   @Environment(\.scenePhase) private var scenePhase
 
-  init(recordedVideoService: RecordedVideoService, recordedVideoStore: RecordedVideoStore) {
-    self.recordedVideoService = recordedVideoService
-    self._recordedVideoStore = StateObject(wrappedValue: recordedVideoStore)
+  init(screenRecordService: ScreenRecordService, screenRecordStore: ScreenRecordStore) {
+    self.screenRecordService = screenRecordService
+    self._screenRecordStore = StateObject(wrappedValue: screenRecordStore)
   }
 
   var body: some View {
     TabView {
-      RecordedVideoView(
-        recordedVideoService: recordedVideoService,
-        recordedVideoStore: recordedVideoStore
+      ScreenRecordView(
+        screenRecordService: screenRecordService,
+        screenRecordStore: screenRecordStore
       )
       .tabItem { Image(systemName: "list.bullet") }
       RecorderView()
@@ -25,7 +25,7 @@ struct ContentView: View {
     }
     .onChange(of: scenePhase) { phase in
       if phase == .active {
-        recordedVideoStore.update()
+        screenRecordStore.update()
       }
     }
   }
@@ -33,12 +33,12 @@ struct ContentView: View {
 
 #if DEBUG
   #Preview {
-    let service = RecordedVideoServiceMock()
+    let service = ScreenRecordServiceMock()
 
     return ContentView(
-      recordedVideoService: service,
-      recordedVideoStore: RecordedVideoStore(
-        recordedVideoService: service
+      screenRecordService: service,
+      screenRecordStore: ScreenRecordStore(
+        screenRecordService: service
       )
     )
   }

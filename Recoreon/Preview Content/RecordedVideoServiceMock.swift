@@ -1,4 +1,4 @@
-class RecordedVideoServiceMock: RecordedVideoService {
+class ScreenRecordServiceMock: ScreenRecordService {
   private let dateFormatter = {
     let formatter = ISO8601DateFormatter()
     formatter.formatOptions.remove(.withDashSeparatorInDate)
@@ -8,11 +8,11 @@ class RecordedVideoServiceMock: RecordedVideoService {
     return formatter
   }()
 
-  override func listRecordedVideoEntries() -> [RecordedVideoEntry] {
+  override func listScreenRecordEntries() -> [ScreenRecordEntry] {
     let record01url = Bundle.main.url(forResource: "Record01", withExtension: "mkv")!
     let record01attrs = try? FileManager.default.attributesOfItem(atPath: record01url.path)
     return [
-      RecordedVideoEntry(
+      ScreenRecordEntry(
         url: record01url,
         encodedVideoCollection: EncodedVideoCollection(encodedVideoURLs: [
           .fourTimeSpeedLowQuality: Bundle.main.url(forResource: "Preview01", withExtension: "mp4")!
@@ -32,7 +32,7 @@ class RecordedVideoServiceMock: RecordedVideoService {
   override func generateThumbnail(_ recordedVideoURL: URL) async {
   }
 
-  override func listRecordedVideoURLs() -> [URL] {
+  override func listScreenRecordURLs() -> [URL] {
     return [
       Bundle.main.url(forResource: "Record01", withExtension: "mkv")!
     ]
@@ -42,7 +42,7 @@ class RecordedVideoServiceMock: RecordedVideoService {
 
   override func encode(
     preset: EncodingPreset,
-    recordedVideoURL: URL,
+    screenRecordURL: URL,
     progressHandler: @escaping (Double, Double) -> Void
   ) async -> URL? {
     progressHandler(0.3, 1.0)
@@ -69,7 +69,7 @@ class RecordedVideoServiceMock: RecordedVideoService {
     return Bundle.main.url(forResource: "Preview01", withExtension: "mp4")
   }
 
-  override func getEncodedVideoURL(recordedVideoURL: URL, encodingPreset: EncodingPreset) -> URL? {
+  override func getEncodedVideoURL(screenRecordURL: URL, encodingPreset: EncodingPreset) -> URL? {
     if encodingPreset == .fourTimeSpeedLowQuality {
       return Bundle.main.url(forResource: "Preview01", withExtension: "mp4")
     } else {

@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct RecordedVideoEncoderViewRoute: Hashable {
-  let recordedVideoEntry: RecordedVideoEntry
+struct ScreenRecordEncoderViewRoute: Hashable {
+  let screenRecordEntry: ScreenRecordEntry
 }
 
-struct RecordedVideoEncoderView: View {
-  let recordedVideoService: RecordedVideoService
-  @State var recordedVideoEntry: RecordedVideoEntry
-  @State var recordedVideoThumbnail: UIImage
+struct ScreenRecordEncoderView: View {
+  let screenRecordService: ScreenRecordService
+  @State var screenRecordEntry: ScreenRecordEntry
+  @State var screenRecordThumbnail: UIImage
 
   @State private var encodingPreset: EncodingPreset = .lowQuality
   @State private var encodingProgress: Double = 0.0
@@ -15,7 +15,7 @@ struct RecordedVideoEncoderView: View {
 
   var body: some View {
     VStack {
-      Image(uiImage: recordedVideoThumbnail).resizable().scaledToFit()
+      Image(uiImage: screenRecordThumbnail).resizable().scaledToFit()
       Form {
         Picker("Preset", selection: $encodingPreset) {
           Text("Low Quality").tag(EncodingPreset.lowQuality)
@@ -23,8 +23,8 @@ struct RecordedVideoEncoderView: View {
           Text("4x Speed Low Quality").tag(EncodingPreset.fourTimeSpeedLowQuality)
         }
         .onChange(of: encodingPreset) { value in
-          encodedVideoURL = recordedVideoService.getEncodedVideoURL(
-            recordedVideoURL: recordedVideoEntry.url,
+          encodedVideoURL = screenRecordService.getEncodedVideoURL(
+            screenRecordURL: screenRecordEntry.url,
             encodingPreset: value
           )
         }
@@ -33,9 +33,9 @@ struct RecordedVideoEncoderView: View {
         Button {
           Task {
             guard
-              let url = await recordedVideoService.encode(
+              let url = await screenRecordService.encode(
                 preset: encodingPreset,
-                recordedVideoURL: recordedVideoEntry.url,
+                screenRecordURL: screenRecordEntry.url,
                 progressHandler: { currentTime, totalTime in
                   encodingProgress = min(currentTime / totalTime, 1.0)
                 }
@@ -53,7 +53,7 @@ struct RecordedVideoEncoderView: View {
           ShareLink(item: "").disabled(true)
         }
         Button {
-          recordedVideoService.removeFileIfExists(url: encodedVideoURL)
+          screenRecordService.removeFileIfExists(url: encodedVideoURL)
           encodedVideoURL = nil
         } label: {
           Label("Remove", systemImage: "trash")
@@ -65,15 +65,15 @@ struct RecordedVideoEncoderView: View {
 
 #if DEBUG
   #Preview {
-    let service = RecordedVideoServiceMock()
-    let entries = service.listRecordedVideoEntries()
+    let service = ScreenRecordServiceMock()
+    let entries = service.listScreenRecordEntries()
     let entry = entries.first!
     let thumbnail = service.getThumbnailImage(entry.url)
 
-    return RecordedVideoEncoderView(
-      recordedVideoService: service,
-      recordedVideoEntry: entry,
-      recordedVideoThumbnail: thumbnail
+    return ScreenRecordEncoderView(
+      screenRecordService: service,
+      screenRecordEntry: entry,
+      screenRecordThumbnail: thumbnail
     )
   }
 #endif
