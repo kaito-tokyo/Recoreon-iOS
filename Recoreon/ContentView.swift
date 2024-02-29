@@ -15,13 +15,13 @@ struct ContentView: View {
 
   var body: some View {
     TabView {
-      RecorderView()
-        .tabItem { Image(systemName: "record.circle") }
       RecordedVideoView(
         recordedVideoService: recordedVideoService,
         recordedVideoStore: recordedVideoStore
       )
       .tabItem { Image(systemName: "list.bullet") }
+      RecorderView()
+        .tabItem { Image(systemName: "record.circle") }
     }
     .onChange(of: scenePhase) { phase in
       if phase == .active {
