@@ -7,6 +7,9 @@
     "4x Speed Low Quality" : {
 
     },
+    "Add" : {
+
+    },
     "Are you sure to remove all of the selected videos?" : {
 
     },
@@ -24,6 +27,12 @@
       }
     },
     "Encoding progress" : {
+
+    },
+    "Enter a new note name" : {
+
+    },
+    "Enter a new note name." : {
 
     },
     "Enter the note text here." : {

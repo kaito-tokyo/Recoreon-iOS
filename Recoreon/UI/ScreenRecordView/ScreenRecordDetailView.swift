@@ -31,6 +31,7 @@ struct ScreenRecordDetailView: View {
   @State var editingNoteBody: String = ""
 
   var body: some View {
+    let recordNoteEntries = screenRecordService.listRecordNote(screenRecordEntry)
     Text(screenRecordEntry.url.lastPathComponent)
     Form {
       Section(header: Text("Operations")) {
@@ -79,9 +80,8 @@ struct ScreenRecordDetailView: View {
       Section(header: Text("Notes")) {
         RecordNoteListView(
           screenRecordService: screenRecordService,
-          screenRecordStore: screenRecordStore,
-          path: $path,
-          screenRecordEntry: screenRecordEntry
+          screenRecordEntry: screenRecordEntry,
+          recordNoteEntries: recordNoteEntries
         )
       }
     }

@@ -2,9 +2,8 @@ import SwiftUI
 
 struct RecordNoteListView: View {
   let screenRecordService: ScreenRecordService
-  @ObservedObject var screenRecordStore: ScreenRecordStore
-  @Binding var path: NavigationPath
   let screenRecordEntry: ScreenRecordEntry
+  let recordNoteEntries: [RecordNoteEntry]
 
   @State var isAskingNewFilename = false
   @State var newFilename = ""
@@ -15,28 +14,28 @@ struct RecordNoteListView: View {
 
   var body: some View {
     List {
-//      ForEach(screenRecordEntry.noteEntries) { noteEntry in
-//        Button {
-//          isEditingNote = true
-//          editingNoteEntry = noteEntry
-//          editingNoteBody = noteEntry.body
-//        } label: {
-//          Label(noteEntry.shortName, systemImage: "doc")
-//        }
-//      }
-//      Button {
-//        isAskingNewFilename = true
-//      } label: {
-//        Label("Add", systemImage: "doc.badge.plus")
-//      }
-//      .alert("Enter a new note name", isPresented: $isAskingNewFilename) {
-//        TextField("Enter a new note name.", text: $newFilename)
-//        Button {
-//
-//        } label: {
-//          Text("OK")
-//        }
-//      }
+      ForEach(recordNoteEntries) { noteEntry in
+        Button {
+          isEditingNote = true
+          editingNoteEntry = noteEntry
+          editingNoteBody = noteEntry.body
+        } label: {
+          Label(noteEntry.shortName, systemImage: "doc")
+        }
+      }
+      Button {
+        isAskingNewFilename = true
+      } label: {
+        Label("Add", systemImage: "doc.badge.plus")
+      }
+      .alert("Enter a new note name", isPresented: $isAskingNewFilename) {
+        TextField("Enter a new note name.", text: $newFilename)
+        Button {
+
+        } label: {
+          Text("OK")
+        }
+      }
     }
     .sheet(isPresented: $isEditingNote) {
       Form {
@@ -63,17 +62,15 @@ struct RecordNoteListView: View {
 #if DEBUG
   #Preview {
     let service = ScreenRecordServiceMock()
-    let entries = service.listScreenRecordEntries()
-    @State var selectedEntry = entries.first!
-    @State var path: NavigationPath = NavigationPath()
-    @StateObject var store = ScreenRecordStore(screenRecordService: service)
+    let screenRecordEntries = service.listScreenRecordEntries()
+    let screenRecordEntry = screenRecordEntries[0]
+    let recordNoteEntries = service.listRecordNote(screenRecordEntry)
 
     return Form {
       RecordNoteListView(
         screenRecordService: service,
-        screenRecordStore: store,
-        path: $path,
-        screenRecordEntry: selectedEntry
+        screenRecordEntry: screenRecordEntry,
+        recordNoteEntries: recordNoteEntries
       )
     }
   }
