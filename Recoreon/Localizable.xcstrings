@@ -1,0 +1,113 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "2x Speed Low Quality" : {
+
+    },
+    "4x Speed Low Quality" : {
+
+    },
+    "Are you sure to remove all of the selected videos?" : {
+
+    },
+    "Are you sure to remove this video?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本当にこの動画"
+          }
+        }
+      }
+    },
+    "Copy" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コピー"
+          }
+        }
+      }
+    },
+    "Encode" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンコード"
+          }
+        }
+      }
+    },
+    "Encoding completed!" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンコードが完了しました！"
+          }
+        }
+      }
+    },
+    "Encoding failed!" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンコードが失敗しました！"
+          }
+        }
+      }
+    },
+    "Encoding progress" : {
+
+    },
+    "List" : {
+
+    },
+    "List of recorded videos" : {
+
+    },
+    "Low Quality" : {
+
+    },
+    "OK" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "Preset" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プリセット"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除"
+          }
+        }
+      }
+    },
+    "The original file of this video was successfully copied to the File app!" : {
+
+    },
+    "Unable to copy the original file of this video to the File app!" : {
+
+    }
+  },
+  "version" : "1.0"
+}
