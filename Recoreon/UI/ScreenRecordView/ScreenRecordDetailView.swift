@@ -72,6 +72,13 @@ struct ScreenRecordDetailView: View {
           }
         }
       }
+      Section(header: Text("Notes")) {
+        List {
+          Text("aaa")
+          Text("bbb")
+          Text("ccc")
+        }
+      }
     }
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
       ScreenRecordPreviewView(
