@@ -303,7 +303,6 @@
 				22C18AE42AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */,
 				22C18AEF2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI */,
 				22C3CCF82AF240B30039750A /* Products */,
-				22F103D02B8F22C900F192E6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -330,9 +329,9 @@
 				226A897E2AFB1A7600EBD2CA /* UI */,
 				22C3CCFE2AF240B30039750A /* Assets.xcassets */,
 				22C3CD2A2AF28CED0039750A /* Info.plist */,
+				22AAC7F22B90B7B500078129 /* Localizable.xcstrings */,
 				22C3CD242AF241140039750A /* Recoreon-Bridging-Header.h */,
 				22C18B052AF2C20800C41B49 /* Recoreon.entitlements */,
-				22AAC7F22B90B7B500078129 /* Localizable.xcstrings */,
 			);
 			path = Recoreon;
 			sourceTree = "<group>";
@@ -365,13 +364,6 @@
 				22C3CD172AF240B40039750A /* RecoreonUITestsLaunchTests.swift */,
 			);
 			path = RecoreonUITests;
-			sourceTree = "<group>";
-		};
-		22F103D02B8F22C900F192E6 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
