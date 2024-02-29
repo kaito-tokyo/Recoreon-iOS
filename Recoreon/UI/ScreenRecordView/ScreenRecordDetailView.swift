@@ -27,46 +27,56 @@ struct ScreenRecordDetailView: View {
   @State var isShowingRemoveConfirmation = false
 
   var body: some View {
-    List {
-      NavigationLink(value: ScreenRecordPreviewViewRoute(screenRecordEntry: screenRecordEntry)
-      ) {
-        Button {} label: { Label("Preview", systemImage: "play") }
-      }
-      NavigationLink(
-        value: ScreenRecordEncoderViewRoute(screenRecordEntry: screenRecordEntry)
-      ) {
-        Button {
-        } label: {
-          Label("Encode", systemImage: "film")
+    Text(screenRecordEntry.url.lastPathComponent)
+    Form {
+      Section(header: Text("Operations")) {
+        List {
+          NavigationLink(
+            value: ScreenRecordPreviewViewRoute(screenRecordEntry: screenRecordEntry)
+          ) {
+            Button {
+            } label: {
+              Label("Preview", systemImage: "play")
+            }
+          }
+          NavigationLink(
+            value: ScreenRecordEncoderViewRoute(screenRecordEntry: screenRecordEntry)
+          ) {
+            Button {
+            } label: {
+              Label("Encode", systemImage: "film")
+            }
+          }
+          ShareLink(item: screenRecordEntry.url)
+          Button {
+            isShowingRemoveConfirmation = true
+          } label: {
+            Label {
+              Text("Remove")
+            } icon: {
+              Image(systemName: "trash")
+            }
+          }.alert(isPresented: $isShowingRemoveConfirmation) {
+            Alert(
+              title: Text("Are you sure to remove this video?"),
+              primaryButton: .destructive(Text("OK")) {
+                screenRecordService.removeThumbnail(screenRecordEntry)
+                screenRecordService.removePreviewVideo(screenRecordEntry)
+                screenRecordService.removeScreenRecord(screenRecordEntry)
+                screenRecordService.removeEncodedVideos(screenRecordEntry)
+                screenRecordStore.update()
+                path.removeLast()
+              },
+              secondaryButton: .cancel()
+            )
+          }
         }
-      }
-      ShareLink(item: screenRecordEntry.url)
-      Button {
-        isShowingRemoveConfirmation = true
-      } label: {
-        Label {
-          Text("Remove")
-        } icon: {
-          Image(systemName: "trash")
-        }
-      }.alert(isPresented: $isShowingRemoveConfirmation) {
-        Alert(
-          title: Text("Are you sure to remove this video?"),
-          primaryButton: .destructive(Text("OK")) {
-            screenRecordService.removeThumbnail(screenRecordEntry)
-            screenRecordService.removePreviewVideo(screenRecordEntry)
-            screenRecordService.removeScreenRecord(screenRecordEntry)
-            screenRecordService.removeEncodedVideos(screenRecordEntry)
-            screenRecordStore.update()
-            path.removeLast()
-          },
-          secondaryButton: .cancel()
-        )
       }
     }
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
       ScreenRecordPreviewView(
-        screenRecordService: screenRecordService, screenRecordStore: screenRecordStore, path: $path, screenRecordEntry: route.screenRecordEntry
+        screenRecordService: screenRecordService, screenRecordStore: screenRecordStore, path: $path,
+        screenRecordEntry: route.screenRecordEntry
       )
     }
     .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
