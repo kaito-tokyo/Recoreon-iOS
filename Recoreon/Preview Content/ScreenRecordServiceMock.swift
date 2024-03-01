@@ -13,6 +13,19 @@ class ScreenRecordServiceMock: ScreenRecordService {
     return formatter
   }()
 
+  private var screenRecordEntries: [ScreenRecordEntry] = {
+    let record01Url = Bundle.main.url(forResource: "Record01", withExtension: "mkv")
+    let record01Attrs = try? FileManager.default.attributesOfItem(atPath: record01Url!.path)
+    let record01Size = record01Attrs?[.size] as? UInt64
+    let record01CreationDate = record01Attrs?[.creationDate] as? Date
+    let record01Entry = ScreenRecordEntry(
+      url: record01Url!,
+      size: record01Size!,
+      creationDate: record01CreationDate!
+    )
+    return [record01Entry]
+  }()
+
   private var recordNoteEntries = {
     let record01note1url = Bundle.main.url(forResource: "Record01-1", withExtension: "txt")!
     let record01note1content = try? String(contentsOf: record01note1url)
@@ -23,6 +36,19 @@ class ScreenRecordServiceMock: ScreenRecordService {
       RecordNoteEntry(url: record01note2url, body: record01note2content!),
     ]
   }()
+
+  override func listScreenRecordURLs() -> [URL] {
+    return screenRecordEntries.map { $0.url }
+  }
+
+  override func listScreenRecordEntries(screenRecordURLs: [URL]) -> [ScreenRecordEntry] {
+    return screenRecordEntries
+  }
+
+  override func remuxPreviewVideo(screenRecordURL: URL) async -> URL? {
+    sleep(3)
+    return Bundle.main.url(forResource: "Preview01", withExtension: "mp4")
+  }
 
 //  override func listScreenRecordEntries() -> [ScreenRecordEntry] {
 //    let record01url = Bundle.main.url(forResource: "Record01", withExtension: "mkv")!
