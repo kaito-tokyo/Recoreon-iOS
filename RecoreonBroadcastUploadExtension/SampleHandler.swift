@@ -168,37 +168,43 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   func initAllStreams(width: Int, height: Int) {
-    if !writer.addVideoStream(
+    let addVideoStream0Result = writer.addVideoStream(
       0, width: width, height: height, frameRate: spec.frameRate, bitRate: spec.videoBitRate)
-    {
+    if !addVideoStream0Result {
       finishBroadcastWithError(SampleHandlerError.videoStreamAddingError)
       return
     }
-    if !writer.addAudioStream(
+
+    let addAudioStream1Result = writer.addAudioStream(
       1, sampleRate: spec.screenAudioSampleRate, bitRate: spec.screenAudioBitRate)
-    {
+    if !addAudioStream1Result {
       finishBroadcastWithError(SampleHandlerError.audioStreamAddingError)
       return
     }
-    if !writer.addAudioStream(2, sampleRate: spec.micAudioSampleRate, bitRate: spec.micAudioBitRate)
-    {
+
+    let addAudioStream2Result = writer.addAudioStream(
+      2, sampleRate: spec.micAudioSampleRate, bitRate: spec.micAudioBitRate)
+    if !addAudioStream2Result {
       finishBroadcastWithError(SampleHandlerError.audioStreamAddingError)
       return
     }
+
     if !writer.openVideo(0) {
       finishBroadcastWithError(SampleHandlerError.videoOpeningError)
       return
     }
+
     if !writer.openAudio(1) {
       finishBroadcastWithError(SampleHandlerError.audioOpeningError)
       return
     }
+
     if !writer.openAudio(2) {
       finishBroadcastWithError(SampleHandlerError.audioOpeningError)
       return
     }
-    if !writer.startOutput() {
 
+    if !writer.startOutput() {
       finishBroadcastWithError(SampleHandlerError.outputStartingError)
       return
     }

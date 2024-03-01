@@ -84,7 +84,7 @@ struct ScreenRecordDetailView: View {
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
       ScreenRecordPreviewView(
         screenRecordService: screenRecordService,
-        screenRecordEntry: screenRecordEntry
+        screenRecordEntry: route.screenRecordEntry
       )
     }
     .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
