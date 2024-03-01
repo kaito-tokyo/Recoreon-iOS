@@ -121,4 +121,12 @@ class RecoreonPathService {
       $0.lastPathComponent.compare($1.lastPathComponent) == .orderedAscending
     })
   }
+
+  func generateEncodedVideoURL(screenRecordURL: URL, presetName: String) -> URL {
+    mkdirp(url: encodedVideosDir)
+    let recordID = getRecordID(screenRecordURL: screenRecordURL)
+    let ext = "mp4"
+    return encodedVideosDir.appending(
+      path: "\(recordID)-\(presetName).\(ext)", directoryHint: .notDirectory)
+  }
 }

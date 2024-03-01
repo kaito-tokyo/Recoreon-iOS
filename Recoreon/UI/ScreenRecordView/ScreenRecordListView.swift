@@ -155,9 +155,6 @@ struct ScreenRecordListView: View {
   #Preview {
     let screenRecordService = ScreenRecordServiceMock()
     let recordNoteService = RecordNoteServiceMock()
-    let screenRecordURLs = screenRecordService.listScreenRecordURLs()
-    let screenRecordEntries = screenRecordService.listScreenRecordEntries(
-      screenRecordURLs: screenRecordURLs)
     @State var path = NavigationPath()
     @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
 

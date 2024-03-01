@@ -34,6 +34,7 @@ struct ScreenRecordDetailView: View {
   }
 
   var body: some View {
+    let encodeService = screenRecordService.createEncodeService()
     Text(screenRecordEntry.url.lastPathComponent)
     Form {
       Section(header: Text("Operations")) {
@@ -89,9 +90,7 @@ struct ScreenRecordDetailView: View {
     }
     .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
       ScreenRecordEncoderView(
-        screenRecordService: screenRecordService,
-        screenRecordEntry: route.screenRecordEntry
-      )
+        encodeService: encodeService, screenRecordEntry: route.screenRecordEntry)
     }
   }
 }

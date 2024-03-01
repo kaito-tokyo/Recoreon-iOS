@@ -80,4 +80,8 @@ class ScreenRecordService {
   func createRecordNoteService() -> RecordNoteService {
     return RecordNoteService(recoreonPathService)
   }
+
+  func createEncodeService() -> EncodeService {
+    return EncodeService(fileManager: fileManager, recoreonPathService: recoreonPathService)
+  }
 }
