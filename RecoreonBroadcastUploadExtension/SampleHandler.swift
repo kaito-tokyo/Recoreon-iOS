@@ -130,7 +130,8 @@ class SampleHandler: RPBroadcastSampleHandler {
 
   func startRecording() {
     let recordID = recoreonPathService.generateRecordID(date: Date())
-    let appGroupScreenRecordURL = recoreonPathService.generateAppGroupScreenRecordURL(recordID: recordID, ext: spec.ext)
+    let appGroupScreenRecordURL = recoreonPathService.generateAppGroupScreenRecordURL(
+      recordID: recordID, ext: spec.ext)
 
     let openVideoCodecResult = writer.openVideoCodec("h264_videotoolbox")
     if !openVideoCodecResult {

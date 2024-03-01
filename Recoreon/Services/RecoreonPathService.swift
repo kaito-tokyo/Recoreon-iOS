@@ -53,7 +53,8 @@ class RecoreonPathService {
 
   func generateAppGroupScreenRecordURL(recordID: String, ext: String) -> URL {
     mkdirp(url: appGroupRecordsDir)
-    let appGroupScreenRecordURL = appGroupRecordsDir.appending(path: "\(recordID).\(ext)", directoryHint: .notDirectory)
+    let appGroupScreenRecordURL = appGroupRecordsDir.appending(
+      path: "\(recordID).\(ext)", directoryHint: .notDirectory)
     return appGroupScreenRecordURL
   }
 

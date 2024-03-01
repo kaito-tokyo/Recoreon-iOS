@@ -9,7 +9,8 @@ class RecordNoteStore: ObservableObject {
   init(recordNoteService: RecordNoteService, screenRecordEntry: ScreenRecordEntry) {
     self.recordNoteService = recordNoteService
     self.screenRecordEntry = screenRecordEntry
-    let recordNoteEntries = recordNoteService.listRecordNoteEntries(screenRecordEntry: screenRecordEntry)
+    let recordNoteEntries = recordNoteService.listRecordNoteEntries(
+      screenRecordEntry: screenRecordEntry)
     self.recordNoteBodies = Dictionary(
       uniqueKeysWithValues: recordNoteEntries.map {
         ($0.url, $0.body)

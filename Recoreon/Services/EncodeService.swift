@@ -27,7 +27,8 @@ class EncodeService {
     let audioChannelMapping = getAudioChannelMapping(durations: durations)
     guard let filter = preset.filter[audioChannelMapping] else { return nil }
     let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
-    let encodedVideoURL = recoreonPathService.generateEncodedVideoURL(recordID: recordID, presetName: preset.name)
+    let encodedVideoURL = recoreonPathService.generateEncodedVideoURL(
+      recordID: recordID, presetName: preset.name)
     var arguments = [
       "-y",
       "-i",
