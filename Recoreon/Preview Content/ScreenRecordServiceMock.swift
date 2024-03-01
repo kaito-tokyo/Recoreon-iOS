@@ -39,4 +39,8 @@ class ScreenRecordServiceMock: ScreenRecordService {
   override func createRecordNoteService() -> RecordNoteService {
     return RecordNoteServiceMock()
   }
+
+  override func createEncodeService() -> EncodeService {
+    return EncodeServiceMock()
+  }
 }
