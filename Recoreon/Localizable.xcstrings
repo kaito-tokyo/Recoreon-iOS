@@ -111,16 +111,6 @@
         }
       }
     },
-    "Filename: %@" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ファイル名: %@"
-          }
-        }
-      }
-    },
     "List of screen records" : {
       "localizations" : {
         "ja" : {
