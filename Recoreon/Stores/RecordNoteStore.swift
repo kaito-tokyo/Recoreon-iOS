@@ -31,6 +31,9 @@ class RecordNoteStore: ObservableObject {
   }
 
   func saveAllNotes() {
-
+    let recordNoteEntries = recordNoteBodies.map { url, body in
+      RecordNoteEntry(url: url, body: body)
+    }
+    screenRecordService.saveRecordNotes(recordNoteEntries)
   }
 }

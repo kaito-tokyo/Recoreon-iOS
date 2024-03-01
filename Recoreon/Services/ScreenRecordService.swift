@@ -286,7 +286,11 @@ class ScreenRecordService {
     return subDir.appending(component: "\(recordID)-\(shortName).\(ext)")
   }
 
-  func addRecordNote(_ screenRecordEntry: ScreenRecordEntry, shortName: String, body: String) {
-
+  func saveRecordNotes(_ recordNoteEntries: [RecordNoteEntry]) {
+    for recordNoteEntry in recordNoteEntries {
+      let body = recordNoteEntry.body
+      let url = recordNoteEntry.url
+      try? body.write(to: url, atomically: true, encoding: .utf8)
+    }
   }
 }
