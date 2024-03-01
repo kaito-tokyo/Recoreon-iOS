@@ -10,13 +10,15 @@ class RecordNoteStore: ObservableObject {
     self.screenRecordService = screenRecordService
     self.screenRecordEntry = screenRecordEntry
     let recordNoteEntries = screenRecordService.listRecordNoteEntries(screenRecordEntry)
-    self.recordNoteBodies = Dictionary(uniqueKeysWithValues: recordNoteEntries.map {
-      ($0.url, $0.body)
-    })
+    self.recordNoteBodies = Dictionary(
+      uniqueKeysWithValues: recordNoteEntries.map {
+        ($0.url, $0.body)
+      })
   }
 
   func addNote(shortName: String) {
-    let recordNoteURL = screenRecordService.getRecordNoteURL(screenRecordEntry, shortName: shortName)
+    let recordNoteURL = screenRecordService.getRecordNoteURL(
+      screenRecordEntry, shortName: shortName)
     recordNoteBodies[recordNoteURL] = ""
   }
 
@@ -29,6 +31,6 @@ class RecordNoteStore: ObservableObject {
   }
 
   func saveAllNotes() {
-    
+
   }
 }

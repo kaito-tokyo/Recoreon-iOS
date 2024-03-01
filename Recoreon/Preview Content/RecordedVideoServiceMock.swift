@@ -15,7 +15,7 @@ class ScreenRecordServiceMock: ScreenRecordService {
     let record01note2content = try? String(contentsOf: record01note2url)
     return [
       RecordNoteEntry(url: record01note1url, body: record01note1content!),
-      RecordNoteEntry(url: record01note2url, body: record01note2content!)
+      RecordNoteEntry(url: record01note2url, body: record01note2content!),
     ]
   }()
 

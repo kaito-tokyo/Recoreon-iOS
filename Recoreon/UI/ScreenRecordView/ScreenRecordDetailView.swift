@@ -15,7 +15,10 @@ struct ScreenRecordDetailView: View {
 
   @State var isShowingRemoveConfirmation = false
 
-  init(screenRecordService: ScreenRecordService, screenRecordStore: ScreenRecordStore, path: Binding<NavigationPath>, screenRecordEntry: ScreenRecordEntry) {
+  init(
+    screenRecordService: ScreenRecordService, screenRecordStore: ScreenRecordStore,
+    path: Binding<NavigationPath>, screenRecordEntry: ScreenRecordEntry
+  ) {
     self.screenRecordService = screenRecordService
     self.screenRecordStore = screenRecordStore
     self._path = path

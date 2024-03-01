@@ -278,7 +278,9 @@ class ScreenRecordService {
     return []
   }
 
-  func getRecordNoteURL(_ screenRecordEntry: ScreenRecordEntry, shortName: String, ext: String = "txt") -> URL {
+  func getRecordNoteURL(
+    _ screenRecordEntry: ScreenRecordEntry, shortName: String, ext: String = "txt"
+  ) -> URL {
     let recordID = screenRecordEntry.url.deletingPathExtension().lastPathComponent
     let subDir = paths.getRecordNoteSubDirURL(screenRecordURL: screenRecordEntry.url)
     return subDir.appending(component: "\(recordID)-\(shortName).\(ext)")
