@@ -2,19 +2,54 @@
   "sourceLanguage" : "en",
   "strings" : {
     "2x Speed Low Quality" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "低品質2倍速"
+          }
+        }
+      }
     },
     "4x Speed Low Quality" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "低品質4倍速"
+          }
+        }
+      }
     },
     "Add" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加"
+          }
+        }
+      }
     },
-    "Are you sure to remove all of the selected videos?" : {
-
+    "Are you sure to remove all of the selected screen records?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択された画面録画を全て削除しても良いですか？"
+          }
+        }
+      }
     },
-    "Are you sure to remove this video?" : {
-
+    "Are you sure to remove this screen record?" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この画面録画を削除しても良いですか？"
+          }
+        }
+      }
     },
     "Encode" : {
       "localizations" : {
@@ -27,34 +62,104 @@
       }
     },
     "Encoder operations" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンコード操作"
+          }
+        }
+      }
     },
     "Encoding progress" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンコード進捗"
+          }
+        }
+      }
     },
     "Encoding settings" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エンコード設定"
+          }
+        }
+      }
     },
     "Enter a new note name" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新規メモの名前を入力してください"
+          }
+        }
+      }
     },
-    "Enter the note text here." : {
-
+    "Enter the note text here" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここにメモの内容を入力してください"
+          }
+        }
+      }
     },
-    "Filename:" : {
-
+    "Filename: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイル名: %@"
+          }
+        }
+      }
     },
-    "List" : {
-
+    "List of screen records" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面録画一覧"
+          }
+        }
+      }
     },
     "Low Quality" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "低品質"
+          }
+        }
+      }
     },
     "Name" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前"
+          }
+        }
+      }
     },
     "Notes" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メモ"
+          }
+        }
+      }
     },
     "OK" : {
       "localizations" : {
@@ -65,9 +170,6 @@
           }
         }
       }
-    },
-    "Operations" : {
-
     },
     "Preset" : {
       "localizations" : {

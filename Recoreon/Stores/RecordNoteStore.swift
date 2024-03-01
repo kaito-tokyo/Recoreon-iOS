@@ -17,6 +17,14 @@ class RecordNoteStore: ObservableObject {
       })
   }
 
+  func listRecordNoteEntries() -> [RecordNoteEntry] {
+    return recordNoteBodies.map { url, body in
+      RecordNoteEntry(url: url, body: body)
+    }.sorted {
+      $0.filename.compare($1.filename) == .orderedAscending
+    }
+  }
+
   func addNote(shortName: String) {
     let recordNoteURL = recordNoteService.generateRecordNoteURL(
       screenRecordEntry: screenRecordEntry, shortName: shortName

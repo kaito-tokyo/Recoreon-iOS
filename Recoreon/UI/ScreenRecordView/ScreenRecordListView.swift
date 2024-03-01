@@ -110,7 +110,7 @@ struct ScreenRecordListView: View {
       }
       .alert(isPresented: $isRemoveConfirmationPresented) {
         Alert(
-          title: Text("Are you sure to remove all of the selected videos?"),
+          title: Text("Are you sure to remove all of the selected screen records?"),
           primaryButton: .destructive(Text("OK")) {
             for entry in selectedScreenRecordEntries {
               screenRecordService.removeScreenRecordAndRelatedFiles(screenRecordEntry: entry)
@@ -128,7 +128,7 @@ struct ScreenRecordListView: View {
       screenRecordList()
       shareLinkButton()
     }
-    .navigationTitle("List")
+    .navigationTitle("List of screen records")
     .navigationBarTitleDisplayMode(.inline)
     .navigationDestination(for: ScreenRecordDetailViewRoute.self) { route in
       ScreenRecordDetailView(

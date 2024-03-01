@@ -15,6 +15,7 @@
 		2232A1802B9220A600F646E3 /* EncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A17F2B9220A600F646E3 /* EncodeService.swift */; };
 		2232A1822B9223D000F646E3 /* EncodedVideoEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A1812B9223D000F646E3 /* EncodedVideoEntry.swift */; };
 		2232A1842B92485900F646E3 /* EncodeServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A1832B92485900F646E3 /* EncodeServiceMock.swift */; };
+		2232A1862B92557D00F646E3 /* RecordNoteEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A1852B92557D00F646E3 /* RecordNoteEditorView.swift */; };
 		2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */; };
 		2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */; };
 		2232A9532AFD469400330C23 /* RecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9522AFD469400330C23 /* RecorderView.swift */; };
@@ -24,7 +25,6 @@
 		223B05862B90CC3400A16852 /* RecordNoteEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B05852B90CC3400A16852 /* RecordNoteEntry.swift */; };
 		223B05892B90D5D800A16852 /* Record01-1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05872B90CD8700A16852 /* Record01-1.txt */; };
 		223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05882B90CDA400A16852 /* Record01-2.txt */; };
-		223B058C2B90DE3800A16852 /* RecordNoteListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B058B2B90DE3800A16852 /* RecordNoteListView.swift */; };
 		22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */; };
 		224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
 		224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
@@ -108,6 +108,7 @@
 		2232A17F2B9220A600F646E3 /* EncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeService.swift; sourceTree = "<group>"; };
 		2232A1812B9223D000F646E3 /* EncodedVideoEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoEntry.swift; sourceTree = "<group>"; };
 		2232A1832B92485900F646E3 /* EncodeServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeServiceMock.swift; sourceTree = "<group>"; };
+		2232A1852B92557D00F646E3 /* RecordNoteEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEditorView.swift; sourceTree = "<group>"; };
 		2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonBroadcastPickerRepresentable.swift; sourceTree = "<group>"; };
 		2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PixelBufferExtractor.swift; path = RecoreonBroadcastUploadExtension/PixelBufferExtractor.swift; sourceTree = SOURCE_ROOT; };
 		2232A9522AFD469400330C23 /* RecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderView.swift; sourceTree = "<group>"; };
@@ -117,7 +118,6 @@
 		223B05852B90CC3400A16852 /* RecordNoteEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEntry.swift; sourceTree = "<group>"; };
 		223B05872B90CD8700A16852 /* Record01-1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-1.txt"; sourceTree = "<group>"; };
 		223B05882B90CDA400A16852 /* Record01-2.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-2.txt"; sourceTree = "<group>"; };
-		223B058B2B90DE3800A16852 /* RecordNoteListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteListView.swift; sourceTree = "<group>"; };
 		22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriterTests.m; sourceTree = "<group>"; };
 		224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
@@ -252,7 +252,7 @@
 		223B05802B90BD5D00A16852 /* ScreenRecordView */ = {
 			isa = PBXGroup;
 			children = (
-				223B058B2B90DE3800A16852 /* RecordNoteListView.swift */,
+				2232A1852B92557D00F646E3 /* RecordNoteEditorView.swift */,
 				22966A202AFD9ED40080324D /* ScreenRecordDetailView.swift */,
 				22966A272AFE50B10080324D /* ScreenRecordEncoderView.swift */,
 				2232A9542AFD46ED00330C23 /* ScreenRecordListView.swift */,
@@ -626,8 +626,8 @@
 				2232A1842B92485900F646E3 /* EncodeServiceMock.swift in Sources */,
 				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
 				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,
+				2232A1862B92557D00F646E3 /* RecordNoteEditorView.swift in Sources */,
 				223B05862B90CC3400A16852 /* RecordNoteEntry.swift in Sources */,
-				223B058C2B90DE3800A16852 /* RecordNoteListView.swift in Sources */,
 				2232A1792B91F66300F646E3 /* RecordNoteService.swift in Sources */,
 				2232A17C2B920D4B00F646E3 /* RecordNoteServiceMock.swift in Sources */,
 				22183B492B9100E9004D6FAD /* RecordNoteStore.swift in Sources */,
