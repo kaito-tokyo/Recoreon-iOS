@@ -32,9 +32,6 @@
     "Enter a new note name" : {
 
     },
-    "Enter a new note name." : {
-
-    },
     "Enter the note text here." : {
 
     },
@@ -45,6 +42,9 @@
 
     },
     "Low Quality" : {
+
+    },
+    "Name" : {
 
     },
     "Notes" : {
@@ -92,12 +92,6 @@
           }
         }
       }
-    },
-    "Rename" : {
-
-    },
-    "Save" : {
-
     }
   },
   "version" : "1.0"

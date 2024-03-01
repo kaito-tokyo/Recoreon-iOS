@@ -274,8 +274,15 @@ class ScreenRecordService {
     try? fileManager.removeItem(at: url)
   }
 
-  func listRecordNoteEntries(_ screenRecordEntry: ScreenRecordEntry) -> [RecordNoteEntry] {
-    return []
+  func listRecordNoteURLs(screenRecordURL: URL) -> [URL] {
+    return paths.listRecordNoteURLs(screenRecordURL: screenRecordURL)
+  }
+
+  func listRecordNoteEntries(recordNoteURLs: [URL]) -> [RecordNoteEntry] {
+    return recordNoteURLs.map { url in
+      let body = try? String(contentsOf: url)
+      return RecordNoteEntry(url: url, body: body!)
+    }
   }
 
   func getRecordNoteURL(

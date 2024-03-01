@@ -66,6 +66,11 @@ struct ScreenRecordListView: View {
   }
 
   func shareLinkButton() -> some View {
+    let shareURLs = selection.flatMap { screenRecordURL in
+      
+      let recordNoteURLs = screenRecordService.listRecordNoteURLs(screenRecordURL: screenRecordURL)
+      return [screenRecordURL] + recordNoteURLs
+    }
     return VStack {
       Spacer()
       HStack {

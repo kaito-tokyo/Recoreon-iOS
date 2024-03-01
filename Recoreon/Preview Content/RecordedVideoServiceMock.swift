@@ -88,7 +88,7 @@ class ScreenRecordServiceMock: ScreenRecordService {
     }
   }
 
-  override func listRecordNoteEntries(_ screenRecordEntry: ScreenRecordEntry) -> [RecordNoteEntry] {
-    return recordNoteEntries
+  override func listRecordNoteURLs(screenRecordURL: URL) -> [URL] {
+    return recordNoteEntries.map { $0.url }
   }
 }
