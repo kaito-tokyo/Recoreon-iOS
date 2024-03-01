@@ -338,6 +338,7 @@
 		22C3CD002AF240B30039750A /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
+				2232A1832B92485900F646E3 /* EncodeServiceMock.swift */,
 				22C3CD012AF240B30039750A /* Preview Assets.xcassets */,
 				2232A95A2AFD80A200330C23 /* Preview01.mp4 */,
 				223B05872B90CD8700A16852 /* Record01-1.txt */,
@@ -345,7 +346,6 @@
 				22966A222AFE29660080324D /* Record01.mkv */,
 				2232A17B2B920D4B00F646E3 /* RecordNoteServiceMock.swift */,
 				226A898E2AFB2EA500EBD2CA /* ScreenRecordServiceMock.swift */,
-				2232A1832B92485900F646E3 /* EncodeServiceMock.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -623,6 +623,7 @@
 				22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */,
 				2232A1822B9223D000F646E3 /* EncodedVideoEntry.swift in Sources */,
 				2232A1802B9220A600F646E3 /* EncodeService.swift in Sources */,
+				2232A1842B92485900F646E3 /* EncodeServiceMock.swift in Sources */,
 				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
 				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,
 				223B05862B90CC3400A16852 /* RecordNoteEntry.swift in Sources */,
@@ -639,7 +640,6 @@
 				2232A9552AFD46ED00330C23 /* ScreenRecordListView.swift in Sources */,
 				223B05822B90C34700A16852 /* ScreenRecordPreviewView.swift in Sources */,
 				226A89852AFB1B7F00EBD2CA /* ScreenRecordService.swift in Sources */,
-				2232A1842B92485900F646E3 /* EncodeServiceMock.swift in Sources */,
 				226A898F2AFB2EA500EBD2CA /* ScreenRecordServiceMock.swift in Sources */,
 				22966A332AFE8D1B0080324D /* ScreenRecordStore.swift in Sources */,
 				22966A2E2AFE756F0080324D /* ScreenRecordView.swift in Sources */,
