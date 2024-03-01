@@ -69,7 +69,7 @@ struct ScreenRecordDetailView: View {
               title: Text("Are you sure to remove this video?"),
               primaryButton: .destructive(Text("OK")) {
                 screenRecordService.removeScreenRecordAndRelatedFiles(
-                  screenRecordURL: screenRecordEntry.url)
+                  screenRecordEntry: screenRecordEntry)
                 screenRecordStore.update()
                 path.removeLast()
               },
@@ -99,9 +99,7 @@ struct ScreenRecordDetailView: View {
   #Preview {
     let screenRecordService = ScreenRecordServiceMock()
     let recordNoteService = screenRecordService.createRecordNoteService()
-    let screenRecordURLs = screenRecordService.listScreenRecordURLs()
-    let screenRecordEntries = screenRecordService.listScreenRecordEntries(
-      screenRecordURLs: screenRecordURLs)
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
     @State var path: NavigationPath = NavigationPath()
     @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)

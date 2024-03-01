@@ -12,14 +12,10 @@ class RecordNoteServiceMock: RecordNoteService {
   }()
 
   init() {
-    super.init(RecoreonPathService(FileManager.default))
+    super.init(RecoreonPathService(fileManager: FileManager.default))
   }
 
-  override func listRecordNoteURLs(screenRecordURL url: URL) -> [URL] {
-    return recordNoteEntries.map { $0.url }
-  }
-
-  override func listRecordNoteEntries(recordNoteURLs: [URL]) -> [RecordNoteEntry] {
+  override func listRecordNoteEntries(screenRecordEntry: ScreenRecordEntry) -> [RecordNoteEntry] {
     return recordNoteEntries
   }
 }

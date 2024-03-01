@@ -23,7 +23,7 @@ struct ScreenRecordPreviewView: View {
             isRemuxing = true
             guard
               let previewURL = await screenRecordService.remuxPreviewVideo(
-                screenRecordURL: screenRecordEntry.url)
+                screenRecordEntry: screenRecordEntry)
             else {
               isRemuxing = false
               return
@@ -48,9 +48,7 @@ struct ScreenRecordPreviewView: View {
 #if DEBUG
   #Preview {
     let screenRecordService = ScreenRecordServiceMock()
-    let screenRecordURLs = screenRecordService.listScreenRecordURLs()
-    let screenRecordEntries = screenRecordService.listScreenRecordEntries(
-      screenRecordURLs: screenRecordURLs)
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     @State var screenRecordEntry = screenRecordEntries[0]
     @State var path: NavigationPath = NavigationPath()
     @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)

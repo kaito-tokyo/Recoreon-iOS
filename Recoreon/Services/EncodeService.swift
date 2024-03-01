@@ -11,8 +11,8 @@ class EncodeService {
     screenRecordEntry: ScreenRecordEntry,
     preset: EncodingPreset
   ) -> URL {
-    return recoreonPathService.generateEncodedVideoURL(
-      screenRecordURL: screenRecordEntry.url, presetName: preset.name)
+    let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
+    return recoreonPathService.generateEncodedVideoURL(recordID: recordID, presetName: preset.name)
   }
 
   func removeEncodedVideo(encodedVideoEntry: EncodedVideoEntry) {
@@ -20,18 +20,18 @@ class EncodeService {
   }
 
   func encode(
-    preset: EncodingPreset, screenRecordURL: URL,
+    screenRecordEntry: ScreenRecordEntry, preset: EncodingPreset,
     progressHandler: @escaping (Double, Double) -> Void
   ) async -> URL? {
-    let durations = getDurationOfStreams(screenRecordURL)
+    let durations = getDurationOfStreams(screenRecordEntry.url)
     let audioChannelMapping = getAudioChannelMapping(durations: durations)
     guard let filter = preset.filter[audioChannelMapping] else { return nil }
-    let encodedVideoURL = recoreonPathService.generateEncodedVideoURL(
-      screenRecordURL: screenRecordURL, presetName: preset.name)
+    let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
+    let encodedVideoURL = recoreonPathService.generateEncodedVideoURL(recordID: recordID, presetName: preset.name)
     var arguments = [
       "-y",
       "-i",
-      screenRecordURL.path(),
+      screenRecordEntry.url.path(),
       "-f",
       "lavfi",
       "-i",
@@ -52,7 +52,7 @@ class EncodeService {
     arguments += getMappingOptions(audioChannelMapping: audioChannelMapping)
     arguments.append(encodedVideoURL.path())
 
-    let duration = getDuration(screenRecordURL) * 1000
+    let duration = getDuration(screenRecordEntry.url) * 1000
 
     return await withCheckedContinuation { continuation in
       FFmpegKit.execute(
