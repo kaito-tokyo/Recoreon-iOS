@@ -5,12 +5,13 @@ struct ScreenRecordEncoderViewRoute: Hashable {
 }
 
 struct ScreenRecordEncoderView: View {
-  let screenRecordService: ScreenRecordService
+  let encodeService: EncodeService
   let screenRecordEntry: ScreenRecordEntry
 
   @State private var encodingPreset: EncodingPreset = .lowQuality
   @State private var encodingProgress: Double = 0.0
   @State private var encodedVideoURL: URL?
+  @State var encodedVideoEntry: EncodedVideoEntry = .invalid
 
   var body: some View {
     VStack {
@@ -21,17 +22,18 @@ struct ScreenRecordEncoderView: View {
           Text("4x Speed Low Quality").tag(EncodingPreset.fourTimeSpeedLowQuality)
         }
         .onChange(of: encodingPreset) { value in
-          encodedVideoURL = screenRecordService.getEncodedVideoURL(
-            screenRecordURL: screenRecordEntry.url,
-            encodingPreset: value
-          )
+          let encodedVideoURL = encodeService.generateEncodedVideoURL(
+            screenRecordEntry: screenRecordEntry, preset: encodingPreset)
+          encodedVideoEntry = EncodedVideoEntry(
+            url: encodedVideoURL,
+            preset: value)
         }
       }
       List {
         Button {
           Task {
             guard
-              let url = await screenRecordService.encode(
+              let url = await encodeService.encode(
                 preset: encodingPreset,
                 screenRecordURL: screenRecordEntry.url,
                 progressHandler: { currentTime, totalTime in
@@ -51,8 +53,7 @@ struct ScreenRecordEncoderView: View {
           ShareLink(item: "").disabled(true)
         }
         Button {
-          screenRecordService.removeFileIfExists(url: encodedVideoURL)
-          encodedVideoURL = nil
+          encodeService.removeEncodedVideo(encodedVideoEntry: encodedVideoEntry)
         } label: {
           Label("Remove", systemImage: "trash")
         }.disabled(encodedVideoURL == nil)
@@ -63,14 +64,14 @@ struct ScreenRecordEncoderView: View {
 
 #if DEBUG
   #Preview {
-    let service = ScreenRecordServiceMock()
-    let entries = service.listScreenRecordEntries()
-    let entry = entries.first!
-    let thumbnail = service.getThumbnailImage(entry.url)
+    let screenRecordService = ScreenRecordServiceMock()
+    let encodeService = screenRecordService.createEncodeService()
+    let screenRecordURLs = screenRecordService.listScreenRecordURLs()
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries(
+      screenRecordURLs: screenRecordURLs)
+    let screenRecordEntry = screenRecordEntries[0]
 
     return ScreenRecordEncoderView(
-      screenRecordService: service,
-      screenRecordEntry: entry
-    )
+      encodeService: encodeService, screenRecordEntry: screenRecordEntry)
   }
 #endif

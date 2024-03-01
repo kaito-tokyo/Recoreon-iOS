@@ -1,17 +1,17 @@
 import SwiftUI
 
 class RecordNoteStore: ObservableObject {
-  let screenRecordService: ScreenRecordService
+  let recordNoteService: RecordNoteService
   let screenRecordEntry: ScreenRecordEntry
 
   @Published var recordNoteBodies: [URL: String] = [:]
 
-  init(_ screenRecordService: ScreenRecordService, _ screenRecordEntry: ScreenRecordEntry) {
-    self.screenRecordService = screenRecordService
+  init(recordNoteService: RecordNoteService, screenRecordEntry: ScreenRecordEntry) {
+    self.recordNoteService = recordNoteService
     self.screenRecordEntry = screenRecordEntry
-    let recordNoteURLs = screenRecordService.listRecordNoteURLs(
+    let recordNoteURLs = recordNoteService.listRecordNoteURLs(
       screenRecordURL: screenRecordEntry.url)
-    let recordNoteEntries = screenRecordService.listRecordNoteEntries(
+    let recordNoteEntries = recordNoteService.listRecordNoteEntries(
       recordNoteURLs: recordNoteURLs)
     self.recordNoteBodies = Dictionary(
       uniqueKeysWithValues: recordNoteEntries.map {
@@ -20,8 +20,10 @@ class RecordNoteStore: ObservableObject {
   }
 
   func addNote(shortName: String) {
-    let recordNoteURL = screenRecordService.getRecordNoteURL(
-      screenRecordEntry, shortName: shortName)
+    let recordNoteURL = recordNoteService.generateRecordNoteURL(
+      screenRecordURL: screenRecordEntry.url,
+      shortName: shortName
+    )
     recordNoteBodies[recordNoteURL] = ""
   }
 
@@ -37,6 +39,6 @@ class RecordNoteStore: ObservableObject {
     let recordNoteEntries = recordNoteBodies.map { url, body in
       RecordNoteEntry(url: url, body: body)
     }
-    screenRecordService.saveRecordNotes(recordNoteEntries)
+    recordNoteService.saveRecordNotes(recordNoteEntries)
   }
 }

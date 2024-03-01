@@ -7,14 +7,11 @@ struct ScreenRecordPreviewViewRoute: Hashable {
 
 struct ScreenRecordPreviewView: View {
   let screenRecordService: ScreenRecordService
-  @ObservedObject var screenRecordStore: ScreenRecordStore
-  @Binding var path: NavigationPath
   let screenRecordEntry: ScreenRecordEntry
 
   let player = AVPlayer()
 
   @State var isRemuxing: Bool = false
-  @State var isRemuxingFailed: Bool = false
 
   @State var isShowingRemoveConfirmation = false
 
@@ -24,8 +21,10 @@ struct ScreenRecordPreviewView: View {
         .onAppear {
           Task {
             isRemuxing = true
-            guard let previewURL = await screenRecordService.remux(screenRecordEntry.url) else {
-              isRemuxingFailed = true
+            guard
+              let previewURL = await screenRecordService.remuxPreviewVideo(
+                screenRecordURL: screenRecordEntry.url)
+            else {
               isRemuxing = false
               return
             }
@@ -48,18 +47,18 @@ struct ScreenRecordPreviewView: View {
 
 #if DEBUG
   #Preview {
-    let service = ScreenRecordServiceMock()
-    let entries = service.listScreenRecordEntries()
-    @State var selectedEntry = entries.first!
+    let screenRecordService = ScreenRecordServiceMock()
+    let screenRecordURLs = screenRecordService.listScreenRecordURLs()
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries(
+      screenRecordURLs: screenRecordURLs)
+    @State var screenRecordEntry = screenRecordEntries[0]
     @State var path: NavigationPath = NavigationPath()
-    @StateObject var store = ScreenRecordStore(screenRecordService: service)
+    @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
 
     return NavigationStack {
       ScreenRecordPreviewView(
-        screenRecordService: service,
-        screenRecordStore: store,
-        path: $path,
-        screenRecordEntry: selectedEntry
+        screenRecordService: screenRecordService,
+        screenRecordEntry: screenRecordEntry
       )
     }
   }

@@ -1,13 +1,11 @@
 import SwiftUI
 
 struct RecordNoteListView: View {
-  let screenRecordService: ScreenRecordService
-  let screenRecordEntry: ScreenRecordEntry
   @ObservedObject var recordNoteStore: RecordNoteStore
 
   @Environment(\.scenePhase) private var scenePhase
 
-  @State private var isAskingNewFilename = false
+  @State private var isAskingNewShortName = false
   @State private var newShortName = ""
 
   @State private var isEditingNote = false
@@ -31,11 +29,11 @@ struct RecordNoteListView: View {
         }
       }
       Button {
-        isAskingNewFilename = true
+        isAskingNewShortName = true
       } label: {
         Label("Add", systemImage: "doc.badge.plus")
       }
-      .alert("Enter a new note name", isPresented: $isAskingNewFilename) {
+      .alert("Enter a new note name", isPresented: $isAskingNewShortName) {
         TextField("Name", text: $newShortName)
         Button {
           if !newShortName.isEmpty {
@@ -80,17 +78,17 @@ struct RecordNoteListView: View {
 
 #if DEBUG
   #Preview {
-    let service = ScreenRecordServiceMock()
-    let screenRecordEntries = service.listScreenRecordEntries()
+    let screenRecordService = ScreenRecordServiceMock()
+    let recordNoteService = RecordNoteServiceMock()
+    let screenRecordURLs = screenRecordService.listScreenRecordURLs()
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries(
+      screenRecordURLs: screenRecordURLs)
     let screenRecordEntry = screenRecordEntries[0]
-    @StateObject var recordNoteStore = RecordNoteStore(service, screenRecordEntry)
+    @StateObject var recordNoteStore = RecordNoteStore(
+      recordNoteService: recordNoteService, screenRecordEntry: screenRecordEntry)
 
     return Form {
-      RecordNoteListView(
-        screenRecordService: service,
-        screenRecordEntry: screenRecordEntry,
-        recordNoteStore: recordNoteStore
-      )
+      RecordNoteListView(recordNoteStore: recordNoteStore)
     }
   }
 #endif

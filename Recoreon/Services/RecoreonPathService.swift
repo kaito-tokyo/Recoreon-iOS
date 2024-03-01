@@ -1,7 +1,7 @@
-private let fileManager = FileManager.default
-
-class RecoreonPaths {
+class RecoreonPathService {
   static let appGroupIdentifier = "group.com.github.umireon.Recoreon"
+
+  let fileManager: FileManager
 
   let appGroupDir: URL
   let appGroupDocumentsDir: URL
@@ -14,9 +14,10 @@ class RecoreonPaths {
   let recordsDir: URL
   let recordNotesDir: URL
 
-  init() {
+  init(_ fileManager: FileManager) {
+    self.fileManager = fileManager
     appGroupDir = fileManager.containerURL(
-      forSecurityApplicationGroupIdentifier: RecoreonPaths.appGroupIdentifier)!
+      forSecurityApplicationGroupIdentifier: Self.appGroupIdentifier)!
     appGroupDocumentsDir = appGroupDir.appending(
       component: "Documents", directoryHint: .isDirectory)
     appGroupRecordsDir = appGroupDocumentsDir.appending(
@@ -30,8 +31,28 @@ class RecoreonPaths {
     recordNotesDir = documentsDir.appending(path: "RecordNotes", directoryHint: .isDirectory)
   }
 
+  func getRecordID(screenRecordURL url: URL) -> String {
+    return url.deletingPathExtension().lastPathComponent
+  }
+
+  func generateRecordNoteSubDirURL(recordID: String) -> URL {
+    let subDirURL = recordNotesDir.appending(component: recordID, directoryHint: .isDirectory)
+    mkdirp(url: subDirURL)
+    return subDirURL
+  }
+
+  func generateRecordNoteURL(recordID: String, shortName: String, ext: String = "txt") -> URL {
+    let subDirURL = generateRecordNoteSubDirURL(recordID: recordID)
+    return subDirURL.appending(
+      component: "\(recordID)-\(shortName).\(ext)", directoryHint: .notDirectory)
+  }
+
   func ensureAppGroupDirectoriesExists() {
     try? fileManager.createDirectory(at: appGroupRecordsDir, withIntermediateDirectories: true)
+  }
+
+  private func mkdirp(url: URL) {
+    try? fileManager.createDirectory(at: url, withIntermediateDirectories: true)
   }
 
   func ensureSandboxDirectoriesExists() {
@@ -75,8 +96,8 @@ class RecoreonPaths {
     return recordsDir.appending(path: filename, directoryHint: .notDirectory)
   }
 
-  func getPreviewVideoURL(_ recordedVideoURL: URL, ext: String = "mp4") -> URL {
-    let filename = recordedVideoURL.deletingPathExtension().appendingPathExtension(ext)
+  func getPreviewVideoURL(screenRecordURL: URL) -> URL {
+    let filename = screenRecordURL.deletingPathExtension().appendingPathExtension("mp4")
       .lastPathComponent
     return previewsDir.appending(path: filename, directoryHint: .notDirectory)
   }
@@ -99,5 +120,13 @@ class RecoreonPaths {
     return urls.sorted(by: {
       $0.lastPathComponent.compare($1.lastPathComponent) == .orderedAscending
     })
+  }
+
+  func generateEncodedVideoURL(screenRecordURL: URL, presetName: String) -> URL {
+    mkdirp(url: encodedVideosDir)
+    let recordID = getRecordID(screenRecordURL: screenRecordURL)
+    let ext = "mp4"
+    return encodedVideosDir.appending(
+      path: "\(recordID)-\(presetName).\(ext)", directoryHint: .notDirectory)
   }
 }
