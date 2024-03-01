@@ -17,6 +17,9 @@ struct ScreenRecordDetailView: View {
 
   @State var isShowingRemoveConfirmation = false
 
+  @State var isAskingNewNoteShortName = false
+  @State var newNoteShortName = ""
+
   init(
     screenRecordService: ScreenRecordService, recordNoteService: RecordNoteService,
     screenRecordStore: ScreenRecordStore, path: Binding<NavigationPath>,
@@ -33,11 +36,40 @@ struct ScreenRecordDetailView: View {
     self.isShowingRemoveConfirmation = isShowingRemoveConfirmation
   }
 
+  func recordNoteList() -> some View {
+    return Section(header: Text("Notes")) {
+      ForEach(recordNoteStore.listRecordNoteEntries()) { recordNoteEntry in
+        NavigationLink(value: RecordNoteEditorViewRoute(recordNoteEntry: recordNoteEntry)) {
+          Button {
+          } label: {
+            Label(recordNoteEntry.shortNameWithExt, systemImage: "doc")
+          }
+        }
+      }
+
+      Button {
+        isAskingNewNoteShortName = true
+      } label: {
+        Label("Add", systemImage: "doc.badge.plus")
+      }
+      .alert("Enter a new note name", isPresented: $isAskingNewNoteShortName) {
+        TextField("Name", text: $newNoteShortName)
+        Button {
+          if !newNoteShortName.isEmpty {
+            recordNoteStore.addNote(shortName: newNoteShortName)
+          }
+          newNoteShortName = ""
+        } label: {
+          Text("OK")
+        }
+      }
+    }
+  }
+
   var body: some View {
     let encodeService = screenRecordService.createEncodeService()
-    Text(screenRecordEntry.url.lastPathComponent)
     Form {
-      Section(header: Text("Operations")) {
+      Section {
         List {
           NavigationLink(
             value: ScreenRecordPreviewViewRoute(screenRecordEntry: screenRecordEntry)
@@ -66,7 +98,7 @@ struct ScreenRecordDetailView: View {
             }
           }.alert(isPresented: $isShowingRemoveConfirmation) {
             Alert(
-              title: Text("Are you sure to remove this video?"),
+              title: Text("Are you sure to remove this screen record?"),
               primaryButton: .destructive(Text("OK")) {
                 screenRecordService.removeScreenRecordAndRelatedFiles(
                   screenRecordEntry: screenRecordEntry)
@@ -78,10 +110,10 @@ struct ScreenRecordDetailView: View {
           }
         }
       }
-      Section(header: Text("Notes")) {
-        RecordNoteListView(recordNoteStore: recordNoteStore)
-      }
+
+      recordNoteList()
     }
+    .navigationTitle(screenRecordEntry.url.lastPathComponent)
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
       ScreenRecordPreviewView(
         screenRecordService: screenRecordService,
@@ -91,6 +123,13 @@ struct ScreenRecordDetailView: View {
     .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
       ScreenRecordEncoderView(
         encodeService: encodeService, screenRecordEntry: route.screenRecordEntry)
+    }
+    .navigationDestination(for: RecordNoteEditorViewRoute.self) { route in
+      RecordNoteEditorView(
+        recordNoteStore: recordNoteStore,
+        path: $path,
+        recordNoteEntry: route.recordNoteEntry
+      )
     }
   }
 }
