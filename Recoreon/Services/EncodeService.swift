@@ -22,7 +22,7 @@ class EncodeService {
   func encode(
     screenRecordEntry: ScreenRecordEntry, preset: EncodingPreset,
     progressHandler: @escaping (Double, Double) -> Void
-  ) async -> URL? {
+  ) async -> EncodedVideoEntry? {
     let durations = getDurationOfStreams(screenRecordEntry.url)
     let audioChannelMapping = getAudioChannelMapping(durations: durations)
     guard let filter = preset.filter[audioChannelMapping] else { return nil }
@@ -60,11 +60,12 @@ class EncodeService {
         withArgumentsAsync: arguments,
         withCompleteCallback: { session in
           guard let ret = session?.getReturnCode() else {
-            continuation.resume(returning: nil)
+            continuation.resume(returning: .none)
             return
           }
           if ReturnCode.isSuccess(ret) {
-            continuation.resume(returning: encodedVideoURL)
+            let encodedVideoEntry = EncodedVideoEntry(url: encodedVideoURL, preset: preset)
+            continuation.resume(returning: encodedVideoEntry)
           } else {
             continuation.resume(returning: nil)
           }
