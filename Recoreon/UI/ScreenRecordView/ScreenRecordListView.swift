@@ -116,10 +116,7 @@ struct ScreenRecordListView: View {
               }
             }
             for entry in entries {
-//              screenRecordService.removeThumbnail(entry)
-//              screenRecordService.removePreviewVideo(entry)
-//              screenRecordService.removeScreenRecord(entry)
-//              screenRecordService.removeEncodedVideos(entry)
+              screenRecordService.removeScreenRecordAndRelatedFiles(screenRecordURL: entry.url)
             }
             screenRecordStore.update()
           },
@@ -138,12 +135,9 @@ struct ScreenRecordListView: View {
     .navigationBarTitleDisplayMode(.inline)
     .navigationDestination(for: ScreenRecordDetailViewRoute.self) { route in
       ScreenRecordDetailView(
-        screenRecordService: screenRecordService,
-        recordNoteService: recordNoteService,
-        screenRecordStore: screenRecordStore,
-        path: $path,
-        screenRecordEntry: route.screenRecordEntry
-      )
+        screenRecordService: screenRecordService, recordNoteService: recordNoteService,
+        screenRecordStore: screenRecordStore, path: $path,
+        screenRecordEntry: route.screenRecordEntry)
     }
     .toolbar {
       EditButton()
@@ -162,7 +156,8 @@ struct ScreenRecordListView: View {
     let screenRecordService = ScreenRecordServiceMock()
     let recordNoteService = RecordNoteServiceMock()
     let screenRecordURLs = screenRecordService.listScreenRecordURLs()
-    let screenRecordEntries = screenRecordService.listScreenRecordEntries(screenRecordURLs: screenRecordURLs)
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries(
+      screenRecordURLs: screenRecordURLs)
     @State var path = NavigationPath()
     @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
 

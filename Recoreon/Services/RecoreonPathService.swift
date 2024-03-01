@@ -43,7 +43,8 @@ class RecoreonPathService {
 
   func generateRecordNoteURL(recordID: String, shortName: String, ext: String = "txt") -> URL {
     let subDirURL = generateRecordNoteSubDirURL(recordID: recordID)
-    return subDirURL.appending(component: "\(recordID)-\(shortName).\(ext)", directoryHint: .notDirectory)
+    return subDirURL.appending(
+      component: "\(recordID)-\(shortName).\(ext)", directoryHint: .notDirectory)
   }
 
   func ensureAppGroupDirectoriesExists() {
@@ -95,8 +96,8 @@ class RecoreonPathService {
     return recordsDir.appending(path: filename, directoryHint: .notDirectory)
   }
 
-  func getPreviewVideoURL(screenRecordURL: URL, ext: String = "mp4") -> URL {
-    let filename = screenRecordURL.deletingPathExtension().appendingPathExtension(ext)
+  func getPreviewVideoURL(screenRecordURL: URL) -> URL {
+    let filename = screenRecordURL.deletingPathExtension().appendingPathExtension("mp4")
       .lastPathComponent
     return previewsDir.appending(path: filename, directoryHint: .notDirectory)
   }

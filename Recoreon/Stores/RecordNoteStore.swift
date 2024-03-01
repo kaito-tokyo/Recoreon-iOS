@@ -6,7 +6,7 @@ class RecordNoteStore: ObservableObject {
 
   @Published var recordNoteBodies: [URL: String] = [:]
 
-  init(_ recordNoteService: RecordNoteService, _ screenRecordEntry: ScreenRecordEntry) {
+  init(recordNoteService: RecordNoteService, screenRecordEntry: ScreenRecordEntry) {
     self.recordNoteService = recordNoteService
     self.screenRecordEntry = screenRecordEntry
     let recordNoteURLs = recordNoteService.listRecordNoteURLs(

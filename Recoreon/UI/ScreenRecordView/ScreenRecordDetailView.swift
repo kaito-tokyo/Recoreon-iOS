@@ -8,6 +8,7 @@ struct ScreenRecordDetailViewRoute: Hashable {
 struct ScreenRecordDetailView: View {
   let screenRecordService: ScreenRecordService
   let recordNoteService: RecordNoteService
+
   @ObservedObject var screenRecordStore: ScreenRecordStore
   @Binding var path: NavigationPath
   let screenRecordEntry: ScreenRecordEntry
@@ -17,18 +18,19 @@ struct ScreenRecordDetailView: View {
   @State var isShowingRemoveConfirmation = false
 
   init(
-    screenRecordService: ScreenRecordService,
-    recordNoteService: RecordNoteService,
-    screenRecordStore: ScreenRecordStore,
-    path: Binding<NavigationPath>, screenRecordEntry: ScreenRecordEntry
+    screenRecordService: ScreenRecordService, recordNoteService: RecordNoteService,
+    screenRecordStore: ScreenRecordStore, path: Binding<NavigationPath>,
+    screenRecordEntry: ScreenRecordEntry
   ) {
     self.screenRecordService = screenRecordService
     self.recordNoteService = recordNoteService
     self.screenRecordStore = screenRecordStore
     self._path = path
     self.screenRecordEntry = screenRecordEntry
-    let recordNoteStore = RecordNoteStore(recordNoteService, screenRecordEntry)
+    let recordNoteStore = RecordNoteStore(
+      recordNoteService: recordNoteService, screenRecordEntry: screenRecordEntry)
     self._recordNoteStore = StateObject(wrappedValue: recordNoteStore)
+    self.isShowingRemoveConfirmation = isShowingRemoveConfirmation
   }
 
   var body: some View {
@@ -65,10 +67,8 @@ struct ScreenRecordDetailView: View {
             Alert(
               title: Text("Are you sure to remove this video?"),
               primaryButton: .destructive(Text("OK")) {
-//                screenRecordService.removeThumbnail(screenRecordEntry)
-//                screenRecordService.removePreviewVideo(screenRecordEntry)
-//                screenRecordService.removeScreenRecord(screenRecordEntry)
-//                screenRecordService.removeEncodedVideos(screenRecordEntry)
+                screenRecordService.removeScreenRecordAndRelatedFiles(
+                  screenRecordURL: screenRecordEntry.url)
                 screenRecordStore.update()
                 path.removeLast()
               },
@@ -78,11 +78,7 @@ struct ScreenRecordDetailView: View {
         }
       }
       Section(header: Text("Notes")) {
-        RecordNoteListView(
-          screenRecordService: screenRecordService,
-          screenRecordEntry: screenRecordEntry,
-          recordNoteStore: recordNoteStore
-        )
+        RecordNoteListView(recordNoteStore: recordNoteStore)
       }
     }
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
@@ -103,21 +99,20 @@ struct ScreenRecordDetailView: View {
 #if DEBUG
   #Preview {
     let screenRecordService = ScreenRecordServiceMock()
-    let recordNoteService = RecordNoteServiceMock()
+    let recordNoteService = screenRecordService.createRecordNoteService()
     let screenRecordURLs = screenRecordService.listScreenRecordURLs()
-    let screenRecordEntries = screenRecordService.listScreenRecordEntries(screenRecordURLs: screenRecordURLs)
-    @State var selectedEntry = screenRecordEntries[0]
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries(
+      screenRecordURLs: screenRecordURLs)
+    let screenRecordEntry = screenRecordEntries[0]
     @State var path: NavigationPath = NavigationPath()
     @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
+    @StateObject var recordNoteStore = RecordNoteStore(
+      recordNoteService: recordNoteService, screenRecordEntry: screenRecordEntry)
 
     return NavigationStack {
       ScreenRecordDetailView(
-        screenRecordService: screenRecordService,
-        recordNoteService: recordNoteService,
-        screenRecordStore: screenRecordStore,
-        path: $path,
-        screenRecordEntry: selectedEntry
-      )
+        screenRecordService: screenRecordService, recordNoteService: recordNoteService,
+        screenRecordStore: screenRecordStore, path: $path, screenRecordEntry: screenRecordEntry)
     }
   }
 #endif
