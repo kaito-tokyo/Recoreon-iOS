@@ -226,8 +226,8 @@
 			children = (
 				22966A2F2AFE79200080324D /* EncodedVideoCollection.swift */,
 				226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */,
-				226A89912AFB30D900EBD2CA /* ScreenRecordEntry.swift */,
 				223B05852B90CC3400A16852 /* RecordNoteEntry.swift */,
+				226A89912AFB30D900EBD2CA /* ScreenRecordEntry.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -245,8 +245,8 @@
 		223B057F2B90BD3700A16852 /* Stores */ = {
 			isa = PBXGroup;
 			children = (
-				22966A322AFE8D1B0080324D /* ScreenRecordStore.swift */,
 				22183B482B9100E9004D6FAD /* RecordNoteStore.swift */,
+				22966A322AFE8D1B0080324D /* ScreenRecordStore.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -254,12 +254,12 @@
 		223B05802B90BD5D00A16852 /* ScreenRecordView */ = {
 			isa = PBXGroup;
 			children = (
+				223B058B2B90DE3800A16852 /* RecordNoteListView.swift */,
 				22966A202AFD9ED40080324D /* ScreenRecordDetailView.swift */,
 				22966A272AFE50B10080324D /* ScreenRecordEncoderView.swift */,
 				2232A9542AFD46ED00330C23 /* ScreenRecordListView.swift */,
 				223B05812B90C34700A16852 /* ScreenRecordPreviewView.swift */,
 				22966A2D2AFE756F0080324D /* ScreenRecordView.swift */,
-				223B058B2B90DE3800A16852 /* RecordNoteListView.swift */,
 			);
 			path = ScreenRecordView;
 			sourceTree = "<group>";
@@ -343,10 +343,10 @@
 			children = (
 				22C3CD012AF240B30039750A /* Preview Assets.xcassets */,
 				2232A95A2AFD80A200330C23 /* Preview01.mp4 */,
-				22966A222AFE29660080324D /* Record01.mkv */,
-				226A898E2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift */,
 				223B05872B90CD8700A16852 /* Record01-1.txt */,
 				223B05882B90CDA400A16852 /* Record01-2.txt */,
+				22966A222AFE29660080324D /* Record01.mkv */,
+				226A898E2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -550,12 +550,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				223B05892B90D5D800A16852 /* Record01-1.txt in Resources */,
-				223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */,
 				22C3CCFF2AF240B30039750A /* Assets.xcassets in Resources */,
 				22AAC7F32B90B7B500078129 /* Localizable.xcstrings in Resources */,
 				22C3CD022AF240B30039750A /* Preview Assets.xcassets in Resources */,
 				2232A95C2AFD80A200330C23 /* Preview01.mp4 in Resources */,
+				223B05892B90D5D800A16852 /* Record01-1.txt in Resources */,
+				223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */,
 				22966A232AFE29660080324D /* Record01.mkv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -624,11 +624,11 @@
 				22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */,
 				22966A302AFE79200080324D /* EncodedVideoCollection.swift in Sources */,
 				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
-				223B058C2B90DE3800A16852 /* RecordNoteListView.swift in Sources */,
 				226A898F2AFB2EA500EBD2CA /* RecordedVideoServiceMock.swift in Sources */,
-				223B05862B90CC3400A16852 /* RecordNoteEntry.swift in Sources */,
-				22183B492B9100E9004D6FAD /* RecordNoteStore.swift in Sources */,
 				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,
+				223B05862B90CC3400A16852 /* RecordNoteEntry.swift in Sources */,
+				223B058C2B90DE3800A16852 /* RecordNoteListView.swift in Sources */,
+				22183B492B9100E9004D6FAD /* RecordNoteStore.swift in Sources */,
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
 				2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
 				228B5AAE2AFA3CDB0016CAF2 /* RecoreonPaths.swift in Sources */,
