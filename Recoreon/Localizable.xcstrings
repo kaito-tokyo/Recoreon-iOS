@@ -1,12 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "2x Speed Low Quality" : {
-
-    },
-    "4x Speed Low Quality" : {
-
-    },
     "Add" : {
 
     },
@@ -26,7 +20,7 @@
         }
       }
     },
-    "Encoding progress" : {
+    "Encoder" : {
 
     },
     "Enter a new note name" : {
@@ -39,9 +33,6 @@
 
     },
     "List" : {
-
-    },
-    "Low Quality" : {
 
     },
     "Name" : {
@@ -64,6 +55,7 @@
 
     },
     "Preset" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {

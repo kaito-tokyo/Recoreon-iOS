@@ -10,6 +10,7 @@ let byteCountFormatter = {
 
 struct ScreenRecordListView: View {
   let screenRecordService: ScreenRecordService
+  let recordNoteService: RecordNoteService
   @ObservedObject var screenRecordStore: ScreenRecordStore
   @Binding var path: NavigationPath
 
@@ -68,7 +69,7 @@ struct ScreenRecordListView: View {
   func shareLinkButton() -> some View {
     let shareURLs = selection.flatMap { screenRecordURL in
 
-      let recordNoteURLs = screenRecordService.listRecordNoteURLs(screenRecordURL: screenRecordURL)
+      let recordNoteURLs = recordNoteService.listRecordNoteURLs(screenRecordURL: screenRecordURL)
       return [screenRecordURL] + recordNoteURLs
     }
     return VStack {
@@ -115,10 +116,10 @@ struct ScreenRecordListView: View {
               }
             }
             for entry in entries {
-              screenRecordService.removeThumbnail(entry)
-              screenRecordService.removePreviewVideo(entry)
-              screenRecordService.removeScreenRecord(entry)
-              screenRecordService.removeEncodedVideos(entry)
+//              screenRecordService.removeThumbnail(entry)
+//              screenRecordService.removePreviewVideo(entry)
+//              screenRecordService.removeScreenRecord(entry)
+//              screenRecordService.removeEncodedVideos(entry)
             }
             screenRecordStore.update()
           },
@@ -138,6 +139,7 @@ struct ScreenRecordListView: View {
     .navigationDestination(for: ScreenRecordDetailViewRoute.self) { route in
       ScreenRecordDetailView(
         screenRecordService: screenRecordService,
+        recordNoteService: recordNoteService,
         screenRecordStore: screenRecordStore,
         path: $path,
         screenRecordEntry: route.screenRecordEntry
@@ -157,15 +159,18 @@ struct ScreenRecordListView: View {
 
 #if DEBUG
   #Preview {
-    let service = ScreenRecordServiceMock()
-    @State var entries = service.listScreenRecordEntries()
+    let screenRecordService = ScreenRecordServiceMock()
+    let recordNoteService = RecordNoteServiceMock()
+    let screenRecordURLs = screenRecordService.listScreenRecordURLs()
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries(screenRecordURLs: screenRecordURLs)
     @State var path = NavigationPath()
-    @StateObject var store = ScreenRecordStore(screenRecordService: service)
+    @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
 
     return NavigationStack {
       ScreenRecordListView(
-        screenRecordService: service,
-        screenRecordStore: store,
+        screenRecordService: screenRecordService,
+        recordNoteService: recordNoteService,
+        screenRecordStore: screenRecordStore,
         path: $path
       )
     }

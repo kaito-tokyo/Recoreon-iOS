@@ -95,8 +95,8 @@ class RecoreonPathService {
     return recordsDir.appending(path: filename, directoryHint: .notDirectory)
   }
 
-  func getPreviewVideoURL(_ recordedVideoURL: URL, ext: String = "mp4") -> URL {
-    let filename = recordedVideoURL.deletingPathExtension().appendingPathExtension(ext)
+  func getPreviewVideoURL(screenRecordURL: URL, ext: String = "mp4") -> URL {
+    let filename = screenRecordURL.deletingPathExtension().appendingPathExtension(ext)
       .lastPathComponent
     return previewsDir.appending(path: filename, directoryHint: .notDirectory)
   }

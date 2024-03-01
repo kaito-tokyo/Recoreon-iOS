@@ -17,6 +17,11 @@ class RecordNoteService {
     }
   }
 
+  func generateRecordNoteURL(screenRecordURL: URL, shortName: String) -> URL {
+    let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordURL)
+    return recoreonPathService.generateRecordNoteURL(recordID: recordID, shortName: shortName)
+  }
+
   func saveRecordNotes(_ recordNoteEntries: [RecordNoteEntry]) {
     for recordNoteEntry in recordNoteEntries {
       let body = recordNoteEntry.body

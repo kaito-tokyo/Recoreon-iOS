@@ -7,6 +7,7 @@ struct ScreenRecordDetailViewRoute: Hashable {
 
 struct ScreenRecordDetailView: View {
   let screenRecordService: ScreenRecordService
+  let recordNoteService: RecordNoteService
   @ObservedObject var screenRecordStore: ScreenRecordStore
   @Binding var path: NavigationPath
   let screenRecordEntry: ScreenRecordEntry
@@ -16,14 +17,17 @@ struct ScreenRecordDetailView: View {
   @State var isShowingRemoveConfirmation = false
 
   init(
-    screenRecordService: ScreenRecordService, screenRecordStore: ScreenRecordStore,
+    screenRecordService: ScreenRecordService,
+    recordNoteService: RecordNoteService,
+    screenRecordStore: ScreenRecordStore,
     path: Binding<NavigationPath>, screenRecordEntry: ScreenRecordEntry
   ) {
     self.screenRecordService = screenRecordService
+    self.recordNoteService = recordNoteService
     self.screenRecordStore = screenRecordStore
     self._path = path
     self.screenRecordEntry = screenRecordEntry
-    let recordNoteStore = RecordNoteStore(screenRecordService, screenRecordEntry)
+    let recordNoteStore = RecordNoteStore(recordNoteService, screenRecordEntry)
     self._recordNoteStore = StateObject(wrappedValue: recordNoteStore)
   }
 
@@ -83,8 +87,8 @@ struct ScreenRecordDetailView: View {
     }
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
       ScreenRecordPreviewView(
-        screenRecordService: screenRecordService, screenRecordStore: screenRecordStore, path: $path,
-        screenRecordEntry: route.screenRecordEntry
+        screenRecordService: screenRecordService,
+        screenRecordEntry: screenRecordEntry
       )
     }
     .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
@@ -99,6 +103,7 @@ struct ScreenRecordDetailView: View {
 #if DEBUG
   #Preview {
     let screenRecordService = ScreenRecordServiceMock()
+    let recordNoteService = RecordNoteServiceMock()
     let screenRecordURLs = screenRecordService.listScreenRecordURLs()
     let screenRecordEntries = screenRecordService.listScreenRecordEntries(screenRecordURLs: screenRecordURLs)
     @State var selectedEntry = screenRecordEntries[0]
@@ -108,6 +113,7 @@ struct ScreenRecordDetailView: View {
     return NavigationStack {
       ScreenRecordDetailView(
         screenRecordService: screenRecordService,
+        recordNoteService: recordNoteService,
         screenRecordStore: screenRecordStore,
         path: $path,
         screenRecordEntry: selectedEntry

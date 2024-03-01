@@ -24,6 +24,38 @@ class ScreenRecordService {
     }
   }
 
+  func remuxPreviewVideo(screenRecordURL: URL) async -> URL? {
+    let previewVideoURL = recoreonPathService.getPreviewVideoURL(screenRecordURL: screenRecordURL)
+ 
+    if fileManager.fileExists(atPath: previewVideoURL.path()) {
+      return previewVideoURL
+    }
+
+    let arguments = [
+        "-i",
+        screenRecordURL.path(),
+        "-c:v",
+        "copy",
+        "-c:a",
+        "copy",
+        previewVideoURL.path(),
+    ]
+
+    return await withCheckedContinuation { continuation in
+      FFmpegKit.execute(
+        withArgumentsAsync: arguments,
+        withCompleteCallback: { session in
+          let ret = session?.getReturnCode()
+          if ReturnCode.isSuccess(ret) {
+            continuation.resume(returning: previewVideoURL)
+          } else {
+            continuation.resume(returning: nil)
+          }
+        }
+      )
+    }
+  }
+
   func createRecordNoteService() -> RecordNoteService {
     return RecordNoteService(recoreonPathService)
   }
