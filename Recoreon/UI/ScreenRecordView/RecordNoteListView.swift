@@ -5,12 +5,14 @@ struct RecordNoteListView: View {
   let screenRecordEntry: ScreenRecordEntry
   @ObservedObject var recordNoteStore: RecordNoteStore
 
-  @State var isAskingNewFilename = false
-  @State var newFilename = ""
+  @Environment(\.scenePhase) private var scenePhase
 
-  @State var isEditingNote = false
-  @State var editingNoteEntry = RecordNoteEntry(url: URL(string: "invalid")!, body: "")
-  @State var editingNoteBody = ""
+  @State private var isAskingNewFilename = false
+  @State private var newShortName = ""
+
+  @State private var isEditingNote = false
+  @State private var editingNoteEntry = RecordNoteEntry(url: URL(string: "invalid")!, body: "")
+  @State private var editingNoteBody = ""
 
   var body: some View {
     List {
@@ -34,10 +36,12 @@ struct RecordNoteListView: View {
         Label("Add", systemImage: "doc.badge.plus")
       }
       .alert("Enter a new note name", isPresented: $isAskingNewFilename) {
-        TextField("Name", text: $newFilename)
+        TextField("Name", text: $newShortName)
         Button {
-          recordNoteStore.addNote(shortName: newFilename)
-          newFilename = ""
+          if !newShortName.isEmpty {
+            recordNoteStore.addNote(shortName: newShortName)
+          }
+          newShortName = ""
         } label: {
           Text("OK")
         }
@@ -50,16 +54,25 @@ struct RecordNoteListView: View {
           Text(editingNoteEntry.url.lastPathComponent)
         }
         Button {
-
+          recordNoteStore.deleteNote(recordNoteURL: editingNoteEntry.url)
+          isEditingNote = false
         } label: {
-          Text("Save")
-        }
-        Button {
-
-        } label: {
-          Text("Rename")
+          Text("Remove")
         }
         TextField("Enter the note text here.", text: $editingNoteBody, axis: .vertical)
+      }
+    }
+    .onChange(of: editingNoteBody) { _ in
+      recordNoteStore.putNote(recordNoteURL: editingNoteEntry.url, body: editingNoteBody)
+    }
+    .onChange(of: isEditingNote) { newValue in
+      if newValue == false {
+        recordNoteStore.saveAllNotes()
+      }
+    }
+    .onChange(of: scenePhase) { newValue in
+      if scenePhase == .active && newValue == .inactive {
+        recordNoteStore.saveAllNotes()
       }
     }
   }

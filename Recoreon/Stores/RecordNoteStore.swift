@@ -19,4 +19,16 @@ class RecordNoteStore: ObservableObject {
     let recordNoteURL = screenRecordService.getRecordNoteURL(screenRecordEntry, shortName: shortName)
     recordNoteBodies[recordNoteURL] = ""
   }
+
+  func putNote(recordNoteURL: URL, body: String) {
+    recordNoteBodies[recordNoteURL] = body
+  }
+
+  func deleteNote(recordNoteURL: URL) {
+    recordNoteBodies.removeValue(forKey: recordNoteURL)
+  }
+
+  func saveAllNotes() {
+    
+  }
 }
