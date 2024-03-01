@@ -1,23 +1,4 @@
-//
-//  SampleHandler.swift
-//  RecoreonBroadcastUploadExtension
-//
-//  Created by Kaito Udagawa on 2023/11/02.
-//
-
 import ReplayKit
-
-private let fileManager = FileManager.default
-private let paths = RecoreonPathService(fileManager)
-
-private let dateFormatter = {
-  let formatter = ISO8601DateFormatter()
-  formatter.formatOptions.remove(.withDashSeparatorInDate)
-  formatter.formatOptions.remove(.withColonSeparatorInTime)
-  formatter.formatOptions.remove(.withTimeZone)
-  formatter.timeZone = TimeZone.current
-  return formatter
-}()
 
 // swiftlint:disable function_parameter_count
 private func copyPlane(
@@ -66,6 +47,7 @@ enum SampleHandlerError: LocalizedError {
 
 class SampleHandler: RPBroadcastSampleHandler {
   struct Spec {
+    let ext: String
     let frameRate: Int
     let videoBitRate: Int
     let screenAudioSampleRate: Int
@@ -75,6 +57,7 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   let spec = Spec(
+    ext: "mkv",
     frameRate: 60,
     videoBitRate: 8_000_000,
     screenAudioSampleRate: 44100,
@@ -82,6 +65,8 @@ class SampleHandler: RPBroadcastSampleHandler {
     micAudioSampleRate: 48000,
     micAudioBitRate: 320_000
   )
+
+  let recoreonPathService = RecoreonPathService(fileManager: FileManager.default)
 
   let writer = ScreenRecordWriter()
   var pixelBufferExtractorRef: PixelBufferExtractor?
@@ -143,25 +128,25 @@ class SampleHandler: RPBroadcastSampleHandler {
     stopRecording()
   }
 
-  func generateFileName(date: Date, ext: String = "mkv") -> String {
-    let dateString = dateFormatter.string(from: date)
-    return "Recoreon\(dateString).\(ext)"
-  }
-
   func startRecording() {
-    paths.ensureAppGroupDirectoriesExists()
+    let recordID = recoreonPathService.generateRecordID(date: Date())
+    let appGroupScreenRecordURL = recoreonPathService.generateAppGroupScreenRecordURL(
+      recordID: recordID, ext: spec.ext)
 
-    let url = paths.appGroupRecordsDir.appending(
-      path: generateFileName(date: Date()), directoryHint: .notDirectory)
-    if !writer.openVideoCodec("h264_videotoolbox") {
+    let openVideoCodecResult = writer.openVideoCodec("h264_videotoolbox")
+    if !openVideoCodecResult {
       finishBroadcastWithError(SampleHandlerError.videoCodecOpeningError)
       return
     }
-    if !writer.openAudioCodec("aac_at") {
+
+    let openAudioCodecResult = writer.openAudioCodec("aac_at")
+    if !openAudioCodecResult {
       finishBroadcastWithError(SampleHandlerError.audioCodecOpeningError)
       return
     }
-    if !writer.openOutputFile(url.path()) {
+
+    let openOutputFileResult = writer.openOutputFile(appGroupScreenRecordURL.path())
+    if !openOutputFileResult {
       finishBroadcastWithError(SampleHandlerError.outputFileOpeningError)
       return
     }
@@ -189,22 +174,26 @@ class SampleHandler: RPBroadcastSampleHandler {
       return
     }
 
-    if !writer.openVideo(0) {
+    let openVideo0Result = writer.openVideo(0)
+    if !openVideo0Result {
       finishBroadcastWithError(SampleHandlerError.videoOpeningError)
       return
     }
 
-    if !writer.openAudio(1) {
+    let openAudio1Result = writer.openAudio(1)
+    if !openAudio1Result {
       finishBroadcastWithError(SampleHandlerError.audioOpeningError)
       return
     }
 
-    if !writer.openAudio(2) {
+    let openAudio2Result = writer.openAudio(2)
+    if !openAudio2Result {
       finishBroadcastWithError(SampleHandlerError.audioOpeningError)
       return
     }
 
-    if !writer.startOutput() {
+    let startOutputResult = writer.startOutput()
+    if !startOutputResult {
       finishBroadcastWithError(SampleHandlerError.outputStartingError)
       return
     }

@@ -15,13 +15,13 @@ struct ScreenRecordListView: View {
   @Binding var path: NavigationPath
 
   @State private var editMode: EditMode = .inactive
-  @State private var selection = Set<URL>()
+  @State private var selectedScreenRecordEntries = Set<ScreenRecordEntry>()
   @State private var isRemoveConfirmationPresented: Bool = false
 
   func screenRecordEntry(_ entry: ScreenRecordEntry) -> some View {
     return HStack {
       if editMode.isEditing {
-        if selection.contains(entry.url) {
+        if selectedScreenRecordEntries.contains(entry) {
           Image(systemName: "checkmark.circle")
             .foregroundColor(.green)
         } else {
@@ -48,10 +48,10 @@ struct ScreenRecordListView: View {
         let detailViewRoute = ScreenRecordDetailViewRoute(screenRecordEntry: entry)
         if editMode.isEditing {
           Button {
-            if selection.contains(entry.url) {
-              selection.remove(entry.url)
+            if selectedScreenRecordEntries.contains(entry) {
+              selectedScreenRecordEntries.remove(entry)
             } else {
-              selection.insert(entry.url)
+              selectedScreenRecordEntries.insert(entry)
             }
           } label: {
             screenRecordEntry(entry)
@@ -67,10 +67,12 @@ struct ScreenRecordListView: View {
   }
 
   func shareLinkButton() -> some View {
-    let shareURLs = selection.flatMap { screenRecordURL in
+    let shareURLs = selectedScreenRecordEntries.flatMap { screenRecordEntry in
 
-      let recordNoteURLs = recordNoteService.listRecordNoteURLs(screenRecordURL: screenRecordURL)
-      return [screenRecordURL] + recordNoteURLs
+      let recordNoteURLs = recordNoteService.listRecordNoteEntries(
+        screenRecordEntry: screenRecordEntry
+      ).map { $0.url }
+      return [screenRecordEntry.url] + recordNoteURLs
     }
     return VStack {
       Spacer()
@@ -85,11 +87,11 @@ struct ScreenRecordListView: View {
               .frame(width: 32, height: 32)
               .tint(Color.white)
               .padding(.all, 20)
-              .background(selection.isEmpty ? Color.gray : Color.blue)
+              .background(selectedScreenRecordEntries.isEmpty ? Color.gray : Color.blue)
               .clipShape(Circle())
           }
         )
-        .disabled(selection.isEmpty)
+        .disabled(selectedScreenRecordEntries.isEmpty)
         Button {
           isRemoveConfirmationPresented = true
         } label: {
@@ -99,10 +101,10 @@ struct ScreenRecordListView: View {
             .frame(width: 32, height: 32)
             .tint(Color.white)
             .padding(.all, 20)
-            .background(selection.isEmpty ? Color.gray : Color.red)
+            .background(selectedScreenRecordEntries.isEmpty ? Color.gray : Color.red)
             .clipShape(Circle())
         }
-        .disabled(selection.isEmpty)
+        .disabled(selectedScreenRecordEntries.isEmpty)
         .padding(.trailing, 10)
         .padding(.bottom, 10)
       }
@@ -110,13 +112,8 @@ struct ScreenRecordListView: View {
         Alert(
           title: Text("Are you sure to remove all of the selected videos?"),
           primaryButton: .destructive(Text("OK")) {
-            let entries = selection.compactMap { entryURL in
-              screenRecordStore.screenRecordEntries.first { entry in
-                entry.url == entryURL
-              }
-            }
-            for entry in entries {
-              screenRecordService.removeScreenRecordAndRelatedFiles(screenRecordURL: entry.url)
+            for entry in selectedScreenRecordEntries {
+              screenRecordService.removeScreenRecordAndRelatedFiles(screenRecordEntry: entry)
             }
             screenRecordStore.update()
           },
@@ -145,7 +142,7 @@ struct ScreenRecordListView: View {
     .environment(\.editMode, $editMode)
     .onChange(of: editMode) { newValue in
       if newValue == .inactive {
-        selection.removeAll()
+        selectedScreenRecordEntries.removeAll()
       }
     }
   }

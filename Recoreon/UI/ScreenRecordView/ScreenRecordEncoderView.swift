@@ -34,8 +34,8 @@ struct ScreenRecordEncoderView: View {
           Task {
             guard
               let url = await encodeService.encode(
+                screenRecordEntry: screenRecordEntry,
                 preset: encodingPreset,
-                screenRecordURL: screenRecordEntry.url,
                 progressHandler: { currentTime, totalTime in
                   encodingProgress = min(currentTime / totalTime, 1.0)
                 }
@@ -66,9 +66,7 @@ struct ScreenRecordEncoderView: View {
   #Preview {
     let screenRecordService = ScreenRecordServiceMock()
     let encodeService = screenRecordService.createEncodeService()
-    let screenRecordURLs = screenRecordService.listScreenRecordURLs()
-    let screenRecordEntries = screenRecordService.listScreenRecordEntries(
-      screenRecordURLs: screenRecordURLs)
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
 
     return ScreenRecordEncoderView(

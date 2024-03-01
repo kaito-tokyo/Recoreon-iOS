@@ -23,18 +23,15 @@ class ScreenRecordServiceMock: ScreenRecordService {
 
   init() {
     let fileManager = FileManager.default
-    super.init(fileManager, RecoreonPathService(fileManager))
+    let recoreonPathService = RecoreonPathService(fileManager: fileManager)
+    super.init(fileManager: fileManager, recoreonPathService: recoreonPathService)
   }
 
-  override func listScreenRecordURLs() -> [URL] {
-    return screenRecordEntries.map { $0.url }
-  }
-
-  override func listScreenRecordEntries(screenRecordURLs: [URL]) -> [ScreenRecordEntry] {
+  override func listScreenRecordEntries() -> [ScreenRecordEntry] {
     return screenRecordEntries
   }
 
-  override func remuxPreviewVideo(screenRecordURL: URL) async -> URL? {
+  override func remuxPreviewVideo(screenRecordEntry: ScreenRecordEntry) async -> URL? {
     sleep(3)
     return Bundle.main.url(forResource: "Preview01", withExtension: "mp4")
   }

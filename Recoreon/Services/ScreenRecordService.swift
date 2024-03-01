@@ -4,16 +4,13 @@ class ScreenRecordService {
   let fileManager: FileManager
   let recoreonPathService: RecoreonPathService
 
-  init(_ fileManager: FileManager, _ recoreonPathService: RecoreonPathService) {
+  init(fileManager: FileManager, recoreonPathService: RecoreonPathService) {
     self.fileManager = fileManager
     self.recoreonPathService = recoreonPathService
   }
 
-  func listScreenRecordURLs() -> [URL] {
-    return recoreonPathService.listRecordURLs()
-  }
-
-  func listScreenRecordEntries(screenRecordURLs: [URL]) -> [ScreenRecordEntry] {
+  func listScreenRecordEntries() -> [ScreenRecordEntry] {
+    let screenRecordURLs = recoreonPathService.listScreenRecordURLs()
     return screenRecordURLs.map { url in
       let attrs = try? fileManager.attributesOfItem(atPath: url.path())
       return ScreenRecordEntry(
@@ -24,8 +21,9 @@ class ScreenRecordService {
     }
   }
 
-  func remuxPreviewVideo(screenRecordURL: URL) async -> URL? {
-    let previewVideoURL = recoreonPathService.getPreviewVideoURL(screenRecordURL: screenRecordURL)
+  func remuxPreviewVideo(screenRecordEntry: ScreenRecordEntry) async -> URL? {
+    let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
+    let previewVideoURL = recoreonPathService.getPreviewVideoURL(recordID: recordID)
 
     if fileManager.fileExists(atPath: previewVideoURL.path()) {
       return previewVideoURL
@@ -33,7 +31,7 @@ class ScreenRecordService {
 
     let arguments = [
       "-i",
-      screenRecordURL.path(),
+      screenRecordEntry.url.path(),
       "-c:v",
       "copy",
       "-c:a",
@@ -56,25 +54,26 @@ class ScreenRecordService {
     }
   }
 
-  func removeScreenRecordAndRelatedFiles(screenRecordURL: URL) {
-    removePreviewVideo(screenRecordURL: screenRecordURL)
-    removeRecordNoteSubDir(screenRecordURL: screenRecordURL)
-    removeScreenRecord(screenRecordURL: screenRecordURL)
+  func removeScreenRecordAndRelatedFiles(screenRecordEntry: ScreenRecordEntry) {
+    removePreviewVideo(screenRecordEntry: screenRecordEntry)
+    removeRecordNoteSubDir(screenRecordEntry: screenRecordEntry)
+    removeScreenRecord(screenRecordEntry: screenRecordEntry)
   }
 
-  func removePreviewVideo(screenRecordURL: URL) {
-    let previewVideoURL = recoreonPathService.getPreviewVideoURL(screenRecordURL: screenRecordURL)
+  func removePreviewVideo(screenRecordEntry: ScreenRecordEntry) {
+    let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
+    let previewVideoURL = recoreonPathService.getPreviewVideoURL(recordID: recordID)
     try? fileManager.removeItem(at: previewVideoURL)
   }
 
-  func removeRecordNoteSubDir(screenRecordURL: URL) {
-    let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordURL)
+  func removeRecordNoteSubDir(screenRecordEntry: ScreenRecordEntry) {
+    let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
     let recordNoteSubDir = recoreonPathService.generateRecordNoteSubDirURL(recordID: recordID)
     try? fileManager.removeItem(at: recordNoteSubDir)
   }
 
-  func removeScreenRecord(screenRecordURL: URL) {
-    try? fileManager.removeItem(at: screenRecordURL)
+  func removeScreenRecord(screenRecordEntry: ScreenRecordEntry) {
+    try? fileManager.removeItem(at: screenRecordEntry.url)
   }
 
   func createRecordNoteService() -> RecordNoteService {
