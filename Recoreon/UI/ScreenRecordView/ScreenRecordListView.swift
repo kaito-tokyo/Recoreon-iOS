@@ -76,7 +76,7 @@ struct ScreenRecordListView: View {
       HStack {
         Spacer()
         ShareLink(
-          items: Array(selection),
+          items: shareURLs,
           label: {
             Image(systemName: "square.and.arrow.up")
               .resizable()
