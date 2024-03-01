@@ -11,6 +11,7 @@ class ScreenRecordStore: ObservableObject {
   }
 
   func update() {
-    screenRecordEntries = screenRecordService.listScreenRecordEntries()
+    let screenRecordURLs = screenRecordService.listScreenRecordURLs()
+    screenRecordEntries = screenRecordService.listScreenRecordEntries(screenRecordURLs: screenRecordURLs)
   }
 }

@@ -7,9 +7,8 @@
 
 import ReplayKit
 
-private let paths = RecoreonPaths()
-
 private let fileManager = FileManager.default
+private let paths = RecoreonPathService(fileManager)
 
 private let dateFormatter = {
   let formatter = ISO8601DateFormatter()

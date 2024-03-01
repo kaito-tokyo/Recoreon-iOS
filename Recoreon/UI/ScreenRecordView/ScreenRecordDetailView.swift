@@ -61,10 +61,10 @@ struct ScreenRecordDetailView: View {
             Alert(
               title: Text("Are you sure to remove this video?"),
               primaryButton: .destructive(Text("OK")) {
-                screenRecordService.removeThumbnail(screenRecordEntry)
-                screenRecordService.removePreviewVideo(screenRecordEntry)
-                screenRecordService.removeScreenRecord(screenRecordEntry)
-                screenRecordService.removeEncodedVideos(screenRecordEntry)
+//                screenRecordService.removeThumbnail(screenRecordEntry)
+//                screenRecordService.removePreviewVideo(screenRecordEntry)
+//                screenRecordService.removeScreenRecord(screenRecordEntry)
+//                screenRecordService.removeEncodedVideos(screenRecordEntry)
                 screenRecordStore.update()
                 path.removeLast()
               },
@@ -98,16 +98,17 @@ struct ScreenRecordDetailView: View {
 
 #if DEBUG
   #Preview {
-    let service = ScreenRecordServiceMock()
-    let entries = service.listScreenRecordEntries()
-    @State var selectedEntry = entries.first!
+    let screenRecordService = ScreenRecordServiceMock()
+    let screenRecordURLs = screenRecordService.listScreenRecordURLs()
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries(screenRecordURLs: screenRecordURLs)
+    @State var selectedEntry = screenRecordEntries[0]
     @State var path: NavigationPath = NavigationPath()
-    @StateObject var store = ScreenRecordStore(screenRecordService: service)
+    @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
 
     return NavigationStack {
       ScreenRecordDetailView(
-        screenRecordService: service,
-        screenRecordStore: store,
+        screenRecordService: screenRecordService,
+        screenRecordStore: screenRecordStore,
         path: $path,
         screenRecordEntry: selectedEntry
       )

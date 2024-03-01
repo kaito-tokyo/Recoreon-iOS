@@ -7,8 +7,6 @@ struct ScreenRecordPreviewViewRoute: Hashable {
 
 struct ScreenRecordPreviewView: View {
   let screenRecordService: ScreenRecordService
-  @ObservedObject var screenRecordStore: ScreenRecordStore
-  @Binding var path: NavigationPath
   let screenRecordEntry: ScreenRecordEntry
 
   let player = AVPlayer()
@@ -58,7 +56,6 @@ struct ScreenRecordPreviewView: View {
       ScreenRecordPreviewView(
         screenRecordService: service,
         screenRecordStore: store,
-        path: $path,
         screenRecordEntry: selectedEntry
       )
     }

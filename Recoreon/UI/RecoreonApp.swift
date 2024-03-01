@@ -11,10 +11,12 @@ import SwiftUI
 struct RecoreonApp: App {
   var body: some Scene {
     WindowGroup {
-      let service = ScreenRecordService()
+      let fileManager = FileManager.default
+      let recoreonPathService = RecoreonPathService(fileManager)
+      let screenRecordService = ScreenRecordService(FileManager.default, recoreonPathService)
       ContentView(
-        screenRecordService: service,
-        screenRecordStore: ScreenRecordStore(screenRecordService: service)
+        screenRecordService: screenRecordService,
+        screenRecordStore: ScreenRecordStore(screenRecordService: screenRecordService)
       )
     }
   }

@@ -81,7 +81,8 @@ struct RecordNoteListView: View {
 #if DEBUG
   #Preview {
     let service = ScreenRecordServiceMock()
-    let screenRecordEntries = service.listScreenRecordEntries()
+    let screenRecordURLs = service.listScreenRecordURLs()
+    let screenRecordEntries = service.listScreenRecordEntries(screenRecordURLs: screenRecordURLs)
     let screenRecordEntry = screenRecordEntries[0]
     @StateObject var recordNoteStore = RecordNoteStore(service, screenRecordEntry)
 
