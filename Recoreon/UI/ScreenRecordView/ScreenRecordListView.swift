@@ -8,16 +8,16 @@ let byteCountFormatter = {
   return bcf
 }()
 
-struct RecordedVideoListView: View {
-  let recordedVideoService: RecordedVideoService
-  @ObservedObject var recordedVideoStore: RecordedVideoStore
+struct ScreenRecordListView: View {
+  let screenRecordService: ScreenRecordService
+  @ObservedObject var screenRecordStore: ScreenRecordStore
   @Binding var path: NavigationPath
 
   @State private var editMode: EditMode = .inactive
   @State private var selection = Set<URL>()
   @State private var isRemoveConfirmationPresented: Bool = false
 
-  func recordedVideoEntry(_ entry: RecordedVideoEntry) -> some View {
+  func screenRecordEntry(_ entry: ScreenRecordEntry) -> some View {
     return HStack {
       if editMode.isEditing {
         if selection.contains(entry.url) {
@@ -41,10 +41,10 @@ struct RecordedVideoListView: View {
     }
   }
 
-  func recordedVideoList() -> some View {
+  func screenRecordList() -> some View {
     return List {
-      ForEach(recordedVideoStore.recordedVideoEntries) { entry in
-        let detailViewRoute = RecordedVideoDetailViewRoute(recordedVideoEntry: entry)
+      ForEach(screenRecordStore.screenRecordEntries) { entry in
+        let detailViewRoute = ScreenRecordDetailViewRoute(screenRecordEntry: entry)
         if editMode.isEditing {
           Button {
             if selection.contains(entry.url) {
@@ -53,12 +53,12 @@ struct RecordedVideoListView: View {
               selection.insert(entry.url)
             }
           } label: {
-            recordedVideoEntry(entry)
+            screenRecordEntry(entry)
           }
           .foregroundStyle(.foreground)
         } else {
           NavigationLink(value: detailViewRoute) {
-            recordedVideoEntry(entry)
+            screenRecordEntry(entry)
           }
         }
       }
@@ -66,12 +66,17 @@ struct RecordedVideoListView: View {
   }
 
   func shareLinkButton() -> some View {
+    let shareURLs = selection.flatMap { screenRecordURL in
+
+      let recordNoteURLs = screenRecordService.listRecordNoteURLs(screenRecordURL: screenRecordURL)
+      return [screenRecordURL] + recordNoteURLs
+    }
     return VStack {
       Spacer()
       HStack {
         Spacer()
         ShareLink(
-          items: Array(selection),
+          items: shareURLs,
           label: {
             Image(systemName: "square.and.arrow.up")
               .resizable()
@@ -105,17 +110,17 @@ struct RecordedVideoListView: View {
           title: Text("Are you sure to remove all of the selected videos?"),
           primaryButton: .destructive(Text("OK")) {
             let entries = selection.compactMap { entryURL in
-              recordedVideoStore.recordedVideoEntries.first { entry in
+              screenRecordStore.screenRecordEntries.first { entry in
                 entry.url == entryURL
               }
             }
             for entry in entries {
-              recordedVideoService.removeThumbnail(entry)
-              recordedVideoService.removePreviewVideo(entry)
-              recordedVideoService.removeRecordedVideo(entry)
-              recordedVideoService.removeEncodedVideos(entry)
+              screenRecordService.removeThumbnail(entry)
+              screenRecordService.removePreviewVideo(entry)
+              screenRecordService.removeScreenRecord(entry)
+              screenRecordService.removeEncodedVideos(entry)
             }
-            recordedVideoStore.update()
+            screenRecordStore.update()
           },
           secondaryButton: .cancel()
         )
@@ -125,17 +130,17 @@ struct RecordedVideoListView: View {
 
   var body: some View {
     ZStack {
-      recordedVideoList()
+      screenRecordList()
       shareLinkButton()
     }
     .navigationTitle("List")
     .navigationBarTitleDisplayMode(.inline)
-    .navigationDestination(for: RecordedVideoDetailViewRoute.self) { route in
-      RecordedVideoDetailView(
-        recordedVideoService: recordedVideoService,
-        recordedVideoStore: recordedVideoStore,
+    .navigationDestination(for: ScreenRecordDetailViewRoute.self) { route in
+      ScreenRecordDetailView(
+        screenRecordService: screenRecordService,
+        screenRecordStore: screenRecordStore,
         path: $path,
-        recordedVideoEntry: route.recordedVideoEntry
+        screenRecordEntry: route.screenRecordEntry
       )
     }
     .toolbar {
@@ -152,15 +157,15 @@ struct RecordedVideoListView: View {
 
 #if DEBUG
   #Preview {
-    let service = RecordedVideoServiceMock()
-    @State var entries = service.listRecordedVideoEntries()
+    let service = ScreenRecordServiceMock()
+    @State var entries = service.listScreenRecordEntries()
     @State var path = NavigationPath()
-    @StateObject var store = RecordedVideoStore(recordedVideoService: service)
+    @StateObject var store = ScreenRecordStore(screenRecordService: service)
 
     return NavigationStack {
-      RecordedVideoListView(
-        recordedVideoService: service,
-        recordedVideoStore: store,
+      ScreenRecordListView(
+        screenRecordService: service,
+        screenRecordStore: store,
         path: $path
       )
     }

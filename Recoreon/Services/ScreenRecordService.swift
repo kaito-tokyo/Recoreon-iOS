@@ -1,9 +1,10 @@
 import Foundation
+import UIKit
 
 private let paths = RecoreonPaths()
 private let fileManager = FileManager.default
 
-class RecordedVideoService {
+class ScreenRecordService {
   private let thumbnailExtractor = ThumbnailExtractor()
 
   private func cropCGImage(_ cgImage: CGImage) -> CGImage? {
@@ -20,13 +21,13 @@ class RecordedVideoService {
     }
   }
 
-  func listRecordedVideoEntries() -> [RecordedVideoEntry] {
+  func listScreenRecordEntries() -> [ScreenRecordEntry] {
     paths.ensureAppGroupDirectoriesExists()
     paths.ensureSandboxDirectoriesExists()
 
     return paths.listRecordURLs().map { url in
       let attrs = try? fileManager.attributesOfItem(atPath: url.path())
-      return RecordedVideoEntry(
+      return ScreenRecordEntry(
         url: url,
         encodedVideoCollection: getEncodedVideoCollection(url),
         size: attrs?[.size] as? UInt64 ?? 0,
@@ -35,17 +36,17 @@ class RecordedVideoService {
     }
   }
 
-  func getThumbnailImage(_ recordedVideoURL: URL) -> UIImage? {
-    let thumbnailURL = paths.getThumbnailURL(recordedVideoURL)
+  func getThumbnailImage(_ screenRecordURL: URL) -> UIImage? {
+    let thumbnailURL = paths.getThumbnailURL(screenRecordURL)
     return UIImage(contentsOfFile: thumbnailURL.path())
   }
 
-  func generateThumbnail(_ recordedVideoURL: URL) async {
-    let thumbnailURL = paths.getThumbnailURL(recordedVideoURL)
+  func generateThumbnail(_ screenRecordURL: URL) async {
+    let thumbnailURL = paths.getThumbnailURL(screenRecordURL)
     let arguments = [
       "-y",
       "-i",
-      recordedVideoURL.path(),
+      screenRecordURL.path(),
       "-vf",
       "thumbnail",
       "-frames:v",
@@ -62,19 +63,19 @@ class RecordedVideoService {
     }
   }
 
-  func listRecordedVideoURLs() -> [URL] {
+  func listScreenRecordURLs() -> [URL] {
     paths.ensureAppGroupDirectoriesExists()
     paths.ensureSandboxDirectoriesExists()
     return paths.listRecordURLs()
   }
 
-  func publishRecordedVideo(_ recordedVideoURL: URL) -> Bool {
+  func publishRecordedVideo(_ screenRecordURL: URL) -> Bool {
     paths.ensureAppGroupDirectoriesExists()
     paths.ensureSandboxDirectoriesExists()
 
-    let sharedRecordedVideoURL = paths.getSharedRecordedVideoURL(recordedVideoURL)
+    let sharedScreenRecordURL = paths.getSharedScreenRecordURL(screenRecordURL)
     do {
-      try fileManager.copyItem(at: recordedVideoURL, to: sharedRecordedVideoURL)
+      try fileManager.copyItem(at: screenRecordURL, to: sharedScreenRecordURL)
       return true
     } catch {
       return false
@@ -82,17 +83,17 @@ class RecordedVideoService {
   }
 
   func encode(
-    preset: EncodingPreset, recordedVideoURL: URL,
+    preset: EncodingPreset, screenRecordURL: URL,
     progressHandler: @escaping (Double, Double) -> Void
   ) async -> URL? {
-    let durations = getDurationOfStreams(recordedVideoURL)
+    let durations = getDurationOfStreams(screenRecordURL)
     let audioChannelMapping = getAudioChannelMapping(durations: durations)
     guard let filter = preset.filter[audioChannelMapping] else { return nil }
-    let encodedVideoURL = paths.getEncodedVideoURL(recordedVideoURL, suffix: "-\(preset.name)")
+    let encodedVideoURL = paths.getEncodedVideoURL(screenRecordURL, suffix: "-\(preset.name)")
     var arguments = [
       "-y",
       "-i",
-      recordedVideoURL.path(),
+      screenRecordURL.path(),
       "-f",
       "lavfi",
       "-i",
@@ -113,7 +114,7 @@ class RecordedVideoService {
     arguments += getMappingOptions(audioChannelMapping: audioChannelMapping)
     arguments.append(encodedVideoURL.path())
 
-    let duration = getDuration(recordedVideoURL) * 1000
+    let duration = getDuration(screenRecordURL) * 1000
 
     return await withCheckedContinuation { continuation in
       FFmpegKit.execute(
@@ -182,11 +183,11 @@ class RecordedVideoService {
     }
   }
 
-  func remux(_ recordedVideoURL: URL) async -> URL? {
-    let previewVideoURL = paths.getPreviewVideoURL(recordedVideoURL)
+  func remux(_ screenRecordURL: URL) async -> URL? {
+    let previewVideoURL = paths.getPreviewVideoURL(screenRecordURL)
     let arguments = [
       "-i",
-      recordedVideoURL.path(),
+      screenRecordURL.path(),
       "-c:v",
       "copy",
       "-c:a",
@@ -210,14 +211,14 @@ class RecordedVideoService {
     }
   }
 
-  func generateEncodedVideoURL(recordedVideoURL: URL, encodingPreset: EncodingPreset) -> URL {
+  func generateEncodedVideoURL(screenRecordURL: URL, encodingPreset: EncodingPreset) -> URL {
     let suffix = "-\(encodingPreset.name)"
-    return paths.getEncodedVideoURL(recordedVideoURL, suffix: suffix)
+    return paths.getEncodedVideoURL(screenRecordURL, suffix: suffix)
   }
 
-  func getEncodedVideoURL(recordedVideoURL: URL, encodingPreset: EncodingPreset) -> URL? {
+  func getEncodedVideoURL(screenRecordURL: URL, encodingPreset: EncodingPreset) -> URL? {
     let encodedVideoURL = generateEncodedVideoURL(
-      recordedVideoURL: recordedVideoURL,
+      screenRecordURL: screenRecordURL,
       encodingPreset: encodingPreset
     )
     if fileManager.fileExists(atPath: encodedVideoURL.path()) {
@@ -234,11 +235,11 @@ class RecordedVideoService {
     }
   }
 
-  private func getEncodedVideoCollection(_ recordedVideoURL: URL) -> EncodedVideoCollection {
+  private func getEncodedVideoCollection(_ screenRecordURL: URL) -> EncodedVideoCollection {
     let pairs = EncodingPreset.allPresets.flatMap { preset in
       guard
         let url = getEncodedVideoURL(
-          recordedVideoURL: recordedVideoURL,
+          screenRecordURL: screenRecordURL,
           encodingPreset: preset
         )
       else {
@@ -251,25 +252,52 @@ class RecordedVideoService {
     )
   }
 
-  func removeRecordedVideo(_ recordedVideoEntry: RecordedVideoEntry) {
-    try? fileManager.removeItem(at: recordedVideoEntry.url)
+  func removeScreenRecord(_ screenRecordEntry: ScreenRecordEntry) {
+    try? fileManager.removeItem(at: screenRecordEntry.url)
   }
 
-  func removeEncodedVideos(_ recordedVideoEntry: RecordedVideoEntry) {
+  func removeEncodedVideos(_ screenRecordEntry: ScreenRecordEntry) {
     for preset in EncodingPreset.allPresets {
       let url = generateEncodedVideoURL(
-        recordedVideoURL: recordedVideoEntry.url, encodingPreset: preset)
+        screenRecordURL: screenRecordEntry.url, encodingPreset: preset)
       try? fileManager.removeItem(at: url)
     }
   }
 
-  func removeThumbnail(_ recordedVideoEntry: RecordedVideoEntry) {
-    let url = paths.getThumbnailURL(recordedVideoEntry.url)
+  func removeThumbnail(_ screenRecordEntry: ScreenRecordEntry) {
+    let url = paths.getThumbnailURL(screenRecordEntry.url)
     try? fileManager.removeItem(at: url)
   }
 
-  func removePreviewVideo(_ recordedVideoEntry: RecordedVideoEntry) {
-    let url = paths.getPreviewVideoURL(recordedVideoEntry.url)
+  func removePreviewVideo(_ screenRecordEntry: ScreenRecordEntry) {
+    let url = paths.getPreviewVideoURL(screenRecordEntry.url)
     try? fileManager.removeItem(at: url)
+  }
+
+  func listRecordNoteURLs(screenRecordURL: URL) -> [URL] {
+    return paths.listRecordNoteURLs(screenRecordURL: screenRecordURL)
+  }
+
+  func listRecordNoteEntries(recordNoteURLs: [URL]) -> [RecordNoteEntry] {
+    return recordNoteURLs.map { url in
+      let body = try? String(contentsOf: url)
+      return RecordNoteEntry(url: url, body: body!)
+    }
+  }
+
+  func getRecordNoteURL(
+    _ screenRecordEntry: ScreenRecordEntry, shortName: String, ext: String = "txt"
+  ) -> URL {
+    let recordID = screenRecordEntry.url.deletingPathExtension().lastPathComponent
+    let subDir = paths.getRecordNoteSubDirURL(screenRecordURL: screenRecordEntry.url)
+    return subDir.appending(component: "\(recordID)-\(shortName).\(ext)")
+  }
+
+  func saveRecordNotes(_ recordNoteEntries: [RecordNoteEntry]) {
+    for recordNoteEntry in recordNoteEntries {
+      let body = recordNoteEntry.body
+      let url = recordNoteEntry.url
+      try? body.write(to: url, atomically: true, encoding: .utf8)
+    }
   }
 }

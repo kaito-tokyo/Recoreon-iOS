@@ -12,6 +12,7 @@ class RecoreonPaths {
   let encodedVideosDir: URL
   let documentsDir: URL
   let recordsDir: URL
+  let recordNotesDir: URL
 
   init() {
     appGroupDir = fileManager.containerURL(
@@ -26,6 +27,7 @@ class RecoreonPaths {
     encodedVideosDir = libraryDir.appending(path: "EncodedVideos", directoryHint: .isDirectory)
     documentsDir = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
     recordsDir = documentsDir.appending(path: "Records", directoryHint: .isDirectory)
+    recordNotesDir = documentsDir.appending(path: "RecordNotes", directoryHint: .isDirectory)
   }
 
   func ensureAppGroupDirectoriesExists() {
@@ -37,6 +39,7 @@ class RecoreonPaths {
     try? fileManager.createDirectory(at: encodedVideosDir, withIntermediateDirectories: true)
     try? fileManager.createDirectory(at: previewsDir, withIntermediateDirectories: true)
     try? fileManager.createDirectory(at: thumbnailsDir, withIntermediateDirectories: true)
+    try? fileManager.createDirectory(at: recordNotesDir, withIntermediateDirectories: true)
   }
 
   func listRecordURLs() -> [URL] {
@@ -67,7 +70,7 @@ class RecoreonPaths {
     return encodedVideosDir.appending(path: filename, directoryHint: .notDirectory)
   }
 
-  func getSharedRecordedVideoURL(_ recordedVideoURL: URL) -> URL {
+  func getSharedScreenRecordURL(_ recordedVideoURL: URL) -> URL {
     let filename = recordedVideoURL.lastPathComponent
     return recordsDir.appending(path: filename, directoryHint: .notDirectory)
   }
@@ -76,5 +79,25 @@ class RecoreonPaths {
     let filename = recordedVideoURL.deletingPathExtension().appendingPathExtension(ext)
       .lastPathComponent
     return previewsDir.appending(path: filename, directoryHint: .notDirectory)
+  }
+
+  func getRecordNoteSubDirURL(screenRecordURL: URL) -> URL {
+    let recordId = screenRecordURL.deletingPathExtension().lastPathComponent
+    let url = recordNotesDir.appending(component: recordId, directoryHint: .isDirectory)
+    try? fileManager.createDirectory(at: url, withIntermediateDirectories: true)
+    return url
+  }
+
+  func listRecordNoteURLs(screenRecordURL: URL) -> [URL] {
+    let recordNotesSubDir = getRecordNoteSubDirURL(screenRecordURL: screenRecordURL)
+    guard
+      let urls = try? fileManager.contentsOfDirectory(
+        at: recordNotesSubDir, includingPropertiesForKeys: nil)
+    else {
+      return []
+    }
+    return urls.sorted(by: {
+      $0.lastPathComponent.compare($1.lastPathComponent) == .orderedAscending
+    })
   }
 }

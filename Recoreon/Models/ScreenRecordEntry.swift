@@ -1,4 +1,4 @@
-struct RecordedVideoEntry: Identifiable, Hashable {
+struct ScreenRecordEntry: Identifiable, Hashable {
   let url: URL
   let encodedVideoCollection: EncodedVideoCollection
   let size: UInt64

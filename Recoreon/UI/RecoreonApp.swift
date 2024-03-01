@@ -11,10 +11,10 @@ import SwiftUI
 struct RecoreonApp: App {
   var body: some Scene {
     WindowGroup {
-      let service = RecordedVideoService()
+      let service = ScreenRecordService()
       ContentView(
-        recordedVideoService: service,
-        recordedVideoStore: RecordedVideoStore(recordedVideoService: service)
+        screenRecordService: service,
+        screenRecordStore: ScreenRecordStore(screenRecordService: service)
       )
     }
   }

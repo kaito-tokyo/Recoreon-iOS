@@ -7,28 +7,14 @@
     "4x Speed Low Quality" : {
 
     },
+    "Add" : {
+
+    },
     "Are you sure to remove all of the selected videos?" : {
 
     },
     "Are you sure to remove this video?" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "本当にこの動画"
-          }
-        }
-      }
-    },
-    "Copy" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "コピー"
-          }
-        }
-      }
+
     },
     "Encode" : {
       "localizations" : {
@@ -40,36 +26,28 @@
         }
       }
     },
-    "Encoding completed!" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "エンコードが完了しました！"
-          }
-        }
-      }
-    },
-    "Encoding failed!" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "エンコードが失敗しました！"
-          }
-        }
-      }
-    },
     "Encoding progress" : {
+
+    },
+    "Enter a new note name" : {
+
+    },
+    "Enter the note text here." : {
+
+    },
+    "Filename:" : {
 
     },
     "List" : {
 
     },
-    "List of recorded videos" : {
+    "Low Quality" : {
 
     },
-    "Low Quality" : {
+    "Name" : {
+
+    },
+    "Notes" : {
 
     },
     "OK" : {
@@ -82,12 +60,25 @@
         }
       }
     },
+    "Operations" : {
+
+    },
     "Preset" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "プリセット"
+          }
+        }
+      }
+    },
+    "Preview" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレビュー"
           }
         }
       }
@@ -101,12 +92,6 @@
           }
         }
       }
-    },
-    "The original file of this video was successfully copied to the File app!" : {
-
-    },
-    "Unable to copy the original file of this video to the File app!" : {
-
     }
   },
   "version" : "1.0"
