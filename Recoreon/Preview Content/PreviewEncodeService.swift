@@ -37,13 +37,8 @@ struct PreviewEncodeService: EncodeService {
     progressHandler(0.7, 1.0)
     sleep(1)
     progressHandler(1.1, 1.0)
-    finishSucessfully.toggle()
-    if finishSucessfully {
-      let encodedVideoURL = URL(filePath: "1.mp4")
-      let encodedVideoEntry = EncodedVideoEntry(url: encodedVideoURL, preset: preset)
-      return encodedVideoEntry
-    } else {
-      return nil
-    }
+    let encodedVideoURL = URL(filePath: "1.mp4")
+    let encodedVideoEntry = EncodedVideoEntry(url: encodedVideoURL, preset: preset)
+    return encodedVideoEntry
   }
 }

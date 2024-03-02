@@ -6,15 +6,14 @@ struct ScreenRecordDetailViewRoute: Hashable {
 }
 
 struct ScreenRecordDetailView: View {
-  let recoreonServices: RecoreonServices
-
+  @ObservedObject var recoreonServiceStore: RecoreonServiceStore
   @ObservedObject var screenRecordStore: ScreenRecordStore
   @Binding var path: NavigationPath
   let screenRecordEntry: ScreenRecordEntry
 
   @StateObject var recordNoteStore: RecordNoteStore
 
-//  @Environment(\.scenePhase) private var scenePhase
+  @Environment(\.scenePhase) private var scenePhase
 //  @Environment(\.isPresented) var isPresented
 
   @State var isShowingRemoveConfirmation = false
@@ -23,17 +22,17 @@ struct ScreenRecordDetailView: View {
   @State var newNoteShortName = ""
 
   init(
-    recoreonServices: RecoreonServices,
+    recoreonServiceStore: RecoreonServiceStore,
     screenRecordStore: ScreenRecordStore,
     path: Binding<NavigationPath>,
     screenRecordEntry: ScreenRecordEntry
   ) {
-    self.recoreonServices = recoreonServices
+    self.recoreonServiceStore = recoreonServiceStore
     self.screenRecordStore = screenRecordStore
     self._path = path
     self.screenRecordEntry = screenRecordEntry
     let recordNoteStore = RecordNoteStore(
-      recordNoteService: recoreonServices.recordNoteService,
+      recordNoteService: recoreonServiceStore.recordNoteService,
       screenRecordEntry: screenRecordEntry
     )
     self._recordNoteStore = StateObject(wrappedValue: recordNoteStore)
@@ -46,7 +45,7 @@ struct ScreenRecordDetailView: View {
         NavigationLink(value: RecordNoteEditorViewRoute(recordNoteEntry: recordNoteEntry)) {
           Button {
           } label: {
-            let recordNoteShortName = recoreonServices.recordNoteService.extractRecordNoteShortName(
+            let recordNoteShortName = recoreonServiceStore.recordNoteService.extractRecordNoteShortName(
               recordNoteEntry: recordNoteEntry)
             Label(recordNoteShortName, systemImage: "doc")
           }
@@ -105,7 +104,7 @@ struct ScreenRecordDetailView: View {
             Alert(
               title: Text("Are you sure to remove this screen record?"),
               primaryButton: .destructive(Text("OK")) {
-                recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
+                recoreonServiceStore.screenRecordService.removeScreenRecordAndRelatedFiles(
                   screenRecordEntry: screenRecordEntry)
                 screenRecordStore.update()
                 path.removeLast()
@@ -121,13 +120,15 @@ struct ScreenRecordDetailView: View {
     .navigationTitle(screenRecordEntry.url.lastPathComponent)
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
       ScreenRecordPreviewView(
-        screenRecordService: recoreonServices.screenRecordService,
+        screenRecordService: recoreonServiceStore.screenRecordService,
         screenRecordEntry: route.screenRecordEntry
       )
     }
     .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
       ScreenRecordEncoderView(
-        recoreonServices: recoreonServices, screenRecordEntry: route.screenRecordEntry)
+        recoreonServiceStore: recoreonServiceStore,
+        screenRecordEntry: route.screenRecordEntry
+      )
     }
     .navigationDestination(for: RecordNoteEditorViewRoute.self) { route in
       RecordNoteEditorView(
@@ -141,9 +142,9 @@ struct ScreenRecordDetailView: View {
 
 #if DEBUG
   #Preview {
-    let recoreonServices = PreviewRecoreonServices()
-    let screenRecordService = recoreonServices.screenRecordService
-    let recordNoteService = recoreonServices.recordNoteService
+    let recoreonServiceStore = previewRecoreonServiceStore
+    let screenRecordService = recoreonServiceStore.screenRecordService
+    let recordNoteService = recoreonServiceStore.recordNoteService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
     @State var path: NavigationPath = NavigationPath()
@@ -153,7 +154,7 @@ struct ScreenRecordDetailView: View {
 
     return NavigationStack {
       ScreenRecordDetailView(
-        recoreonServices: recoreonServices,
+        recoreonServiceStore: recoreonServiceStore,
         screenRecordStore: screenRecordStore, path: $path, screenRecordEntry: screenRecordEntry)
     }
   }

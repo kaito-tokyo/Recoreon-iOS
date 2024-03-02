@@ -9,7 +9,7 @@ let byteCountFormatter = {
 }()
 
 struct ScreenRecordListView: View {
-  let recoreonServices: RecoreonServices
+  @ObservedObject var recoreonServiceStore: RecoreonServiceStore
   @ObservedObject var screenRecordStore: ScreenRecordStore
   @Binding var path: NavigationPath
 
@@ -68,7 +68,7 @@ struct ScreenRecordListView: View {
   func shareLinkButton() -> some View {
     let shareURLs = selectedScreenRecordEntries.flatMap { screenRecordEntry in
 
-      let recordNoteURLs = recoreonServices.recordNoteService.listRecordNoteEntries(
+      let recordNoteURLs = recoreonServiceStore.recordNoteService.listRecordNoteEntries(
         screenRecordEntry: screenRecordEntry
       ).map { $0.url }
       return [screenRecordEntry.url] + recordNoteURLs
@@ -112,7 +112,7 @@ struct ScreenRecordListView: View {
           title: Text("Are you sure to remove all of the selected screen records?"),
           primaryButton: .destructive(Text("OK")) {
             for entry in selectedScreenRecordEntries {
-              recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
+              recoreonServiceStore.screenRecordService.removeScreenRecordAndRelatedFiles(
                 screenRecordEntry: entry)
             }
             screenRecordStore.update()
@@ -132,7 +132,7 @@ struct ScreenRecordListView: View {
     .navigationBarTitleDisplayMode(.inline)
     .navigationDestination(for: ScreenRecordDetailViewRoute.self) { route in
       ScreenRecordDetailView(
-        recoreonServices: recoreonServices,
+        recoreonServiceStore: recoreonServiceStore,
         screenRecordStore: screenRecordStore, path: $path,
         screenRecordEntry: route.screenRecordEntry)
     }
@@ -150,14 +150,14 @@ struct ScreenRecordListView: View {
 
 #if DEBUG
   #Preview {
-    let recoreonServices = DefaultRecoreonServices()
-    let screenRecordService = recoreonServices.screenRecordService
+    let recoreonServiceStore = previewRecoreonServiceStore
+    let screenRecordService = recoreonServiceStore.screenRecordService
     @State var path = NavigationPath()
     @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
 
     return NavigationStack {
       ScreenRecordListView(
-        recoreonServices: recoreonServices,
+        recoreonServiceStore: recoreonServiceStore,
         screenRecordStore: screenRecordStore,
         path: $path
       )

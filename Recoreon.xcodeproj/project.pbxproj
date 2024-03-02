@@ -29,6 +29,8 @@
 		223427AC2B93959400F25052 /* DefaultRecoreonPathService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427AA2B93953000F25052 /* DefaultRecoreonPathService.swift */; };
 		223427AE2B93991E00F25052 /* DefaultRecordNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427AD2B93991E00F25052 /* DefaultRecordNoteService.swift */; };
 		223427B02B93996800F25052 /* DefaultEncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427AF2B93996800F25052 /* DefaultEncodeService.swift */; };
+		223427B42B93AACB00F25052 /* RecoreonServiceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427B32B93AACB00F25052 /* RecoreonServiceStore.swift */; };
+		223427B62B93ADA900F25052 /* PreviewRecoreonServiceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427B52B93ADA900F25052 /* PreviewRecoreonServiceStore.swift */; };
 		223B05822B90C34700A16852 /* ScreenRecordPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B05812B90C34700A16852 /* ScreenRecordPreviewView.swift */; };
 		223B05862B90CC3400A16852 /* RecordNoteEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B05852B90CC3400A16852 /* RecordNoteEntry.swift */; };
 		223B05892B90D5D800A16852 /* Record01-1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05872B90CD8700A16852 /* Record01-1.txt */; };
@@ -129,6 +131,8 @@
 		223427AA2B93953000F25052 /* DefaultRecoreonPathService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRecoreonPathService.swift; sourceTree = "<group>"; };
 		223427AD2B93991E00F25052 /* DefaultRecordNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRecordNoteService.swift; sourceTree = "<group>"; };
 		223427AF2B93996800F25052 /* DefaultEncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultEncodeService.swift; sourceTree = "<group>"; };
+		223427B32B93AACB00F25052 /* RecoreonServiceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonServiceStore.swift; sourceTree = "<group>"; };
+		223427B52B93ADA900F25052 /* PreviewRecoreonServiceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewRecoreonServiceStore.swift; sourceTree = "<group>"; };
 		223B05812B90C34700A16852 /* ScreenRecordPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordPreviewView.swift; sourceTree = "<group>"; };
 		223B05852B90CC3400A16852 /* RecordNoteEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEntry.swift; sourceTree = "<group>"; };
 		223B05872B90CD8700A16852 /* Record01-1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-1.txt"; sourceTree = "<group>"; };
@@ -266,6 +270,7 @@
 			children = (
 				22183B482B9100E9004D6FAD /* RecordNoteStore.swift */,
 				22966A322AFE8D1B0080324D /* ScreenRecordStore.swift */,
+				223427B32B93AACB00F25052 /* RecoreonServiceStore.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -368,6 +373,7 @@
 				223B05872B90CD8700A16852 /* Record01-1.txt */,
 				223B05882B90CDA400A16852 /* Record01-2.txt */,
 				22966A222AFE29660080324D /* Record01.mkv */,
+				223427B52B93ADA900F25052 /* PreviewRecoreonServiceStore.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -651,6 +657,7 @@
 				223427A92B93944B00F25052 /* DefaultScreenRecordService.swift in Sources */,
 				2232A1822B9223D000F646E3 /* EncodedVideoEntry.swift in Sources */,
 				2232A1802B9220A600F646E3 /* EncodeService.swift in Sources */,
+				223427B62B93ADA900F25052 /* PreviewRecoreonServiceStore.swift in Sources */,
 				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
 				2232A1842B92485900F646E3 /* PreviewEncodeService.swift in Sources */,
 				2232A17C2B920D4B00F646E3 /* PreviewRecordNoteService.swift in Sources */,
@@ -659,6 +666,7 @@
 				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,
 				2232A1862B92557D00F646E3 /* RecordNoteEditorView.swift in Sources */,
 				223B05862B90CC3400A16852 /* RecordNoteEntry.swift in Sources */,
+				223427B42B93AACB00F25052 /* RecoreonServiceStore.swift in Sources */,
 				2232A1792B91F66300F646E3 /* RecordNoteService.swift in Sources */,
 				22183B492B9100E9004D6FAD /* RecordNoteStore.swift in Sources */,
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
