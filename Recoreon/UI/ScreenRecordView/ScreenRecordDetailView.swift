@@ -6,8 +6,7 @@ struct ScreenRecordDetailViewRoute: Hashable {
 }
 
 struct ScreenRecordDetailView: View {
-  let screenRecordService: ScreenRecordService
-  let recordNoteService: RecordNoteService
+  let recoreonServices: RecoreonServices
 
   @ObservedObject var screenRecordStore: ScreenRecordStore
   @Binding var path: NavigationPath
@@ -21,17 +20,19 @@ struct ScreenRecordDetailView: View {
   @State var newNoteShortName = ""
 
   init(
-    screenRecordService: ScreenRecordService, recordNoteService: RecordNoteService,
-    screenRecordStore: ScreenRecordStore, path: Binding<NavigationPath>,
+    recoreonServices: RecoreonServices,
+    screenRecordStore: ScreenRecordStore,
+    path: Binding<NavigationPath>,
     screenRecordEntry: ScreenRecordEntry
   ) {
-    self.screenRecordService = screenRecordService
-    self.recordNoteService = recordNoteService
+    self.recoreonServices = recoreonServices
     self.screenRecordStore = screenRecordStore
     self._path = path
     self.screenRecordEntry = screenRecordEntry
     let recordNoteStore = RecordNoteStore(
-      recordNoteService: recordNoteService, screenRecordEntry: screenRecordEntry)
+      recordNoteService: recoreonServices.reo,
+      screenRecordEntry: screenRecordEntry
+    )
     self._recordNoteStore = StateObject(wrappedValue: recordNoteStore)
     self.isShowingRemoveConfirmation = isShowingRemoveConfirmation
   }

@@ -9,8 +9,7 @@ let byteCountFormatter = {
 }()
 
 struct ScreenRecordListView: View {
-  let screenRecordService: ScreenRecordService
-  let recordNoteService: RecordNoteService
+  let recoreonServices: RecoreonServices
   @ObservedObject var screenRecordStore: ScreenRecordStore
   @Binding var path: NavigationPath
 
