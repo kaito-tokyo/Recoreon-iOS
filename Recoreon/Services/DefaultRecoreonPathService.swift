@@ -105,6 +105,12 @@ struct DefaultRecoreonPathService: RecoreonPathService {
       path: "\(recordID)-\(shortName).\(ext)", directoryHint: .notDirectory)
   }
 
+  func extractRecordNoteShortName(recordNoteURL: URL) -> String {
+    let filename = recordNoteURL.deletingPathExtension().lastPathComponent
+    let components = filename.split(separator: "-", maxSplits: 2)
+    return String(components.last ?? "")
+  }
+
   // PreviewVideo
 
   func getPreviewVideoURL(recordID: String) -> URL {

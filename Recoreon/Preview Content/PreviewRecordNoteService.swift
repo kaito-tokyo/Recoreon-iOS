@@ -1,4 +1,4 @@
-class PreviewRecordNoteService: RecordNoteService {
+struct PreviewRecordNoteService: RecordNoteService {
   private let recoreonPathService: RecoreonPathService
   private let defaultImpl: RecordNoteService
 
@@ -26,6 +26,10 @@ class PreviewRecordNoteService: RecordNoteService {
   func generateRecordNoteURL(screenRecordEntry: ScreenRecordEntry, shortName: String) -> URL {
     return defaultImpl.generateRecordNoteURL(
       screenRecordEntry: screenRecordEntry, shortName: shortName)
+  }
+
+  func extractRecordNoteShortName(recordNoteEntry: RecordNoteEntry) -> String {
+    return defaultImpl.extractRecordNoteShortName(recordNoteEntry: recordNoteEntry)
   }
 
   func saveRecordNotes(recordNoteEntries: [RecordNoteEntry]) {
