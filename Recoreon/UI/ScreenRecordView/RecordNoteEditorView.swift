@@ -48,8 +48,9 @@ struct RecordNoteEditorView: View {
 
 #if DEBUG
   #Preview {
-    let screenRecordService = ScreenRecordServiceMock()
-    let recordNoteService = RecordNoteServiceMock()
+    let recoreonServices = PreviewRecoreonServices()
+    let screenRecordService = recoreonServices.screenRecordService
+    let recordNoteService = recoreonServices.recordNoteService
 
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]

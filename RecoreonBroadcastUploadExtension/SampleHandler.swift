@@ -66,7 +66,8 @@ class SampleHandler: RPBroadcastSampleHandler {
     micAudioBitRate: 320_000
   )
 
-  let recoreonPathService = RecoreonPathService(fileManager: FileManager.default)
+  let recoreonPathService: RecoreonPathService = DefaultRecoreonPathService(
+    fileManager: FileManager.default)
 
   let writer = ScreenRecordWriter()
   var pixelBufferExtractorRef: PixelBufferExtractor?

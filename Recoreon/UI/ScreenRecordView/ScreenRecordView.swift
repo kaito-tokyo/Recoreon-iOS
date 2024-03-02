@@ -1,17 +1,21 @@
 import SwiftUI
 
 struct ScreenRecordView: View {
-  let screenRecordService: ScreenRecordService
-  @ObservedObject var screenRecordStore: ScreenRecordStore
-
+  let recoreonServices: RecoreonServices
+  @StateObject var screenRecordStore: ScreenRecordStore
   @State var path = NavigationPath()
 
+  init(recoreonServices: RecoreonServices) {
+    self.recoreonServices = recoreonServices
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: recoreonServices.screenRecordService)
+    _screenRecordStore = StateObject(wrappedValue: screenRecordStore)
+  }
+
   var body: some View {
-    let recordNoteService = screenRecordService.createRecordNoteService()
     NavigationStack(path: $path) {
       ScreenRecordListView(
-        screenRecordService: screenRecordService,
-        recordNoteService: recordNoteService,
+        recoreonServices: recoreonServices,
         screenRecordStore: screenRecordStore,
         path: $path
       )

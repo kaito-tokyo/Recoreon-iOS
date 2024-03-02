@@ -6,8 +6,7 @@ struct ScreenRecordDetailViewRoute: Hashable {
 }
 
 struct ScreenRecordDetailView: View {
-  let screenRecordService: ScreenRecordService
-  let recordNoteService: RecordNoteService
+  let recoreonServices: RecoreonServices
 
   @ObservedObject var screenRecordStore: ScreenRecordStore
   @Binding var path: NavigationPath
@@ -21,17 +20,19 @@ struct ScreenRecordDetailView: View {
   @State var newNoteShortName = ""
 
   init(
-    screenRecordService: ScreenRecordService, recordNoteService: RecordNoteService,
-    screenRecordStore: ScreenRecordStore, path: Binding<NavigationPath>,
+    recoreonServices: RecoreonServices,
+    screenRecordStore: ScreenRecordStore,
+    path: Binding<NavigationPath>,
     screenRecordEntry: ScreenRecordEntry
   ) {
-    self.screenRecordService = screenRecordService
-    self.recordNoteService = recordNoteService
+    self.recoreonServices = recoreonServices
     self.screenRecordStore = screenRecordStore
     self._path = path
     self.screenRecordEntry = screenRecordEntry
     let recordNoteStore = RecordNoteStore(
-      recordNoteService: recordNoteService, screenRecordEntry: screenRecordEntry)
+      recordNoteService: recoreonServices.recordNoteService,
+      screenRecordEntry: screenRecordEntry
+    )
     self._recordNoteStore = StateObject(wrappedValue: recordNoteStore)
     self.isShowingRemoveConfirmation = isShowingRemoveConfirmation
   }
@@ -67,7 +68,6 @@ struct ScreenRecordDetailView: View {
   }
 
   var body: some View {
-    let encodeService = screenRecordService.createEncodeService()
     Form {
       Section {
         List {
@@ -100,7 +100,7 @@ struct ScreenRecordDetailView: View {
             Alert(
               title: Text("Are you sure to remove this screen record?"),
               primaryButton: .destructive(Text("OK")) {
-                screenRecordService.removeScreenRecordAndRelatedFiles(
+                recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
                   screenRecordEntry: screenRecordEntry)
                 screenRecordStore.update()
                 path.removeLast()
@@ -116,13 +116,13 @@ struct ScreenRecordDetailView: View {
     .navigationTitle(screenRecordEntry.url.lastPathComponent)
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
       ScreenRecordPreviewView(
-        screenRecordService: screenRecordService,
+        screenRecordService: recoreonServices.screenRecordService,
         screenRecordEntry: route.screenRecordEntry
       )
     }
     .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
       ScreenRecordEncoderView(
-        encodeService: encodeService, screenRecordEntry: route.screenRecordEntry)
+        recoreonServices: recoreonServices, screenRecordEntry: route.screenRecordEntry)
     }
     .navigationDestination(for: RecordNoteEditorViewRoute.self) { route in
       RecordNoteEditorView(
@@ -136,8 +136,9 @@ struct ScreenRecordDetailView: View {
 
 #if DEBUG
   #Preview {
-    let screenRecordService = ScreenRecordServiceMock()
-    let recordNoteService = screenRecordService.createRecordNoteService()
+    let recoreonServices = PreviewRecoreonServices()
+    let screenRecordService = recoreonServices.screenRecordService
+    let recordNoteService = recoreonServices.recordNoteService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
     @State var path: NavigationPath = NavigationPath()
@@ -147,7 +148,7 @@ struct ScreenRecordDetailView: View {
 
     return NavigationStack {
       ScreenRecordDetailView(
-        screenRecordService: screenRecordService, recordNoteService: recordNoteService,
+        recoreonServices: recoreonServices,
         screenRecordStore: screenRecordStore, path: $path, screenRecordEntry: screenRecordEntry)
     }
   }
