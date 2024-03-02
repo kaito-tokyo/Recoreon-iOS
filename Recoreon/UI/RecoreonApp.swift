@@ -11,13 +11,7 @@ import SwiftUI
 struct RecoreonApp: App {
   var body: some Scene {
     WindowGroup {
-      let fileManager = FileManager.default
-      let recoreonServices = DefaultRecoreonServices()
-      ContentView(
-        recoreonServices: recoreonServices,
-        screenRecordStore: ScreenRecordStore(
-          screenRecordService: recoreonServices.screenRecordService)
-      )
+      ContentView(recoreonServices: DefaultRecoreonServices())
     }
   }
 }

@@ -14,8 +14,10 @@ class PreviewEncodeService: EncodeService {
       fileManager: fileManager, recoreonPathService: recoreonPathService)
   }
 
-  func generateEncodedVideoURL(screenRecordEntry: ScreenRecordEntry, preset: EncodingPreset) -> URL
-  {
+  func generateEncodedVideoURL(
+    screenRecordEntry: ScreenRecordEntry,
+    preset: EncodingPreset
+  ) -> URL {
     return defaultImpl.generateEncodedVideoURL(screenRecordEntry: screenRecordEntry, preset: preset)
   }
 

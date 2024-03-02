@@ -152,7 +152,6 @@ struct ScreenRecordListView: View {
   #Preview {
     let recoreonServices = DefaultRecoreonServices()
     let screenRecordService = recoreonServices.screenRecordService
-    let recordNoteService = recoreonServices.recordNoteService
     @State var path = NavigationPath()
     @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
 

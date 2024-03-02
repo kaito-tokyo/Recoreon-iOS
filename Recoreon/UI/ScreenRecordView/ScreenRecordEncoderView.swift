@@ -54,7 +54,6 @@ struct ScreenRecordEncoderView: View {
   #Preview {
     let recoreonServices = PreviewRecoreonServices()
     let screenRecordService = recoreonServices.screenRecordService
-    let encodeService = recoreonServices.encodeService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
 
