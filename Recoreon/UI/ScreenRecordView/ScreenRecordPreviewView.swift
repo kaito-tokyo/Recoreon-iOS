@@ -47,7 +47,8 @@ struct ScreenRecordPreviewView: View {
 
 #if DEBUG
   #Preview {
-    let screenRecordService = ScreenRecordServiceMock()
+    let recoreonServices = PreviewRecoreonServices()
+    let screenRecordService = recoreonServices.screenRecordService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     @State var screenRecordEntry = screenRecordEntries[0]
     @State var path: NavigationPath = NavigationPath()

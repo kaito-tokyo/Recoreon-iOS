@@ -68,7 +68,7 @@ struct ScreenRecordListView: View {
   func shareLinkButton() -> some View {
     let shareURLs = selectedScreenRecordEntries.flatMap { screenRecordEntry in
 
-      let recordNoteURLs = recordNoteService.listRecordNoteEntries(
+      let recordNoteURLs = recoreonServices.recordNoteService.listRecordNoteEntries(
         screenRecordEntry: screenRecordEntry
       ).map { $0.url }
       return [screenRecordEntry.url] + recordNoteURLs
@@ -112,7 +112,8 @@ struct ScreenRecordListView: View {
           title: Text("Are you sure to remove all of the selected screen records?"),
           primaryButton: .destructive(Text("OK")) {
             for entry in selectedScreenRecordEntries {
-              screenRecordService.removeScreenRecordAndRelatedFiles(screenRecordEntry: entry)
+              recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
+                screenRecordEntry: entry)
             }
             screenRecordStore.update()
           },
@@ -131,7 +132,7 @@ struct ScreenRecordListView: View {
     .navigationBarTitleDisplayMode(.inline)
     .navigationDestination(for: ScreenRecordDetailViewRoute.self) { route in
       ScreenRecordDetailView(
-        screenRecordService: screenRecordService, recordNoteService: recordNoteService,
+        recoreonServices: recoreonServices,
         screenRecordStore: screenRecordStore, path: $path,
         screenRecordEntry: route.screenRecordEntry)
     }
@@ -149,15 +150,15 @@ struct ScreenRecordListView: View {
 
 #if DEBUG
   #Preview {
-    let screenRecordService = ScreenRecordServiceMock()
-    let recordNoteService = RecordNoteServiceMock()
+    let recoreonServices = DefaultRecoreonServices()
+    let screenRecordService = recoreonServices.screenRecordService
+    let recordNoteService = recoreonServices.recordNoteService
     @State var path = NavigationPath()
     @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
 
     return NavigationStack {
       ScreenRecordListView(
-        screenRecordService: screenRecordService,
-        recordNoteService: recordNoteService,
+        recoreonServices: recoreonServices,
         screenRecordStore: screenRecordStore,
         path: $path
       )

@@ -5,7 +5,7 @@ struct ScreenRecordEncoderViewRoute: Hashable {
 }
 
 struct ScreenRecordEncoderView: View {
-  let encodeService: EncodeService
+  let recoreonServices: RecoreonServices
   let screenRecordEntry: ScreenRecordEntry
 
   @State private var encodingPreset: EncodingPreset = .lowQuality
@@ -14,7 +14,7 @@ struct ScreenRecordEncoderView: View {
 
   func encode() async -> EncodedVideoEntry? {
     encodedVideoEntry = nil
-    return await encodeService.encode(
+    return await recoreonServices.encodeService.encode(
       screenRecordEntry: screenRecordEntry,
       preset: encodingPreset,
       progressHandler: { currentTime, totalTime in
@@ -52,12 +52,15 @@ struct ScreenRecordEncoderView: View {
 
 #if DEBUG
   #Preview {
-    let screenRecordService = ScreenRecordServiceMock()
-    let encodeService = screenRecordService.createEncodeService()
+    let recoreonServices = PreviewRecoreonServices()
+    let screenRecordService = recoreonServices.screenRecordService
+    let encodeService = recoreonServices.encodeService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
 
     return ScreenRecordEncoderView(
-      encodeService: encodeService, screenRecordEntry: screenRecordEntry)
+      recoreonServices: recoreonServices,
+      screenRecordEntry: screenRecordEntry
+    )
   }
 #endif

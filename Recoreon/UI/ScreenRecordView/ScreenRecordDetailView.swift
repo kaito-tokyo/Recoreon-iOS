@@ -30,7 +30,7 @@ struct ScreenRecordDetailView: View {
     self._path = path
     self.screenRecordEntry = screenRecordEntry
     let recordNoteStore = RecordNoteStore(
-      recordNoteService: recoreonServices.reo,
+      recordNoteService: recoreonServices.recordNoteService,
       screenRecordEntry: screenRecordEntry
     )
     self._recordNoteStore = StateObject(wrappedValue: recordNoteStore)
@@ -68,7 +68,6 @@ struct ScreenRecordDetailView: View {
   }
 
   var body: some View {
-    let encodeService = screenRecordService.createEncodeService()
     Form {
       Section {
         List {
@@ -101,7 +100,7 @@ struct ScreenRecordDetailView: View {
             Alert(
               title: Text("Are you sure to remove this screen record?"),
               primaryButton: .destructive(Text("OK")) {
-                screenRecordService.removeScreenRecordAndRelatedFiles(
+                recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
                   screenRecordEntry: screenRecordEntry)
                 screenRecordStore.update()
                 path.removeLast()
@@ -117,13 +116,13 @@ struct ScreenRecordDetailView: View {
     .navigationTitle(screenRecordEntry.url.lastPathComponent)
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
       ScreenRecordPreviewView(
-        screenRecordService: screenRecordService,
+        screenRecordService: recoreonServices.screenRecordService,
         screenRecordEntry: route.screenRecordEntry
       )
     }
     .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
       ScreenRecordEncoderView(
-        encodeService: encodeService, screenRecordEntry: route.screenRecordEntry)
+        recoreonServices: recoreonServices, screenRecordEntry: route.screenRecordEntry)
     }
     .navigationDestination(for: RecordNoteEditorViewRoute.self) { route in
       RecordNoteEditorView(
@@ -137,8 +136,9 @@ struct ScreenRecordDetailView: View {
 
 #if DEBUG
   #Preview {
-    let screenRecordService = ScreenRecordServiceMock()
-    let recordNoteService = screenRecordService.createRecordNoteService()
+    let recoreonServices = PreviewRecoreonServices()
+    let screenRecordService = recoreonServices.screenRecordService
+    let recordNoteService = recoreonServices.recordNoteService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
     @State var path: NavigationPath = NavigationPath()
@@ -148,7 +148,7 @@ struct ScreenRecordDetailView: View {
 
     return NavigationStack {
       ScreenRecordDetailView(
-        screenRecordService: screenRecordService, recordNoteService: recordNoteService,
+        recoreonServices: recoreonServices,
         screenRecordStore: screenRecordStore, path: $path, screenRecordEntry: screenRecordEntry)
     }
   }

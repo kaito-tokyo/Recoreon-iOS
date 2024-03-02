@@ -12,12 +12,11 @@ struct RecoreonApp: App {
   var body: some Scene {
     WindowGroup {
       let fileManager = FileManager.default
-      let recoreonPathService = RecoreonPathService(fileManager: fileManager)
-      let screenRecordService = ScreenRecordService(
-        fileManager: fileManager, recoreonPathService: recoreonPathService)
+      let recoreonServices = DefaultRecoreonServices()
       ContentView(
-        screenRecordService: screenRecordService,
-        screenRecordStore: ScreenRecordStore(screenRecordService: screenRecordService)
+        recoreonServices: recoreonServices,
+        screenRecordStore: ScreenRecordStore(
+          screenRecordService: recoreonServices.screenRecordService)
       )
     }
   }

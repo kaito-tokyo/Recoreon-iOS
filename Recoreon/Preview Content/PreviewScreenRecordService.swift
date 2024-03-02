@@ -1,10 +1,13 @@
 struct PreviewScreenRecordService: ScreenRecordService {
   private let fileManager: FileManager
   private let recoreonPathService: RecoreonPathService
+  private let defaultImpl: ScreenRecordService
 
   init(fileManager: FileManager, recoreonPathService: RecoreonPathService) {
     self.fileManager = fileManager
     self.recoreonPathService = recoreonPathService
+    defaultImpl = DefaultScreenRecordService(
+      fileManager: fileManager, recoreonPathService: recoreonPathService)
   }
 
   private let dateFormatter = {
@@ -38,33 +41,19 @@ struct PreviewScreenRecordService: ScreenRecordService {
     return Bundle.main.url(forResource: "Preview01", withExtension: "mp4")
   }
 
-  func createRecordNoteService() -> RecordNoteService {
-    return RecordNoteServiceMock()
-  }
-
-  func createEncodeService() -> EncodeService {
-    return EncodeServiceMock()
-  }
-
   func removeScreenRecordAndRelatedFiles(screenRecordEntry: ScreenRecordEntry) {
-    removePreviewVideo(screenRecordEntry: screenRecordEntry)
-    removeRecordNoteSubDir(screenRecordEntry: screenRecordEntry)
-    removeScreenRecord(screenRecordEntry: screenRecordEntry)
+    defaultImpl.removeScreenRecordAndRelatedFiles(screenRecordEntry: screenRecordEntry)
   }
 
   func removePreviewVideo(screenRecordEntry: ScreenRecordEntry) {
-    let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
-    let previewVideoURL = recoreonPathService.getPreviewVideoURL(recordID: recordID)
-    try? fileManager.removeItem(at: previewVideoURL)
+    defaultImpl.removePreviewVideo(screenRecordEntry: screenRecordEntry)
   }
 
   func removeRecordNoteSubDir(screenRecordEntry: ScreenRecordEntry) {
-    let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
-    let recordNoteSubDir = recoreonPathService.generateRecordNoteSubDirURL(recordID: recordID)
-    try? fileManager.removeItem(at: recordNoteSubDir)
+    defaultImpl.removeRecordNoteSubDir(screenRecordEntry: screenRecordEntry)
   }
 
   func removeScreenRecord(screenRecordEntry: ScreenRecordEntry) {
-    try? fileManager.removeItem(at: screenRecordEntry.url)
+    defaultImpl.removeScreenRecord(screenRecordEntry: screenRecordEntry)
   }
 }
