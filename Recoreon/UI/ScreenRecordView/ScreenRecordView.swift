@@ -12,7 +12,9 @@ struct ScreenRecordView: View {
     let screenRecordStore = ScreenRecordStore(
       screenRecordService: recoreonServices.screenRecordService
     )
-    _screenRecordStore = StateObject(wrappedValue: screenRecordStore)
+    _screenRecordStore = StateObject(
+      wrappedValue: screenRecordStore
+    )
   }
 
   var body: some View {
@@ -22,6 +24,9 @@ struct ScreenRecordView: View {
         screenRecordStore: screenRecordStore,
         path: $path
       )
+      .onAppear {
+        screenRecordStore.update()
+      }
       .onChange(of: scenePhase) { newValue in
         if newValue == .active {
           screenRecordStore.update()
