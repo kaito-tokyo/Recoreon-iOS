@@ -1,3 +1,5 @@
+import RecoreonCommon
+
 struct DefaultRecoreonServices: RecoreonServices {
   let encodeService: EncodeService
   let recordNoteService: RecordNoteService

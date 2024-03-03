@@ -1,6 +1,6 @@
 import Foundation
 
-struct RecoreonPathService {
+public struct RecoreonPathService {
   private static let appGroupIdentifier = "group.com.github.umireon.Recoreon"
 
   private let fileManager: FileManager

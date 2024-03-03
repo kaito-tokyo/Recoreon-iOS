@@ -1,5 +1,7 @@
 import ReplayKit
 
+import RecoreonCommon
+
 // swiftlint:disable function_parameter_count
 private func copyPlane(
   fromData: UnsafeRawPointer,

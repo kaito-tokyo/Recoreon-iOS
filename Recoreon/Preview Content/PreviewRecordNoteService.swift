@@ -1,3 +1,5 @@
+import RecoreonCommon
+
 struct PreviewRecordNoteService: RecordNoteService {
   private let recoreonPathService: RecoreonPathService
   private let defaultImpl: RecordNoteService

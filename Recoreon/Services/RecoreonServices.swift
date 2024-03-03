@@ -1,3 +1,5 @@
+import RecoreonCommon
+
 protocol RecoreonServices {
   var encodeService: EncodeService { get }
   var recordNoteService: RecordNoteService { get }
