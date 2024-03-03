@@ -1,3 +1,5 @@
+import Foundation
+
 struct RecoreonPathService {
   private static let appGroupIdentifier = "group.com.github.umireon.Recoreon"
 
@@ -13,7 +15,7 @@ struct RecoreonPathService {
   private let recordsDir: URL
   private let recordNotesDir: URL
 
-  init(fileManager: FileManager) {
+  public init(fileManager: FileManager) {
     self.fileManager = fileManager
     appGroupDir = fileManager.containerURL(
       forSecurityApplicationGroupIdentifier: Self.appGroupIdentifier)!
@@ -29,15 +31,15 @@ struct RecoreonPathService {
     recordNotesDir = documentsDir.appending(path: "RecordNotes", directoryHint: .isDirectory)
   }
 
-  func getRecordID(screenRecordURL url: URL) -> String {
+  public func getRecordID(screenRecordURL url: URL) -> String {
     return url.deletingPathExtension().lastPathComponent
   }
 
-  func mkdirp(url: URL) {
+  public func mkdirp(url: URL) {
     try? fileManager.createDirectory(at: url, withIntermediateDirectories: true)
   }
 
-  func generateRecordID(date: Date) -> String {
+  public func generateRecordID(date: Date) -> String {
     let formatter = ISO8601DateFormatter()
     formatter.formatOptions.remove(.withDashSeparatorInDate)
     formatter.formatOptions.remove(.withColonSeparatorInTime)
@@ -51,14 +53,14 @@ struct RecoreonPathService {
 
   // ScreenRecord
 
-  func generateAppGroupScreenRecordURL(recordID: String, ext: String) -> URL {
+  public func generateAppGroupScreenRecordURL(recordID: String, ext: String) -> URL {
     mkdirp(url: appGroupRecordsDir)
     let appGroupScreenRecordURL = appGroupRecordsDir.appending(
       path: "\(recordID).\(ext)", directoryHint: .notDirectory)
     return appGroupScreenRecordURL
   }
 
-  func listScreenRecordURLs() -> [URL] {
+  public func listScreenRecordURLs() -> [URL] {
     guard
       let screenRecordURLs = try? fileManager.contentsOfDirectory(
         at: appGroupRecordsDir, includingPropertiesForKeys: nil)
@@ -72,14 +74,14 @@ struct RecoreonPathService {
 
   // RecordNote
 
-  func getRecordNoteSubDirURL(screenRecordURL: URL) -> URL {
+  public func getRecordNoteSubDirURL(screenRecordURL: URL) -> URL {
     let recordId = screenRecordURL.deletingPathExtension().lastPathComponent
     let recordNoteSubDirURL = recordNotesDir.appending(path: recordId, directoryHint: .isDirectory)
     mkdirp(url: recordNoteSubDirURL)
     return recordNoteSubDirURL
   }
 
-  func listRecordNoteURLs(screenRecordURL: URL) -> [URL] {
+  public func listRecordNoteURLs(screenRecordURL: URL) -> [URL] {
     let recordNotesSubDir = getRecordNoteSubDirURL(screenRecordURL: screenRecordURL)
     guard
       let recordNoteURLs = try? fileManager.contentsOfDirectory(
@@ -92,36 +94,36 @@ struct RecoreonPathService {
     })
   }
 
-  func extractRecordNoteShortName(recordNoteURL: URL) -> String {
+  public func extractRecordNoteShortName(recordNoteURL: URL) -> String {
     let filename = recordNoteURL.deletingPathExtension().lastPathComponent
     let components = filename.split(separator: "-", maxSplits: 2)
     return String(components.last ?? "")
   }
 
-  func isRecordNoteURLReserved(recordNoteURL: URL) -> Bool {
+  public func isRecordNoteURLReserved(recordNoteURL: URL) -> Bool {
     let recordNoteShortName = extractRecordNoteShortName(recordNoteURL: recordNoteURL)
     return ["summary"].contains(recordNoteShortName)
   }
 
-  func generateRecordNoteSubDirURL(recordID: String) -> URL {
+  public func generateRecordNoteSubDirURL(recordID: String) -> URL {
     let subDirURL = recordNotesDir.appending(component: recordID, directoryHint: .isDirectory)
     mkdirp(url: subDirURL)
     return subDirURL
   }
 
-  func generateRecordNoteURL(recordID: String, shortName: String) -> URL {
+  public func generateRecordNoteURL(recordID: String, shortName: String) -> URL {
     let subDirURL = generateRecordNoteSubDirURL(recordID: recordID)
     return subDirURL.appending(
       path: "\(recordID)-\(shortName).txt", directoryHint: .notDirectory)
   }
 
-  func generateRecordSummaryURL(recordID: String) -> URL {
+  public func generateRecordSummaryURL(recordID: String) -> URL {
     return generateRecordNoteURL(recordID: recordID, shortName: "summary")
   }
 
   // PreviewVideo
 
-  func getPreviewVideoURL(recordID: String) -> URL {
+  public func getPreviewVideoURL(recordID: String) -> URL {
     let ext = "mp4"
     mkdirp(url: previewVideosDir)
     let previewVideoURL = previewVideosDir.appending(
@@ -131,7 +133,7 @@ struct RecoreonPathService {
 
   // EncodedVideo
 
-  func generateEncodedVideoURL(recordID: String, presetName: String) -> URL {
+  public func generateEncodedVideoURL(recordID: String, presetName: String) -> URL {
     let ext = "mp4"
     mkdirp(url: encodedVideosDir)
     return encodedVideosDir.appending(
