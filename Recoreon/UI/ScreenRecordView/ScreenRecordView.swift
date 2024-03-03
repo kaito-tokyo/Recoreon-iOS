@@ -5,10 +5,13 @@ struct ScreenRecordView: View {
   @StateObject var screenRecordStore: ScreenRecordStore
   @State var path = NavigationPath()
 
+  @Environment(\.scenePhase) private var scenePhase
+
   init(recoreonServices: RecoreonServices) {
     self.recoreonServices = recoreonServices
     let screenRecordStore = ScreenRecordStore(
-      screenRecordService: recoreonServices.screenRecordService)
+      screenRecordService: recoreonServices.screenRecordService
+    )
     _screenRecordStore = StateObject(wrappedValue: screenRecordStore)
   }
 
@@ -19,6 +22,11 @@ struct ScreenRecordView: View {
         screenRecordStore: screenRecordStore,
         path: $path
       )
+      .onChange(of: scenePhase) { newValue in
+        if newValue == .active {
+          screenRecordStore.update()
+        }
+      }
     }
   }
 }

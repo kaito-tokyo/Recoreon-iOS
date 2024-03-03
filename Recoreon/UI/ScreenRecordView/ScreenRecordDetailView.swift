@@ -119,7 +119,7 @@ struct ScreenRecordDetailView: View {
     .navigationTitle(screenRecordEntry.url.lastPathComponent)
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
       ScreenRecordPreviewView(
-        screenRecordService: recoreonServices.screenRecordService,
+        recoreonServices: recoreonServices,
         screenRecordEntry: route.screenRecordEntry
       )
     }

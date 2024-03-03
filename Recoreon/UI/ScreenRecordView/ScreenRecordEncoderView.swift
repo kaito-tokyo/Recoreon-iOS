@@ -51,13 +51,29 @@ struct ScreenRecordEncoderView: View {
 }
 
 #if DEBUG
+  struct ScreenRecordEncoderViewContainer: View {
+    let recoreonServices: RecoreonServices
+    let screenRecordEntry: ScreenRecordEntry
+
+    var body: some View {
+      TabView {
+        NavigationStack {
+          ScreenRecordEncoderView(
+            recoreonServices: recoreonServices,
+            screenRecordEntry: screenRecordEntry
+          )
+        }
+      }
+    }
+  }
+
   #Preview {
     let recoreonServices = PreviewRecoreonServices()
     let screenRecordService = recoreonServices.screenRecordService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
 
-    return ScreenRecordEncoderView(
+    return ScreenRecordEncoderViewContainer(
       recoreonServices: recoreonServices,
       screenRecordEntry: screenRecordEntry
     )
