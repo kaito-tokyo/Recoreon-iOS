@@ -25,6 +25,13 @@ class RecordNoteStore: ObservableObject {
     }
   }
 
+  func listGeneralRecordNoteEntries() -> [RecordNoteEntry] {
+    let recordNoteEntries = listRecordNoteEntries()
+    return recordNoteService.filterOutReservedRecordNoteEntries(
+      recordNoteEntries: recordNoteEntries
+    )
+  }
+
   func addNote(shortName: String) {
     let recordNoteURL = recordNoteService.generateRecordNoteURL(
       screenRecordEntry: screenRecordEntry, shortName: shortName

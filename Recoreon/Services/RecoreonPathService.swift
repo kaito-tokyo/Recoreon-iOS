@@ -10,9 +10,11 @@ protocol RecoreonPathService {
   // RecordNote
   func getRecordNoteSubDirURL(screenRecordURL: URL) -> URL
   func listRecordNoteURLs(screenRecordURL: URL) -> [URL]
+  func isRecordNoteURLReserved(recordNoteURL: URL) -> Bool
+  func extractRecordNoteShortName(recordNoteURL: URL) -> String
   func generateRecordNoteSubDirURL(recordID: String) -> URL
   func generateRecordNoteURL(recordID: String, shortName: String) -> URL
-  func extractRecordNoteShortName(recordNoteURL: URL) -> String
+  func generateRecordSummaryURL(recordID: String) -> URL
 
   // PreviewVideo
   func getPreviewVideoURL(recordID: String) -> URL

@@ -19,8 +19,12 @@ struct ScreenRecordDetailView: View {
 
   @State var isShowingRemoveConfirmation = false
 
+  @State var editingRecordSummaryBody: String = ""
+
   @State var isAskingNewNoteShortName = false
   @State var newNoteShortName = ""
+
+  let recordNoteService: RecordNoteService
 
   init(
     recoreonServices: RecoreonServices,
@@ -30,24 +34,37 @@ struct ScreenRecordDetailView: View {
   ) {
     self.recoreonServices = recoreonServices
     self.screenRecordStore = screenRecordStore
-    self._path = path
+    _path = path
     self.screenRecordEntry = screenRecordEntry
     let recordNoteStore = RecordNoteStore(
       recordNoteService: recoreonServices.recordNoteService,
       screenRecordEntry: screenRecordEntry
     )
-    self._recordNoteStore = StateObject(wrappedValue: recordNoteStore)
-    self.isShowingRemoveConfirmation = isShowingRemoveConfirmation
+    _recordNoteStore = StateObject(wrappedValue: recordNoteStore)
+
+    let recordSummaryEntry = recoreonServices.recordNoteService.readRecordSummaryEntry(
+      screenRecordEntry: screenRecordEntry)
+    _editingRecordSummaryBody = State(initialValue: recordSummaryEntry.body)
+
+    recordNoteService = recoreonServices.recordNoteService
   }
 
   func recordNoteList() -> some View {
     return Section(header: Text("Notes")) {
-      ForEach(recordNoteStore.listRecordNoteEntries()) { recordNoteEntry in
+      TextField("Enter the summary...", text: $editingRecordSummaryBody)
+        .onChange(of: editingRecordSummaryBody) { newValue in
+          let recordSummaryURL = recoreonServices.recordNoteService.generateRecordSummaryURL(
+            screenRecordEntry: screenRecordEntry
+          )
+          recordNoteStore.putNote(recordNoteURL: recordSummaryURL, body: newValue)
+        }
+
+      ForEach(recordNoteStore.listGeneralRecordNoteEntries()) { recordNoteEntry in
         NavigationLink(value: RecordNoteEditorViewRoute(recordNoteEntry: recordNoteEntry)) {
           Button {
           } label: {
             let recordNoteShortName = recoreonServices.recordNoteService.extractRecordNoteShortName(
-                          recordNoteEntry: recordNoteEntry)
+              recordNoteEntry: recordNoteEntry)
             Label(recordNoteShortName, systemImage: "doc")
           }
         }
@@ -68,6 +85,16 @@ struct ScreenRecordDetailView: View {
         } label: {
           Text("OK")
         }
+      }
+    }
+    .onChange(of: scenePhase) { newValue in
+      if scenePhase == .active && newValue == .inactive {
+        recordNoteStore.saveAllNotes()
+      }
+    }
+    .onChange(of: isPresented) { newValue in
+      if !newValue {
+        recordNoteStore.saveAllNotes()
       }
     }
   }
@@ -175,7 +202,6 @@ struct ScreenRecordDetailView: View {
   #Preview {
     let recoreonServices = PreviewRecoreonServices()
     let screenRecordService = recoreonServices.screenRecordService
-    let recordNoteService = recoreonServices.recordNoteService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
     let path: NavigationPath = NavigationPath()

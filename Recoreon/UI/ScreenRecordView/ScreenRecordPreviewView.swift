@@ -29,7 +29,6 @@ struct ScreenRecordPreviewView: View {
               return
             }
             player.replaceCurrentItem(with: AVPlayerItem(url: previewURL))
-            print(try? FileManager.default.fileExists(atPath: previewURL.path()))
             isRemuxing = false
             player.play()
           }
