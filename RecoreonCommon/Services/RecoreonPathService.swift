@@ -1,4 +1,4 @@
-struct DefaultRecoreonPathService: RecoreonPathService {
+struct RecoreonPathService {
   private static let appGroupIdentifier = "group.com.github.umireon.Recoreon"
 
   private let fileManager: FileManager

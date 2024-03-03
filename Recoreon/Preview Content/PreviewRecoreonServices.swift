@@ -6,7 +6,7 @@ struct PreviewRecoreonServices: RecoreonServices {
 
   init() {
     let fileManager = FileManager.default
-    let recoreonPathService = DefaultRecoreonPathService(fileManager: fileManager)
+    let recoreonPathService = RecoreonPathService(fileManager: fileManager)
 
     encodeService = PreviewEncodeService(
       fileManager: fileManager, recoreonPathService: recoreonPathService)
