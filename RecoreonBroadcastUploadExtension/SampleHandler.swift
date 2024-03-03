@@ -1,6 +1,5 @@
-import ReplayKit
-
 import RecoreonCommon
+import ReplayKit
 
 // swiftlint:disable function_parameter_count
 private func copyPlane(

@@ -207,8 +207,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2284B93B2B94DE38008DF56F /* libRecoreonCommon.a in Frameworks */,
 				22F103D22B8F22C900F192E6 /* FFmpegKit in Frameworks */,
+				2284B93B2B94DE38008DF56F /* libRecoreonCommon.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,8 +223,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2284B93F2B94DE81008DF56F /* libRecoreonCommon.a in Frameworks */,
 				22F103CF2B8F212600F192E6 /* FFmpegKit in Frameworks */,
+				2284B93F2B94DE81008DF56F /* libRecoreonCommon.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
