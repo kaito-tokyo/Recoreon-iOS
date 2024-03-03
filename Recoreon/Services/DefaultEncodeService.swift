@@ -1,3 +1,5 @@
+import RecoreonCommon
+
 struct DefaultEncodeService: EncodeService {
   private let fileManager: FileManager
   private let recoreonPathService: RecoreonPathService

@@ -1,3 +1,5 @@
+import RecoreonCommon
+
 struct DefaultScreenRecordService: ScreenRecordService {
   private let fileManager: FileManager
   private let recoreonPathService: RecoreonPathService

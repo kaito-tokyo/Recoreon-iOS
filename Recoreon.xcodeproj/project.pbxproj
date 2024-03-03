@@ -23,8 +23,6 @@
 		223427A52B93934500F25052 /* PreviewRecoreonServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427A42B93934500F25052 /* PreviewRecoreonServices.swift */; };
 		223427A72B9393CF00F25052 /* DefaultRecoreonServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427A62B9393CF00F25052 /* DefaultRecoreonServices.swift */; };
 		223427A92B93944B00F25052 /* DefaultScreenRecordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427A82B93944B00F25052 /* DefaultScreenRecordService.swift */; };
-		223427AB2B93953000F25052 /* RecoreonPathService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427AA2B93953000F25052 /* RecoreonPathService.swift */; };
-		223427AC2B93959400F25052 /* RecoreonPathService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427AA2B93953000F25052 /* RecoreonPathService.swift */; };
 		223427AE2B93991E00F25052 /* DefaultRecordNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427AD2B93991E00F25052 /* DefaultRecordNoteService.swift */; };
 		223427B02B93996800F25052 /* DefaultEncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427AF2B93996800F25052 /* DefaultEncodeService.swift */; };
 		223427B82B94CC9A00F25052 /* Record01-summary.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223427B72B94CC9A00F25052 /* Record01-summary.txt */; };
@@ -39,6 +37,9 @@
 		226A898F2AFB2EA500EBD2CA /* PreviewScreenRecordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A898E2AFB2EA500EBD2CA /* PreviewScreenRecordService.swift */; };
 		226A89922AFB30D900EBD2CA /* ScreenRecordEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A89912AFB30D900EBD2CA /* ScreenRecordEntry.swift */; };
 		226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */; };
+		2284B93B2B94DE38008DF56F /* libRecoreonCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2284B9312B94DE21008DF56F /* libRecoreonCommon.a */; };
+		2284B93C2B94DE4C008DF56F /* RecoreonPathService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427AA2B93953000F25052 /* RecoreonPathService.swift */; };
+		2284B93F2B94DE81008DF56F /* libRecoreonCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2284B9312B94DE21008DF56F /* libRecoreonCommon.a */; };
 		22966A212AFD9ED40080324D /* ScreenRecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A202AFD9ED40080324D /* ScreenRecordDetailView.swift */; };
 		22966A232AFE29660080324D /* Record01.mkv in Resources */ = {isa = PBXBuildFile; fileRef = 22966A222AFE29660080324D /* Record01.mkv */; };
 		22966A282AFE50B10080324D /* ScreenRecordEncoderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A272AFE50B10080324D /* ScreenRecordEncoderView.swift */; };
@@ -62,6 +63,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		2284B9382B94DE31008DF56F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22C3CCEF2AF240B30039750A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2284B9302B94DE21008DF56F;
+			remoteInfo = RecoreonCommon;
+		};
+		2284B93D2B94DE7D008DF56F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22C3CCEF2AF240B30039750A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2284B9302B94DE21008DF56F;
+			remoteInfo = RecoreonCommon;
+		};
 		22C18AF32AF2B08C00C41B49 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 22C3CCEF2AF240B30039750A /* Project object */;
@@ -93,6 +108,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		2284B92F2B94DE21008DF56F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		22C18AC92AF2AEAA00C41B49 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -140,6 +164,7 @@
 		226A898E2AFB2EA500EBD2CA /* PreviewScreenRecordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewScreenRecordService.swift; sourceTree = "<group>"; };
 		226A89912AFB30D900EBD2CA /* ScreenRecordEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordEntry.swift; sourceTree = "<group>"; };
 		226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingPreset.swift; sourceTree = "<group>"; };
+		2284B9312B94DE21008DF56F /* libRecoreonCommon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRecoreonCommon.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		22966A202AFD9ED40080324D /* ScreenRecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordDetailView.swift; sourceTree = "<group>"; };
 		22966A222AFE29660080324D /* Record01.mkv */ = {isa = PBXFileReference; lastKnownFileType = file; path = Record01.mkv; sourceTree = "<group>"; };
 		22966A272AFE50B10080324D /* ScreenRecordEncoderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordEncoderView.swift; sourceTree = "<group>"; };
@@ -171,11 +196,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2284B92E2B94DE21008DF56F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		22C18ADF2AF2B08B00C41B49 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				22F103D22B8F22C900F192E6 /* FFmpegKit in Frameworks */,
+				2284B93B2B94DE38008DF56F /* libRecoreonCommon.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,6 +224,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22F103CF2B8F212600F192E6 /* FFmpegKit in Frameworks */,
+				2284B93F2B94DE81008DF56F /* libRecoreonCommon.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,22 +246,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		223427BB2B94D56A00F25052 /* RecoreonCommon */ = {
-			isa = PBXGroup;
-			children = (
-				223427BC2B94D57400F25052 /* Services */,
-			);
-			path = RecoreonCommon;
-			sourceTree = "<group>";
-		};
-		223427BC2B94D57400F25052 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				223427AA2B93953000F25052 /* RecoreonPathService.swift */,
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
 		223B05782B90BC9B00A16852 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -296,6 +314,21 @@
 			path = ScreenRecordView;
 			sourceTree = "<group>";
 		};
+		2284B9322B94DE21008DF56F /* RecoreonCommon */ = {
+			isa = PBXGroup;
+			children = (
+				223427AA2B93953000F25052 /* RecoreonPathService.swift */,
+			);
+			path = RecoreonCommon;
+			sourceTree = "<group>";
+		};
+		2284B93A2B94DE38008DF56F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		22966A252AFE47110080324D /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -331,13 +364,14 @@
 		22C3CCEE2AF240B30039750A = {
 			isa = PBXGroup;
 			children = (
-				223427BB2B94D56A00F25052 /* RecoreonCommon */,
 				22C3CCF92AF240B30039750A /* Recoreon */,
 				22C3CD0A2AF240B40039750A /* RecoreonTests */,
 				22C3CD142AF240B40039750A /* RecoreonUITests */,
 				22C18AE42AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */,
 				22C18AEF2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI */,
+				2284B9322B94DE21008DF56F /* RecoreonCommon */,
 				22C3CCF82AF240B30039750A /* Products */,
+				2284B93A2B94DE38008DF56F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -349,6 +383,7 @@
 				22C3CD112AF240B40039750A /* RecoreonUITests.xctest */,
 				22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */,
 				22C18AEC2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex */,
+				2284B9312B94DE21008DF56F /* libRecoreonCommon.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -409,6 +444,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2284B9302B94DE21008DF56F /* RecoreonCommon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2284B9372B94DE21008DF56F /* Build configuration list for PBXNativeTarget "RecoreonCommon" */;
+			buildPhases = (
+				2284B92D2B94DE21008DF56F /* Sources */,
+				2284B92E2B94DE21008DF56F /* Frameworks */,
+				2284B92F2B94DE21008DF56F /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RecoreonCommon;
+			productName = RecoreonCommon;
+			productReference = 2284B9312B94DE21008DF56F /* libRecoreonCommon.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		22C18AE12AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22C18AFC2AF2B08C00C41B49 /* Build configuration list for PBXNativeTarget "RecoreonBroadcastUploadExtension" */;
@@ -420,6 +472,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				2284B9392B94DE31008DF56F /* PBXTargetDependency */,
 			);
 			name = RecoreonBroadcastUploadExtension;
 			packageProductDependencies = (
@@ -459,6 +512,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				2284B93E2B94DE7D008DF56F /* PBXTargetDependency */,
 				22C18AF42AF2B08C00C41B49 /* PBXTargetDependency */,
 				22C18AF72AF2B08C00C41B49 /* PBXTargetDependency */,
 			);
@@ -516,9 +570,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
+					2284B9302B94DE21008DF56F = {
+						CreatedOnToolsVersion = 15.2;
+					};
 					22C18AE12AF2B08B00C41B49 = {
 						CreatedOnToolsVersion = 15.0;
 						LastSwiftMigration = 1500;
@@ -563,6 +620,7 @@
 				22C3CD102AF240B40039750A /* RecoreonUITests */,
 				22C18AE12AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */,
 				22C18AEB2AF2B08B00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI */,
+				2284B9302B94DE21008DF56F /* RecoreonCommon */,
 			);
 		};
 /* End PBXProject section */
@@ -635,12 +693,19 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2284B92D2B94DE21008DF56F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2284B93C2B94DE4C008DF56F /* RecoreonPathService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		22C18ADE2AF2B08B00C41B49 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
-				223427AC2B93959400F25052 /* RecoreonPathService.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
 				224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */,
 			);
@@ -677,7 +742,6 @@
 				22183B492B9100E9004D6FAD /* RecordNoteStore.swift in Sources */,
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
 				2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
-				223427AB2B93953000F25052 /* RecoreonPathService.swift in Sources */,
 				223427A32B93920000F25052 /* RecoreonServices.swift in Sources */,
 				22966A212AFD9ED40080324D /* ScreenRecordDetailView.swift in Sources */,
 				22966A282AFE50B10080324D /* ScreenRecordEncoderView.swift in Sources */,
@@ -712,6 +776,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		2284B9392B94DE31008DF56F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2284B9302B94DE21008DF56F /* RecoreonCommon */;
+			targetProxy = 2284B9382B94DE31008DF56F /* PBXContainerItemProxy */;
+		};
+		2284B93E2B94DE7D008DF56F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2284B9302B94DE21008DF56F /* RecoreonCommon */;
+			targetProxy = 2284B93D2B94DE7D008DF56F /* PBXContainerItemProxy */;
+		};
 		22C18AF42AF2B08C00C41B49 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 22C18AEB2AF2B08B00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI */;
@@ -735,6 +809,38 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		2284B9352B94DE21008DF56F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2284B9362B94DE21008DF56F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		22C18AFA2AF2B08C00C41B49 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1130,6 +1236,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2284B9372B94DE21008DF56F /* Build configuration list for PBXNativeTarget "RecoreonCommon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2284B9352B94DE21008DF56F /* Debug */,
+				2284B9362B94DE21008DF56F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		22C18AF92AF2B08C00C41B49 /* Build configuration list for PBXNativeTarget "RecoreonBroadcastUploadExtensionSetupUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
