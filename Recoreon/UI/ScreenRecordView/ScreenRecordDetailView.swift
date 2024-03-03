@@ -170,22 +170,22 @@ struct ScreenRecordDetailView: View {
     }
   }
 
-#Preview {
-  let recoreonServices = PreviewRecoreonServices()
-  let screenRecordService = recoreonServices.screenRecordService
-  let recordNoteService = recoreonServices.recordNoteService
-  let screenRecordEntries = screenRecordService.listScreenRecordEntries()
-  let screenRecordEntry = screenRecordEntries[0]
-  let path: NavigationPath = NavigationPath()
-  let screenRecordStore = ScreenRecordStore(
-    screenRecordService: screenRecordService
-  )
-  
-  return ScreenRecordDetailViewContainer(
-    recoreonServices: recoreonServices,
-    screenRecordStore: screenRecordStore,
-    path: path,
-    screenRecordEntry: screenRecordEntry
-  )
-}
+  #Preview {
+    let recoreonServices = PreviewRecoreonServices()
+    let screenRecordService = recoreonServices.screenRecordService
+    let recordNoteService = recoreonServices.recordNoteService
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries()
+    let screenRecordEntry = screenRecordEntries[0]
+    let path: NavigationPath = NavigationPath()
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: screenRecordService
+    )
+
+    return ScreenRecordDetailViewContainer(
+      recoreonServices: recoreonServices,
+      screenRecordStore: screenRecordStore,
+      path: path,
+      screenRecordEntry: screenRecordEntry
+    )
+  }
 #endif
