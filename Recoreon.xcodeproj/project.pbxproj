@@ -639,8 +639,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				223427AC2B93959400F25052 /* RecoreonPathService.swift in Sources */,
 				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
+				223427AC2B93959400F25052 /* RecoreonPathService.swift in Sources */,
 				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
 				224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */,
 			);
@@ -661,7 +661,6 @@
 				22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */,
 				223427B02B93996800F25052 /* DefaultEncodeService.swift in Sources */,
 				223427AE2B93991E00F25052 /* DefaultRecordNoteService.swift in Sources */,
-				223427AB2B93953000F25052 /* RecoreonPathService.swift in Sources */,
 				223427A72B9393CF00F25052 /* DefaultRecoreonServices.swift in Sources */,
 				223427A92B93944B00F25052 /* DefaultScreenRecordService.swift in Sources */,
 				2232A1822B9223D000F646E3 /* EncodedVideoEntry.swift in Sources */,
@@ -678,6 +677,7 @@
 				22183B492B9100E9004D6FAD /* RecordNoteStore.swift in Sources */,
 				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
 				2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
+				223427AB2B93953000F25052 /* RecoreonPathService.swift in Sources */,
 				223427A32B93920000F25052 /* RecoreonServices.swift in Sources */,
 				22966A212AFD9ED40080324D /* ScreenRecordDetailView.swift in Sources */,
 				22966A282AFE50B10080324D /* ScreenRecordEncoderView.swift in Sources */,
