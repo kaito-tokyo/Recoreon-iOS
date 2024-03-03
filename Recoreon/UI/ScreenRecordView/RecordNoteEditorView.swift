@@ -29,7 +29,7 @@ struct RecordNoteEditorView: View {
     Form {
       TextField("Enter the note text here", text: $editingNoteBody, axis: .vertical)
     }
-    .navigationTitle(recordNoteEntry.filename)
+    .navigationTitle(recordNoteEntry.url.lastPathComponent)
     .onChange(of: editingNoteBody) { _ in
       recordNoteStore.putNote(recordNoteURL: recordNoteEntry.url, body: editingNoteBody)
     }

@@ -20,8 +20,8 @@ class RecordNoteStore: ObservableObject {
   func listRecordNoteEntries() -> [RecordNoteEntry] {
     return recordNoteBodies.map { url, body in
       RecordNoteEntry(url: url, body: body)
-    }.sorted {
-      $0.filename.compare($1.filename) == .orderedAscending
+    }.sorted { lhs, rhs in
+      lhs.url.lastPathComponent.compare(rhs.url.lastPathComponent) == .orderedAscending
     }
   }
 

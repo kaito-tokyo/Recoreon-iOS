@@ -19,6 +19,10 @@ struct DefaultRecordNoteService: RecordNoteService {
     return recoreonPathService.generateRecordNoteURL(recordID: recordID, shortName: shortName)
   }
 
+  func extractRecordNoteShortName(recordNoteEntry: RecordNoteEntry) -> String {
+    return recoreonPathService.extractRecordNoteShortName(recordNoteURL: recordNoteEntry.url)
+  }
+
   func saveRecordNotes(recordNoteEntries: [RecordNoteEntry]) {
     for recordNoteEntry in recordNoteEntries {
       let body = recordNoteEntry.body

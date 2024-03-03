@@ -28,6 +28,10 @@ struct PreviewRecordNoteService: RecordNoteService {
       screenRecordEntry: screenRecordEntry, shortName: shortName)
   }
 
+  func extractRecordNoteShortName(recordNoteEntry: RecordNoteEntry) -> String {
+    return defaultImpl.extractRecordNoteShortName(recordNoteEntry: recordNoteEntry)
+  }
+
   func saveRecordNotes(recordNoteEntries: [RecordNoteEntry]) {
     defaultImpl.saveRecordNotes(recordNoteEntries: recordNoteEntries)
   }

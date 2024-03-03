@@ -46,7 +46,9 @@ struct ScreenRecordDetailView: View {
         NavigationLink(value: RecordNoteEditorViewRoute(recordNoteEntry: recordNoteEntry)) {
           Button {
           } label: {
-            Label(recordNoteEntry.shortNameWithExt, systemImage: "doc")
+            let recordNoteShortName = recoreonServices.recordNoteService.extractRecordNoteShortName(
+                          recordNoteEntry: recordNoteEntry)
+            Label(recordNoteShortName, systemImage: "doc")
           }
         }
       }
