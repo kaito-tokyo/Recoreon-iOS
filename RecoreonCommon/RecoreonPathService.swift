@@ -1,13 +1,11 @@
 import Foundation
 
 public struct RecoreonPathService {
-  private static let appGroupIdentifier = "group.com.github.umireon.Recoreon"
-
   private let fileManager: FileManager
 
-  private let appGroupDir: URL
-  private let appGroupDocumentsDir: URL
-  private let appGroupRecordsDir: URL
+  private let appGroupsDir: URL
+  private let appGroupsDocumentsDir: URL
+  private let appGroupsRecordsDir: URL
   private let libraryDir: URL
   private let previewVideosDir: URL
   private let encodedVideosDir: URL
@@ -17,11 +15,11 @@ public struct RecoreonPathService {
 
   public init(fileManager: FileManager) {
     self.fileManager = fileManager
-    appGroupDir = fileManager.containerURL(
-      forSecurityApplicationGroupIdentifier: Self.appGroupIdentifier)!
-    appGroupDocumentsDir = appGroupDir.appending(
+    appGroupsDir = fileManager.containerURL(
+      forSecurityApplicationGroupIdentifier: appGroupsIdentifier)!
+    appGroupsDocumentsDir = appGroupsDir.appending(
       component: "Documents", directoryHint: .isDirectory)
-    appGroupRecordsDir = appGroupDocumentsDir.appending(
+    appGroupsRecordsDir = appGroupsDocumentsDir.appending(
       path: "Records", directoryHint: .isDirectory)
     libraryDir = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first!
     previewVideosDir = libraryDir.appending(path: "PreviewVideos", directoryHint: .isDirectory)
@@ -53,9 +51,9 @@ public struct RecoreonPathService {
 
   // ScreenRecord
 
-  public func generateAppGroupScreenRecordURL(recordID: String, ext: String) -> URL {
-    mkdirp(url: appGroupRecordsDir)
-    let appGroupScreenRecordURL = appGroupRecordsDir.appending(
+  public func generateAppGroupsScreenRecordURL(recordID: String, ext: String) -> URL {
+    mkdirp(url: appGroupsRecordsDir)
+    let appGroupScreenRecordURL = appGroupsRecordsDir.appending(
       path: "\(recordID).\(ext)", directoryHint: .notDirectory)
     return appGroupScreenRecordURL
   }
@@ -63,7 +61,7 @@ public struct RecoreonPathService {
   public func listScreenRecordURLs() -> [URL] {
     guard
       let screenRecordURLs = try? fileManager.contentsOfDirectory(
-        at: appGroupRecordsDir, includingPropertiesForKeys: nil)
+        at: appGroupsRecordsDir, includingPropertiesForKeys: nil)
     else {
       return []
     }

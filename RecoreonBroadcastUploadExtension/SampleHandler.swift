@@ -67,8 +67,8 @@ class SampleHandler: RPBroadcastSampleHandler {
     micAudioBitRate: 320_000
   )
 
-  let recoreonPathService = RecoreonPathService(
-    fileManager: FileManager.default)
+  let recoreonPathService = RecoreonPathService(fileManager: FileManager.default)
+  var appGroupsPreferenceService = AppGroupsPreferenceService()
 
   let writer = ScreenRecordWriter()
   var pixelBufferExtractorRef: PixelBufferExtractor?
@@ -98,6 +98,9 @@ class SampleHandler: RPBroadcastSampleHandler {
   override func processSampleBuffer(
     _ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType
   ) {
+    appGroupsPreferenceService.isRecording = true
+    appGroupsPreferenceService.isRecordingTimestamp = Date()
+
     switch sampleBufferType {
     case RPSampleBufferType.video:
       processScreenVideoSample(sampleBuffer)
@@ -127,13 +130,16 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   override func broadcastFinished() {
+    appGroupsPreferenceService.isRecording = false
     stopRecording()
   }
 
   func startRecording() {
     let recordID = recoreonPathService.generateRecordID(date: Date())
-    let appGroupScreenRecordURL = recoreonPathService.generateAppGroupScreenRecordURL(
+    let appGroupsScreenRecordURL = recoreonPathService.generateAppGroupsScreenRecordURL(
       recordID: recordID, ext: spec.ext)
+
+    appGroupsPreferenceService.recordingURL = appGroupsScreenRecordURL
 
     let openVideoCodecResult = writer.openVideoCodec("h264_videotoolbox")
     if !openVideoCodecResult {
@@ -147,7 +153,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       return
     }
 
-    let openOutputFileResult = writer.openOutputFile(appGroupScreenRecordURL.path())
+    let openOutputFileResult = writer.openOutputFile(appGroupsScreenRecordURL.path())
     if !openOutputFileResult {
       finishBroadcastWithError(SampleHandlerError.outputFileOpeningError)
       return
