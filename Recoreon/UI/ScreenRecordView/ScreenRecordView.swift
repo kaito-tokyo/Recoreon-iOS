@@ -30,3 +30,11 @@ struct ScreenRecordView: View {
     }
   }
 }
+
+#if DEBUG
+  #Preview {
+    ScreenRecordView(
+      recoreonServices: PreviewRecoreonServices()
+    )
+  }
+#endif
