@@ -9,7 +9,7 @@ struct ScreenRecordPreviewView: View {
   let recoreonServices: RecoreonServices
   let screenRecordEntry: ScreenRecordEntry
 
-  let player = AVPlayer()
+  @State var player = AVPlayer()
 
   @State var isRemuxing: Bool = false
 
@@ -29,6 +29,7 @@ struct ScreenRecordPreviewView: View {
               return
             }
             player.replaceCurrentItem(with: AVPlayerItem(url: previewURL))
+            print(try? FileManager.default.fileExists(atPath: previewURL.path()))
             isRemuxing = false
             player.play()
           }
