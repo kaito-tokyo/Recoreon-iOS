@@ -29,7 +29,7 @@ struct RecordNoteEditorView: View {
     Form {
       TextField("Enter the note text here", text: $editingNoteBody, axis: .vertical)
     }
-    .navigationTitle(recordNoteEntry.filename)
+    .navigationTitle(recordNoteEntry.url.lastPathComponent)
     .onChange(of: editingNoteBody) { _ in
       recordNoteStore.putNote(recordNoteURL: recordNoteEntry.url, body: editingNoteBody)
     }
@@ -47,6 +47,34 @@ struct RecordNoteEditorView: View {
 }
 
 #if DEBUG
+  struct RecordNoteEditorViewContainer: View {
+    @StateObject var recordNoteStore: RecordNoteStore
+    @State var path: NavigationPath
+    let recordNoteEntry: RecordNoteEntry
+
+    init(
+      recordNoteStore: RecordNoteStore,
+      path: NavigationPath,
+      recordNoteEntry: RecordNoteEntry
+    ) {
+      _recordNoteStore = StateObject(wrappedValue: recordNoteStore)
+      self._path = State(initialValue: path)
+      self.recordNoteEntry = recordNoteEntry
+    }
+
+    var body: some View {
+      TabView {
+        NavigationStack(path: $path) {
+          RecordNoteEditorView(
+            recordNoteStore: recordNoteStore,
+            path: $path,
+            recordNoteEntry: recordNoteEntry
+          )
+        }
+      }
+    }
+  }
+
   #Preview {
     let recoreonServices = PreviewRecoreonServices()
     let screenRecordService = recoreonServices.screenRecordService
@@ -55,21 +83,19 @@ struct RecordNoteEditorView: View {
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
 
-    @StateObject var recordNoteStore = RecordNoteStore(
+    let recordNoteStore = RecordNoteStore(
       recordNoteService: recordNoteService, screenRecordEntry: screenRecordEntry)
 
-    @State var path = NavigationPath()
+    let path = NavigationPath()
 
     let recordNoteEntries = recordNoteService.listRecordNoteEntries(
       screenRecordEntry: screenRecordEntry)
     let recordNoteEntry = recordNoteEntries[0]
 
-    return NavigationStack {
-      RecordNoteEditorView(
-        recordNoteStore: recordNoteStore,
-        path: $path,
-        recordNoteEntry: recordNoteEntry
-      )
-    }
+    return RecordNoteEditorViewContainer(
+      recordNoteStore: recordNoteStore,
+      path: path,
+      recordNoteEntry: recordNoteEntry
+    )
   }
 #endif

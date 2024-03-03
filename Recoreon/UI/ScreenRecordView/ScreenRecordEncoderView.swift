@@ -12,9 +12,20 @@ struct ScreenRecordEncoderView: View {
   @State private var encodingProgress: Double = 0.0
   @State private var encodedVideoEntry: EncodedVideoEntry?
 
+  let encodeService: EncodeService
+
+  init(
+    recoreonServices: RecoreonServices,
+    screenRecordEntry: ScreenRecordEntry
+  ) {
+    self.recoreonServices = recoreonServices
+    self.screenRecordEntry = screenRecordEntry
+    encodeService = recoreonServices.encodeService
+  }
+
   func encode() async -> EncodedVideoEntry? {
     encodedVideoEntry = nil
-    return await recoreonServices.encodeService.encode(
+    return await encodeService.encode(
       screenRecordEntry: screenRecordEntry,
       preset: encodingPreset,
       progressHandler: { currentTime, totalTime in
@@ -51,13 +62,29 @@ struct ScreenRecordEncoderView: View {
 }
 
 #if DEBUG
+  struct ScreenRecordEncoderViewContainer: View {
+    let recoreonServices: RecoreonServices
+    let screenRecordEntry: ScreenRecordEntry
+
+    var body: some View {
+      TabView {
+        NavigationStack {
+          ScreenRecordEncoderView(
+            recoreonServices: recoreonServices,
+            screenRecordEntry: screenRecordEntry
+          )
+        }
+      }
+    }
+  }
+
   #Preview {
     let recoreonServices = PreviewRecoreonServices()
     let screenRecordService = recoreonServices.screenRecordService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
 
-    return ScreenRecordEncoderView(
+    return ScreenRecordEncoderViewContainer(
       recoreonServices: recoreonServices,
       screenRecordEntry: screenRecordEntry
     )

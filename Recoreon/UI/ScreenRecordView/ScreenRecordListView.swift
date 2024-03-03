@@ -133,8 +133,10 @@ struct ScreenRecordListView: View {
     .navigationDestination(for: ScreenRecordDetailViewRoute.self) { route in
       ScreenRecordDetailView(
         recoreonServices: recoreonServices,
-        screenRecordStore: screenRecordStore, path: $path,
-        screenRecordEntry: route.screenRecordEntry)
+        screenRecordStore: screenRecordStore,
+        path: $path,
+        screenRecordEntry: route.screenRecordEntry
+      )
     }
     .toolbar {
       EditButton()
@@ -149,17 +151,42 @@ struct ScreenRecordListView: View {
 }
 
 #if DEBUG
-  #Preview {
-    let recoreonServices = DefaultRecoreonServices()
-    let screenRecordService = recoreonServices.screenRecordService
+  struct ScreenRecordListViewContainer: View {
+    let recoreonServices: RecoreonServices
+    @StateObject var screenRecordStore: ScreenRecordStore
     @State var path = NavigationPath()
-    @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
+
+    init(
+      recoreonServices: RecoreonServices,
+      screenRecordStore: ScreenRecordStore
+    ) {
+      self.recoreonServices = recoreonServices
+      _screenRecordStore = StateObject(wrappedValue: screenRecordStore)
+    }
+
+    var body: some View {
+      TabView {
+        NavigationStack(path: $path) {
+          ScreenRecordListView(
+            recoreonServices: recoreonServices,
+            screenRecordStore: screenRecordStore,
+            path: $path
+          )
+        }
+      }
+    }
+  }
+
+  #Preview {
+    let recoreonServices = PreviewRecoreonServices()
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: recoreonServices.screenRecordService
+    )
 
     return NavigationStack {
-      ScreenRecordListView(
+      ScreenRecordListViewContainer(
         recoreonServices: recoreonServices,
-        screenRecordStore: screenRecordStore,
-        path: $path
+        screenRecordStore: screenRecordStore
       )
     }
   }

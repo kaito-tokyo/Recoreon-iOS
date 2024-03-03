@@ -87,9 +87,20 @@ struct DefaultRecoreonPathService: RecoreonPathService {
     else {
       return []
     }
-    return recordNoteURLs.sorted(by: {
-      $0.lastPathComponent.compare($1.lastPathComponent) == .orderedAscending
+    return recordNoteURLs.sorted(by: { lhs, rhs in
+      lhs.lastPathComponent.compare(rhs.lastPathComponent) == .orderedAscending
     })
+  }
+
+  func extractRecordNoteShortName(recordNoteURL: URL) -> String {
+    let filename = recordNoteURL.deletingPathExtension().lastPathComponent
+    let components = filename.split(separator: "-", maxSplits: 2)
+    return String(components.last ?? "")
+  }
+
+  func isRecordNoteURLReserved(recordNoteURL: URL) -> Bool {
+    let recordNoteShortName = extractRecordNoteShortName(recordNoteURL: recordNoteURL)
+    return ["summary"].contains(recordNoteShortName)
   }
 
   func generateRecordNoteSubDirURL(recordID: String) -> URL {
@@ -100,9 +111,12 @@ struct DefaultRecoreonPathService: RecoreonPathService {
 
   func generateRecordNoteURL(recordID: String, shortName: String) -> URL {
     let subDirURL = generateRecordNoteSubDirURL(recordID: recordID)
-    let ext = "txt"
     return subDirURL.appending(
-      path: "\(recordID)-\(shortName).\(ext)", directoryHint: .notDirectory)
+      path: "\(recordID)-\(shortName).txt", directoryHint: .notDirectory)
+  }
+
+  func generateRecordSummaryURL(recordID: String) -> URL {
+    return generateRecordNoteURL(recordID: recordID, shortName: "summary")
   }
 
   // PreviewVideo

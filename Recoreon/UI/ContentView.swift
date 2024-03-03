@@ -4,8 +4,6 @@ import SwiftUI
 struct ContentView: View {
   let recoreonServices: RecoreonServices
 
-  @Environment(\.scenePhase) private var scenePhase
-
   var body: some View {
     TabView {
       ScreenRecordView(recoreonServices: recoreonServices)

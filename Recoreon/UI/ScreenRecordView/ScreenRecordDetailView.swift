@@ -14,10 +14,17 @@ struct ScreenRecordDetailView: View {
 
   @StateObject var recordNoteStore: RecordNoteStore
 
+  @Environment(\.scenePhase) var scenePhase
+  @Environment(\.isPresented) var isPresented
+
   @State var isShowingRemoveConfirmation = false
+
+  @State var editingRecordSummaryBody: String = ""
 
   @State var isAskingNewNoteShortName = false
   @State var newNoteShortName = ""
+
+  let recordNoteService: RecordNoteService
 
   init(
     recoreonServices: RecoreonServices,
@@ -27,23 +34,38 @@ struct ScreenRecordDetailView: View {
   ) {
     self.recoreonServices = recoreonServices
     self.screenRecordStore = screenRecordStore
-    self._path = path
+    _path = path
     self.screenRecordEntry = screenRecordEntry
     let recordNoteStore = RecordNoteStore(
       recordNoteService: recoreonServices.recordNoteService,
       screenRecordEntry: screenRecordEntry
     )
-    self._recordNoteStore = StateObject(wrappedValue: recordNoteStore)
-    self.isShowingRemoveConfirmation = isShowingRemoveConfirmation
+    _recordNoteStore = StateObject(wrappedValue: recordNoteStore)
+
+    let recordSummaryEntry = recoreonServices.recordNoteService.readRecordSummaryEntry(
+      screenRecordEntry: screenRecordEntry)
+    _editingRecordSummaryBody = State(initialValue: recordSummaryEntry.body)
+
+    recordNoteService = recoreonServices.recordNoteService
   }
 
   func recordNoteList() -> some View {
     return Section(header: Text("Notes")) {
-      ForEach(recordNoteStore.listRecordNoteEntries()) { recordNoteEntry in
+      TextField("Enter the summary...", text: $editingRecordSummaryBody)
+        .onChange(of: editingRecordSummaryBody) { newValue in
+          let recordSummaryURL = recoreonServices.recordNoteService.generateRecordSummaryURL(
+            screenRecordEntry: screenRecordEntry
+          )
+          recordNoteStore.putNote(recordNoteURL: recordSummaryURL, body: newValue)
+        }
+
+      ForEach(recordNoteStore.listGeneralRecordNoteEntries()) { recordNoteEntry in
         NavigationLink(value: RecordNoteEditorViewRoute(recordNoteEntry: recordNoteEntry)) {
           Button {
           } label: {
-            Label(recordNoteEntry.shortNameWithExt, systemImage: "doc")
+            let recordNoteShortName = recoreonServices.recordNoteService.extractRecordNoteShortName(
+              recordNoteEntry: recordNoteEntry)
+            Label(recordNoteShortName, systemImage: "doc")
           }
         }
       }
@@ -63,6 +85,16 @@ struct ScreenRecordDetailView: View {
         } label: {
           Text("OK")
         }
+      }
+    }
+    .onChange(of: scenePhase) { newValue in
+      if scenePhase == .active && newValue == .inactive {
+        recordNoteStore.saveAllNotes()
+      }
+    }
+    .onChange(of: isPresented) { newValue in
+      if !newValue {
+        recordNoteStore.saveAllNotes()
       }
     }
   }
@@ -116,7 +148,7 @@ struct ScreenRecordDetailView: View {
     .navigationTitle(screenRecordEntry.url.lastPathComponent)
     .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
       ScreenRecordPreviewView(
-        screenRecordService: recoreonServices.screenRecordService,
+        recoreonServices: recoreonServices,
         screenRecordEntry: route.screenRecordEntry
       )
     }
@@ -135,21 +167,53 @@ struct ScreenRecordDetailView: View {
 }
 
 #if DEBUG
+  struct ScreenRecordDetailViewContainer: View {
+    let recoreonServices: RecoreonServices
+    @StateObject var screenRecordStore: ScreenRecordStore
+    @State var path: NavigationPath
+    let screenRecordEntry: ScreenRecordEntry
+
+    init(
+      recoreonServices: RecoreonServices,
+      screenRecordStore: ScreenRecordStore,
+      path: NavigationPath,
+      screenRecordEntry: ScreenRecordEntry
+    ) {
+      self.recoreonServices = recoreonServices
+      _screenRecordStore = StateObject(wrappedValue: screenRecordStore)
+      _path = State(initialValue: path)
+      self.screenRecordEntry = screenRecordEntry
+    }
+
+    var body: some View {
+      TabView {
+        NavigationStack(path: $path) {
+          ScreenRecordDetailView(
+            recoreonServices: recoreonServices,
+            screenRecordStore: screenRecordStore,
+            path: $path,
+            screenRecordEntry: screenRecordEntry
+          )
+        }
+      }
+    }
+  }
+
   #Preview {
     let recoreonServices = PreviewRecoreonServices()
     let screenRecordService = recoreonServices.screenRecordService
-    let recordNoteService = recoreonServices.recordNoteService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
-    @State var path: NavigationPath = NavigationPath()
-    @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
-    @StateObject var recordNoteStore = RecordNoteStore(
-      recordNoteService: recordNoteService, screenRecordEntry: screenRecordEntry)
+    let path: NavigationPath = NavigationPath()
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: screenRecordService
+    )
 
-    return NavigationStack {
-      ScreenRecordDetailView(
-        recoreonServices: recoreonServices,
-        screenRecordStore: screenRecordStore, path: $path, screenRecordEntry: screenRecordEntry)
-    }
+    return ScreenRecordDetailViewContainer(
+      recoreonServices: recoreonServices,
+      screenRecordStore: screenRecordStore,
+      path: path,
+      screenRecordEntry: screenRecordEntry
+    )
   }
 #endif

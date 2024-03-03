@@ -6,10 +6,10 @@ struct ScreenRecordPreviewViewRoute: Hashable {
 }
 
 struct ScreenRecordPreviewView: View {
-  let screenRecordService: ScreenRecordService
+  let recoreonServices: RecoreonServices
   let screenRecordEntry: ScreenRecordEntry
 
-  let player = AVPlayer()
+  @State var player = AVPlayer()
 
   @State var isRemuxing: Bool = false
 
@@ -22,7 +22,7 @@ struct ScreenRecordPreviewView: View {
           Task {
             isRemuxing = true
             guard
-              let previewURL = await screenRecordService.remuxPreviewVideo(
+              let previewURL = await recoreonServices.screenRecordService.remuxPreviewVideo(
                 screenRecordEntry: screenRecordEntry)
             else {
               isRemuxing = false
@@ -46,19 +46,31 @@ struct ScreenRecordPreviewView: View {
 }
 
 #if DEBUG
+  struct ScreenRecordPreviewViewContainer: View {
+    let recoreonServices: RecoreonServices
+    let screenRecordEntry: ScreenRecordEntry
+
+    var body: some View {
+      TabView {
+        NavigationStack {
+          ScreenRecordPreviewView(
+            recoreonServices: recoreonServices,
+            screenRecordEntry: screenRecordEntry
+          )
+        }
+      }
+    }
+  }
+
   #Preview {
     let recoreonServices = PreviewRecoreonServices()
     let screenRecordService = recoreonServices.screenRecordService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
-    @State var screenRecordEntry = screenRecordEntries[0]
-    @State var path: NavigationPath = NavigationPath()
-    @StateObject var screenRecordStore = ScreenRecordStore(screenRecordService: screenRecordService)
+    let screenRecordEntry = screenRecordEntries[0]
 
-    return NavigationStack {
-      ScreenRecordPreviewView(
-        screenRecordService: screenRecordService,
-        screenRecordEntry: screenRecordEntry
-      )
-    }
+    return ScreenRecordPreviewViewContainer(
+      recoreonServices: recoreonServices,
+      screenRecordEntry: screenRecordEntry
+    )
   }
 #endif
