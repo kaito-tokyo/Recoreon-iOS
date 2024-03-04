@@ -325,9 +325,9 @@
 		2284B9322B94DE21008DF56F /* RecoreonCommon */ = {
 			isa = PBXGroup;
 			children = (
-				223427AA2B93953000F25052 /* RecoreonPathService.swift */,
 				2284B9412B94E407008DF56F /* AppGroupsPreferenceService.swift */,
 				2284B9432B94E4F2008DF56F /* RecoreonCommon.swift */,
+				223427AA2B93953000F25052 /* RecoreonPathService.swift */,
 			);
 			path = RecoreonCommon;
 			sourceTree = "<group>";
@@ -418,10 +418,9 @@
 		22C3CD002AF240B30039750A /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				22AA3D8F2B9567C700C64E7E /* Preview02.mp4 */,
-				22AA3D902B9567C700C64E7E /* Record02.mkv */,
 				22C3CD012AF240B30039750A /* Preview Assets.xcassets */,
 				2232A95A2AFD80A200330C23 /* Preview01.mp4 */,
+				22AA3D8F2B9567C700C64E7E /* Preview02.mp4 */,
 				2232A1832B92485900F646E3 /* PreviewEncodeService.swift */,
 				2232A17B2B920D4B00F646E3 /* PreviewRecordNoteService.swift */,
 				223427A42B93934500F25052 /* PreviewRecoreonServices.swift */,
@@ -430,6 +429,7 @@
 				223B05882B90CDA400A16852 /* Record01-2.txt */,
 				223427B72B94CC9A00F25052 /* Record01-summary.txt */,
 				22966A222AFE29660080324D /* Record01.mkv */,
+				22AA3D902B9567C700C64E7E /* Record02.mkv */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -657,15 +657,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				22C3CCFF2AF240B30039750A /* Assets.xcassets in Resources */,
-				22AA3D912B9567C700C64E7E /* Preview02.mp4 in Resources */,
 				22AAC7F32B90B7B500078129 /* Localizable.xcstrings in Resources */,
 				22C3CD022AF240B30039750A /* Preview Assets.xcassets in Resources */,
 				2232A95C2AFD80A200330C23 /* Preview01.mp4 in Resources */,
-				22AA3D922B9567C700C64E7E /* Record02.mkv in Resources */,
+				22AA3D912B9567C700C64E7E /* Preview02.mp4 in Resources */,
 				223B05892B90D5D800A16852 /* Record01-1.txt in Resources */,
 				223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */,
 				223427B82B94CC9A00F25052 /* Record01-summary.txt in Resources */,
 				22966A232AFE29660080324D /* Record01.mkv in Resources */,
+				22AA3D922B9567C700C64E7E /* Record02.mkv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -711,9 +711,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2284B9422B94E407008DF56F /* AppGroupsPreferenceService.swift in Sources */,
 				2284B9442B94E4F2008DF56F /* RecoreonCommon.swift in Sources */,
 				2284B93C2B94DE4C008DF56F /* RecoreonPathService.swift in Sources */,
-				2284B9422B94E407008DF56F /* AppGroupsPreferenceService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
