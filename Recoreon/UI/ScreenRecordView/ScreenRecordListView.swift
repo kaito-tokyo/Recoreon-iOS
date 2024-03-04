@@ -38,8 +38,6 @@ struct ScreenRecordListView: View {
     let screenRecordEntries = screenRecordStore.screenRecordEntries
 //    guard let recordingURL = recordingURL else { return nil }
     let ongoingScreenRecordEntry = screenRecordEntries.first { screenRecordEntry in
-      print("a: \(screenRecordEntry.url)")
-      print("b: \(recordingURL)")
       print(screenRecordEntry.url.absoluteString == recordingURL)
       return screenRecordEntry.url.absoluteString == recordingURL
     }
@@ -157,11 +155,14 @@ struct ScreenRecordListView: View {
     ZStack {
       Form {
         if let ongoingScreenRecordEntry = getOngoingScreenRecordEntry() {
-          screenRecordEntryItem(
-            screenRecordEntry: ongoingScreenRecordEntry
-          )
+          NavigationLink(
+            value: ScreenRecordDetailViewRoute(
+              screenRecordEntry: ongoingScreenRecordEntry
+            )
+          ) {
+            screenRecordEntryItem(screenRecordEntry: ongoingScreenRecordEntry)
+          }
         }
-        screenRecordList()
       }
       shareLinkButton()
     }
@@ -224,8 +225,10 @@ struct ScreenRecordListView: View {
 
     appGroupsUserDefaults.set(true, forKey: AppGroupsPreferenceService.isRecordingKey)
     appGroupsUserDefaults.set(Date().timeIntervalSince1970, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
-    print("c: \(screenRecordStore.screenRecordEntries[0].url)")
-    appGroupsUserDefaults.set(screenRecordStore.screenRecordEntries[0].url.absoluteString, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
+    appGroupsUserDefaults.set(
+      screenRecordStore.screenRecordEntries[0].url.absoluteString,
+      forKey: AppGroupsPreferenceService.recordingURLKey
+    )
 
     return NavigationStack {
       ScreenRecordListViewContainer(
