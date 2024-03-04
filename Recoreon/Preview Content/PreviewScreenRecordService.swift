@@ -37,9 +37,9 @@ struct PreviewScreenRecordService: ScreenRecordService {
     let record02Size = record02Attrs?[.size] as? UInt64
     let record02CreationDate = record02Attrs?[.creationDate] as? Date
     let record02Entry = ScreenRecordEntry(
-      url: record01Url!,
-      size: record01Size!,
-      creationDate: record01CreationDate!
+      url: record02Url!,
+      size: record02Size!,
+      creationDate: record02CreationDate!
     )
 
     return [record01Entry, record02Entry]
