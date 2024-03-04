@@ -158,12 +158,12 @@ struct ScreenRecordListView: View {
 
   var body: some View {
 
-
     ZStack {
       Form {
         var screenRecordEntries = screenRecordStore.screenRecordEntries
         if let ongoingScreenRecordEntry = getOngoingScreenRecordEntry() {
-          let ongoingScreenRecordEntryIndex = screenRecordEntries.firstIndex(of: ongoingScreenRecordEntry)
+          let ongoingScreenRecordEntryIndex = screenRecordEntries.firstIndex(
+            of: ongoingScreenRecordEntry)
           if let ongoingScreenRecordEntryIndex = ongoingScreenRecordEntryIndex {
             let _ = screenRecordEntries.remove(at: ongoingScreenRecordEntryIndex)
           }
