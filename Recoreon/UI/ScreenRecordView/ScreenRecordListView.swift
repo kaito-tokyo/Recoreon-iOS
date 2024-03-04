@@ -38,7 +38,6 @@ struct ScreenRecordListView: View {
     let screenRecordEntries = screenRecordStore.screenRecordEntries
 //    guard let recordingURL = recordingURL else { return nil }
     let ongoingScreenRecordEntry = screenRecordEntries.first { screenRecordEntry in
-      print(screenRecordEntry.url.absoluteString == recordingURL)
       return screenRecordEntry.url.absoluteString == recordingURL
     }
     return ongoingScreenRecordEntry
