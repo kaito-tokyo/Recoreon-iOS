@@ -67,8 +67,8 @@ class SampleHandler: RPBroadcastSampleHandler {
     micAudioBitRate: 320_000
   )
 
-  let recoreonPathService = RecoreonPathService(
-    fileManager: FileManager.default)
+  let recoreonPathService = RecoreonPathService(fileManager: FileManager.default)
+  let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults
 
   let writer = ScreenRecordWriter()
   var pixelBufferExtractorRef: PixelBufferExtractor?
@@ -98,6 +98,10 @@ class SampleHandler: RPBroadcastSampleHandler {
   override func processSampleBuffer(
     _ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType
   ) {
+    appGroupsUserDefaults?.set(true, forKey: AppGroupsPreferenceService.isRecordingKey)
+    appGroupsUserDefaults?.set(
+      Date().timeIntervalSince1970, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
+
     switch sampleBufferType {
     case RPSampleBufferType.video:
       processScreenVideoSample(sampleBuffer)
@@ -127,13 +131,17 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   override func broadcastFinished() {
+    appGroupsUserDefaults?.set(false, forKey: AppGroupsPreferenceService.isRecordingKey)
     stopRecording()
   }
 
   func startRecording() {
     let recordID = recoreonPathService.generateRecordID(date: Date())
-    let appGroupScreenRecordURL = recoreonPathService.generateAppGroupScreenRecordURL(
+    let appGroupsScreenRecordURL = recoreonPathService.generateAppGroupsScreenRecordURL(
       recordID: recordID, ext: spec.ext)
+
+    appGroupsUserDefaults?.set(
+      appGroupsScreenRecordURL.absoluteString, forKey: AppGroupsPreferenceService.recordingURLKey)
 
     let openVideoCodecResult = writer.openVideoCodec("h264_videotoolbox")
     if !openVideoCodecResult {
@@ -147,7 +155,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       return
     }
 
-    let openOutputFileResult = writer.openOutputFile(appGroupScreenRecordURL.path())
+    let openOutputFileResult = writer.openOutputFile(appGroupsScreenRecordURL.path())
     if !openOutputFileResult {
       finishBroadcastWithError(SampleHandlerError.outputFileOpeningError)
       return

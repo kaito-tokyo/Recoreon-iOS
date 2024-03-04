@@ -27,7 +27,7 @@ struct RecordNoteEditorView: View {
 
   var body: some View {
     Form {
-      TextField("Enter the note text here", text: $editingNoteBody, axis: .vertical)
+      TextField("Enter the note text here...", text: $editingNoteBody, axis: .vertical)
     }
     .navigationTitle(recordNoteEntry.url.lastPathComponent)
     .onChange(of: editingNoteBody) { _ in

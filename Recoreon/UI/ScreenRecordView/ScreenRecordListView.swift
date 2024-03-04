@@ -1,4 +1,5 @@
 import AVKit
+import RecoreonCommon
 import ReplayKit
 import SwiftUI
 
@@ -17,50 +18,82 @@ struct ScreenRecordListView: View {
   @State private var selectedScreenRecordEntries = Set<ScreenRecordEntry>()
   @State private var isRemoveConfirmationPresented: Bool = false
 
-  func screenRecordEntry(_ entry: ScreenRecordEntry) -> some View {
-    return HStack {
-      if editMode.isEditing {
-        if selectedScreenRecordEntries.contains(entry) {
-          Image(systemName: "checkmark.circle")
-            .foregroundColor(.green)
-        } else {
-          Image(systemName: "circle")
-        }
+  @AppStorage(
+    AppGroupsPreferenceService.isRecordingKey,
+    store: AppGroupsPreferenceService.userDefaults
+  ) private var isRecording: Bool?
+
+  @AppStorage(
+    AppGroupsPreferenceService.isRecordingTimestampKey,
+    store: AppGroupsPreferenceService.userDefaults
+  ) private var isRecordingTimestamp: Double?
+
+  @AppStorage(
+    AppGroupsPreferenceService.recordingURLKey,
+    store: AppGroupsPreferenceService.userDefaults
+  ) private var recordingURL: String?
+
+  func getOngoingScreenRecordEntry() -> ScreenRecordEntry? {
+    guard let isRecordingTimestamp = isRecordingTimestamp else { return nil }
+    let elapsedTime = Date().timeIntervalSince1970 - isRecordingTimestamp
+    if isRecording != true || elapsedTime > 1 {
+      return nil
+    }
+    let screenRecordEntries = screenRecordStore.screenRecordEntries
+    let ongoingScreenRecordEntry = screenRecordEntries.first { screenRecordEntry in
+      return screenRecordEntry.url.absoluteString == recordingURL
+    }
+    return ongoingScreenRecordEntry
+  }
+
+  func screenRecordEntryItem(screenRecordEntry: ScreenRecordEntry) -> some View {
+    return VStack {
+      HStack {
+        Text(screenRecordEntry.url.lastPathComponent)
+        Spacer()
       }
-      VStack {
-        HStack {
-          Text(entry.url.lastPathComponent)
-          Spacer()
-        }
-        HStack {
-          Text(entry.creationDate.formatted())
-          Text(byteCountFormatter.string(fromByteCount: Int64(entry.size)))
-          Spacer()
-        }
+      HStack {
+        Text(screenRecordEntry.creationDate.formatted())
+        Text(byteCountFormatter.string(fromByteCount: Int64(screenRecordEntry.size)))
+        Spacer()
       }
     }
   }
 
-  func screenRecordList() -> some View {
-    return List {
-      ForEach(screenRecordStore.screenRecordEntries) { entry in
-        let detailViewRoute = ScreenRecordDetailViewRoute(screenRecordEntry: entry)
-        if editMode.isEditing {
-          Button {
-            if selectedScreenRecordEntries.contains(entry) {
-              selectedScreenRecordEntries.remove(entry)
+  func screenRecordList(screenRecordEntries: [ScreenRecordEntry]) -> some View {
+    return Section(header: Text("Saved screen records")) {
+      ForEach(screenRecordEntries) { screenRecordEntry in
+        Button {
+          if editMode.isEditing {
+            if selectedScreenRecordEntries.contains(screenRecordEntry) {
+              selectedScreenRecordEntries.remove(screenRecordEntry)
             } else {
-              selectedScreenRecordEntries.insert(entry)
+              selectedScreenRecordEntries.insert(screenRecordEntry)
             }
-          } label: {
-            screenRecordEntry(entry)
+          } else {
+            path.append(
+              ScreenRecordDetailViewRoute(
+                screenRecordEntry: screenRecordEntry)
+            )
           }
-          .foregroundStyle(.foreground)
-        } else {
-          NavigationLink(value: detailViewRoute) {
-            screenRecordEntry(entry)
+        } label: {
+          HStack {
+            if editMode.isEditing {
+              if selectedScreenRecordEntries.contains(screenRecordEntry) {
+                Image(systemName: "checkmark.circle")
+                  .foregroundColor(.green)
+              } else {
+                Image(systemName: "circle")
+              }
+            }
+            NavigationLink {
+              EmptyView()
+            } label: {
+              screenRecordEntryItem(screenRecordEntry: screenRecordEntry)
+            }
           }
         }
+        .foregroundColor(Color.black)
       }
     }
   }
@@ -124,8 +157,32 @@ struct ScreenRecordListView: View {
   }
 
   var body: some View {
+
     ZStack {
-      screenRecordList()
+      Form {
+        var screenRecordEntries = screenRecordStore.screenRecordEntries
+        if let ongoingScreenRecordEntry = getOngoingScreenRecordEntry() {
+          let ongoingScreenRecordEntryIndex = screenRecordEntries.firstIndex(
+            of: ongoingScreenRecordEntry)
+          if let ongoingScreenRecordEntryIndex = ongoingScreenRecordEntryIndex {
+            let _ = screenRecordEntries.remove(at: ongoingScreenRecordEntryIndex)
+          }
+
+          Section(header: Text("Ongoing screen record")) {
+            NavigationLink(
+              value: ScreenRecordDetailViewRoute(
+                screenRecordEntry: ongoingScreenRecordEntry
+              )
+            ) {
+              screenRecordEntryItem(screenRecordEntry: ongoingScreenRecordEntry)
+            }
+            .listRowBackground(Color.red)
+            .foregroundStyle(Color.white)
+          }
+        }
+
+        screenRecordList(screenRecordEntries: screenRecordEntries)
+      }
       shareLinkButton()
     }
     .navigationTitle("List of screen records")
@@ -181,6 +238,16 @@ struct ScreenRecordListView: View {
     let recoreonServices = PreviewRecoreonServices()
     let screenRecordStore = ScreenRecordStore(
       screenRecordService: recoreonServices.screenRecordService
+    )
+
+    let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
+
+    appGroupsUserDefaults.set(true, forKey: AppGroupsPreferenceService.isRecordingKey)
+    appGroupsUserDefaults.set(
+      Date().timeIntervalSince1970, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
+    appGroupsUserDefaults.set(
+      screenRecordStore.screenRecordEntries[0].url.absoluteString,
+      forKey: AppGroupsPreferenceService.recordingURLKey
     )
 
     return NavigationStack {
