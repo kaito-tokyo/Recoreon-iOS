@@ -2,6 +2,8 @@ import AVKit
 import ReplayKit
 import SwiftUI
 
+import RecoreonCommon
+
 let byteCountFormatter = {
   let bcf = ByteCountFormatter()
   bcf.allowedUnits = [.useMB, .useGB]
@@ -17,10 +19,37 @@ struct ScreenRecordListView: View {
   @State private var selectedScreenRecordEntries = Set<ScreenRecordEntry>()
   @State private var isRemoveConfirmationPresented: Bool = false
 
-  func screenRecordEntry(_ entry: ScreenRecordEntry) -> some View {
+  @AppStorage(
+    AppGroupsPreferenceService.isRecordingKey,
+    store: AppGroupsPreferenceService.userDefaults
+  ) private var isRecording: Bool?
+
+  @AppStorage(
+    AppGroupsPreferenceService.isRecordingTimestampKey,
+    store: AppGroupsPreferenceService.userDefaults
+  ) private var isRecordingTimestampInt: Int?
+
+  @AppStorage(
+    AppGroupsPreferenceService.recordingURLKey,
+    store: AppGroupsPreferenceService.userDefaults
+  ) private var recordingURL = ""
+
+  func getOngoingScreenRecordEntry() -> ScreenRecordEntry? {
+    let screenRecordEntries = screenRecordStore.screenRecordEntries
+//    guard let recordingURL = recordingURL else { return nil }
+    let ongoingScreenRecordEntry = screenRecordEntries.first { screenRecordEntry in
+      print("a: \(screenRecordEntry.url)")
+      print("b: \(recordingURL)")
+      print(screenRecordEntry.url.absoluteString == recordingURL)
+      return screenRecordEntry.url.absoluteString == recordingURL
+    }
+    return ongoingScreenRecordEntry
+  }
+
+  func screenRecordEntryItem(screenRecordEntry: ScreenRecordEntry) -> some View {
     return HStack {
       if editMode.isEditing {
-        if selectedScreenRecordEntries.contains(entry) {
+        if selectedScreenRecordEntries.contains(screenRecordEntry) {
           Image(systemName: "checkmark.circle")
             .foregroundColor(.green)
         } else {
@@ -29,12 +58,12 @@ struct ScreenRecordListView: View {
       }
       VStack {
         HStack {
-          Text(entry.url.lastPathComponent)
+          Text(screenRecordEntry.url.lastPathComponent)
           Spacer()
         }
         HStack {
-          Text(entry.creationDate.formatted())
-          Text(byteCountFormatter.string(fromByteCount: Int64(entry.size)))
+          Text(screenRecordEntry.creationDate.formatted())
+          Text(byteCountFormatter.string(fromByteCount: Int64(screenRecordEntry.size)))
           Spacer()
         }
       }
@@ -42,23 +71,24 @@ struct ScreenRecordListView: View {
   }
 
   func screenRecordList() -> some View {
+    let screenRecordEntries = screenRecordStore.screenRecordEntries
     return List {
-      ForEach(screenRecordStore.screenRecordEntries) { entry in
-        let detailViewRoute = ScreenRecordDetailViewRoute(screenRecordEntry: entry)
+      ForEach(screenRecordEntries) { screenRecordEntry in
+        let detailViewRoute = ScreenRecordDetailViewRoute(screenRecordEntry: screenRecordEntry)
         if editMode.isEditing {
           Button {
-            if selectedScreenRecordEntries.contains(entry) {
-              selectedScreenRecordEntries.remove(entry)
+            if selectedScreenRecordEntries.contains(screenRecordEntry) {
+              selectedScreenRecordEntries.remove(screenRecordEntry)
             } else {
-              selectedScreenRecordEntries.insert(entry)
+              selectedScreenRecordEntries.insert(screenRecordEntry)
             }
           } label: {
-            screenRecordEntry(entry)
+            screenRecordEntryItem(screenRecordEntry: screenRecordEntry)
           }
           .foregroundStyle(.foreground)
         } else {
           NavigationLink(value: detailViewRoute) {
-            screenRecordEntry(entry)
+            screenRecordEntryItem(screenRecordEntry: screenRecordEntry)
           }
         }
       }
@@ -125,7 +155,14 @@ struct ScreenRecordListView: View {
 
   var body: some View {
     ZStack {
-      screenRecordList()
+      Form {
+        if let ongoingScreenRecordEntry = getOngoingScreenRecordEntry() {
+          screenRecordEntryItem(
+            screenRecordEntry: ongoingScreenRecordEntry
+          )
+        }
+        screenRecordList()
+      }
       shareLinkButton()
     }
     .navigationTitle("List of screen records")
@@ -182,6 +219,13 @@ struct ScreenRecordListView: View {
     let screenRecordStore = ScreenRecordStore(
       screenRecordService: recoreonServices.screenRecordService
     )
+
+    let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
+
+    appGroupsUserDefaults.set(true, forKey: AppGroupsPreferenceService.isRecordingKey)
+    appGroupsUserDefaults.set(Date().timeIntervalSince1970, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
+    print("c: \(screenRecordStore.screenRecordEntries[0].url)")
+    appGroupsUserDefaults.set(screenRecordStore.screenRecordEntries[0].url.absoluteString, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
 
     return NavigationStack {
       ScreenRecordListViewContainer(

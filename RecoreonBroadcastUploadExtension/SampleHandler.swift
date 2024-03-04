@@ -68,7 +68,7 @@ class SampleHandler: RPBroadcastSampleHandler {
   )
 
   let recoreonPathService = RecoreonPathService(fileManager: FileManager.default)
-  var appGroupsPreferenceService = AppGroupsPreferenceService()
+  let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults
 
   let writer = ScreenRecordWriter()
   var pixelBufferExtractorRef: PixelBufferExtractor?
@@ -98,8 +98,8 @@ class SampleHandler: RPBroadcastSampleHandler {
   override func processSampleBuffer(
     _ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType
   ) {
-    appGroupsPreferenceService.isRecording = true
-    appGroupsPreferenceService.isRecordingTimestamp = Date()
+    appGroupsUserDefaults?.set(true, forKey: AppGroupsPreferenceService.isRecordingKey)
+    appGroupsUserDefaults?.set(Date().timeIntervalSince1970, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
 
     switch sampleBufferType {
     case RPSampleBufferType.video:
@@ -130,7 +130,7 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   override func broadcastFinished() {
-    appGroupsPreferenceService.isRecording = false
+    appGroupsUserDefaults?.set(false, forKey: AppGroupsPreferenceService.isRecordingKey)
     stopRecording()
   }
 
@@ -139,7 +139,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     let appGroupsScreenRecordURL = recoreonPathService.generateAppGroupsScreenRecordURL(
       recordID: recordID, ext: spec.ext)
 
-    appGroupsPreferenceService.recordingURL = appGroupsScreenRecordURL
+    appGroupsUserDefaults?.set(appGroupsScreenRecordURL.absoluteString, forKey: AppGroupsPreferenceService.recordingURLKey)
 
     let openVideoCodecResult = writer.openVideoCodec("h264_videotoolbox")
     if !openVideoCodecResult {
