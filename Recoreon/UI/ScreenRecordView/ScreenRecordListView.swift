@@ -43,25 +43,15 @@ struct ScreenRecordListView: View {
   }
 
   func screenRecordEntryItem(screenRecordEntry: ScreenRecordEntry) -> some View {
-    return HStack {
-      if editMode.isEditing {
-        if selectedScreenRecordEntries.contains(screenRecordEntry) {
-          Image(systemName: "checkmark.circle")
-            .foregroundColor(.green)
-        } else {
-          Image(systemName: "circle")
-        }
+    return VStack {
+      HStack {
+        Text(screenRecordEntry.url.lastPathComponent)
+        Spacer()
       }
-      VStack {
-        HStack {
-          Text(screenRecordEntry.url.lastPathComponent)
-          Spacer()
-        }
-        HStack {
-          Text(screenRecordEntry.creationDate.formatted())
-          Text(byteCountFormatter.string(fromByteCount: Int64(screenRecordEntry.size)))
-          Spacer()
-        }
+      HStack {
+        Text(screenRecordEntry.creationDate.formatted())
+        Text(byteCountFormatter.string(fromByteCount: Int64(screenRecordEntry.size)))
+        Spacer()
       }
     }
   }
@@ -70,23 +60,36 @@ struct ScreenRecordListView: View {
     let screenRecordEntries = screenRecordStore.screenRecordEntries
     return Section(header: Text("Saved screen records")) {
       ForEach(screenRecordEntries) { screenRecordEntry in
-        let detailViewRoute = ScreenRecordDetailViewRoute(screenRecordEntry: screenRecordEntry)
-        if editMode.isEditing {
-          Button {
+        Button {
+          if editMode.isEditing {
             if selectedScreenRecordEntries.contains(screenRecordEntry) {
               selectedScreenRecordEntries.remove(screenRecordEntry)
             } else {
               selectedScreenRecordEntries.insert(screenRecordEntry)
             }
-          } label: {
-            screenRecordEntryItem(screenRecordEntry: screenRecordEntry)
+          } else {
+            path.append(ScreenRecordDetailViewRoute(
+              screenRecordEntry: screenRecordEntry)
+            )
           }
-          .foregroundStyle(.foreground)
-        } else {
-          NavigationLink(value: detailViewRoute) {
-            screenRecordEntryItem(screenRecordEntry: screenRecordEntry)
+        } label: {
+          HStack {
+            if editMode.isEditing {
+              if selectedScreenRecordEntries.contains(screenRecordEntry) {
+                Image(systemName: "checkmark.circle")
+                  .foregroundColor(.green)
+              } else {
+                Image(systemName: "circle")
+              }
+            }
+            NavigationLink {
+              EmptyView()
+            } label: {
+              screenRecordEntryItem(screenRecordEntry: screenRecordEntry)
+            }
           }
         }
+        .foregroundColor(Color.black)
       }
     }
   }
@@ -153,16 +156,18 @@ struct ScreenRecordListView: View {
     ZStack {
       Form {
         if let ongoingScreenRecordEntry = getOngoingScreenRecordEntry() {
-          NavigationLink(
-            value: ScreenRecordDetailViewRoute(
-              screenRecordEntry: ongoingScreenRecordEntry
-            )
-          ) {
-            screenRecordEntryItem(screenRecordEntry: ongoingScreenRecordEntry)
+          Section(header: Text("Ongoing screen record")) {
+            NavigationLink(
+              value: ScreenRecordDetailViewRoute(
+                screenRecordEntry: ongoingScreenRecordEntry
+              )
+            ) {
+              screenRecordEntryItem(screenRecordEntry: ongoingScreenRecordEntry)
 
+            }
+            .listRowBackground(Color.red)
+            .foregroundStyle(Color.white)
           }
-          .listRowBackground(Color.red)
-          .foregroundStyle(Color.white)
         }
 
         screenRecordList()
