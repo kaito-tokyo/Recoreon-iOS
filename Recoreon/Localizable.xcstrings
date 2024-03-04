@@ -101,18 +101,25 @@
         }
       }
     },
-    "Enter the note text here" : {
+    "Enter the note text here..." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ここにメモの内容を入力してください"
+            "value" : "ここにメモの内容を入力してください..."
           }
         }
       }
     },
     "Enter the summary..." : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要約を入力..."
+          }
+        }
+      }
     },
     "List of screen records" : {
       "localizations" : {
@@ -164,6 +171,16 @@
         }
       }
     },
+    "Ongoing screen record" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "進行中の画面録画"
+          }
+        }
+      }
+    },
     "Preset" : {
       "localizations" : {
         "ja" : {
@@ -190,6 +207,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "削除"
+          }
+        }
+      }
+    },
+    "Saved screen records" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存済みの画面録画"
           }
         }
       }

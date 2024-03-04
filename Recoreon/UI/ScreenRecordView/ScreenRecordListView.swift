@@ -26,14 +26,19 @@ struct ScreenRecordListView: View {
   @AppStorage(
     AppGroupsPreferenceService.isRecordingTimestampKey,
     store: AppGroupsPreferenceService.userDefaults
-  ) private var isRecordingTimestampInt: Int?
+  ) private var isRecordingTimestamp: Double?
 
   @AppStorage(
     AppGroupsPreferenceService.recordingURLKey,
     store: AppGroupsPreferenceService.userDefaults
-  ) private var recordingURL = ""
+  ) private var recordingURL: String?
 
   func getOngoingScreenRecordEntry() -> ScreenRecordEntry? {
+    guard let isRecordingTimestamp = isRecordingTimestamp else { return nil }
+    let elapsedTime = Date().timeIntervalSince1970 - isRecordingTimestamp
+    if isRecording != true || elapsedTime > 1 {
+      return nil
+    }
     let screenRecordEntries = screenRecordStore.screenRecordEntries
     let ongoingScreenRecordEntry = screenRecordEntries.first { screenRecordEntry in
       return screenRecordEntry.url.absoluteString == recordingURL
@@ -55,8 +60,7 @@ struct ScreenRecordListView: View {
     }
   }
 
-  func screenRecordList() -> some View {
-    let screenRecordEntries = screenRecordStore.screenRecordEntries
+  func screenRecordList(screenRecordEntries: [ScreenRecordEntry]) -> some View {
     return Section(header: Text("Saved screen records")) {
       ForEach(screenRecordEntries) { screenRecordEntry in
         Button {
@@ -153,9 +157,17 @@ struct ScreenRecordListView: View {
   }
 
   var body: some View {
+
+
     ZStack {
       Form {
+        var screenRecordEntries = screenRecordStore.screenRecordEntries
         if let ongoingScreenRecordEntry = getOngoingScreenRecordEntry() {
+          let ongoingScreenRecordEntryIndex = screenRecordEntries.firstIndex(of: ongoingScreenRecordEntry)
+          if let ongoingScreenRecordEntryIndex = ongoingScreenRecordEntryIndex {
+            let _ = screenRecordEntries.remove(at: ongoingScreenRecordEntryIndex)
+          }
+
           Section(header: Text("Ongoing screen record")) {
             NavigationLink(
               value: ScreenRecordDetailViewRoute(
@@ -163,14 +175,13 @@ struct ScreenRecordListView: View {
               )
             ) {
               screenRecordEntryItem(screenRecordEntry: ongoingScreenRecordEntry)
-
             }
             .listRowBackground(Color.red)
             .foregroundStyle(Color.white)
           }
         }
 
-        screenRecordList()
+        screenRecordList(screenRecordEntries: screenRecordEntries)
       }
       shareLinkButton()
     }
