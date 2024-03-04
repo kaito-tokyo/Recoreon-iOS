@@ -99,7 +99,8 @@ class SampleHandler: RPBroadcastSampleHandler {
     _ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType
   ) {
     appGroupsUserDefaults?.set(true, forKey: AppGroupsPreferenceService.isRecordingKey)
-    appGroupsUserDefaults?.set(Date().timeIntervalSince1970, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
+    appGroupsUserDefaults?.set(
+      Date().timeIntervalSince1970, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
 
     switch sampleBufferType {
     case RPSampleBufferType.video:
@@ -139,7 +140,8 @@ class SampleHandler: RPBroadcastSampleHandler {
     let appGroupsScreenRecordURL = recoreonPathService.generateAppGroupsScreenRecordURL(
       recordID: recordID, ext: spec.ext)
 
-    appGroupsUserDefaults?.set(appGroupsScreenRecordURL.absoluteString, forKey: AppGroupsPreferenceService.recordingURLKey)
+    appGroupsUserDefaults?.set(
+      appGroupsScreenRecordURL.absoluteString, forKey: AppGroupsPreferenceService.recordingURLKey)
 
     let openVideoCodecResult = writer.openVideoCodec("h264_videotoolbox")
     if !openVideoCodecResult {

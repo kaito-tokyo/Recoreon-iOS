@@ -1,8 +1,7 @@
 import AVKit
+import RecoreonCommon
 import ReplayKit
 import SwiftUI
-
-import RecoreonCommon
 
 let byteCountFormatter = {
   let bcf = ByteCountFormatter()
@@ -68,8 +67,9 @@ struct ScreenRecordListView: View {
               selectedScreenRecordEntries.insert(screenRecordEntry)
             }
           } else {
-            path.append(ScreenRecordDetailViewRoute(
-              screenRecordEntry: screenRecordEntry)
+            path.append(
+              ScreenRecordDetailViewRoute(
+                screenRecordEntry: screenRecordEntry)
             )
           }
         } label: {
@@ -232,7 +232,8 @@ struct ScreenRecordListView: View {
     let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
 
     appGroupsUserDefaults.set(true, forKey: AppGroupsPreferenceService.isRecordingKey)
-    appGroupsUserDefaults.set(Date().timeIntervalSince1970, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
+    appGroupsUserDefaults.set(
+      Date().timeIntervalSince1970, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
     appGroupsUserDefaults.set(
       screenRecordStore.screenRecordEntries[0].url.absoluteString,
       forKey: AppGroupsPreferenceService.recordingURLKey
