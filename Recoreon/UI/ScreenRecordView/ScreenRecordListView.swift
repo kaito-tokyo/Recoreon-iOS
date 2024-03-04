@@ -161,6 +161,8 @@ struct ScreenRecordListView: View {
             screenRecordEntryItem(screenRecordEntry: ongoingScreenRecordEntry)
 
           }
+          .listRowBackground(Color.red)
+          .foregroundStyle(Color.white)
         }
 
         screenRecordList()
