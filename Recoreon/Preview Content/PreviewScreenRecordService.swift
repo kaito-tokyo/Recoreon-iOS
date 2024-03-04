@@ -31,7 +31,18 @@ struct PreviewScreenRecordService: ScreenRecordService {
       size: record01Size!,
       creationDate: record01CreationDate!
     )
-    return [record01Entry]
+
+    let record02Url = Bundle.main.url(forResource: "Record02", withExtension: "mkv")
+    let record02Attrs = try? FileManager.default.attributesOfItem(atPath: record02Url!.path)
+    let record02Size = record02Attrs?[.size] as? UInt64
+    let record02CreationDate = record02Attrs?[.creationDate] as? Date
+    let record02Entry = ScreenRecordEntry(
+      url: record01Url!,
+      size: record01Size!,
+      creationDate: record01CreationDate!
+    )
+
+    return [record01Entry, record02Entry]
   }()
 
   func listScreenRecordEntries() -> [ScreenRecordEntry] {

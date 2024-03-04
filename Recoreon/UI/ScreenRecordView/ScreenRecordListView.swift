@@ -36,7 +36,6 @@ struct ScreenRecordListView: View {
 
   func getOngoingScreenRecordEntry() -> ScreenRecordEntry? {
     let screenRecordEntries = screenRecordStore.screenRecordEntries
-//    guard let recordingURL = recordingURL else { return nil }
     let ongoingScreenRecordEntry = screenRecordEntries.first { screenRecordEntry in
       return screenRecordEntry.url.absoluteString == recordingURL
     }
@@ -69,7 +68,7 @@ struct ScreenRecordListView: View {
 
   func screenRecordList() -> some View {
     let screenRecordEntries = screenRecordStore.screenRecordEntries
-    return List {
+    return Section(header: Text("Saved screen records")) {
       ForEach(screenRecordEntries) { screenRecordEntry in
         let detailViewRoute = ScreenRecordDetailViewRoute(screenRecordEntry: screenRecordEntry)
         if editMode.isEditing {
@@ -160,8 +159,11 @@ struct ScreenRecordListView: View {
             )
           ) {
             screenRecordEntryItem(screenRecordEntry: ongoingScreenRecordEntry)
+
           }
         }
+
+        screenRecordList()
       }
       shareLinkButton()
     }
