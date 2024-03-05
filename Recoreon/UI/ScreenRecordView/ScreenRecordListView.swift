@@ -235,7 +235,31 @@ struct ScreenRecordListView: View {
     }
   }
 
-  #Preview {
+  #Preview("There are no ongoing records") {
+    let recoreonServices = PreviewRecoreonServices()
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: recoreonServices.screenRecordService
+    )
+
+    let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
+
+    appGroupsUserDefaults.set(
+      Date().timeIntervalSince1970 - 10,
+      forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
+    appGroupsUserDefaults.set(
+      screenRecordStore.screenRecordEntries[0].url.absoluteString,
+      forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
+    )
+
+    return NavigationStack {
+      ScreenRecordListViewContainer(
+        recoreonServices: recoreonServices,
+        screenRecordStore: screenRecordStore
+      )
+    }
+  }
+
+  #Preview("There is a ongoing record") {
     let recoreonServices = PreviewRecoreonServices()
     let screenRecordStore = ScreenRecordStore(
       screenRecordService: recoreonServices.screenRecordService
