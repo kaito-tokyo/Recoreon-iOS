@@ -8,9 +8,8 @@ struct ScreenRecordDetailViewRoute: Hashable {
 
 struct ScreenRecordDetailView: View {
   let recoreonServices: RecoreonServices
-
-  @ObservedObject var screenRecordStore: ScreenRecordStore
   @Binding var path: NavigationPath
+  @ObservedObject var screenRecordStore: ScreenRecordStore
   let screenRecordEntry: ScreenRecordEntry
 
   @StateObject var recordNoteStore: RecordNoteStore
@@ -37,23 +36,24 @@ struct ScreenRecordDetailView: View {
 
   init(
     recoreonServices: RecoreonServices,
-    screenRecordStore: ScreenRecordStore,
     path: Binding<NavigationPath>,
+    screenRecordStore: ScreenRecordStore,
     screenRecordEntry: ScreenRecordEntry
   ) {
     self.recoreonServices = recoreonServices
+    self._path = path
     self.screenRecordStore = screenRecordStore
-    _path = path
     self.screenRecordEntry = screenRecordEntry
+
     let recordNoteStore = RecordNoteStore(
       recordNoteService: recoreonServices.recordNoteService,
       screenRecordEntry: screenRecordEntry
     )
-    _recordNoteStore = StateObject(wrappedValue: recordNoteStore)
+    self._recordNoteStore = StateObject(wrappedValue: recordNoteStore)
 
     let recordSummaryEntry = recoreonServices.recordNoteService.readRecordSummaryEntry(
       screenRecordEntry: screenRecordEntry)
-    _editingRecordSummaryBody = State(initialValue: recordSummaryEntry.body)
+    self._editingRecordSummaryBody = State(initialValue: recordSummaryEntry.body)
   }
 
   func recordNoteList() -> some View {
@@ -96,13 +96,13 @@ struct ScreenRecordDetailView: View {
     }
     .onChange(of: scenePhase) { newValue in
       if scenePhase == .active && newValue == .inactive {
+        print("aaaa")
         recordNoteStore.saveAllNotes()
       }
     }
-    .onChange(of: isPresented) { newValue in
-      if !newValue {
-        recordNoteStore.saveAllNotes()
-      }
+    .onChange(of: path) { _ in
+      print("aaaa")
+      recordNoteStore.saveAllNotes()
     }
   }
 
@@ -175,8 +175,8 @@ struct ScreenRecordDetailView: View {
     }
     .navigationDestination(for: RecordNoteEditorViewRoute.self) { route in
       RecordNoteEditorView(
-        recordNoteStore: recordNoteStore,
         path: $path,
+        recordNoteStore: recordNoteStore,
         recordNoteEntry: route.recordNoteEntry
       )
     }
@@ -207,8 +207,8 @@ struct ScreenRecordDetailView: View {
         NavigationStack(path: $path) {
           ScreenRecordDetailView(
             recoreonServices: recoreonServices,
-            screenRecordStore: screenRecordStore,
             path: $path,
+            screenRecordStore: screenRecordStore,
             screenRecordEntry: screenRecordEntry
           )
         }
