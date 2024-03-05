@@ -30,34 +30,27 @@ class PreviewScreenRecordService: ScreenRecordService {
       atPath: record01URL.path(percentEncoded: false))
     let record01Size = record01Attrs[.size] as! UInt64
     let record01CreationDate = record01Attrs[.creationDate] as! Date
-    let record01SummaryBundleURL = Bundle.main.url(
-      forResource: "Record01-summary", withExtension: "txt")!
     let record01SummaryURL = recoreonPathService.generateRecordSummaryURL(recordID: "Record01")
-    if !fileManager.fileExists(atPath: record01SummaryURL.path(percentEncoded: false)) {
-      try! fileManager.copyItem(at: record01SummaryBundleURL, to: record01SummaryURL)
-    }
-    let record01SummaryBody = try! String(contentsOf: record01SummaryURL)
+    let record01SummaryBody = try? String(contentsOf: record01SummaryURL)
     let record01Entry = ScreenRecordEntry(
       url: record01URL,
       size: record01Size,
       creationDate: record01CreationDate,
-      summaryBody: record01SummaryBody
+      summaryBody: record01SummaryBody ?? ""
     )
 
-    let record02URL = Bundle.main.url(forResource: "Record01", withExtension: "mkv")!
+    let record02URL = Bundle.main.url(forResource: "Record02", withExtension: "mkv")!
     let record02Attrs = try! fileManager.attributesOfItem(
       atPath: record02URL.path(percentEncoded: false))
     let record02Size = record02Attrs[.size] as! UInt64
     let record02CreationDate = record02Attrs[.creationDate] as! Date
     let record02SummaryURL = recoreonPathService.generateRecordSummaryURL(recordID: "Record02")
-    let record02SummaryBody =
-      fileManager.fileExists(atPath: record02SummaryURL.path(percentEncoded: false))
-      ? try! String(contentsOf: record02SummaryURL) : ""
+    let record02SummaryBody = try? String(contentsOf: record02SummaryURL)
     let record02Entry = ScreenRecordEntry(
       url: record02URL,
       size: record02Size,
       creationDate: record02CreationDate,
-      summaryBody: record02SummaryBody
+      summaryBody: record02SummaryBody ?? ""
     )
 
     self.screenRecordEntries = [record01Entry, record02Entry]
