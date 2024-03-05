@@ -99,8 +99,10 @@ struct ScreenRecordDetailView: View {
         recordNoteStore.saveAllNotes()
       }
     }
-    .onChange(of: isPresented) { _ in
-      recordNoteStore.saveAllNotes()
+    .onChange(of: isPresented) { newValue in
+      if newValue == false {
+        recordNoteStore.saveAllNotes()
+      }
     }
     .onChange(of: path) { _ in
       recordNoteStore.saveAllNotes()
