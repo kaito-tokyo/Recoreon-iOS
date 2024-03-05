@@ -1,5 +1,5 @@
-import SwiftUI
 import RecoreonCommon
+import SwiftUI
 
 @main
 struct RecoreonApp: App {
