@@ -268,7 +268,8 @@ struct ScreenRecordListView: View {
     let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
 
     appGroupsUserDefaults.set(
-      Date().timeIntervalSince1970 + 1000, forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
+      Date().timeIntervalSince1970 + 1000,
+      forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
     appGroupsUserDefaults.set(
       screenRecordStore.screenRecordEntries[0].url.absoluteString,
       forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey

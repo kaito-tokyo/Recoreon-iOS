@@ -1,6 +1,6 @@
 import AVKit
-import SwiftUI
 import RecoreonCommon
+import SwiftUI
 
 struct ScreenRecordDetailViewRoute: Hashable {
   let screenRecordEntry: ScreenRecordEntry

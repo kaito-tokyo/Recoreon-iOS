@@ -98,13 +98,15 @@ class SampleHandler: RPBroadcastSampleHandler {
   override func processSampleBuffer(
     _ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType
   ) {
-    let ongoingRecordingTimestamp = appGroupsUserDefaults?.double(
-      forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey
-    ) ?? 0
+    let ongoingRecordingTimestamp =
+      appGroupsUserDefaults?.double(
+        forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey
+      ) ?? 0
     let now = Date().timeIntervalSince1970
     if now - ongoingRecordingTimestamp > 1 {
       appGroupsUserDefaults?.set(
-        Date().timeIntervalSince1970, forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
+        Date().timeIntervalSince1970,
+        forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
     }
 
     switch sampleBufferType {
@@ -145,7 +147,8 @@ class SampleHandler: RPBroadcastSampleHandler {
       recordID: recordID, ext: spec.ext)
 
     appGroupsUserDefaults?.set(
-      appGroupsScreenRecordURL.absoluteString, forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey)
+      appGroupsScreenRecordURL.absoluteString,
+      forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey)
 
     let openVideoCodecResult = writer.openVideoCodec("h264_videotoolbox")
     if !openVideoCodecResult {
