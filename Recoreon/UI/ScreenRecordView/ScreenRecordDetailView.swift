@@ -22,7 +22,6 @@ struct ScreenRecordDetailView: View {
   @State var newNoteShortName = ""
 
   @Environment(\.scenePhase) var scenePhase
-  @Environment(\.isPresented) var isPresented
 
   @AppStorage(
     AppGroupsPreferenceService.ongoingRecordingTimestampKey,
@@ -98,9 +97,6 @@ struct ScreenRecordDetailView: View {
       if scenePhase == .active && newValue == .inactive {
         recordNoteStore.saveAllNotes()
       }
-    }
-    .onChange(of: isPresented) { _ in
-      recordNoteStore.saveAllNotes()
     }
     .onChange(of: path) { _ in
       recordNoteStore.saveAllNotes()

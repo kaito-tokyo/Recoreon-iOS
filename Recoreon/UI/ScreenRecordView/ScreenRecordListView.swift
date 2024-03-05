@@ -20,7 +20,6 @@ struct ScreenRecordListView: View {
   @State private var isRemoveConfirmationPresented: Bool = false
 
   @Environment(\.scenePhase) private var scenePhase
-  @Environment(\.isPresented) private var isPresented
 
   @AppStorage(
     AppGroupsPreferenceService.ongoingRecordingTimestampKey,
@@ -227,12 +226,7 @@ struct ScreenRecordListView: View {
         screenRecordStore.update()
       }
     }
-    .onChange(of: isPresented) { newValue in
-      if newValue == true {
-        screenRecordStore.update()
-      }
-    }
-    .onChange(of: path) { newValue in
+    .onChange(of: path) { _ in
       screenRecordStore.update()
     }
   }

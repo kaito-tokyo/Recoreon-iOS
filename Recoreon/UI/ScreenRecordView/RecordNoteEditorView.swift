@@ -12,7 +12,6 @@ struct RecordNoteEditorView: View {
   @State private var editingNoteBody: String
 
   @Environment(\.scenePhase) private var scenePhase
-  @Environment(\.isPresented) private var isPresented
 
   init(
     path: Binding<NavigationPath>,
@@ -33,15 +32,13 @@ struct RecordNoteEditorView: View {
     .onChange(of: editingNoteBody) { _ in
       recordNoteStore.putNote(recordNoteURL: recordNoteEntry.url, body: editingNoteBody)
     }
-    .onChange(of: isPresented) { newValue in
-      if newValue == false {
-        recordNoteStore.saveAllNotes()
-      }
-    }
     .onChange(of: scenePhase) { newValue in
       if scenePhase == .active && newValue == .inactive {
         recordNoteStore.saveAllNotes()
       }
+    }
+    .onChange(of: path) { _ in
+      recordNoteStore.saveAllNotes()
     }
   }
 }
