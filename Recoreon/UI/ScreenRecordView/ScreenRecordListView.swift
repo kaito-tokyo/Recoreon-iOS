@@ -15,10 +15,11 @@ struct ScreenRecordListView: View {
 
   @StateObject private var screenRecordStore: ScreenRecordStore
 
-  @State private var editMode: EditMode = .inactive
+//  @State private var editMode: EditMode = .inactive
   @State private var selectedScreenRecordEntries = Set<ScreenRecordEntry>()
   @State private var isRemoveConfirmationPresented: Bool = false
 
+  @Environment(\.editMode) private var editMode
   @Environment(\.scenePhase) private var scenePhase
 
   @AppStorage(
@@ -82,7 +83,7 @@ struct ScreenRecordListView: View {
     return Section(header: Text("Saved screen records")) {
       ForEach(screenRecordEntries) { screenRecordEntry in
         Button {
-          if editMode.isEditing {
+          if editMode?.wrappedValue.isEditing == true {
             if selectedScreenRecordEntries.contains(screenRecordEntry) {
               selectedScreenRecordEntries.remove(screenRecordEntry)
             } else {
@@ -96,7 +97,7 @@ struct ScreenRecordListView: View {
           }
         } label: {
           HStack {
-            if editMode.isEditing {
+            if editMode?.wrappedValue.isEditing == true {
               if selectedScreenRecordEntries.contains(screenRecordEntry) {
                 Image(systemName: "checkmark.circle")
                   .foregroundColor(.green)
@@ -128,19 +129,16 @@ struct ScreenRecordListView: View {
       Spacer()
       HStack {
         Spacer()
-        ShareLink(
-          items: shareURLs,
-          label: {
-            Image(systemName: "square.and.arrow.up")
-              .resizable()
-              .scaledToFill()
-              .frame(width: 32, height: 32)
-              .tint(Color.white)
-              .padding(.all, 20)
-              .background(selectedScreenRecordEntries.isEmpty ? Color.gray : Color.blue)
-              .clipShape(Circle())
-          }
-        )
+        ShareLink(items: shareURLs) {
+          Image(systemName: "square.and.arrow.up")
+            .resizable()
+            .scaledToFill()
+            .frame(width: 32, height: 32)
+            .tint(Color.white)
+            .padding(.all, 20)
+            .background(selectedScreenRecordEntries.isEmpty ? Color.gray : Color.blue)
+            .clipShape(Circle())
+        }
         .disabled(selectedScreenRecordEntries.isEmpty)
         Button {
           isRemoveConfirmationPresented = true
@@ -156,7 +154,6 @@ struct ScreenRecordListView: View {
         }
         .disabled(selectedScreenRecordEntries.isEmpty)
         .padding(.trailing, 10)
-        .padding(.bottom, 10)
       }
       .alert(isPresented: $isRemoveConfirmationPresented) {
         Alert(
@@ -167,6 +164,7 @@ struct ScreenRecordListView: View {
                 screenRecordEntry: entry)
             }
             screenRecordStore.update()
+            selectedScreenRecordEntries.removeAll()
           },
           secondaryButton: .cancel()
         )
@@ -215,9 +213,8 @@ struct ScreenRecordListView: View {
     .toolbar {
       EditButton()
     }
-    .environment(\.editMode, $editMode)
-    .onChange(of: editMode) { newValue in
-      if newValue == .inactive {
+    .onChange(of: editMode?.wrappedValue.isEditing) { newValue in
+      if newValue == false {
         selectedScreenRecordEntries.removeAll()
       }
     }
