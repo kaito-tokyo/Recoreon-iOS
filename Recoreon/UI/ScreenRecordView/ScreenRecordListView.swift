@@ -15,7 +15,6 @@ struct ScreenRecordListView: View {
 
   @StateObject private var screenRecordStore: ScreenRecordStore
 
-//  @State private var editMode: EditMode = .inactive
   @State private var selectedScreenRecordEntries = Set<ScreenRecordEntry>()
   @State private var isRemoveConfirmationPresented: Bool = false
 
