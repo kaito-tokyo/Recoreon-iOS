@@ -58,6 +58,31 @@ struct ScreenRecordListView: View {
     return ongoingScreenRecordEntry
   }
 
+  func getCompletedScreenRecordEntries(
+    ongoingScreenRecordEntry: ScreenRecordEntry?
+  ) -> [ScreenRecordEntry] {
+    let screenRecordEntries = screenRecordStore.screenRecordEntries
+    if let ongoingScreenRecordEntry = ongoingScreenRecordEntry {
+      return screenRecordEntries.filter { screenRecordEntry in
+        screenRecordEntry != ongoingScreenRecordEntry
+      }
+    } else {
+      return screenRecordEntries
+    }
+  }
+
+  func getScreenRecordAndRelatedFileURLs(
+    screenRecordEntries: [ScreenRecordEntry]
+  ) -> [URL] {
+    return screenRecordEntries.flatMap { screenRecordEntry in
+      let recordNoteEntries = recoreonServices.recordNoteService.listRecordNoteEntries(
+        screenRecordEntry: screenRecordEntry
+      )
+      let recordNoteURLs = recordNoteEntries.map { $0.url }
+      return [screenRecordEntry.url] + recordNoteURLs
+    }
+  }
+
   func screenRecordEntryItem(screenRecordEntry: ScreenRecordEntry) -> some View {
     return VStack {
       HStack {
@@ -124,64 +149,53 @@ struct ScreenRecordListView: View {
       ).map { $0.url }
       return [screenRecordEntry.url] + recordNoteURLs
     }
-    return VStack {
-      Spacer()
-      HStack {
-        Spacer()
-        ShareLink(items: shareURLs) {
-          Image(systemName: "square.and.arrow.up")
-            .resizable()
-            .scaledToFill()
-            .frame(width: 32, height: 32)
-            .tint(Color.white)
-            .padding(.all, 20)
-            .background(selectedScreenRecordEntries.isEmpty ? Color.gray : Color.blue)
-            .clipShape(Circle())
-        }
-        .disabled(selectedScreenRecordEntries.isEmpty)
-        Button {
-          isRemoveConfirmationPresented = true
-        } label: {
-          Image(systemName: "trash")
-            .resizable()
-            .scaledToFill()
-            .frame(width: 32, height: 32)
-            .tint(Color.white)
-            .padding(.all, 20)
-            .background(selectedScreenRecordEntries.isEmpty ? Color.gray : Color.red)
-            .clipShape(Circle())
-        }
-        .disabled(selectedScreenRecordEntries.isEmpty)
-        .padding(.trailing, 10)
-      }
-      .alert(isPresented: $isRemoveConfirmationPresented) {
-        Alert(
-          title: Text("Are you sure to remove all of the selected screen records?"),
-          primaryButton: .destructive(Text("OK")) {
-            for entry in selectedScreenRecordEntries {
-              recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
-                screenRecordEntry: entry)
-            }
-            screenRecordStore.update()
-            selectedScreenRecordEntries.removeAll()
-          },
-          secondaryButton: .cancel()
-        )
-      }
+    return ShareLink(items: shareURLs) {
+      Image(systemName: "square.and.arrow.up")
+        .resizable()
+        .scaledToFill()
+        .frame(width: 32, height: 32)
+        .tint(Color.white)
+        .padding(.all, 20)
+        .background(selectedScreenRecordEntries.isEmpty ? Color.gray : Color.blue)
+        .clipShape(Circle())
+    }
+  }
+
+  func deleteButton() -> some View {
+    return Button {
+      isRemoveConfirmationPresented = true
+    } label: {
+      Image(systemName: "trash")
+        .resizable()
+        .scaledToFill()
+        .frame(width: 32, height: 32)
+        .tint(Color.white)
+        .padding(.all, 20)
+        .background(selectedScreenRecordEntries.isEmpty ? Color.gray : Color.red)
+        .clipShape(Circle())
+    }
+    .padding(.trailing, 10)
+    .alert(isPresented: $isRemoveConfirmationPresented) {
+      Alert(
+        title: Text("Are you sure to remove all of the selected screen records?"),
+        primaryButton: .destructive(Text("OK")) {
+          for entry in selectedScreenRecordEntries {
+            recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
+              screenRecordEntry: entry)
+          }
+          screenRecordStore.update()
+          selectedScreenRecordEntries.removeAll()
+        },
+        secondaryButton: .cancel()
+      )
     }
   }
 
   var body: some View {
     ZStack {
       Form {
-        var screenRecordEntries = screenRecordStore.screenRecordEntries
-        if let ongoingScreenRecordEntry = getOngoingScreenRecordEntry() {
-          let ongoingScreenRecordEntryIndex = screenRecordEntries.firstIndex(
-            of: ongoingScreenRecordEntry)
-          if let ongoingScreenRecordEntryIndex = ongoingScreenRecordEntryIndex {
-            let _ = screenRecordEntries.remove(at: ongoingScreenRecordEntryIndex)
-          }
-
+        let ongoingScreenRecordEntry = getOngoingScreenRecordEntry()
+        if let ongoingScreenRecordEntry = ongoingScreenRecordEntry {
           Section(header: Text("Ongoing screen record")) {
             NavigationLink(
               value: ScreenRecordDetailViewRoute(
@@ -195,9 +209,20 @@ struct ScreenRecordListView: View {
           }
         }
 
-        screenRecordList(screenRecordEntries: screenRecordEntries)
+        let completedScreenRecordEntries = getCompletedScreenRecordEntries(
+          ongoingScreenRecordEntry: ongoingScreenRecordEntry)
+        screenRecordList(screenRecordEntries: completedScreenRecordEntries)
       }
-      shareLinkButton()
+
+      VStack {
+        Spacer()
+        HStack {
+          Spacer()
+          shareLinkButton()
+          deleteButton()
+        }
+      }
+      .disabled(selectedScreenRecordEntries.isEmpty)
     }
     .navigationTitle("List of screen records")
     .navigationBarTitleDisplayMode(.inline)
