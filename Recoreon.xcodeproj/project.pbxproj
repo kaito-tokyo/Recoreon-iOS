@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		22183B492B9100E9004D6FAD /* RecordNoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22183B482B9100E9004D6FAD /* RecordNoteStore.swift */; };
 		2232A1792B91F66300F646E3 /* RecordNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A1782B91F66300F646E3 /* RecordNoteService.swift */; };
-		2232A17C2B920D4B00F646E3 /* PreviewRecordNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A17B2B920D4B00F646E3 /* PreviewRecordNoteService.swift */; };
 		2232A1802B9220A600F646E3 /* EncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A17F2B9220A600F646E3 /* EncodeService.swift */; };
 		2232A1822B9223D000F646E3 /* EncodedVideoEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A1812B9223D000F646E3 /* EncodedVideoEntry.swift */; };
 		2232A1842B92485900F646E3 /* PreviewEncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A1832B92485900F646E3 /* PreviewEncodeService.swift */; };
@@ -138,7 +137,6 @@
 /* Begin PBXFileReference section */
 		22183B482B9100E9004D6FAD /* RecordNoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteStore.swift; sourceTree = "<group>"; };
 		2232A1782B91F66300F646E3 /* RecordNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteService.swift; sourceTree = "<group>"; };
-		2232A17B2B920D4B00F646E3 /* PreviewRecordNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewRecordNoteService.swift; sourceTree = "<group>"; };
 		2232A17F2B9220A600F646E3 /* EncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeService.swift; sourceTree = "<group>"; };
 		2232A1812B9223D000F646E3 /* EncodedVideoEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoEntry.swift; sourceTree = "<group>"; };
 		2232A1832B92485900F646E3 /* PreviewEncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEncodeService.swift; sourceTree = "<group>"; };
@@ -422,7 +420,6 @@
 				2232A95A2AFD80A200330C23 /* Preview01.mp4 */,
 				22AA3D8F2B9567C700C64E7E /* Preview02.mp4 */,
 				2232A1832B92485900F646E3 /* PreviewEncodeService.swift */,
-				2232A17B2B920D4B00F646E3 /* PreviewRecordNoteService.swift */,
 				223427A42B93934500F25052 /* PreviewRecoreonServices.swift */,
 				226A898E2AFB2EA500EBD2CA /* PreviewScreenRecordService.swift */,
 				223B05872B90CD8700A16852 /* Record01-1.txt */,
@@ -748,7 +745,6 @@
 				2232A1802B9220A600F646E3 /* EncodeService.swift in Sources */,
 				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
 				2232A1842B92485900F646E3 /* PreviewEncodeService.swift in Sources */,
-				2232A17C2B920D4B00F646E3 /* PreviewRecordNoteService.swift in Sources */,
 				223427A52B93934500F25052 /* PreviewRecoreonServices.swift in Sources */,
 				226A898F2AFB2EA500EBD2CA /* PreviewScreenRecordService.swift in Sources */,
 				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,

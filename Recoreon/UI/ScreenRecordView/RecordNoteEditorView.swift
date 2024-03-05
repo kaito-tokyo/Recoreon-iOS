@@ -5,22 +5,22 @@ struct RecordNoteEditorViewRoute: Hashable {
 }
 
 struct RecordNoteEditorView: View {
-  @ObservedObject var recordNoteStore: RecordNoteStore
-  @Binding var path: NavigationPath
-  let recordNoteEntry: RecordNoteEntry
-
-  @Environment(\.scenePhase) private var scenePhase
-  @Environment(\.isPresented) var isPresented
+  @Binding private var path: NavigationPath
+  @ObservedObject private var recordNoteStore: RecordNoteStore
+  private let recordNoteEntry: RecordNoteEntry
 
   @State private var editingNoteBody: String
 
+  @Environment(\.scenePhase) private var scenePhase
+  @Environment(\.isPresented) private var isPresented
+
   init(
-    recordNoteStore: RecordNoteStore,
     path: Binding<NavigationPath>,
+    recordNoteStore: RecordNoteStore,
     recordNoteEntry: RecordNoteEntry
   ) {
+    self._path = path
     self.recordNoteStore = recordNoteStore
-    _path = path
     self.recordNoteEntry = recordNoteEntry
     _editingNoteBody = State(initialValue: recordNoteEntry.body)
   }
@@ -66,8 +66,8 @@ struct RecordNoteEditorView: View {
       TabView {
         NavigationStack(path: $path) {
           RecordNoteEditorView(
-            recordNoteStore: recordNoteStore,
             path: $path,
+            recordNoteStore: recordNoteStore,
             recordNoteEntry: recordNoteEntry
           )
         }

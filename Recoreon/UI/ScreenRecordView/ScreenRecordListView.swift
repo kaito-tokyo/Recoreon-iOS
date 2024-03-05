@@ -11,12 +11,16 @@ let byteCountFormatter = {
 
 struct ScreenRecordListView: View {
   let recoreonServices: RecoreonServices
-  @ObservedObject var screenRecordStore: ScreenRecordStore
-  @Binding var path: NavigationPath
+  @Binding private var path: NavigationPath
+
+  @StateObject private var screenRecordStore: ScreenRecordStore
 
   @State private var editMode: EditMode = .inactive
   @State private var selectedScreenRecordEntries = Set<ScreenRecordEntry>()
   @State private var isRemoveConfirmationPresented: Bool = false
+
+  @Environment(\.scenePhase) private var scenePhase
+  @Environment(\.isPresented) private var isPresented
 
   @AppStorage(
     AppGroupsPreferenceService.ongoingRecordingTimestampKey,
@@ -27,6 +31,20 @@ struct ScreenRecordListView: View {
     AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey,
     store: AppGroupsPreferenceService.userDefaults
   ) private var ongoingRecordingURLAbsoluteString = ""
+
+  init(
+    recoreonServices: RecoreonServices,
+    path: Binding<NavigationPath>
+  ) {
+    self.recoreonServices = recoreonServices
+    self._path = path
+
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: recoreonServices.screenRecordService
+    )
+    screenRecordStore.update()
+    self._screenRecordStore = StateObject(wrappedValue: screenRecordStore)
+  }
 
   func getOngoingScreenRecordEntry() -> ScreenRecordEntry? {
     let appGroupsPreferenceService = recoreonServices.appGroupsPreferenceService
@@ -158,7 +176,6 @@ struct ScreenRecordListView: View {
   }
 
   var body: some View {
-
     ZStack {
       Form {
         var screenRecordEntries = screenRecordStore.screenRecordEntries
@@ -191,8 +208,8 @@ struct ScreenRecordListView: View {
     .navigationDestination(for: ScreenRecordDetailViewRoute.self) { route in
       ScreenRecordDetailView(
         recoreonServices: recoreonServices,
-        screenRecordStore: screenRecordStore,
         path: $path,
+        screenRecordStore: screenRecordStore,
         screenRecordEntry: route.screenRecordEntry
       )
     }
@@ -204,6 +221,19 @@ struct ScreenRecordListView: View {
       if newValue == .inactive {
         selectedScreenRecordEntries.removeAll()
       }
+    }
+    .onChange(of: scenePhase) { newValue in
+      if newValue == .active {
+        screenRecordStore.update()
+      }
+    }
+    .onChange(of: isPresented) { newValue in
+      if newValue == true {
+        screenRecordStore.update()
+      }
+    }
+    .onChange(of: path) { newValue in
+      screenRecordStore.update()
     }
   }
 }
@@ -227,7 +257,6 @@ struct ScreenRecordListView: View {
         NavigationStack(path: $path) {
           ScreenRecordListView(
             recoreonServices: recoreonServices,
-            screenRecordStore: screenRecordStore,
             path: $path
           )
         }

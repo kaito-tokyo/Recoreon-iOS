@@ -14,10 +14,6 @@ public struct AppGroupsPreferenceService {
     ongoingRecordingTimestamp: Double,
     ongoingRecordingURLAbsoluteString: String
   ) -> Bool {
-    print(ongoingRecordingTimestamp)
-    print(Date().timeIntervalSince1970)
-    print(screenRecordURL)
-    print(ongoingRecordingURLAbsoluteString)
     let now = Date().timeIntervalSince1970
     if now - ongoingRecordingTimestamp < 5 {
       return screenRecordURL.absoluteString == ongoingRecordingURLAbsoluteString
