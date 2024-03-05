@@ -11,12 +11,16 @@ struct DefaultScreenRecordService: ScreenRecordService {
 
   func listScreenRecordEntries() -> [ScreenRecordEntry] {
     let screenRecordURLs = recoreonPathService.listScreenRecordURLs()
-    return screenRecordURLs.map { url in
-      let attrs = try? fileManager.attributesOfItem(atPath: url.path())
+    return screenRecordURLs.map { screenRecordURL in
+      let attrs = try? fileManager.attributesOfItem(atPath: screenRecordURL.path())
+      let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordURL)
+      let recordSummaryURL = recoreonPathService.generateRecordSummaryURL(recordID: recordID)
+      let recordSummaryBody = try? String(contentsOf: recordSummaryURL, encoding: .utf8)
       return ScreenRecordEntry(
-        url: url,
+        url: screenRecordURL,
         size: attrs?[.size] as? UInt64 ?? 0,
-        creationDate: attrs?[.creationDate] as? Date ?? Date(timeIntervalSince1970: 0)
+        creationDate: attrs?[.creationDate] as? Date ?? Date(timeIntervalSince1970: 0),
+        summaryBody: recordSummaryBody ?? ""
       )
     }
   }
