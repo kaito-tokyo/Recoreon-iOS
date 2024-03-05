@@ -29,7 +29,8 @@ struct PreviewScreenRecordService: ScreenRecordService {
     let record01Entry = ScreenRecordEntry(
       url: record01Url!,
       size: record01Size!,
-      creationDate: record01CreationDate!
+      creationDate: record01CreationDate!,
+      summaryBody: ""
     )
 
     let record02Url = Bundle.main.url(forResource: "Record02", withExtension: "mkv")
@@ -39,7 +40,8 @@ struct PreviewScreenRecordService: ScreenRecordService {
     let record02Entry = ScreenRecordEntry(
       url: record02Url!,
       size: record02Size!,
-      creationDate: record02CreationDate!
+      creationDate: record02CreationDate!,
+      summaryBody: "Summary02"
     )
 
     return [record01Entry, record02Entry]

@@ -57,6 +57,12 @@ struct ScreenRecordListView: View {
         Text(byteCountFormatter.string(fromByteCount: Int64(screenRecordEntry.size)))
         Spacer()
       }
+      if screenRecordEntry.summaryBody != "" {
+        HStack {
+          Text(screenRecordEntry.summaryBody)
+          Spacer()
+        }
+      }
     }
   }
 
