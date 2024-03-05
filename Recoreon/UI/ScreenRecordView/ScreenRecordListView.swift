@@ -233,7 +233,6 @@ struct ScreenRecordListView: View {
       }
     }
     .onChange(of: path) { newValue in
-      print("aaa")
       screenRecordStore.update()
     }
   }

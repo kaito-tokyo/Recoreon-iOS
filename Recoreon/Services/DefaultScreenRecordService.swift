@@ -29,7 +29,7 @@ struct DefaultScreenRecordService: ScreenRecordService {
     let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
     let previewVideoURL = recoreonPathService.getPreviewVideoURL(recordID: recordID)
 
-    if fileManager.fileExists(atPath: previewVideoURL.path()) {
+    if fileManager.fileExists(atPath: previewVideoURL.path(percentEncoded: false)) {
       return previewVideoURL
     }
 

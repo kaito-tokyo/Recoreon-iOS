@@ -96,12 +96,13 @@ struct ScreenRecordDetailView: View {
     }
     .onChange(of: scenePhase) { newValue in
       if scenePhase == .active && newValue == .inactive {
-        print("aaaa")
         recordNoteStore.saveAllNotes()
       }
     }
+    .onChange(of: isPresented) { _ in
+      recordNoteStore.saveAllNotes()
+    }
     .onChange(of: path) { _ in
-      print("aaaa")
       recordNoteStore.saveAllNotes()
     }
   }
