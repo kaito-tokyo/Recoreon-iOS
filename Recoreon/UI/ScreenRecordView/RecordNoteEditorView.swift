@@ -5,12 +5,12 @@ struct RecordNoteEditorViewRoute: Hashable {
 }
 
 struct RecordNoteEditorView: View {
-  @ObservedObject var recordNoteStore: RecordNoteStore
-  @Binding var path: NavigationPath
-  let recordNoteEntry: RecordNoteEntry
+  @ObservedObject private var recordNoteStore: RecordNoteStore
+  @Binding private var path: NavigationPath
+  private let recordNoteEntry: RecordNoteEntry
 
   @Environment(\.scenePhase) private var scenePhase
-  @Environment(\.isPresented) var isPresented
+  @Environment(\.isPresented) private var isPresented
 
   @State private var editingNoteBody: String
 
