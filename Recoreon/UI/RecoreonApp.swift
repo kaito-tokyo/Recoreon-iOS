@@ -1,17 +1,23 @@
-//
-//  RecoreonApp.swift
-//  Recoreon
-//
-//  Created by Kaito Udagawa on 2023/11/01.
-//
-
+import RecoreonCommon
 import SwiftUI
 
 @main
 struct RecoreonApp: App {
   var body: some Scene {
+    #if DEBUG
+      let recoreonServices: RecoreonServices = {
+        if ProcessInfo.processInfo.arguments.contains("-UITest") {
+          RecoreonPathService(fileManager: FileManager.default).wipeRecordNotes()
+          return PreviewRecoreonServices()
+        } else {
+          return DefaultRecoreonServices()
+        }
+      }()
+    #else
+      let recoreonServices = DefaultRecoreonServices()
+    #endif
     WindowGroup {
-      ContentView(recoreonServices: DefaultRecoreonServices())
+      ContentView(recoreonServices: recoreonServices)
     }
   }
 }
