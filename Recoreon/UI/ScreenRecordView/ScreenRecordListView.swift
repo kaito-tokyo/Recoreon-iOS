@@ -136,6 +136,7 @@ struct ScreenRecordListView: View {
             }
           }
         }
+        .accessibilityIdentifier("ScreenRecordEntry")
         .foregroundColor(Color.black)
       }
     }

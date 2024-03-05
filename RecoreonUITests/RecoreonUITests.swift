@@ -9,6 +9,8 @@ import XCTest
 
 final class RecoreonUITests: XCTestCase {
 
+  let launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US", "-UITest"]
+
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -24,12 +26,21 @@ final class RecoreonUITests: XCTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
 
-  func testExample() throws {
-    // UI tests must launch the application that they test.
+  func testScreenRecordListViewCanBeShown() throws {
     let app = XCUIApplication()
+    app.launchArguments = launchArguments
     app.launch()
 
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+    XCTAssert(app.staticTexts["List of screen records"].waitForExistence(timeout: 10))
+  }
+
+  func testScreenRecordDetailViewCanBeShown() throws {
+    let app = XCUIApplication()
+    app.launchArguments = launchArguments
+    app.launch()
+
+    app.buttons.matching(identifier: "ScreenRecordEntry").element(boundBy: 0).tap()
+    XCTAssert(app.staticTexts["Preview"].waitForExistence(timeout: 10))
   }
 
   func testLaunchPerformance() throws {

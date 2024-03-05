@@ -49,6 +49,10 @@ public struct RecoreonPathService {
     return recordID
   }
 
+  public func wipeRecordNotes() {
+    try? fileManager.removeItem(at: recordNotesDir)
+  }
+
   // ScreenRecord
 
   public func generateAppGroupsScreenRecordURL(recordID: String, ext: String) -> URL {
