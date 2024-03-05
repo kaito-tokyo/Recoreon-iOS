@@ -48,6 +48,7 @@ struct DefaultRecordNoteService: RecordNoteService {
     for recordNoteEntry in recordNoteEntries {
       let body = recordNoteEntry.body
       let url = recordNoteEntry.url
+      print(url)
       try? body.write(to: url, atomically: true, encoding: .utf8)
     }
   }
