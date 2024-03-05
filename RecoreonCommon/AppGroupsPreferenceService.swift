@@ -1,12 +1,28 @@
 import Foundation
 
 public struct AppGroupsPreferenceService {
+  public static let userDefaults = UserDefaults(suiteName: appGroupsIdentifier)
+
+  public static let ongoingRecordingTimestampKey = "ongoingRecordingTimestamp"
+  public static let ongoingRecordingURLAbsoluteStringKey = "ongoingRecordingURLAbsoluteString"
+
   public init() {
   }
 
-  public static let userDefaults = UserDefaults(suiteName: appGroupsIdentifier)
-
-  public static let isRecordingKey = "isRecording"
-  public static let isRecordingTimestampKey = "isRecordingTimestamp"
-  public static let recordingURLKey = "recordingURL"
+  public func isRecordingOngoing(
+    screenRecordURL: URL,
+    ongoingRecordingTimestamp: Double,
+    ongoingRecordingURLAbsoluteString: String
+  ) -> Bool {
+    print(ongoingRecordingTimestamp)
+    print(Date().timeIntervalSince1970)
+    print(screenRecordURL)
+    print(ongoingRecordingURLAbsoluteString)
+    let now = Date().timeIntervalSince1970
+    if now - ongoingRecordingTimestamp < 5 {
+      return screenRecordURL.absoluteString == ongoingRecordingURLAbsoluteString
+    } else {
+      return false
+    }
+  }
 }

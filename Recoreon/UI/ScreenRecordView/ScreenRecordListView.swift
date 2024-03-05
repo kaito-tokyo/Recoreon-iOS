@@ -19,29 +19,24 @@ struct ScreenRecordListView: View {
   @State private var isRemoveConfirmationPresented: Bool = false
 
   @AppStorage(
-    AppGroupsPreferenceService.isRecordingKey,
+    AppGroupsPreferenceService.ongoingRecordingTimestampKey,
     store: AppGroupsPreferenceService.userDefaults
-  ) private var isRecording: Bool?
+  ) private var ongoingRecordingTimestamp = 0.0
 
   @AppStorage(
-    AppGroupsPreferenceService.isRecordingTimestampKey,
+    AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey,
     store: AppGroupsPreferenceService.userDefaults
-  ) private var isRecordingTimestamp: Double?
-
-  @AppStorage(
-    AppGroupsPreferenceService.recordingURLKey,
-    store: AppGroupsPreferenceService.userDefaults
-  ) private var recordingURL: String?
+  ) private var ongoingRecordingURLAbsoluteString = ""
 
   func getOngoingScreenRecordEntry() -> ScreenRecordEntry? {
-    guard let isRecordingTimestamp = isRecordingTimestamp else { return nil }
-    let elapsedTime = Date().timeIntervalSince1970 - isRecordingTimestamp
-    if isRecording != true || elapsedTime > 1 {
-      return nil
-    }
+    let appGroupsPreferenceService = recoreonServices.appGroupsPreferenceService
     let screenRecordEntries = screenRecordStore.screenRecordEntries
     let ongoingScreenRecordEntry = screenRecordEntries.first { screenRecordEntry in
-      return screenRecordEntry.url.absoluteString == recordingURL
+      appGroupsPreferenceService.isRecordingOngoing(
+        screenRecordURL: screenRecordEntry.url,
+        ongoingRecordingTimestamp: ongoingRecordingTimestamp,
+        ongoingRecordingURLAbsoluteString: ongoingRecordingURLAbsoluteString
+      )
     }
     return ongoingScreenRecordEntry
   }
@@ -240,7 +235,7 @@ struct ScreenRecordListView: View {
     }
   }
 
-  #Preview {
+  #Preview("There are no ongoing records") {
     let recoreonServices = PreviewRecoreonServices()
     let screenRecordStore = ScreenRecordStore(
       screenRecordService: recoreonServices.screenRecordService
@@ -248,12 +243,36 @@ struct ScreenRecordListView: View {
 
     let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
 
-    appGroupsUserDefaults.set(true, forKey: AppGroupsPreferenceService.isRecordingKey)
     appGroupsUserDefaults.set(
-      Date().timeIntervalSince1970, forKey: AppGroupsPreferenceService.isRecordingTimestampKey)
+      Date().timeIntervalSince1970 - 10,
+      forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
     appGroupsUserDefaults.set(
       screenRecordStore.screenRecordEntries[0].url.absoluteString,
-      forKey: AppGroupsPreferenceService.recordingURLKey
+      forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
+    )
+
+    return NavigationStack {
+      ScreenRecordListViewContainer(
+        recoreonServices: recoreonServices,
+        screenRecordStore: screenRecordStore
+      )
+    }
+  }
+
+  #Preview("There is a ongoing record") {
+    let recoreonServices = PreviewRecoreonServices()
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: recoreonServices.screenRecordService
+    )
+
+    let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
+
+    appGroupsUserDefaults.set(
+      Date().timeIntervalSince1970 + 1000,
+      forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
+    appGroupsUserDefaults.set(
+      screenRecordStore.screenRecordEntries[0].url.absoluteString,
+      forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
     )
 
     return NavigationStack {
