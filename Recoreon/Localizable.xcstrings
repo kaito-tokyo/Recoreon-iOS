@@ -222,7 +222,14 @@
       }
     },
     "This screen record is ongoing!" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この画面録画は進行中です！"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
