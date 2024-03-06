@@ -106,11 +106,6 @@ struct ScreenRecordListView: View {
   func screenRecordList(screenRecordEntries: [ScreenRecordEntry]) -> some View {
     return Section(header: Text("Saved screen records")) {
       ForEach(screenRecordEntries) { screenRecordEntry in
-        NavigationLink(value: 
-                        ScreenRecordDetailViewRoute(
-                          screenRecordEntry: screenRecordEntry)) {
-          Text("aaa")
-        }
         Button {
           if editMode.isEditing {
             if selectedScreenRecordEntries.contains(screenRecordEntry) {
@@ -119,10 +114,12 @@ struct ScreenRecordListView: View {
               selectedScreenRecordEntries.insert(screenRecordEntry)
             }
           } else {
-            path.append(
-              ScreenRecordDetailViewRoute(
-                screenRecordEntry: screenRecordEntry)
-            )
+            withAnimation {
+              path.append(
+                ScreenRecordDetailViewRoute(
+                  screenRecordEntry: screenRecordEntry)
+              )
+            }
           }
         } label: {
           HStack {
