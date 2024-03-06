@@ -18,7 +18,7 @@ struct ScreenRecordListView: View {
   @State private var selectedScreenRecordEntries = Set<ScreenRecordEntry>()
   @State private var isRemoveConfirmationPresented: Bool = false
 
-  @Environment(\.editMode) private var editMode
+  @State private var editMode: EditMode = .inactive
   @Environment(\.scenePhase) private var scenePhase
 
   @AppStorage(
@@ -106,8 +106,13 @@ struct ScreenRecordListView: View {
   func screenRecordList(screenRecordEntries: [ScreenRecordEntry]) -> some View {
     return Section(header: Text("Saved screen records")) {
       ForEach(screenRecordEntries) { screenRecordEntry in
+        NavigationLink(value: 
+                        ScreenRecordDetailViewRoute(
+                          screenRecordEntry: screenRecordEntry)) {
+          Text("aaa")
+        }
         Button {
-          if editMode?.wrappedValue.isEditing == true {
+          if editMode.isEditing {
             if selectedScreenRecordEntries.contains(screenRecordEntry) {
               selectedScreenRecordEntries.remove(screenRecordEntry)
             } else {
@@ -121,7 +126,7 @@ struct ScreenRecordListView: View {
           }
         } label: {
           HStack {
-            if editMode?.wrappedValue.isEditing == true {
+            if editMode.isEditing == true {
               if selectedScreenRecordEntries.contains(screenRecordEntry) {
                 Image(systemName: "checkmark.circle")
                   .foregroundColor(.green)
@@ -238,7 +243,7 @@ struct ScreenRecordListView: View {
     .toolbar {
       EditButton()
     }
-    .onChange(of: editMode?.wrappedValue.isEditing) { newValue in
+    .onChange(of: editMode.isEditing) { newValue in
       if newValue == false {
         selectedScreenRecordEntries.removeAll()
       }
@@ -251,6 +256,7 @@ struct ScreenRecordListView: View {
     .onChange(of: path) { _ in
       screenRecordStore.update()
     }
+    .environment(\.editMode, $editMode)
   }
 }
 
@@ -269,13 +275,11 @@ struct ScreenRecordListView: View {
     }
 
     var body: some View {
-      TabView {
-        NavigationStack(path: $path) {
-          ScreenRecordListView(
-            recoreonServices: recoreonServices,
-            path: $path
-          )
-        }
+      NavigationStack(path: $path) {
+        ScreenRecordListView(
+          recoreonServices: recoreonServices,
+          path: $path
+        )
       }
     }
   }
