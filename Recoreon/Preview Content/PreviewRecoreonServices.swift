@@ -42,4 +42,50 @@ struct PreviewRecoreonServices: RecoreonServices {
     }
     // swiftlint:enable force_try
   }
+
+
+  func deployAllAssets() {
+    copyIfNotExists(
+      at: Bundle.main.url(forResource: "Record01", withExtension: "mkv")!,
+      to: recoreonPathService.generateAppGroupsScreenRecordURL(recordID: "Record01", ext: "mkv")
+    )
+
+    copyIfNotExists(
+      at: Bundle.main.url(forResource: "Record02", withExtension: "mkv")!,
+      to: recoreonPathService.generateAppGroupsScreenRecordURL(recordID: "Record02", ext: "mkv")
+    )
+
+    copyIfNotExists(
+      at: Bundle.main.url(forResource: "Record01-1", withExtension: "txt")!,
+      to: recoreonPathService.generateRecordNoteURL(recordID: "Record01-1", shortName: "txt")
+    )
+
+    copyIfNotExists(
+      at: Bundle.main.url(forResource: "Record01-2", withExtension: "txt")!,
+      to: recoreonPathService.generateRecordNoteURL(recordID: "Record01-2", shortName: "txt")
+    )
+
+    copyIfNotExists(
+      at: Bundle.main.url(forResource: "Record01-summary", withExtension: "txt")!,
+      to: recoreonPathService.generateRecordNoteURL(recordID: "Record01-summary", shortName: "txt")
+    )
+
+    copyIfNotExists(
+      at: Bundle.main.url(forResource: "Preview01", withExtension: "mp4")!,
+      to: recoreonPathService.getPreviewVideoURL(recordID: "Record01")
+    )
+
+    copyIfNotExists(
+      at: Bundle.main.url(forResource: "Preview02", withExtension: "mp4")!,
+      to: recoreonPathService.getPreviewVideoURL(recordID: "Record02")
+    )
+  }
+
+  func copyIfNotExists(at: URL, to: URL) {
+    let fileManager = FileManager.default
+
+    if !fileManager.fileExists(atPath: at.path(percentEncoded: false)) {
+      try! fileManager.copyItem(at: at, to: to)
+    }
+  }
 }

@@ -47,8 +47,8 @@
 		22966A2E2AFE756F0080324D /* ScreenRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A2D2AFE756F0080324D /* ScreenRecordView.swift */; };
 		22966A332AFE8D1B0080324D /* ScreenRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A322AFE8D1B0080324D /* ScreenRecordStore.swift */; };
 		22AA3D912B9567C700C64E7E /* Preview02.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 22AA3D8F2B9567C700C64E7E /* Preview02.mp4 */; };
-		22AA3D922B9567C700C64E7E /* Record02.mkv in Resources */ = {isa = PBXBuildFile; fileRef = 22AA3D902B9567C700C64E7E /* Record02.mkv */; };
 		22AAC7F32B90B7B500078129 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 22AAC7F22B90B7B500078129 /* Localizable.xcstrings */; };
+		22C148D62B98D8C6005BE7F8 /* Record02.mkv in Resources */ = {isa = PBXBuildFile; fileRef = 22C148D52B98D8C6005BE7F8 /* Record02.mkv */; };
 		22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */; };
 		22C18AF12AF2B08C00C41B49 /* BroadcastSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AF02AF2B08C00C41B49 /* BroadcastSetupViewController.swift */; };
 		22C18AF52AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 22C18AEC2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -175,8 +175,8 @@
 		22966A2D2AFE756F0080324D /* ScreenRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordView.swift; sourceTree = "<group>"; };
 		22966A322AFE8D1B0080324D /* ScreenRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordStore.swift; sourceTree = "<group>"; };
 		22AA3D8F2B9567C700C64E7E /* Preview02.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Preview02.mp4; sourceTree = "<group>"; };
-		22AA3D902B9567C700C64E7E /* Record02.mkv */ = {isa = PBXFileReference; lastKnownFileType = file; path = Record02.mkv; sourceTree = "<group>"; };
 		22AAC7F22B90B7B500078129 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		22C148D52B98D8C6005BE7F8 /* Record02.mkv */ = {isa = PBXFileReference; lastKnownFileType = file; path = Record02.mkv; sourceTree = "<group>"; };
 		22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecoreonBroadcastUploadExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
 		22C18AE72AF2B08B00C41B49 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -426,7 +426,7 @@
 				223B05882B90CDA400A16852 /* Record01-2.txt */,
 				223427B72B94CC9A00F25052 /* Record01-summary.txt */,
 				22966A222AFE29660080324D /* Record01.mkv */,
-				22AA3D902B9567C700C64E7E /* Record02.mkv */,
+				22C148D52B98D8C6005BE7F8 /* Record02.mkv */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -662,7 +662,7 @@
 				223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */,
 				223427B82B94CC9A00F25052 /* Record01-summary.txt in Resources */,
 				22966A232AFE29660080324D /* Record01.mkv in Resources */,
-				22AA3D922B9567C700C64E7E /* Record02.mkv in Resources */,
+				22C148D62B98D8C6005BE7F8 /* Record02.mkv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
