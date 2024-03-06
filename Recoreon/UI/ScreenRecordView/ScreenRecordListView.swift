@@ -123,7 +123,7 @@ struct ScreenRecordListView: View {
           }
         } label: {
           HStack {
-            if editMode.isEditing == true {
+            if editMode.isEditing {
               if selectedScreenRecordEntries.contains(screenRecordEntry) {
                 Image(systemName: "checkmark.circle")
                   .foregroundColor(.green)
