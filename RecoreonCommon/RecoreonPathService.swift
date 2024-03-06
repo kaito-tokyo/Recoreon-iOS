@@ -49,6 +49,12 @@ public struct RecoreonPathService {
     return recordID
   }
 
+  public func wipe() {
+    try? fileManager.removeItem(at: appGroupsDocumentsDir)
+    try? fileManager.removeItem(at: documentsDir)
+    try? fileManager.removeItem(at: libraryDir)
+  }
+
   public func wipeRecordNotes() {
     try? fileManager.removeItem(at: recordNotesDir)
   }
@@ -76,7 +82,7 @@ public struct RecoreonPathService {
 
   // RecordNote
 
-  public func getRecordNoteSubDirURL(screenRecordURL: URL) -> URL {
+  public func generateRecordNoteSubDirURL(screenRecordURL: URL) -> URL {
     let recordId = screenRecordURL.deletingPathExtension().lastPathComponent
     let recordNoteSubDirURL = recordNotesDir.appending(path: recordId, directoryHint: .isDirectory)
     mkdirp(url: recordNoteSubDirURL)
@@ -84,7 +90,7 @@ public struct RecoreonPathService {
   }
 
   public func listRecordNoteURLs(screenRecordURL: URL) -> [URL] {
-    let recordNotesSubDir = getRecordNoteSubDirURL(screenRecordURL: screenRecordURL)
+    let recordNotesSubDir = generateRecordNoteSubDirURL(screenRecordURL: screenRecordURL)
     guard
       let recordNoteURLs = try? fileManager.contentsOfDirectory(
         at: recordNotesSubDir, includingPropertiesForKeys: nil)
@@ -125,7 +131,7 @@ public struct RecoreonPathService {
 
   // PreviewVideo
 
-  public func getPreviewVideoURL(recordID: String) -> URL {
+  public func generatePreviewVideoURL(recordID: String) -> URL {
     let ext = "mp4"
     mkdirp(url: previewVideosDir)
     let previewVideoURL = previewVideosDir.appending(

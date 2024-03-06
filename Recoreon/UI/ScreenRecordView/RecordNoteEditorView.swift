@@ -50,55 +50,76 @@ struct RecordNoteEditorView: View {
 }
 
 #if DEBUG
-  struct RecordNoteEditorViewContainer: View {
-    @StateObject var recordNoteStore: RecordNoteStore
-    @State var path: NavigationPath
-    let recordNoteEntry: RecordNoteEntry
+struct RecordNoteEditorViewContainer: View {
+  @StateObject var recordNoteStore: RecordNoteStore
+  let recordNoteEntry: RecordNoteEntry
 
-    init(
-      recordNoteStore: RecordNoteStore,
-      path: NavigationPath,
-      recordNoteEntry: RecordNoteEntry
-    ) {
-      _recordNoteStore = StateObject(wrappedValue: recordNoteStore)
-      self._path = State(initialValue: path)
-      self.recordNoteEntry = recordNoteEntry
-    }
+  @State var path = NavigationPath()
 
-    var body: some View {
-      TabView {
-        NavigationStack(path: $path) {
-          RecordNoteEditorView(
-            path: $path,
-            recordNoteStore: recordNoteStore,
-            recordNoteEntry: recordNoteEntry
-          )
-        }
+  init(
+    recordNoteStore: RecordNoteStore,
+    recordNoteEntry: RecordNoteEntry
+  ) {
+    self._recordNoteStore = StateObject(wrappedValue: recordNoteStore)
+    self.recordNoteEntry = recordNoteEntry
+  }
+
+  var body: some View {
+    TabView {
+      NavigationStack(path: $path) {
+        RecordNoteEditorView(
+          path: $path,
+          recordNoteStore: recordNoteStore,
+          recordNoteEntry: recordNoteEntry
+        )
       }
     }
   }
+}
 
-  #Preview {
-    let recoreonServices = PreviewRecoreonServices()
-    let screenRecordService = recoreonServices.screenRecordService
-    let recordNoteService = recoreonServices.recordNoteService
+#Preview("Record01-1") {
+  let recoreonServices = PreviewRecoreonServices()
+  recoreonServices.deployAllAssets()
 
-    let screenRecordEntries = screenRecordService.listScreenRecordEntries()
-    let screenRecordEntry = screenRecordEntries[0]
+  let screenRecordService = recoreonServices.screenRecordService
+  let recordNoteService = recoreonServices.recordNoteService
 
-    let recordNoteStore = RecordNoteStore(
-      recordNoteService: recordNoteService, screenRecordEntry: screenRecordEntry)
+  let screenRecordEntries = screenRecordService.listScreenRecordEntries()
+  let screenRecordEntry = screenRecordEntries[0]
 
-    let path = NavigationPath()
+  let recordNoteStore = RecordNoteStore(
+    recordNoteService: recordNoteService, screenRecordEntry: screenRecordEntry)
 
-    let recordNoteEntries = recordNoteService.listRecordNoteEntries(
-      screenRecordEntry: screenRecordEntry)
-    let recordNoteEntry = recordNoteEntries[0]
+  let recordNoteEntries = recordNoteService.listRecordNoteEntries(
+    screenRecordEntry: screenRecordEntry)
+  let recordNoteEntry = recordNoteEntries[0]
 
-    return RecordNoteEditorViewContainer(
-      recordNoteStore: recordNoteStore,
-      path: path,
-      recordNoteEntry: recordNoteEntry
-    )
-  }
+  return RecordNoteEditorViewContainer(
+    recordNoteStore: recordNoteStore,
+    recordNoteEntry: recordNoteEntry
+  )
+}
+
+#Preview("Record01-2") {
+  let recoreonServices = PreviewRecoreonServices()
+  recoreonServices.deployAllAssets()
+
+  let screenRecordService = recoreonServices.screenRecordService
+  let recordNoteService = recoreonServices.recordNoteService
+
+  let screenRecordEntries = screenRecordService.listScreenRecordEntries()
+  let screenRecordEntry = screenRecordEntries[0]
+
+  let recordNoteStore = RecordNoteStore(
+    recordNoteService: recordNoteService, screenRecordEntry: screenRecordEntry)
+
+  let recordNoteEntries = recordNoteService.listRecordNoteEntries(
+    screenRecordEntry: screenRecordEntry)
+  let recordNoteEntry = recordNoteEntries[1]
+
+  return RecordNoteEditorViewContainer(
+    recordNoteStore: recordNoteStore,
+    recordNoteEntry: recordNoteEntry
+  )
+}
 #endif

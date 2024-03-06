@@ -15,9 +15,11 @@ struct ScreenRecordView: View {
 }
 
 #if DEBUG
-  #Preview {
-    ScreenRecordView(
-      recoreonServices: PreviewRecoreonServices()
-    )
-  }
+#Preview {
+  let recoreonServices = PreviewRecoreonServices()
+  recoreonServices.deployAllAssets()
+  return ScreenRecordView(
+    recoreonServices: recoreonServices
+  )
+}
 #endif

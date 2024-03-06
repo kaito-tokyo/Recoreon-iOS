@@ -46,31 +46,32 @@ struct ScreenRecordPreviewView: View {
 }
 
 #if DEBUG
-  struct ScreenRecordPreviewViewContainer: View {
-    let recoreonServices: RecoreonServices
-    let screenRecordEntry: ScreenRecordEntry
+struct ScreenRecordPreviewViewContainer: View {
+  let recoreonServices: RecoreonServices
+  let screenRecordEntry: ScreenRecordEntry
 
-    var body: some View {
-      TabView {
-        NavigationStack {
-          ScreenRecordPreviewView(
-            recoreonServices: recoreonServices,
-            screenRecordEntry: screenRecordEntry
-          )
-        }
+  var body: some View {
+    TabView {
+      NavigationStack {
+        ScreenRecordPreviewView(
+          recoreonServices: recoreonServices,
+          screenRecordEntry: screenRecordEntry
+        )
       }
     }
   }
+}
 
-  #Preview {
-    let recoreonServices = PreviewRecoreonServices()
-    let screenRecordService = recoreonServices.screenRecordService
-    let screenRecordEntries = screenRecordService.listScreenRecordEntries()
-    let screenRecordEntry = screenRecordEntries[0]
+#Preview {
+  let recoreonServices = PreviewRecoreonServices()
+  recoreonServices.deployAllAssets()
+  let screenRecordService = recoreonServices.screenRecordService
+  let screenRecordEntries = screenRecordService.listScreenRecordEntries()
+  let screenRecordEntry = screenRecordEntries[0]
 
-    return ScreenRecordPreviewViewContainer(
-      recoreonServices: recoreonServices,
-      screenRecordEntry: screenRecordEntry
-    )
-  }
+  return ScreenRecordPreviewViewContainer(
+    recoreonServices: recoreonServices,
+    screenRecordEntry: screenRecordEntry
+  )
+}
 #endif
