@@ -69,7 +69,7 @@ struct ScreenRecordDetailView: View {
       ForEach(recordNoteStore.listGeneralRecordNoteEntries()) { recordNoteEntry in
         let recordNoteService = recoreonServices.recordNoteService
         let recordNoteShortName = recordNoteService.extractRecordNoteShortName(
-            recordNoteEntry: recordNoteEntry
+          recordNoteEntry: recordNoteEntry
         )
         Button {
           withAnimation {
