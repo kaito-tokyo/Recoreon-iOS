@@ -121,51 +121,69 @@ struct ScreenRecordDetailView: View {
         Text("This screen record is ongoing!")
           .listRowBackground(Color.red)
           .foregroundStyle(Color.white)
-      }
-      Section {
-        NavigationLink(
-          value: ScreenRecordPreviewViewRoute(screenRecordEntry: screenRecordEntry)
-        ) {
+      } else {
+        Section {
           Button {
+            withAnimation {
+              path.append(
+                ScreenRecordPreviewViewRoute(
+                  screenRecordEntry: screenRecordEntry
+                )
+              )
+            }
           } label: {
-            Label("Preview", systemImage: "play")
+            NavigationLink {
+              EmptyView()
+            } label: {
+              Label("Preview", systemImage: "play")
+            }
           }
-        }
-        NavigationLink(
-          value: ScreenRecordEncoderViewRoute(screenRecordEntry: screenRecordEntry)
-        ) {
+          
           Button {
+            withAnimation {
+              path.append(
+                ScreenRecordEncoderViewRoute(
+                  screenRecordEntry: screenRecordEntry
+                )
+              )
+            }
           } label: {
-            Label("Encode", systemImage: "film")
+            NavigationLink {
+              EmptyView()
+            } label: {
+              Label("Encode", systemImage: "film")
+            }
           }
-        }
-        ShareLink(item: screenRecordEntry.url)
-        Button {
-          isShowingRemoveConfirmation = true
-        } label: {
-          Label {
-            Text("Remove")
-          } icon: {
-            Image(systemName: "trash")
+          
+          ShareLink(item: screenRecordEntry.url)
+          
+          Button {
+            isShowingRemoveConfirmation = true
+          } label: {
+            Label {
+              Text("Remove")
+            } icon: {
+              Image(systemName: "trash")
+            }
           }
-        }.alert(isPresented: $isShowingRemoveConfirmation) {
-          Alert(
-            title: Text("Are you sure to remove this screen record?"),
-            primaryButton: .destructive(Text("OK")) {
-              withAnimation {
-                recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
-                  screenRecordEntry: screenRecordEntry)
-                screenRecordStore.update()
-                if path.count > 0 {
-                  path.removeLast()
+          .alert(isPresented: $isShowingRemoveConfirmation) {
+            Alert(
+              title: Text("Are you sure to remove this screen record?"),
+              primaryButton: .destructive(Text("OK")) {
+                withAnimation {
+                  recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
+                    screenRecordEntry: screenRecordEntry)
+                  screenRecordStore.update()
+                  if path.count > 0 {
+                    path.removeLast()
+                  }
                 }
-              }
-            },
-            secondaryButton: .cancel()
-          )
+              },
+              secondaryButton: .cancel()
+            )
+          }
         }
       }
-      .disabled(isRecordingOngoing)
 
       recordNoteList()
     }

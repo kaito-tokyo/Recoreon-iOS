@@ -43,6 +43,15 @@ final class RecoreonUITests: XCTestCase {
     XCTAssert(app.staticTexts["Preview"].waitForExistence(timeout: 10))
   }
 
+  func testScreenRecordPreviewViewCanBeShown() throws {
+    let app = XCUIApplication()
+    app.launchArguments = launchArguments
+    app.launch()
+
+    app.buttons.matching(identifier: "ScreenRecordEntry").element(boundBy: 0).tap()
+    app.buttons["PreviewButton"].tap()
+  }
+
   func testLaunchPerformance() throws {
     if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
       // This measures how long it takes to launch your application.
