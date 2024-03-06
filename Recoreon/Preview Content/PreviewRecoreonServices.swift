@@ -48,12 +48,12 @@ struct PreviewRecoreonServices: RecoreonServices {
 
     copyIfNotExists(
       at: Bundle.main.url(forResource: "Preview01", withExtension: "mp4")!,
-      to: recoreonPathService.getPreviewVideoURL(recordID: "Record01")
+      to: recoreonPathService.generatePreviewVideoURL(recordID: "Record01")
     )
 
     copyIfNotExists(
       at: Bundle.main.url(forResource: "Preview02", withExtension: "mp4")!,
-      to: recoreonPathService.getPreviewVideoURL(recordID: "Record02")
+      to: recoreonPathService.generatePreviewVideoURL(recordID: "Record02")
     )
   }
 

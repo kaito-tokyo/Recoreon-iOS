@@ -28,7 +28,7 @@ struct DefaultScreenRecordService: ScreenRecordService {
 
   func remuxPreviewVideo(screenRecordEntry: ScreenRecordEntry) async -> URL? {
     let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
-    let previewVideoURL = recoreonPathService.getPreviewVideoURL(recordID: recordID)
+    let previewVideoURL = recoreonPathService.generatePreviewVideoURL(recordID: recordID)
 
     if fileManager.fileExists(atPath: previewVideoURL.path(percentEncoded: false)) {
       return previewVideoURL
@@ -67,7 +67,7 @@ struct DefaultScreenRecordService: ScreenRecordService {
 
   func removePreviewVideo(screenRecordEntry: ScreenRecordEntry) {
     let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
-    let previewVideoURL = recoreonPathService.getPreviewVideoURL(recordID: recordID)
+    let previewVideoURL = recoreonPathService.generatePreviewVideoURL(recordID: recordID)
     try? fileManager.removeItem(at: previewVideoURL)
   }
 
