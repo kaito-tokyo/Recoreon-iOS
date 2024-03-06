@@ -156,7 +156,9 @@ struct ScreenRecordDetailView: View {
                 recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
                   screenRecordEntry: screenRecordEntry)
                 screenRecordStore.update()
-                path.removeLast()
+                if path.count > 0 {
+                  path.removeLast()
+                }
               }
             },
             secondaryButton: .cancel()
