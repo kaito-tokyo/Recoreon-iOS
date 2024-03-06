@@ -152,10 +152,13 @@ struct ScreenRecordDetailView: View {
           Alert(
             title: Text("Are you sure to remove this screen record?"),
             primaryButton: .destructive(Text("OK")) {
-              recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
-                screenRecordEntry: screenRecordEntry)
-              screenRecordStore.update()
-              path.removeLast()
+              withAnimation {
+                recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
+                  screenRecordEntry: screenRecordEntry)
+                screenRecordStore.update()
+                print(path)
+                path.removeLast()
+              }
             },
             secondaryButton: .cancel()
           )
