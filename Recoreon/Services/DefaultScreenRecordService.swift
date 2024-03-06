@@ -11,6 +11,7 @@ struct DefaultScreenRecordService: ScreenRecordService {
 
   func listScreenRecordEntries() -> [ScreenRecordEntry] {
     let screenRecordURLs = recoreonPathService.listScreenRecordURLs()
+    print(screenRecordURLs)
     return screenRecordURLs.map { screenRecordURL in
       let attrs = try? fileManager.attributesOfItem(atPath: screenRecordURL.path())
       let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordURL)

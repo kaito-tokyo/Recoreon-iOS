@@ -64,6 +64,7 @@ struct ScreenRecordPreviewView: View {
 
   #Preview {
     let recoreonServices = PreviewRecoreonServices()
+    recoreonServices.deployAllAssets()
     let screenRecordService = recoreonServices.screenRecordService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]

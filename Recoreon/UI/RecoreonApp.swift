@@ -7,7 +7,9 @@ struct RecoreonApp: App {
     #if DEBUG
       let recoreonServices: RecoreonServices = {
         if ProcessInfo.processInfo.arguments.contains("-UITest") {
-          RecoreonPathService(fileManager: FileManager.default).wipeRecordNotes()
+          let recoreonServices = PreviewRecoreonServices()
+          recoreonServices.recoreonPathService.wipeRecordNotes()
+          recoreonServices.deployAllAssets()
           return PreviewRecoreonServices()
         } else {
           return DefaultRecoreonServices()

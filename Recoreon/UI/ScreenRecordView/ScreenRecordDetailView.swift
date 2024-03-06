@@ -156,7 +156,6 @@ struct ScreenRecordDetailView: View {
                 recoreonServices.screenRecordService.removeScreenRecordAndRelatedFiles(
                   screenRecordEntry: screenRecordEntry)
                 screenRecordStore.update()
-                print(path)
                 path.removeLast()
               }
             },
@@ -224,6 +223,7 @@ struct ScreenRecordDetailView: View {
 
   #Preview("The recording is finished") {
     let recoreonServices = PreviewRecoreonServices()
+    recoreonServices.deployAllAssets()
     let screenRecordService = recoreonServices.screenRecordService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]
@@ -252,6 +252,7 @@ struct ScreenRecordDetailView: View {
 
   #Preview("The recording is ongoing") {
     let recoreonServices = PreviewRecoreonServices()
+    recoreonServices.deployAllAssets()
     let screenRecordService = recoreonServices.screenRecordService
     let screenRecordEntries = screenRecordService.listScreenRecordEntries()
     let screenRecordEntry = screenRecordEntries[0]

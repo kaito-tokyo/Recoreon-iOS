@@ -283,6 +283,7 @@ struct ScreenRecordListView: View {
 
   #Preview("There are no ongoing records") {
     let recoreonServices = PreviewRecoreonServices()
+    recoreonServices.deployAllAssets()
     let screenRecordStore = ScreenRecordStore(
       screenRecordService: recoreonServices.screenRecordService
     )
@@ -307,6 +308,7 @@ struct ScreenRecordListView: View {
 
   #Preview("There is a ongoing record") {
     let recoreonServices = PreviewRecoreonServices()
+    recoreonServices.deployAllAssets()
     let screenRecordStore = ScreenRecordStore(
       screenRecordService: recoreonServices.screenRecordService
     )
