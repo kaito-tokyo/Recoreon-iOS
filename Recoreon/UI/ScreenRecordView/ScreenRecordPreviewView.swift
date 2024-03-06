@@ -18,6 +18,7 @@ struct ScreenRecordPreviewView: View {
   var body: some View {
     ZStack {
       VideoPlayer(player: player)
+        .accessibilityIdentifier("PreviewVideoPlayer")
         .onAppear {
           Task {
             isRemuxing = true

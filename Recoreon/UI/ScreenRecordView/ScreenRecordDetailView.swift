@@ -67,14 +67,26 @@ struct ScreenRecordDetailView: View {
         }
 
       ForEach(recordNoteStore.listGeneralRecordNoteEntries()) { recordNoteEntry in
-        NavigationLink(value: RecordNoteEditorViewRoute(recordNoteEntry: recordNoteEntry)) {
-          Button {
+        let recordNoteService = recoreonServices.recordNoteService
+        let recordNoteShortName = recordNoteService.extractRecordNoteShortName(
+            recordNoteEntry: recordNoteEntry
+        )
+        Button {
+          withAnimation {
+            path.append(
+              RecordNoteEditorViewRoute(
+                recordNoteEntry: recordNoteEntry
+              )
+            )
+          }
+        } label: {
+          NavigationLink {
+            EmptyView()
           } label: {
-            let recordNoteShortName = recoreonServices.recordNoteService.extractRecordNoteShortName(
-              recordNoteEntry: recordNoteEntry)
             Label(recordNoteShortName, systemImage: "doc")
           }
         }
+        .accessibilityIdentifier("RecordNoteEntryButton")
       }
 
       Button {
@@ -138,6 +150,7 @@ struct ScreenRecordDetailView: View {
               Label("Preview", systemImage: "play")
             }
           }
+          .accessibilityIdentifier("PreviewButton")
 
           Button {
             withAnimation {
@@ -154,6 +167,7 @@ struct ScreenRecordDetailView: View {
               Label("Encode", systemImage: "film")
             }
           }
+          .accessibilityIdentifier("EncodeButton")
 
           ShareLink(item: screenRecordEntry.url)
 
