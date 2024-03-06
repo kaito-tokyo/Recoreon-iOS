@@ -138,7 +138,7 @@ struct ScreenRecordDetailView: View {
               Label("Preview", systemImage: "play")
             }
           }
-          
+
           Button {
             withAnimation {
               path.append(
@@ -154,9 +154,9 @@ struct ScreenRecordDetailView: View {
               Label("Encode", systemImage: "film")
             }
           }
-          
+
           ShareLink(item: screenRecordEntry.url)
-          
+
           Button {
             isShowingRemoveConfirmation = true
           } label: {
