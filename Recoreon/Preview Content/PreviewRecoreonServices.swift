@@ -33,17 +33,17 @@ struct PreviewRecoreonServices: RecoreonServices {
 
     copyIfNotExists(
       at: Bundle.main.url(forResource: "Record01-1", withExtension: "txt")!,
-      to: recoreonPathService.generateRecordNoteURL(recordID: "Record01-1", shortName: "txt")
+      to: recoreonPathService.generateRecordNoteURL(recordID: "Record01", shortName: "1")
     )
 
     copyIfNotExists(
       at: Bundle.main.url(forResource: "Record01-2", withExtension: "txt")!,
-      to: recoreonPathService.generateRecordNoteURL(recordID: "Record01-2", shortName: "txt")
+      to: recoreonPathService.generateRecordNoteURL(recordID: "Record01", shortName: "2")
     )
 
     copyIfNotExists(
       at: Bundle.main.url(forResource: "Record01-summary", withExtension: "txt")!,
-      to: recoreonPathService.generateRecordNoteURL(recordID: "Record01-summary", shortName: "txt")
+      to: recoreonPathService.generateRecordSummaryURL(recordID: "Record01")
     )
 
     copyIfNotExists(
