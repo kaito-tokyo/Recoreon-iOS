@@ -15,9 +15,9 @@ struct ContentView: View {
 }
 
 #if DEBUG
-  #Preview {
-    let recoreonServices = PreviewRecoreonServices()
-    recoreonServices.deployAllAssets()
-    return ContentView(recoreonServices: recoreonServices)
-  }
+#Preview {
+  let recoreonServices = PreviewRecoreonServices()
+  recoreonServices.deployAllAssets()
+  return ContentView(recoreonServices: recoreonServices)
+}
 #endif

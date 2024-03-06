@@ -49,6 +49,12 @@ public struct RecoreonPathService {
     return recordID
   }
 
+  public func wipe() {
+    try? fileManager.removeItem(at: appGroupsDocumentsDir)
+    try? fileManager.removeItem(at: documentsDir)
+    try? fileManager.removeItem(at: libraryDir)
+  }
+
   public func wipeRecordNotes() {
     try? fileManager.removeItem(at: recordNotesDir)
   }
