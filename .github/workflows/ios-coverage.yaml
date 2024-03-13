@@ -115,7 +115,7 @@ jobs:
         run: |
           xcodebuild \
             -derivedDataPath DerivedData \
-            -destination "platform=iOS Simulator,name=$IOS_DEVIC,OS=$IOS_RUNTIME" \
+            -destination "platform=iOS Simulator,name=$IOS_DEVICE,OS=$IOS_RUNTIME" \
             -testProductsPath ./$TEST_PLAN_NAME.xctestproducts \
             test-without-building
 
