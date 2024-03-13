@@ -70,6 +70,7 @@ jobs:
           xcrun llvm-cov show \
             --arch arm64 \
             --instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
+            --ignore-filename-regex=".*/Recoreon/(Preview Content|UI)/.*" \
             DerivedData/Build/Products/Debug-iphonesimulator/Recoreon.app/Recoreon \
             >"$TEST_PLAN_NAME.coverage.txt"
 
@@ -125,7 +126,7 @@ jobs:
           xcrun llvm-cov show \
             --arch arm64 \
             --instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
-            --ignore-filename-regex=".*/Recoreon/(Models|Services|Stores)/.*" \
+            --ignore-filename-regex=".*/Recoreon/(Models|Preview Content|Services|Stores)/.*" \
             DerivedData/Build/Products/Debug-iphonesimulator/Recoreon.app/Recoreon \
             >"$TEST_PLAN_NAME.coverage.txt"
 
