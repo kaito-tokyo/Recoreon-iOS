@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "EBD5AB78-482F-40B6-8BE9-E6E71D974AF8",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Recoreon.xcodeproj",
+        "identifier" : "22C3CD062AF240B40039750A",
+        "name" : "RecoreonTests"
+      }
+    }
+  ],
+  "version" : 1
+}

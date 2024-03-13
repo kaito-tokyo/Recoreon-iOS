@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "8D884D4D-1A61-43F9-B03C-E89300C0952A",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Recoreon.xcodeproj",
+        "identifier" : "22C3CD102AF240B40039750A",
+        "name" : "RecoreonUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
