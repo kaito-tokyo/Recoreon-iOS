@@ -1,6 +1,7 @@
 #!/bin/zsh
 
 setopt extendedglob
+ls $CI_TEST_PRODUCTS_PATH
 
 profdata=($CI_DERIVED_DATA_PATH/**/*.profdata(#qN))
 
@@ -15,7 +16,7 @@ then
 
   find $CI_DERIVED_DATA_PATH
 
-  dest=($CI_DERIVED_DATA_PATH/**/Recoreon.app/Recoreon)
+  dest=($CI_TEST_PRODUCTS_PATH/**/Recoreon.app/Recoreon)
 
   case $CI_TEST_PLAN in
     RecoreonTests)
