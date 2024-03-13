@@ -85,7 +85,7 @@ jobs:
         with:
           token: "${{ secrets.CODECOV_TOKEN }}"
           disable_search: true
-          files: "${{ env.TEST_PLAN_NAME }}.coverage.txt,$TEST_PLAN_NAME.coverage.xml"
+          files: "${{ env.TEST_PLAN_NAME }}.coverage.txt,${{ env.TEST_PLAN_NAME }}.coverage.xml"
 
   CoverageUITest:
     runs-on: "macos-14"
