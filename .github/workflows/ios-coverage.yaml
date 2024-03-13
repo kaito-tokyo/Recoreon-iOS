@@ -34,7 +34,7 @@ jobs:
         run: |
           if
             xcrun simctl list -j |
-            jq '.devices["com.apple.CoreSimulator.SimRuntime.$IOS_RUNTIME"]' |
+            jq '.devices["com.apple.CoreSimulator.SimRuntime.'"$IOS_RUNTIME"'"]' |
             grep -q "com.apple.CoreSimulator.SimDeviceType.$IOS_DEVICE"
           then
             xcrun simctl create "$IOS_DEVICE" "$IOS_DEVICE" \
@@ -90,7 +90,7 @@ jobs:
         run: |
           if
             xcrun simctl list -j |
-            jq '.devices["com.apple.CoreSimulator.SimRuntime.$IOS_RUNTIME"]' |
+            jq '.devices["com.apple.CoreSimulator.SimRuntime.'"$IOS_RUNTIME"'"]' |
             grep -q "com.apple.CoreSimulator.SimDeviceType.$IOS_DEVICE"
           then
             xcrun simctl create "$IOS_DEVICE" "$IOS_DEVICE" \
