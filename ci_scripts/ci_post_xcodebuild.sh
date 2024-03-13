@@ -4,10 +4,6 @@
 echo $CI_DERIVED_DATA_PATH
 echo $CI_APP_STORE_SIGNED_APP_PATH
 echo $CI_TEST_PLAN
-for profdata in ~/Library/Developer/Xcode/DerivedData/**/*.profdata
-do
-  echo $profdata
-done
 
 
 if [[ -d $CI_APP_STORE_SIGNED_APP_PATH ]];
