@@ -1,0 +1,29 @@
+comment:
+  layout: "header, diff, flags, components"
+  
+component_management:
+  default_rules:
+    statuses:
+      - type: "project"
+        target: "auto"
+        branches:
+          - "!main"
+  individual_components:
+    - component_id: "recoreon_common"
+      name: "RecoreonCommon"
+      paths:
+        - "RecoreonCommon/**"
+    - component_id: "recoreon_ui"
+      name: "Recoreon UI"
+      paths:
+        - "Recoreon/UI/**"
+    - component_id: "recoreon_service"
+      name: "Recoreon Service"
+      paths:
+        - "Recoreon/Models/**"
+        - "Recoreon/Services/**"
+        - "Recoreon/Stores/**"
+    - component_id: "recoreon_extension"
+      name: "Recoreon Extension"
+      paths:
+        - "RecoreonBroadcastExtension/**"
