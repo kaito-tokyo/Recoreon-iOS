@@ -1,7 +1,6 @@
-#!/bin/zsh
+#!/usr/bin/zsh
 
 setopt extendedglob
-ls $CI_TEST_PRODUCTS_PATH
 
 profdata=($CI_DERIVED_DATA_PATH/**/*.profdata(#qN))
 
