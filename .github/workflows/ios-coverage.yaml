@@ -18,6 +18,8 @@ env:
   IOS_RUNTIME: "17.2"
   DEVELOPER_DIR: "/Applications/Xcode_15.2.app"
 
+# yamllint disable rule:line-length
+
 jobs:
   CoverageTests:
     runs-on: "macos-14"
@@ -59,7 +61,6 @@ jobs:
             -testProductsPath ./$TEST_PLAN_NAME.xctestproducts \
             test-without-building
 
-      # yamllint disable rule:line-length
       - name: "Export coverage"
         run: |
           xcrun llvm-cov show \
@@ -67,7 +68,6 @@ jobs:
             --instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
             DerivedData/Build/Products/Debug-iphonesimulator/Recoreon.app/Recoreon \
             >$"TEST_PLAN_NAME.coverage.txt"
-      # yamllint enable rule:line-length
 
       - name: "Upload coverage to Codecov"
         uses: "codecov/codecov-action@v4"
@@ -115,7 +115,6 @@ jobs:
             -testProductsPath ./$TEST_PLAN_NAME.xctestproducts \
             test-without-building
 
-      # yamllint disable rule:line-length
       - name: "Export coverage"
         run: |
           xcrun llvm-cov show \
@@ -124,10 +123,11 @@ jobs:
             --ignore-filename-regex=".*/Recoreon/(Models|Services|Stores)/.*" \
             DerivedData/Build/Products/Debug-iphonesimulator/Recoreon.app/Recoreon \
             >$"TEST_PLAN_NAME.coverage.txt"
-      # yamllint enable rule:line-length
 
       - name: "Upload coverage to Codecov"
         uses: "codecov/codecov-action@v4"
         with:
           token: "${{ secrets.CODECOV_TOKEN }}"
           files: "${{ env.TEST_PLAN_NAME }}.coverage.txt"
+
+# yamllint enable rule:line-length
