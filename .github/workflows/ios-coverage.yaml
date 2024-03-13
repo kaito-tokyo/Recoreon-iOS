@@ -60,8 +60,8 @@ jobs:
       - name: "Export coverage"
         run: |
           xcrun llvm-cov show \
-            -arch arm64 \
-            -instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
+            --arch arm64 \
+            --instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
             DerivedData/Build/Products/Debug-iphonesimulator/Recoreon.app/Recoreon \
             >$"TEST_PLAN_NAME.coverage.txt"
 
@@ -113,8 +113,9 @@ jobs:
       - name: "Export coverage"
         run: |
           xcrun llvm-cov show \
-            -arch arm64 \
-            -instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
+            --arch arm64 \
+            --instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
+            --ignore-filename-regex=".*/Recoreon/(Models|Services|Stores)/.*" \
             DerivedData/Build/Products/Debug-iphonesimulator/Recoreon.app/Recoreon \
             >$"TEST_PLAN_NAME.coverage.txt"
 
