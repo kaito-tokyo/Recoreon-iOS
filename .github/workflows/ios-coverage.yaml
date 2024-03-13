@@ -68,7 +68,7 @@ jobs:
             -testProductsPath ./$TEST_PLAN_NAME.xctestproducts \
             test-without-building
 
-      - name: "Export coverage"
+      - name: "Export Swift coverage"
         run: |
           xcrun llvm-cov show \
             --arch arm64 \
@@ -127,7 +127,7 @@ jobs:
             -testProductsPath ./$TEST_PLAN_NAME.xctestproducts \
             test-without-building
 
-      - name: "Export coverage"
+      - name: "Export Swift coverage"
         run: |
           xcrun llvm-cov show \
             --arch arm64 \
