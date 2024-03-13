@@ -78,7 +78,7 @@ jobs:
             >"$TEST_PLAN_NAME.coverage.txt"
 
       - name: "Export Objective-C coverage"
-        run: "gcovr --cobertura $TEST_PLAN_NAME.coverage.xml"
+        run: "gcovr --cobertura $TEST_PLAN_NAME.coverage.xml --exclude RecoreonTests"
 
       - name: "Upload coverage to Codecov"
         uses: "codecov/codecov-action@v4"
