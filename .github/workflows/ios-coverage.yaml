@@ -71,7 +71,7 @@ jobs:
             --arch arm64 \
             --instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
             DerivedData/Build/Products/Debug-iphonesimulator/Recoreon.app/Recoreon \
-            >$"TEST_PLAN_NAME.coverage.txt"
+            >"$TEST_PLAN_NAME.coverage.txt"
 
       - name: "Upload coverage to Codecov"
         uses: "codecov/codecov-action@v4"
@@ -126,7 +126,7 @@ jobs:
             --instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
             --ignore-filename-regex=".*/Recoreon/(Models|Services|Stores)/.*" \
             DerivedData/Build/Products/Debug-iphonesimulator/Recoreon.app/Recoreon \
-            >$"TEST_PLAN_NAME.coverage.txt"
+            >"$TEST_PLAN_NAME.coverage.txt"
 
       - name: "Upload coverage to Codecov"
         uses: "codecov/codecov-action@v4"
