@@ -161,6 +161,7 @@
 		22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriterTests.m; sourceTree = "<group>"; };
 		224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
 		224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenRecordWriter.h; sourceTree = "<group>"; };
+		22687E022B9E25DF007104CD /* ci_post_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_xcodebuild.sh; sourceTree = "<group>"; };
 		226A89842AFB1B7F00EBD2CA /* ScreenRecordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordService.swift; sourceTree = "<group>"; };
 		226A89912AFB30D900EBD2CA /* ScreenRecordEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordEntry.swift; sourceTree = "<group>"; };
 		226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingPreset.swift; sourceTree = "<group>"; };
@@ -318,6 +319,14 @@
 			path = ScreenRecordView;
 			sourceTree = "<group>";
 		};
+		22687E012B9E25D1007104CD /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				22687E022B9E25DF007104CD /* ci_post_xcodebuild.sh */,
+			);
+			path = ci_scripts;
+			sourceTree = "<group>";
+		};
 		2284B9322B94DE21008DF56F /* RecoreonCommon */ = {
 			isa = PBXGroup;
 			children = (
@@ -370,6 +379,7 @@
 		22C3CCEE2AF240B30039750A = {
 			isa = PBXGroup;
 			children = (
+				22687E012B9E25D1007104CD /* ci_scripts */,
 				22C3CCF92AF240B30039750A /* Recoreon */,
 				22C3CD0A2AF240B40039750A /* RecoreonTests */,
 				22C3CD142AF240B40039750A /* RecoreonUITests */,
