@@ -1,36 +1,38 @@
 #!/bin/zsh
 
-if [[ -d $CI_RESULT_BUNDLE_PATH ]];
-then
-  python3 -m venv .venv
+ls $CI_RESULT_BUNDLE_PATH
 
-  # shellcheck source=/dev/null
-  . .venv/bin/activate
+# if [[ -d $CI_RESULT_BUNDLE_PATH ]];
+# then
+#   python3 -m venv .venv
 
-  pip3 install codecov-cli
+#   # shellcheck source=/dev/null
+#   . .venv/bin/activate
 
-  dest=($CI_DERIVED_DATA_PATH/**/Recoreon.app/Recoreon)
-  profdata=($CI_DERIVED_DATA_PATH/**/*.profdata)
+#   pip3 install codecov-cli
 
-  case $CI_TEST_PLAN in
-    RecoreonTests)
-      xcrun llvm-cov show \
-        -instr-profile "${profdata[1]}" \
-        -ignore-filename-regex=".*/Recoreon/UI/.*" \
-        "${dest[1]}" \
-        >RecoreonTests.coverage.txt
+#   dest=($CI_DERIVED_DATA_PATH/**/Recoreon.app/Recoreon)
+#   profdata=($CI_DERIVED_DATA_PATH/**/*.profdata)
 
-      codecovcli upload-process --plugin "" --file RecoreonTests.coverage.txt
-      ;;
+#   case $CI_TEST_PLAN in
+#     RecoreonTests)
+#       xcrun llvm-cov show \
+#         -instr-profile "${profdata[1]}" \
+#         -ignore-filename-regex=".*/Recoreon/UI/.*" \
+#         "${dest[1]}" \
+#         >RecoreonTests.coverage.txt
+
+#       codecovcli upload-process --plugin "" --file RecoreonTests.coverage.txt
+#       ;;
     
-    RecoreonUITests)
-      xcrun llvm-cov show \
-        -instr-profile "${profdata[1]}" \
-        -ignore-filename-regex=".*/Recoreon/(Models|Services|Stores)/.*" \
-        "${dest[1]}" \
-        >RecoreonUITests.coverage.txt
+#     RecoreonUITests)
+#       xcrun llvm-cov show \
+#         -instr-profile "${profdata[1]}" \
+#         -ignore-filename-regex=".*/Recoreon/(Models|Services|Stores)/.*" \
+#         "${dest[1]}" \
+#         >RecoreonUITests.coverage.txt
 
-      codecovcli upload-process --plugin "" --file RecoreonUITests.coverage.txt
-  esac
+#       codecovcli upload-process --plugin "" --file RecoreonUITests.coverage.txt
+#   esac
 
-fi
+# fi
