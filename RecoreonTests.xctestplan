@@ -1,0 +1,26 @@
+{
+  "configurations" : [
+    {
+      "id" : "90B05652-AE6B-42F3-8967-3C044FECE570",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "language" : "en",
+    "region" : "US"
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Recoreon.xcodeproj",
+        "identifier" : "22C3CD062AF240B40039750A",
+        "name" : "RecoreonTests"
+      }
+    }
+  ],
+  "version" : 1
+}

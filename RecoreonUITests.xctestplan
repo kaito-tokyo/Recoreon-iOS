@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "AED17C66-2B6A-47FB-A4B7-87AA64FFF100",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Recoreon.xcodeproj",
+        "identifier" : "22C3CD102AF240B40039750A",
+        "name" : "RecoreonUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

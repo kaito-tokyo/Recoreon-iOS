@@ -161,6 +161,8 @@
 		22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriterTests.m; sourceTree = "<group>"; };
 		224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
 		224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenRecordWriter.h; sourceTree = "<group>"; };
+		22687E092BA21A14007104CD /* RecoreonTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = RecoreonTests.xctestplan; sourceTree = "<group>"; };
+		22687E0A2BA21A24007104CD /* RecoreonUITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = RecoreonUITests.xctestplan; sourceTree = "<group>"; };
 		226A89842AFB1B7F00EBD2CA /* ScreenRecordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordService.swift; sourceTree = "<group>"; };
 		226A89912AFB30D900EBD2CA /* ScreenRecordEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordEntry.swift; sourceTree = "<group>"; };
 		226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingPreset.swift; sourceTree = "<group>"; };
@@ -370,6 +372,8 @@
 		22C3CCEE2AF240B30039750A = {
 			isa = PBXGroup;
 			children = (
+				22687E092BA21A14007104CD /* RecoreonTests.xctestplan */,
+				22687E0A2BA21A24007104CD /* RecoreonUITests.xctestplan */,
 				22C3CCF92AF240B30039750A /* Recoreon */,
 				22C3CD0A2AF240B40039750A /* RecoreonTests */,
 				22C3CD142AF240B40039750A /* RecoreonUITests */,
@@ -1172,6 +1176,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
+				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
+				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
@@ -1194,6 +1200,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
+				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
+				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
