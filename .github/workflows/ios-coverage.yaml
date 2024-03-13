@@ -77,6 +77,7 @@ jobs:
         uses: "codecov/codecov-action@v4"
         with:
           token: "${{ secrets.CODECOV_TOKEN }}"
+          disable_search: true
           files: "${{ env.TEST_PLAN_NAME }}.coverage.txt"
 
   CoverageUITests:
@@ -132,6 +133,7 @@ jobs:
         uses: "codecov/codecov-action@v4"
         with:
           token: "${{ secrets.CODECOV_TOKEN }}"
+          disable_search: true
           files: "${{ env.TEST_PLAN_NAME }}.coverage.txt"
 
 # yamllint enable rule:line-length
