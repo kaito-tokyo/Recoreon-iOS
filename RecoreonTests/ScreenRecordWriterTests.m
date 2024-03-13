@@ -3,6 +3,9 @@
 
 #import "../RecoreonBroadcastUploadExtension/ScreenRecordWriter.h"
 
+void __gcov_dump();
+void __gcov_reset();
+
 typedef struct VideoInfo {
   int width;
   int height;
@@ -44,6 +47,8 @@ typedef struct AudioFrame {
 }
 
 - (void)tearDown {
+  __gcov_reset();
+  __gcov_dump();
 }
 
 - (NSString *__nonnull)getOutputPath:(NSString *__nonnull)filename {

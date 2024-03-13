@@ -26,6 +26,7 @@ final class RecoreonUITests: XCTestCase {
 
   func launchWithUITestMode() -> XCUIApplication {
     let app = XCUIApplication()
+    app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US", "-UITest"]
     app.launch()
     return app
   }
