@@ -1,0 +1,125 @@
+---
+name: "iOS Coverage"
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+defaults:
+  run:
+    shell: "bash"
+
+env:
+  IOS_DEVICE: "iPhone 13"
+  IOS_RUNTIME: "iOS-17-4"
+
+jobs:
+  CoverageTests:
+    runs-on: "macos-14"
+
+    env:
+      TEST_PLAN_NAME: "RecoreonTests"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+      
+      - name: "Create iOS Simulator if not exists"
+        run: |
+          if 
+            xcrun simctl list -j |
+            jq '.devices["com.apple.CoreSimulator.SimRuntime.$IOS_RUNTIME"]' |
+            grep -q "com.apple.CoreSimulator.SimDeviceType.$IOS_DEVICE"
+          then
+            xcrun simctl create "$IOS_DEVICE" "$IOS_DEVICE" "com.apple.CoreSimulator.SimRuntime.$IOS_RUNTIME"
+          fi
+
+      - name: "Build XCTestProducts"
+        run: |
+          xcodebuild \
+            -sdk iphonesimulator \
+            -project ./Recoreon.xcodeproj \
+            -scheme Recoreon \
+            -testPlan "$TEST_PLAN_NAME" \
+            -derivedDataPath DerivedData \
+            -testProductsPath "./$TEST_PLAN_NAME.xctestproducts" \
+            build-for-testing
+
+      - name: "Run RecoreoUITests"
+        run: |
+          xcodebuild \
+            -derivedDataPath DerivedData \
+            -destination "platform=iOS Simulator,name=$IOS_DEVICE" \
+            -testProductsPath ./$TEST_PLAN_NAME.xctestproducts \
+            test-without-building
+
+      - name: "Export coverage"
+        run: |
+          xcrun llvm-cov show \
+            -arch arm64 \
+            -instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
+            DerivedData/Build/Products/Debug-iphonesimulator/Recoreon.app/Recoreon \
+            >$"TEST_PLAN_NAME.coverage.txt"
+
+      - name: "Upload coverage to Codecov"
+        uses: "codecov/codecov-action@v4"
+        with:
+          token: "${{ secrets.CODECOV_TOKEN }}"
+          files: "${{ env.TEST_PLAN_NAME }}.coverage.txt"
+
+  CoverageUITests:
+    runs-on: "macos-14"
+
+    env:
+      TEST_PLAN_NAME: "RecoreonUITests"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+      
+      - name: "Create iOS Simulator if not exists"
+        run: |
+          if 
+            xcrun simctl list -j |
+            jq '.devices["com.apple.CoreSimulator.SimRuntime.$IOS_RUNTIME"]' |
+            grep -q "com.apple.CoreSimulator.SimDeviceType.$IOS_DEVICE"
+          then
+            xcrun simctl create "$IOS_DEVICE" "$IOS_DEVICE" "com.apple.CoreSimulator.SimRuntime.$IOS_RUNTIME"
+          fi
+
+      - name: "Build XCTestProducts"
+        run: |
+          xcodebuild \
+            -sdk iphonesimulator \
+            -project ./Recoreon.xcodeproj \
+            -scheme Recoreon \
+            -testPlan "$TEST_PLAN_NAME" \
+            -derivedDataPath DerivedData \
+            -testProductsPath "./$TEST_PLAN_NAME.xctestproducts" \
+            build-for-testing
+
+      - name: "Run RecoreoUITests"
+        run: |
+          xcodebuild \
+            -derivedDataPath DerivedData \
+            -destination "platform=iOS Simulator,name=$IOS_DEVICE" \
+            -testProductsPath ./$TEST_PLAN_NAME.xctestproducts \
+            test-without-building
+
+      - name: "Export coverage"
+        run: |
+          xcrun llvm-cov show \
+            -arch arm64 \
+            -instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
+            DerivedData/Build/Products/Debug-iphonesimulator/Recoreon.app/Recoreon \
+            >$"TEST_PLAN_NAME.coverage.txt"
+
+      - name: "Upload coverage to Codecov"
+        uses: "codecov/codecov-action@v4"
+        with:
+          token: "${{ secrets.CODECOV_TOKEN }}"
+          files: "${{ env.TEST_PLAN_NAME }}.coverage.txt"

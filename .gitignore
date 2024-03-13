@@ -35,3 +35,7 @@ Temporary Items
 
 # CocoaPods
 Pods/
+
+DerivedData/
+*.xctestproducts/
+*.coverage.txt
