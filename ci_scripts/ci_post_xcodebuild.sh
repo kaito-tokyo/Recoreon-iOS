@@ -13,6 +13,8 @@ then
 
   pip3 install codecov-cli
 
+  find $CI_DERIVED_DATA_PATH
+
   dest=($CI_DERIVED_DATA_PATH/**/Recoreon.app/Recoreon)
 
   case $CI_TEST_PLAN in
