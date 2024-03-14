@@ -38,17 +38,6 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v4"
 
-      - name: "Create iOS Simulator if not exists"
-        run: |
-          if
-            ! xcrun simctl list -j |
-            jq '.devices["com.apple.CoreSimulator.SimRuntime.iOS-'"${IOS_RUNTIME//./-}"'"]' |
-            grep -q "com.apple.CoreSimulator.SimDeviceType.${IOS_DEVICE// /-}"
-          then
-            xcrun simctl create "$IOS_DEVICE" "$IOS_DEVICE" \
-              "com.apple.CoreSimulator.SimRuntime.iOS-${IOS_RUNTIME//./-}"
-          fi
-
       - name: "Build tests"
         run: |
           xcodebuild \
@@ -96,17 +85,6 @@ jobs:
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v4"
-
-      - name: "Create iOS Simulator if not exists"
-        run: |
-          if
-            ! xcrun simctl list -j |
-            jq '.devices["com.apple.CoreSimulator.SimRuntime.iOS-'"${IOS_RUNTIME//./-}"'"]' |
-            grep -q "com.apple.CoreSimulator.SimDeviceType.${IOS_DEVICE// /-}"
-          then
-            xcrun simctl create "$IOS_DEVICE" "$IOS_DEVICE" \
-              "com.apple.CoreSimulator.SimRuntime.iOS-${IOS_RUNTIME//./-}"
-          fi
 
       - name: "Build tests"
         run: |
