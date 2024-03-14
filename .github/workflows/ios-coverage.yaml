@@ -14,8 +14,8 @@ defaults:
     shell: "bash"
 
 env:
-  IOS_DEVICE: "iPhone 13"
-  IOS_RUNTIME: "16.0"
+  IOS_DEVICE: "iPhone 15"
+  IOS_RUNTIME: "17.2"
   DEVELOPER_DIR: "/Applications/Xcode_15.2.app"
 
 concurrency:
