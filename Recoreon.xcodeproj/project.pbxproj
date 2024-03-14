@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		220DBE5B2BA3661400A903ED /* EncodedVideoEntryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220DBE5A2BA3661400A903ED /* EncodedVideoEntryTest.swift */; };
 		22183B492B9100E9004D6FAD /* RecordNoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22183B482B9100E9004D6FAD /* RecordNoteStore.swift */; };
 		2232A1792B91F66300F646E3 /* RecordNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A1782B91F66300F646E3 /* RecordNoteService.swift */; };
 		2232A1802B9220A600F646E3 /* EncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A17F2B9220A600F646E3 /* EncodeService.swift */; };
@@ -134,6 +135,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		220DBE5A2BA3661400A903ED /* EncodedVideoEntryTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoEntryTest.swift; sourceTree = "<group>"; };
 		22183B482B9100E9004D6FAD /* RecordNoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteStore.swift; sourceTree = "<group>"; };
 		2232A1782B91F66300F646E3 /* RecordNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteService.swift; sourceTree = "<group>"; };
 		2232A17F2B9220A600F646E3 /* EncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeService.swift; sourceTree = "<group>"; };
@@ -252,6 +254,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		220DBE592BA365FA00A903ED /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				220DBE5A2BA3661400A903ED /* EncodedVideoEntryTest.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		223B05782B90BC9B00A16852 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -435,6 +445,7 @@
 		22C3CD0A2AF240B40039750A /* RecoreonTests */ = {
 			isa = PBXGroup;
 			children = (
+				220DBE592BA365FA00A903ED /* Models */,
 				22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */,
 				22C3CD0B2AF240B40039750A /* RecoreonTests.swift */,
 				22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */,
@@ -771,6 +782,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				220DBE5B2BA3661400A903ED /* EncodedVideoEntryTest.swift in Sources */,
 				22C3CD0C2AF240B40039750A /* RecoreonTests.swift in Sources */,
 				224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */,
 				22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */,

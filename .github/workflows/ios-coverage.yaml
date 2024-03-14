@@ -14,7 +14,7 @@ defaults:
     shell: "bash"
 
 env:
-  IOS_DEVICE: "iPhone 13"
+  IOS_DEVICE: "iPhone 15"
   IOS_RUNTIME: "17.2"
   DEVELOPER_DIR: "/Applications/Xcode_15.2.app"
 
@@ -35,19 +35,15 @@ jobs:
       - name: "Install gcovr"
         run: "brew install gcovr"
 
+      - name: "Start yeetd"
+        working-directory: "${{ runner.temp }}"
+        run: |
+          wget https://github.com/biscuitehh/yeetd/releases/download/1.0/yeetd-normal.pkg
+          sudo installer -pkg yeetd-normal.pkg -target /
+          yeetd &
+
       - name: "Checkout"
         uses: "actions/checkout@v4"
-
-      - name: "Create iOS Simulator if not exists"
-        run: |
-          if
-            ! xcrun simctl list -j |
-            jq '.devices["com.apple.CoreSimulator.SimRuntime.iOS-'"${IOS_RUNTIME//./-}"'"]' |
-            grep -q "com.apple.CoreSimulator.SimDeviceType.${IOS_DEVICE// /-}"
-          then
-            xcrun simctl create "$IOS_DEVICE" "$IOS_DEVICE" \
-              "com.apple.CoreSimulator.SimRuntime.iOS-${IOS_RUNTIME//./-}"
-          fi
 
       - name: "Build tests"
         run: |
@@ -94,19 +90,15 @@ jobs:
       TEST_PLAN_NAME: "RecoreonUITests"
 
     steps:
+      - name: "Start yeetd"
+        working-directory: "${{ runner.temp }}"
+        run: |
+          wget https://github.com/biscuitehh/yeetd/releases/download/1.0/yeetd-normal.pkg
+          sudo installer -pkg yeetd-normal.pkg -target /
+          yeetd &
+
       - name: "Checkout"
         uses: "actions/checkout@v4"
-
-      - name: "Create iOS Simulator if not exists"
-        run: |
-          if
-            ! xcrun simctl list -j |
-            jq '.devices["com.apple.CoreSimulator.SimRuntime.iOS-'"${IOS_RUNTIME//./-}"'"]' |
-            grep -q "com.apple.CoreSimulator.SimDeviceType.${IOS_DEVICE// /-}"
-          then
-            xcrun simctl create "$IOS_DEVICE" "$IOS_DEVICE" \
-              "com.apple.CoreSimulator.SimRuntime.iOS-${IOS_RUNTIME//./-}"
-          fi
 
       - name: "Build tests"
         run: |
