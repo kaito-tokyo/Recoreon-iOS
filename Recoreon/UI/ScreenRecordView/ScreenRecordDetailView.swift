@@ -20,6 +20,7 @@ struct ScreenRecordDetailView: View {
 
   @State var isAskingNewNoteShortName = false
   @State var newNoteShortName = ""
+  @State var isAlertingExistingName = false
 
   @Environment(\.scenePhase) var scenePhase
   @Environment(\.isPresented) var isPresented
@@ -97,13 +98,22 @@ struct ScreenRecordDetailView: View {
       .alert("Enter a new note name", isPresented: $isAskingNewNoteShortName) {
         TextField("Name", text: $newNoteShortName)
         Button {
-          if !newNoteShortName.isEmpty {
+          let recordNoteEntries = recordNoteStore.listRecordNoteEntries()
+          let doesNoteExists = recordNoteEntries.contains { recordNoteEntry in
+            let shortName = recoreonServices.recordNoteService.extractRecordNoteShortName(recordNoteEntry: recordNoteEntry)
+            return shortName == newNoteShortName
+          }
+          if doesNoteExists {
+            isAlertingExistingName = true
+          } else if !newNoteShortName.isEmpty {
             recordNoteStore.addNote(shortName: newNoteShortName)
           }
           newNoteShortName = ""
         } label: {
           Text("OK")
         }
+      }
+      .alert("The note with the specified name already exists!", isPresented: $isAlertingExistingName) {
       }
     }
     .onChange(of: scenePhase) { newValue in
