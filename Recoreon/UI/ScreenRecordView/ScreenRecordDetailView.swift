@@ -100,7 +100,8 @@ struct ScreenRecordDetailView: View {
         Button {
           let recordNoteEntries = recordNoteStore.listRecordNoteEntries()
           let doesNoteExists = recordNoteEntries.contains { recordNoteEntry in
-            let shortName = recoreonServices.recordNoteService.extractRecordNoteShortName(recordNoteEntry: recordNoteEntry)
+            let shortName = recoreonServices.recordNoteService.extractRecordNoteShortName(
+              recordNoteEntry: recordNoteEntry)
             return shortName == newNoteShortName
           }
           if doesNoteExists {
@@ -113,7 +114,9 @@ struct ScreenRecordDetailView: View {
           Text("OK")
         }
       }
-      .alert("The note with the specified name already exists!", isPresented: $isAlertingExistingName) {
+      .alert(
+        "The note with the specified name already exists!", isPresented: $isAlertingExistingName
+      ) {
       }
     }
     .onChange(of: scenePhase) { newValue in
