@@ -221,6 +221,16 @@
         }
       }
     },
+    "The note with the specified name already exists!" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この名前のメモはすでに存在します！"
+          }
+        }
+      }
+    },
     "This screen record is ongoing!" : {
       "localizations" : {
         "ja" : {
