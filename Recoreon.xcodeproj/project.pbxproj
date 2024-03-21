@@ -31,6 +31,8 @@
 		223B05892B90D5D800A16852 /* Record01-1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05872B90CD8700A16852 /* Record01-1.txt */; };
 		223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05882B90CDA400A16852 /* Record01-2.txt */; };
 		22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */; };
+		224544772BACA8CE000724E0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 224544762BACA8CE000724E0 /* PrivacyInfo.xcprivacy */; };
+		224544782BACA8CE000724E0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 224544762BACA8CE000724E0 /* PrivacyInfo.xcprivacy */; };
 		224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
 		224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
 		226A89852AFB1B7F00EBD2CA /* ScreenRecordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A89842AFB1B7F00EBD2CA /* ScreenRecordService.swift */; };
@@ -161,6 +163,7 @@
 		223B05882B90CDA400A16852 /* Record01-2.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-2.txt"; sourceTree = "<group>"; };
 		22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriterTests.m; sourceTree = "<group>"; };
+		224544762BACA8CE000724E0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
 		224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenRecordWriter.h; sourceTree = "<group>"; };
 		22687E092BA21A14007104CD /* RecoreonTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = RecoreonTests.xctestplan; sourceTree = "<group>"; };
@@ -382,6 +385,7 @@
 		22C3CCEE2AF240B30039750A = {
 			isa = PBXGroup;
 			children = (
+				224544762BACA8CE000724E0 /* PrivacyInfo.xcprivacy */,
 				22687E092BA21A14007104CD /* RecoreonTests.xctestplan */,
 				22687E0A2BA21A24007104CD /* RecoreonUITests.xctestplan */,
 				22C3CCF92AF240B30039750A /* Recoreon */,
@@ -651,6 +655,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				224544782BACA8CE000724E0 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -666,6 +671,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22C3CCFF2AF240B30039750A /* Assets.xcassets in Resources */,
+				224544772BACA8CE000724E0 /* PrivacyInfo.xcprivacy in Resources */,
 				22AAC7F32B90B7B500078129 /* Localizable.xcstrings in Resources */,
 				22C3CD022AF240B30039750A /* Preview Assets.xcassets in Resources */,
 				2232A95C2AFD80A200330C23 /* Preview01.mp4 in Resources */,
