@@ -671,11 +671,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				22C3CCFF2AF240B30039750A /* Assets.xcassets in Resources */,
-				224544772BACA8CE000724E0 /* PrivacyInfo.xcprivacy in Resources */,
 				22AAC7F32B90B7B500078129 /* Localizable.xcstrings in Resources */,
 				22C3CD022AF240B30039750A /* Preview Assets.xcassets in Resources */,
 				2232A95C2AFD80A200330C23 /* Preview01.mp4 in Resources */,
 				22AA3D912B9567C700C64E7E /* Preview02.mp4 in Resources */,
+				224544772BACA8CE000724E0 /* PrivacyInfo.xcprivacy in Resources */,
 				223B05892B90D5D800A16852 /* Record01-1.txt in Resources */,
 				223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */,
 				223427B82B94CC9A00F25052 /* Record01-summary.txt in Resources */,
