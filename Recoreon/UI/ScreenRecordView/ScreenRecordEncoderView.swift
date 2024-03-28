@@ -43,6 +43,7 @@ struct ScreenRecordEncoderView: View {
           Text("2x Speed Low Quality").tag(EncodingPreset.twoTimeSpeedLowQuality)
           Text("4x Speed Low Quality").tag(EncodingPreset.fourTimeSpeedLowQuality)
         }
+        .disabled(isEncoding)
       }
       Section(header: Text("Encoder operations")) {
         Button {
