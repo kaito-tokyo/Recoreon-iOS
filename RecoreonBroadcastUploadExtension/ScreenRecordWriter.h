@@ -49,6 +49,7 @@ typedef struct OutputStream {
                bitRate:(long)bitRate;
 - (bool)openVideo:(long)index;
 - (bool)openAudio:(long)index;
+- (bool)setTitle:(long)index value:(const char *__nonnull)value;
 - (bool)startOutput;
 - (bool)makeFrameWritable:(long)index;
 - (long)getWidth:(long)index;

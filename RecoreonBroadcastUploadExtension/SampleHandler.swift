@@ -22,7 +22,7 @@ private func copyPlane(
 }
 // swiftlint:enable function_parameter_count
 
-enum SampleHandlerError: LocalizedError {
+enum SampleHandlerError: CustomNSError {
   case videoCodecOpeningError
   case audioCodecOpeningError
   case outputFileOpeningError
@@ -30,18 +30,47 @@ enum SampleHandlerError: LocalizedError {
   case audioStreamAddingError
   case videoOpeningError
   case audioOpeningError
+  case titleSettingError
   case outputStartingError
 
-  var localizedDescription: String {
+  var errorUserInfo: [String: Any] {
     switch self {
-    case .videoCodecOpeningError: return "Could not open the video codec!"
-    case .audioCodecOpeningError: return "Could not open the audio codec!"
-    case .outputFileOpeningError: return "Could not open the output file!"
-    case .videoStreamAddingError: return "Could not add a video stream!"
-    case .audioStreamAddingError: return "Could not add an audio stream!"
-    case .videoOpeningError: return "Could not open the video!"
-    case .audioOpeningError: return "Could not open the audio!"
-    case .outputStartingError: return "Could not start the output!"
+    case .videoCodecOpeningError:
+      return [
+        NSLocalizedFailureReasonErrorKey: "Could not open the video codec!"
+      ]
+    case .audioCodecOpeningError:
+      return [
+        NSLocalizedFailureReasonErrorKey: "Could not open the audio codec!"
+      ]
+    case .outputFileOpeningError:
+      return [
+        NSLocalizedFailureReasonErrorKey: "Could not open the output file!"
+      ]
+    case .videoStreamAddingError:
+      return [
+        NSLocalizedFailureReasonErrorKey: "Could not add a video stream!"
+      ]
+    case .audioStreamAddingError:
+      return [
+        NSLocalizedFailureReasonErrorKey: "Could not add an audio stream!"
+      ]
+    case .videoOpeningError:
+      return [
+        NSLocalizedFailureReasonErrorKey: "Could not open the video!"
+      ]
+    case .audioOpeningError:
+      return [
+        NSLocalizedFailureReasonErrorKey: "Could not open the audio!"
+      ]
+    case .titleSettingError:
+      return [
+        NSLocalizedFailureReasonErrorKey: "Could not set the title!"
+      ]
+    case .outputStartingError:
+      return [
+        NSLocalizedFailureReasonErrorKey: "Could not start the output!"
+      ]
     }
   }
 }
@@ -188,6 +217,20 @@ class SampleHandler: RPBroadcastSampleHandler {
       2, sampleRate: spec.micAudioSampleRate, bitRate: spec.micAudioBitRate)
     if !addAudioStream2Result {
       finishBroadcastWithError(SampleHandlerError.audioStreamAddingError)
+      return
+    }
+
+    let setTitle1Result = writer.setTitle(1, value: "App")
+    if !setTitle1Result {
+      print(SampleHandlerError.titleSettingError)
+      finishBroadcastWithError(SampleHandlerError.titleSettingError)
+      return
+    }
+
+    let setTitle2Result = writer.setTitle(2, value: "Mic")
+    if !setTitle2Result {
+      print(SampleHandlerError.titleSettingError)
+      finishBroadcastWithError(SampleHandlerError.titleSettingError)
       return
     }
 

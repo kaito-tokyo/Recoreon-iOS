@@ -218,6 +218,12 @@ static void log_packet(const AVFormatContext *fmt_ctx, const AVPacket *pkt) {
   return true;
 }
 
+- (bool)setTitle:(long)index value:(const char *)value {
+  OutputStream *os = &outputStreams[index];
+  int ret = av_dict_set(&os->stream->metadata, "title", value, 0);
+  return ret >= 0;
+}
+
 - (bool)startOutput {
   const char *path = [_filename UTF8String];
 
