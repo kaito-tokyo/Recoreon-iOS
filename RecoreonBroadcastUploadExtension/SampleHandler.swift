@@ -368,6 +368,7 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   func stopRecording() {
+    appGroupsUserDefaults?.set(0, forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
     writer.finishStream(0)
     writer.finishStream(1)
     writer.finishStream(2)
