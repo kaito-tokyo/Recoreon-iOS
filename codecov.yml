@@ -8,6 +8,7 @@ component_management:
         target: "auto"
         branches:
           - "!main"
+        threshold: 20%
   individual_components:
     - component_id: "recoreon_common"
       name: "RecoreonCommon"
