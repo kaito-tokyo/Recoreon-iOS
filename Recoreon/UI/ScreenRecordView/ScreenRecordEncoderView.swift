@@ -11,6 +11,7 @@ struct ScreenRecordEncoderView: View {
   @State private var encodingPreset: EncodingPreset = .lowQuality
   @State private var encodingProgress: Double = 0.0
   @State private var encodedVideoEntry: EncodedVideoEntry?
+  @State private var isEncoding = false
 
   let encodeService: EncodeService
 
@@ -46,11 +47,15 @@ struct ScreenRecordEncoderView: View {
       Section(header: Text("Encoder operations")) {
         Button {
           Task {
+            isEncoding = true
             encodedVideoEntry = await encode()
+            encodingProgress = 1.0
+            isEncoding = false
           }
         } label: {
           Label("Encode", systemImage: "film")
         }
+        .disabled(isEncoding)
 
         ProgressView("Encoding progress", value: encodingProgress)
 
