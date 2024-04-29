@@ -63,7 +63,7 @@ final class RecoreonUITests: XCTestCase {
   func testRecordNoteEditorViewCanBeShown() throws {
     let app = launchWithUITestMode()
 
-    app.buttons.matching(identifier: "ScreenRecordEntry").element(boundBy: 0).tap()
+    app.buttons.matching(identifier: "ScreenRecordEntry").element(boundBy: 1).tap()
     app.buttons.matching(identifier: "RecordNoteEntryButton").element(boundBy: 0).tap()
     XCTAssert(app.staticTexts["Record01-1.txt"].waitForExistence(timeout: 10))
   }
