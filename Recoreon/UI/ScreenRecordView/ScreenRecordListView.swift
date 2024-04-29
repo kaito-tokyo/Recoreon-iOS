@@ -213,8 +213,10 @@ struct ScreenRecordListView: View {
           }
         }
 
-        let completedScreenRecordEntries = getCompletedScreenRecordEntries(
-          ongoingScreenRecordEntry: ongoingScreenRecordEntry)
+        let completedScreenRecordEntries = Array(
+          getCompletedScreenRecordEntries(
+            ongoingScreenRecordEntry: ongoingScreenRecordEntry
+          ).reversed())
         screenRecordList(screenRecordEntries: completedScreenRecordEntries)
       }
 
