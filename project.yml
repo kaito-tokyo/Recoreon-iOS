@@ -59,6 +59,7 @@ targets:
       - "Recoreon"
     settings:
       DEVELOPMENT_ASSET_PATHS: '"Recoreon/Preview Content"'
+      ENABLE_PREVIEWS: true
     dependencies:
       - package: "FFmpegKit"
       - target: "RecoreonCommon"
