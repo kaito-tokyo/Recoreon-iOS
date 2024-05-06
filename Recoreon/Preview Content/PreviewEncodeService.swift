@@ -1,3 +1,4 @@
+import Foundation
 import RecoreonCommon
 
 struct PreviewEncodeService: EncodeService {

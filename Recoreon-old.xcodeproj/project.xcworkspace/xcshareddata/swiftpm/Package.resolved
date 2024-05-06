@@ -1,5 +1,4 @@
 {
-  "originHash" : "8741862eef32bb20765cb7c49226ada77f94692e208bd29289c5ab93debd5f59",
   "pins" : [
     {
       "identity" : "ffmpeg-kit-spm",
@@ -11,5 +10,5 @@
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }

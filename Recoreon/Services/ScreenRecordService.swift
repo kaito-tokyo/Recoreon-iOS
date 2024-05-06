@@ -1,3 +1,5 @@
+import Foundation
+
 protocol ScreenRecordService {
   func listScreenRecordEntries() -> [ScreenRecordEntry]
   func remuxPreviewVideo(screenRecordEntry: ScreenRecordEntry) async -> URL?

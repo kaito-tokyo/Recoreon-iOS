@@ -7,129 +7,88 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		220DBE5B2BA3661400A903ED /* EncodedVideoEntryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220DBE5A2BA3661400A903ED /* EncodedVideoEntryTest.swift */; };
-		22183B492B9100E9004D6FAD /* RecordNoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22183B482B9100E9004D6FAD /* RecordNoteStore.swift */; };
-		2232A1792B91F66300F646E3 /* RecordNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A1782B91F66300F646E3 /* RecordNoteService.swift */; };
-		2232A1802B9220A600F646E3 /* EncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A17F2B9220A600F646E3 /* EncodeService.swift */; };
-		2232A1822B9223D000F646E3 /* EncodedVideoEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A1812B9223D000F646E3 /* EncodedVideoEntry.swift */; };
-		2232A1842B92485900F646E3 /* PreviewEncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A1832B92485900F646E3 /* PreviewEncodeService.swift */; };
-		2232A1862B92557D00F646E3 /* RecordNoteEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A1852B92557D00F646E3 /* RecordNoteEditorView.swift */; };
-		2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */; };
-		2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */; };
-		2232A9532AFD469400330C23 /* RecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9522AFD469400330C23 /* RecorderView.swift */; };
-		2232A9552AFD46ED00330C23 /* ScreenRecordListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2232A9542AFD46ED00330C23 /* ScreenRecordListView.swift */; };
-		2232A95C2AFD80A200330C23 /* Preview01.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2232A95A2AFD80A200330C23 /* Preview01.mp4 */; };
-		223427A32B93920000F25052 /* RecoreonServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427A22B93920000F25052 /* RecoreonServices.swift */; };
-		223427A52B93934500F25052 /* PreviewRecoreonServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427A42B93934500F25052 /* PreviewRecoreonServices.swift */; };
-		223427A72B9393CF00F25052 /* DefaultRecoreonServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427A62B9393CF00F25052 /* DefaultRecoreonServices.swift */; };
-		223427A92B93944B00F25052 /* DefaultScreenRecordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427A82B93944B00F25052 /* DefaultScreenRecordService.swift */; };
-		223427AE2B93991E00F25052 /* DefaultRecordNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427AD2B93991E00F25052 /* DefaultRecordNoteService.swift */; };
-		223427B02B93996800F25052 /* DefaultEncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427AF2B93996800F25052 /* DefaultEncodeService.swift */; };
-		223427B82B94CC9A00F25052 /* Record01-summary.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223427B72B94CC9A00F25052 /* Record01-summary.txt */; };
-		223B05822B90C34700A16852 /* ScreenRecordPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B05812B90C34700A16852 /* ScreenRecordPreviewView.swift */; };
-		223B05862B90CC3400A16852 /* RecordNoteEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223B05852B90CC3400A16852 /* RecordNoteEntry.swift */; };
-		223B05892B90D5D800A16852 /* Record01-1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05872B90CD8700A16852 /* Record01-1.txt */; };
-		223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 223B05882B90CDA400A16852 /* Record01-2.txt */; };
-		22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */; };
-		224544772BACA8CE000724E0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 224544762BACA8CE000724E0 /* PrivacyInfo.xcprivacy */; };
-		224544782BACA8CE000724E0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 224544762BACA8CE000724E0 /* PrivacyInfo.xcprivacy */; };
-		224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
-		224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */; };
-		226A89852AFB1B7F00EBD2CA /* ScreenRecordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A89842AFB1B7F00EBD2CA /* ScreenRecordService.swift */; };
-		226A89922AFB30D900EBD2CA /* ScreenRecordEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226A89912AFB30D900EBD2CA /* ScreenRecordEntry.swift */; };
-		226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */; };
-		2284B93B2B94DE38008DF56F /* libRecoreonCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2284B9312B94DE21008DF56F /* libRecoreonCommon.a */; };
-		2284B93C2B94DE4C008DF56F /* RecoreonPathService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223427AA2B93953000F25052 /* RecoreonPathService.swift */; };
-		2284B93F2B94DE81008DF56F /* libRecoreonCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2284B9312B94DE21008DF56F /* libRecoreonCommon.a */; };
-		2284B9422B94E407008DF56F /* AppGroupsPreferenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2284B9412B94E407008DF56F /* AppGroupsPreferenceService.swift */; };
-		2284B9442B94E4F2008DF56F /* RecoreonCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2284B9432B94E4F2008DF56F /* RecoreonCommon.swift */; };
-		22966A212AFD9ED40080324D /* ScreenRecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A202AFD9ED40080324D /* ScreenRecordDetailView.swift */; };
-		22966A232AFE29660080324D /* Record01.mkv in Resources */ = {isa = PBXBuildFile; fileRef = 22966A222AFE29660080324D /* Record01.mkv */; };
-		22966A282AFE50B10080324D /* ScreenRecordEncoderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A272AFE50B10080324D /* ScreenRecordEncoderView.swift */; };
-		22966A2E2AFE756F0080324D /* ScreenRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A2D2AFE756F0080324D /* ScreenRecordView.swift */; };
-		22966A332AFE8D1B0080324D /* ScreenRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22966A322AFE8D1B0080324D /* ScreenRecordStore.swift */; };
-		22AA3D912B9567C700C64E7E /* Preview02.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 22AA3D8F2B9567C700C64E7E /* Preview02.mp4 */; };
-		22AAC7F32B90B7B500078129 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 22AAC7F22B90B7B500078129 /* Localizable.xcstrings */; };
-		22C148D62B98D8C6005BE7F8 /* Record02.mkv in Resources */ = {isa = PBXBuildFile; fileRef = 22C148D52B98D8C6005BE7F8 /* Record02.mkv */; };
-		22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */; };
-		22C18AF12AF2B08C00C41B49 /* BroadcastSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C18AF02AF2B08C00C41B49 /* BroadcastSetupViewController.swift */; };
-		22C18AF52AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 22C18AEC2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		22C18AF82AF2B08C00C41B49 /* RecoreonBroadcastUploadExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CCFA2AF240B30039750A /* RecoreonApp.swift */; };
-		22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CCFC2AF240B30039750A /* ContentView.swift */; };
-		22C3CCFF2AF240B30039750A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22C3CCFE2AF240B30039750A /* Assets.xcassets */; };
-		22C3CD022AF240B30039750A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22C3CD012AF240B30039750A /* Preview Assets.xcassets */; };
-		22C3CD0C2AF240B40039750A /* RecoreonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CD0B2AF240B40039750A /* RecoreonTests.swift */; };
-		22C3CD162AF240B40039750A /* RecoreonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CD152AF240B40039750A /* RecoreonUITests.swift */; };
-		22C3CD182AF240B40039750A /* RecoreonUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C3CD172AF240B40039750A /* RecoreonUITestsLaunchTests.swift */; };
-		22F103CF2B8F212600F192E6 /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 22F103CE2B8F212600F192E6 /* FFmpegKit */; };
-		22F103D22B8F22C900F192E6 /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 22F103D12B8F22C900F192E6 /* FFmpegKit */; };
-		22F103D82B8F2CF400F192E6 /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 22F103D72B8F2CF400F192E6 /* FFmpegKit */; };
+		0667AE776C9CFFE02334ECE9 /* ScreenRecordEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570CA372240DFA6610B6F578 /* ScreenRecordEntry.swift */; };
+		18ACBD823C361BF9AD031594 /* EncodingPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217632B215FB41C364C72743 /* EncodingPreset.swift */; };
+		18B2BE17DC53BA02655117B2 /* DefaultEncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF6E9724BC6C777A14CA704 /* DefaultEncodeService.swift */; };
+		19D1C5F22A06DD5EDDF00830 /* ScreenRecordEncoderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937997E9584456EC28795E84 /* ScreenRecordEncoderView.swift */; };
+		1E37E65B9BDCC90BCB55CBD6 /* ScreenRecordDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66546597F0ACCD776AA3BDEB /* ScreenRecordDetailView.swift */; };
+		1EEF5AB3F7531FD606EBAE60 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208C8B3A9610B034791D7196 /* SampleHandler.swift */; };
+		1FDCB165F74C768879385B86 /* Record01-1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0C5CD3A779AB2F0856B69FB1 /* Record01-1.txt */; };
+		23E38DE79073F7DF32EC0E44 /* Record01-2.txt in Resources */ = {isa = PBXBuildFile; fileRef = FE34045CA4713AEBC0B28471 /* Record01-2.txt */; };
+		24AE38192E8259AB0B0A9D20 /* EncodedVideoEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89449BA6A4847D241D4C6BC /* EncodedVideoEntry.swift */; };
+		37F16DD56CF9FF88F49F1642 /* ScreenRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7A6B4BC5F6AA631040872F /* ScreenRecordStore.swift */; };
+		3E4736BB3C4A8F2297F9C06D /* EncodedVideoCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D19B2CBC1C6528E2C5C670E /* EncodedVideoCollection.swift */; };
+		42B1C9C44C31AAD2B954423B /* RecoreonBroadcastPickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8D7E38019E981F9CEC5109 /* RecoreonBroadcastPickerRepresentable.swift */; };
+		48DC6768993E75D9D5CE7C46 /* AppGroupsPreferenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55CB96FA2BED56044727AC9D /* AppGroupsPreferenceService.swift */; };
+		4AAF7E5CD3AE5055F2919ADE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A8CDE419B8A50BF498F1B958 /* Assets.xcassets */; };
+		5C7E86E3433C0BB2DC81FB1B /* RecordNoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63524FE03906FCFE80CE3F5F /* RecordNoteStore.swift */; };
+		611D9203945496BACFA3875F /* Record01.mkv in Resources */ = {isa = PBXBuildFile; fileRef = 71397CBB30E8E8FE57F094ED /* Record01.mkv */; };
+		6443D0D2F77C3CA0625CEEDB /* RecoreonBroadcastUploadExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EFC761EA64987D94507E7F88 /* RecoreonBroadcastUploadExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6474E4B6CAD478F2E97030C0 /* RecordNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5031979D8BE5AB3E8EF46E91 /* RecordNoteService.swift */; };
+		65193E9BAF14CDEFD8DFD384 /* PreviewRecoreonServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E54C48F21E0C83BEFF35C6C /* PreviewRecoreonServices.swift */; };
+		69C4F41E225205B57295F99F /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 78CAB5C0AEAC23B51D8D6932 /* FFmpegKit */; };
+		7380AD79C6709695BB803BE2 /* libRecoreonCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 952DB69D2AAC4414A21438E3 /* libRecoreonCommon.a */; };
+		7AF104883C21A7FC87CF77AB /* PixelBufferExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8738BD3AD61CE02ED6348AC9 /* PixelBufferExtractor.swift */; };
+		80234D6A9402B7E1B2F0E540 /* RecordNoteEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6737AF501F4404DAC63E3D4 /* RecordNoteEditorView.swift */; };
+		84463A303B73D08A66B48B02 /* RecordNoteEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B831D58B0513C8FBFBC723 /* RecordNoteEntry.swift */; };
+		85DD12CCBFB78BB0183FF591 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912710A0B35FD846B8AB8C72 /* ContentView.swift */; };
+		8BFB6BFE4D7F5EB371413746 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E6586719E1580CAFD4935D46 /* Preview Assets.xcassets */; };
+		8F97B4B97327058A640167D8 /* RecoreonPathService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B03C7227F56619CC71E794 /* RecoreonPathService.swift */; };
+		98A7FAA9D0BF727BE71D3262 /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = ABAE020C9A853DDAA1AFF7B6 /* FFmpegKit */; };
+		98F95BC4A5C53E363965C3EF /* DefaultRecoreonServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF485F72C2CA9DA0D1A5E183 /* DefaultRecoreonServices.swift */; };
+		9D70A755E2EE1A45141C1BCA /* DefaultScreenRecordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8418765F5C3EF665CA08F887 /* DefaultScreenRecordService.swift */; };
+		A864305E4BF80677ECB325BC /* Record02.mkv in Resources */ = {isa = PBXBuildFile; fileRef = 067AA379139FCF5E1C4E8EB5 /* Record02.mkv */; };
+		AC98C8B8BE0EB518A01DA63C /* RecoreonServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6526EC8AF604E6689AF50C /* RecoreonServices.swift */; };
+		AD74F6FA737C539683D3C077 /* RecoreonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB95E9AD663D1D526ED074A0 /* RecoreonApp.swift */; };
+		B6B1D832EE43004FD8C2D035 /* PreviewEncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F6CD54DDB5FB9CDDD73642 /* PreviewEncodeService.swift */; };
+		B774EEAC43693E8B8C4894D7 /* RecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 783758CF494FCF6E44EA408D /* RecorderView.swift */; };
+		BD3398233549482BC6F9D9DA /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D8686D24F3B6213BF23C4822 /* Localizable.xcstrings */; };
+		C16A586739D752F79FD154CF /* Record01-summary.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4E5528BA021F34B5677227DA /* Record01-summary.txt */; };
+		C91225A8BC08FC4CC6130D4A /* ScreenRecordPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF7D82DA1EF67D8440A53CD /* ScreenRecordPreviewView.swift */; };
+		CC1C1956ACBC06EBEC03C256 /* ScreenRecordListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A5BF29ACF60DD487E439E6 /* ScreenRecordListView.swift */; };
+		CC7A0938C62C3FE2EF470052 /* RecoreonCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1353DB3986948098D83DCCA2 /* RecoreonCommon.swift */; };
+		D9E5D7CCAD34642DABD5FB23 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BAEF674F453692E96194B62 /* ScreenRecordWriter.m */; };
+		E143FA755480B0C9A840B4DD /* ScreenRecordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFABEDBF1C9B3064138C7547 /* ScreenRecordService.swift */; };
+		E28F09D97023599DABCC549D /* EncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EEBB33B98FF62F7CF5E313 /* EncodeService.swift */; };
+		ED4ECA6B9F74F25885160386 /* Preview01.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = CB9AAEB317EFAE939D975236 /* Preview01.mp4 */; };
+		EE94E46B4DC41D0F353E002F /* ScreenRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B50204BFB78A65BD8FD741 /* ScreenRecordView.swift */; };
+		F1E6AA8A4B9FD8368259C5A7 /* Preview02.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 44F3C7FD41C990B307581DC9 /* Preview02.mp4 */; };
+		F3074570E9833F76BE563CA7 /* DefaultRecordNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AC3F90F19E731E96E9C08 /* DefaultRecordNoteService.swift */; };
+		F308AACD440B99970B4430AB /* libRecoreonCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 952DB69D2AAC4414A21438E3 /* libRecoreonCommon.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		2284B9382B94DE31008DF56F /* PBXContainerItemProxy */ = {
+		3BA9F2FBEE59F3309467E3C1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 22C3CCEF2AF240B30039750A /* Project object */;
+			containerPortal = 271F96DA191CE45FF84DA3D1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 2284B9302B94DE21008DF56F;
+			remoteGlobalIDString = F3D1E7C63915C097C8E83327;
 			remoteInfo = RecoreonCommon;
 		};
-		2284B93D2B94DE7D008DF56F /* PBXContainerItemProxy */ = {
+		3C866D0B9AE2EEC3C2484C45 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 22C3CCEF2AF240B30039750A /* Project object */;
+			containerPortal = 271F96DA191CE45FF84DA3D1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 2284B9302B94DE21008DF56F;
-			remoteInfo = RecoreonCommon;
-		};
-		22C18AF32AF2B08C00C41B49 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 22C3CCEF2AF240B30039750A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 22C18AEB2AF2B08B00C41B49;
-			remoteInfo = RecoreonBroadcastUploadExtensionSetupUI;
-		};
-		22C18AF62AF2B08C00C41B49 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 22C3CCEF2AF240B30039750A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 22C18AE12AF2B08B00C41B49;
+			remoteGlobalIDString = 401A5F37DC984977A3008D93;
 			remoteInfo = RecoreonBroadcastUploadExtension;
 		};
-		22C3CD082AF240B40039750A /* PBXContainerItemProxy */ = {
+		9F913F7202A3BF78C915AD89 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 22C3CCEF2AF240B30039750A /* Project object */;
+			containerPortal = 271F96DA191CE45FF84DA3D1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 22C3CCF62AF240B30039750A;
-			remoteInfo = Recoreon;
-		};
-		22C3CD122AF240B40039750A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 22C3CCEF2AF240B30039750A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 22C3CCF62AF240B30039750A;
-			remoteInfo = Recoreon;
+			remoteGlobalIDString = F3D1E7C63915C097C8E83327;
+			remoteInfo = RecoreonCommon;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		2284B92F2B94DE21008DF56F /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C18AC92AF2AEAA00C41B49 /* Embed Foundation Extensions */ = {
+		E2F58C395C36B5B3809DA14B /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				22C18AF82AF2B08C00C41B49 /* RecoreonBroadcastUploadExtension.appex in Embed Foundation Extensions */,
-				22C18AF52AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex in Embed Foundation Extensions */,
+				6443D0D2F77C3CA0625CEEDB /* RecoreonBroadcastUploadExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -137,345 +96,282 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		220DBE5A2BA3661400A903ED /* EncodedVideoEntryTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoEntryTest.swift; sourceTree = "<group>"; };
-		22183B482B9100E9004D6FAD /* RecordNoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteStore.swift; sourceTree = "<group>"; };
-		2232A1782B91F66300F646E3 /* RecordNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteService.swift; sourceTree = "<group>"; };
-		2232A17F2B9220A600F646E3 /* EncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeService.swift; sourceTree = "<group>"; };
-		2232A1812B9223D000F646E3 /* EncodedVideoEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoEntry.swift; sourceTree = "<group>"; };
-		2232A1832B92485900F646E3 /* PreviewEncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEncodeService.swift; sourceTree = "<group>"; };
-		2232A1852B92557D00F646E3 /* RecordNoteEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEditorView.swift; sourceTree = "<group>"; };
-		2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonBroadcastPickerRepresentable.swift; sourceTree = "<group>"; };
-		2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PixelBufferExtractor.swift; path = RecoreonBroadcastUploadExtension/PixelBufferExtractor.swift; sourceTree = SOURCE_ROOT; };
-		2232A9522AFD469400330C23 /* RecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderView.swift; sourceTree = "<group>"; };
-		2232A9542AFD46ED00330C23 /* ScreenRecordListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordListView.swift; sourceTree = "<group>"; };
-		2232A95A2AFD80A200330C23 /* Preview01.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Preview01.mp4; sourceTree = "<group>"; };
-		223427A22B93920000F25052 /* RecoreonServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonServices.swift; sourceTree = "<group>"; };
-		223427A42B93934500F25052 /* PreviewRecoreonServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewRecoreonServices.swift; sourceTree = "<group>"; };
-		223427A62B9393CF00F25052 /* DefaultRecoreonServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRecoreonServices.swift; sourceTree = "<group>"; };
-		223427A82B93944B00F25052 /* DefaultScreenRecordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultScreenRecordService.swift; sourceTree = "<group>"; };
-		223427AA2B93953000F25052 /* RecoreonPathService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonPathService.swift; sourceTree = "<group>"; };
-		223427AD2B93991E00F25052 /* DefaultRecordNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRecordNoteService.swift; sourceTree = "<group>"; };
-		223427AF2B93996800F25052 /* DefaultEncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultEncodeService.swift; sourceTree = "<group>"; };
-		223427B72B94CC9A00F25052 /* Record01-summary.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-summary.txt"; sourceTree = "<group>"; };
-		223B05812B90C34700A16852 /* ScreenRecordPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordPreviewView.swift; sourceTree = "<group>"; };
-		223B05852B90CC3400A16852 /* RecordNoteEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEntry.swift; sourceTree = "<group>"; };
-		223B05872B90CD8700A16852 /* Record01-1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-1.txt"; sourceTree = "<group>"; };
-		223B05882B90CDA400A16852 /* Record01-2.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-2.txt"; sourceTree = "<group>"; };
-		22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriterTests.m; sourceTree = "<group>"; };
-		224544762BACA8CE000724E0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
-		224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenRecordWriter.h; sourceTree = "<group>"; };
-		22687E092BA21A14007104CD /* RecoreonTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = RecoreonTests.xctestplan; sourceTree = "<group>"; };
-		22687E0A2BA21A24007104CD /* RecoreonUITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = RecoreonUITests.xctestplan; sourceTree = "<group>"; };
-		226A89842AFB1B7F00EBD2CA /* ScreenRecordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordService.swift; sourceTree = "<group>"; };
-		226A89912AFB30D900EBD2CA /* ScreenRecordEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordEntry.swift; sourceTree = "<group>"; };
-		226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingPreset.swift; sourceTree = "<group>"; };
-		2284B9312B94DE21008DF56F /* libRecoreonCommon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRecoreonCommon.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		2284B9412B94E407008DF56F /* AppGroupsPreferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupsPreferenceService.swift; sourceTree = "<group>"; };
-		2284B9432B94E4F2008DF56F /* RecoreonCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonCommon.swift; sourceTree = "<group>"; };
-		22966A202AFD9ED40080324D /* ScreenRecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordDetailView.swift; sourceTree = "<group>"; };
-		22966A222AFE29660080324D /* Record01.mkv */ = {isa = PBXFileReference; lastKnownFileType = file; path = Record01.mkv; sourceTree = "<group>"; };
-		22966A272AFE50B10080324D /* ScreenRecordEncoderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordEncoderView.swift; sourceTree = "<group>"; };
-		22966A2D2AFE756F0080324D /* ScreenRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordView.swift; sourceTree = "<group>"; };
-		22966A322AFE8D1B0080324D /* ScreenRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordStore.swift; sourceTree = "<group>"; };
-		22AA3D8F2B9567C700C64E7E /* Preview02.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Preview02.mp4; sourceTree = "<group>"; };
-		22AAC7F22B90B7B500078129 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		22C148D52B98D8C6005BE7F8 /* Record02.mkv */ = {isa = PBXFileReference; lastKnownFileType = file; path = Record02.mkv; sourceTree = "<group>"; };
-		22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecoreonBroadcastUploadExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
-		22C18AE72AF2B08B00C41B49 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		22C18AEC2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecoreonBroadcastUploadExtensionSetupUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		22C18AF02AF2B08C00C41B49 /* BroadcastSetupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroadcastSetupViewController.swift; sourceTree = "<group>"; };
-		22C18AF22AF2B08C00C41B49 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		22C18B012AF2B17000C41B49 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonBroadcastUploadExtension-Bridging-Header.h"; sourceTree = "<group>"; };
-		22C18B052AF2C20800C41B49 /* Recoreon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Recoreon.entitlements; sourceTree = "<group>"; };
-		22C18B062AF2C23B00C41B49 /* RecoreonBroadcastUploadExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecoreonBroadcastUploadExtension.entitlements; sourceTree = "<group>"; };
-		22C18B072AF2CE1300C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecoreonBroadcastUploadExtensionSetupUI.entitlements; sourceTree = "<group>"; };
-		22C3CCF72AF240B30039750A /* Recoreon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Recoreon.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		22C3CCFA2AF240B30039750A /* RecoreonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonApp.swift; sourceTree = "<group>"; };
-		22C3CCFC2AF240B30039750A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		22C3CCFE2AF240B30039750A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		22C3CD012AF240B30039750A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		22C3CD072AF240B40039750A /* RecoreonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecoreonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		22C3CD0B2AF240B40039750A /* RecoreonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonTests.swift; sourceTree = "<group>"; };
-		22C3CD112AF240B40039750A /* RecoreonUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecoreonUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		22C3CD152AF240B40039750A /* RecoreonUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonUITests.swift; sourceTree = "<group>"; };
-		22C3CD172AF240B40039750A /* RecoreonUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		22C3CD242AF241140039750A /* Recoreon-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Recoreon-Bridging-Header.h"; sourceTree = "<group>"; };
-		22C3CD2A2AF28CED0039750A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		067AA379139FCF5E1C4E8EB5 /* Record02.mkv */ = {isa = PBXFileReference; lastKnownFileType = file; path = Record02.mkv; sourceTree = "<group>"; };
+		08EEBB33B98FF62F7CF5E313 /* EncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeService.swift; sourceTree = "<group>"; };
+		0C5CD3A779AB2F0856B69FB1 /* Record01-1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-1.txt"; sourceTree = "<group>"; };
+		1353DB3986948098D83DCCA2 /* RecoreonCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonCommon.swift; sourceTree = "<group>"; };
+		1D19B2CBC1C6528E2C5C670E /* EncodedVideoCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoCollection.swift; sourceTree = "<group>"; };
+		1E6526EC8AF604E6689AF50C /* RecoreonServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonServices.swift; sourceTree = "<group>"; };
+		208C8B3A9610B034791D7196 /* SampleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
+		217632B215FB41C364C72743 /* EncodingPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingPreset.swift; sourceTree = "<group>"; };
+		244B27134C6BCFE4934C51C1 /* RecoreonBroadcastUploadExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecoreonBroadcastUploadExtension.entitlements; sourceTree = "<group>"; };
+		280AC3F90F19E731E96E9C08 /* DefaultRecordNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRecordNoteService.swift; sourceTree = "<group>"; };
+		29F6CD54DDB5FB9CDDD73642 /* PreviewEncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEncodeService.swift; sourceTree = "<group>"; };
+		2A8D7E38019E981F9CEC5109 /* RecoreonBroadcastPickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonBroadcastPickerRepresentable.swift; sourceTree = "<group>"; };
+		2BAEF674F453692E96194B62 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
+		32B831D58B0513C8FBFBC723 /* RecordNoteEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEntry.swift; sourceTree = "<group>"; };
+		44F3C7FD41C990B307581DC9 /* Preview02.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Preview02.mp4; sourceTree = "<group>"; };
+		4E5528BA021F34B5677227DA /* Record01-summary.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-summary.txt"; sourceTree = "<group>"; };
+		5031979D8BE5AB3E8EF46E91 /* RecordNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteService.swift; sourceTree = "<group>"; };
+		55CB96FA2BED56044727AC9D /* AppGroupsPreferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupsPreferenceService.swift; sourceTree = "<group>"; };
+		570CA372240DFA6610B6F578 /* ScreenRecordEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordEntry.swift; sourceTree = "<group>"; };
+		63524FE03906FCFE80CE3F5F /* RecordNoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteStore.swift; sourceTree = "<group>"; };
+		65BC2C475961434B43F6CEDC /* Recoreon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Recoreon.entitlements; sourceTree = "<group>"; };
+		66546597F0ACCD776AA3BDEB /* ScreenRecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordDetailView.swift; sourceTree = "<group>"; };
+		71397CBB30E8E8FE57F094ED /* Record01.mkv */ = {isa = PBXFileReference; lastKnownFileType = file; path = Record01.mkv; sourceTree = "<group>"; };
+		7296F2F56CA7C704EFBEA08C /* Recoreon-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Recoreon-Bridging-Header.h"; sourceTree = "<group>"; };
+		783758CF494FCF6E44EA408D /* RecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderView.swift; sourceTree = "<group>"; };
+		810AC07CAE0BB6BE3C14F066 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonBroadcastUploadExtension-Bridging-Header.h"; sourceTree = "<group>"; };
+		8418765F5C3EF665CA08F887 /* DefaultScreenRecordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultScreenRecordService.swift; sourceTree = "<group>"; };
+		86E420DE76BFEF9CA7521C8C /* ScreenRecordWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenRecordWriter.h; sourceTree = "<group>"; };
+		8738BD3AD61CE02ED6348AC9 /* PixelBufferExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelBufferExtractor.swift; sourceTree = "<group>"; };
+		883D6818260DF1FC80D87198 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		912710A0B35FD846B8AB8C72 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		937997E9584456EC28795E84 /* ScreenRecordEncoderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordEncoderView.swift; sourceTree = "<group>"; };
+		952DB69D2AAC4414A21438E3 /* libRecoreonCommon.a */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRecoreonCommon.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		96B03C7227F56619CC71E794 /* RecoreonPathService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonPathService.swift; sourceTree = "<group>"; };
+		9E54C48F21E0C83BEFF35C6C /* PreviewRecoreonServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewRecoreonServices.swift; sourceTree = "<group>"; };
+		A6737AF501F4404DAC63E3D4 /* RecordNoteEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEditorView.swift; sourceTree = "<group>"; };
+		A8CDE419B8A50BF498F1B958 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AEE9FEA4869C982176FF8F50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		AF485F72C2CA9DA0D1A5E183 /* DefaultRecoreonServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRecoreonServices.swift; sourceTree = "<group>"; };
+		B6EE6BAFF1D4255419932FBC /* Recoreon.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Recoreon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7A5BF29ACF60DD487E439E6 /* ScreenRecordListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordListView.swift; sourceTree = "<group>"; };
+		C6B50204BFB78A65BD8FD741 /* ScreenRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordView.swift; sourceTree = "<group>"; };
+		CB9AAEB317EFAE939D975236 /* Preview01.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Preview01.mp4; sourceTree = "<group>"; };
+		CBF6E9724BC6C777A14CA704 /* DefaultEncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultEncodeService.swift; sourceTree = "<group>"; };
+		D8686D24F3B6213BF23C4822 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		DF7A6B4BC5F6AA631040872F /* ScreenRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordStore.swift; sourceTree = "<group>"; };
+		DFF7D82DA1EF67D8440A53CD /* ScreenRecordPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordPreviewView.swift; sourceTree = "<group>"; };
+		E6586719E1580CAFD4935D46 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E89449BA6A4847D241D4C6BC /* EncodedVideoEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoEntry.swift; sourceTree = "<group>"; };
+		EB95E9AD663D1D526ED074A0 /* RecoreonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonApp.swift; sourceTree = "<group>"; };
+		EFABEDBF1C9B3064138C7547 /* ScreenRecordService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordService.swift; sourceTree = "<group>"; };
+		EFC761EA64987D94507E7F88 /* RecoreonBroadcastUploadExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = RecoreonBroadcastUploadExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FE34045CA4713AEBC0B28471 /* Record01-2.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-2.txt"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		2284B92E2B94DE21008DF56F /* Frameworks */ = {
+		5E7E7B0E17FE10E47091D8F6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7380AD79C6709695BB803BE2 /* libRecoreonCommon.a in Frameworks */,
+				69C4F41E225205B57295F99F /* FFmpegKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		22C18ADF2AF2B08B00C41B49 /* Frameworks */ = {
+		9A5EF5E589023E4159392B85 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22F103D22B8F22C900F192E6 /* FFmpegKit in Frameworks */,
-				2284B93B2B94DE38008DF56F /* libRecoreonCommon.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C18AE92AF2B08B00C41B49 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C3CCF42AF240B30039750A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				22F103CF2B8F212600F192E6 /* FFmpegKit in Frameworks */,
-				2284B93F2B94DE81008DF56F /* libRecoreonCommon.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C3CD042AF240B40039750A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				22F103D82B8F2CF400F192E6 /* FFmpegKit in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C3CD0E2AF240B40039750A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				98A7FAA9D0BF727BE71D3262 /* FFmpegKit in Frameworks */,
+				F308AACD440B99970B4430AB /* libRecoreonCommon.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		220DBE592BA365FA00A903ED /* Models */ = {
+		04F17121E7E5B9FA41A640E4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				220DBE5A2BA3661400A903ED /* EncodedVideoEntryTest.swift */,
+				1D19B2CBC1C6528E2C5C670E /* EncodedVideoCollection.swift */,
+				E89449BA6A4847D241D4C6BC /* EncodedVideoEntry.swift */,
+				217632B215FB41C364C72743 /* EncodingPreset.swift */,
+				32B831D58B0513C8FBFBC723 /* RecordNoteEntry.swift */,
+				570CA372240DFA6610B6F578 /* ScreenRecordEntry.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		223B05782B90BC9B00A16852 /* UI */ = {
+		1CBD56C6B434640B259A2C73 /* RecoreonBroadcastUploadExtension */ = {
 			isa = PBXGroup;
 			children = (
-				223B057A2B90BCBB00A16852 /* RecorderView */,
-				223B05802B90BD5D00A16852 /* ScreenRecordView */,
-				22C3CCFC2AF240B30039750A /* ContentView.swift */,
-				22C3CCFA2AF240B30039750A /* RecoreonApp.swift */,
-				2232A9482AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift */,
-			);
-			path = UI;
-			sourceTree = "<group>";
-		};
-		223B057A2B90BCBB00A16852 /* RecorderView */ = {
-			isa = PBXGroup;
-			children = (
-				2232A9522AFD469400330C23 /* RecorderView.swift */,
-			);
-			path = RecorderView;
-			sourceTree = "<group>";
-		};
-		223B057D2B90BD0500A16852 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				2232A1812B9223D000F646E3 /* EncodedVideoEntry.swift */,
-				226DA51A2AFCD43000F00B0D /* EncodingPreset.swift */,
-				223B05852B90CC3400A16852 /* RecordNoteEntry.swift */,
-				226A89912AFB30D900EBD2CA /* ScreenRecordEntry.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		223B057E2B90BD1D00A16852 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				223427AF2B93996800F25052 /* DefaultEncodeService.swift */,
-				223427AD2B93991E00F25052 /* DefaultRecordNoteService.swift */,
-				223427A62B9393CF00F25052 /* DefaultRecoreonServices.swift */,
-				223427A82B93944B00F25052 /* DefaultScreenRecordService.swift */,
-				2232A17F2B9220A600F646E3 /* EncodeService.swift */,
-				2232A1782B91F66300F646E3 /* RecordNoteService.swift */,
-				223427A22B93920000F25052 /* RecoreonServices.swift */,
-				226A89842AFB1B7F00EBD2CA /* ScreenRecordService.swift */,
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
-		223B057F2B90BD3700A16852 /* Stores */ = {
-			isa = PBXGroup;
-			children = (
-				22183B482B9100E9004D6FAD /* RecordNoteStore.swift */,
-				22966A322AFE8D1B0080324D /* ScreenRecordStore.swift */,
-			);
-			path = Stores;
-			sourceTree = "<group>";
-		};
-		223B05802B90BD5D00A16852 /* ScreenRecordView */ = {
-			isa = PBXGroup;
-			children = (
-				2232A1852B92557D00F646E3 /* RecordNoteEditorView.swift */,
-				22966A202AFD9ED40080324D /* ScreenRecordDetailView.swift */,
-				22966A272AFE50B10080324D /* ScreenRecordEncoderView.swift */,
-				2232A9542AFD46ED00330C23 /* ScreenRecordListView.swift */,
-				223B05812B90C34700A16852 /* ScreenRecordPreviewView.swift */,
-				22966A2D2AFE756F0080324D /* ScreenRecordView.swift */,
-			);
-			path = ScreenRecordView;
-			sourceTree = "<group>";
-		};
-		2284B9322B94DE21008DF56F /* RecoreonCommon */ = {
-			isa = PBXGroup;
-			children = (
-				2284B9412B94E407008DF56F /* AppGroupsPreferenceService.swift */,
-				2284B9432B94E4F2008DF56F /* RecoreonCommon.swift */,
-				223427AA2B93953000F25052 /* RecoreonPathService.swift */,
-			);
-			path = RecoreonCommon;
-			sourceTree = "<group>";
-		};
-		2284B93A2B94DE38008DF56F /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		22966A252AFE47110080324D /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				2232A94C2AFD3FEE00330C23 /* PixelBufferExtractor.swift */,
-				224E5D852B01F3B100E9C628 /* ScreenRecordWriter.h */,
-				224E5D832B01F3A400E9C628 /* ScreenRecordWriter.m */,
-			);
-			name = Services;
-			sourceTree = "<group>";
-		};
-		22C18AE42AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */ = {
-			isa = PBXGroup;
-			children = (
-				22966A252AFE47110080324D /* Services */,
-				22C18AE72AF2B08B00C41B49 /* Info.plist */,
-				22C18B012AF2B17000C41B49 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */,
-				22C18B062AF2C23B00C41B49 /* RecoreonBroadcastUploadExtension.entitlements */,
-				22C18AE52AF2B08B00C41B49 /* SampleHandler.swift */,
+				AEE9FEA4869C982176FF8F50 /* Info.plist */,
+				8738BD3AD61CE02ED6348AC9 /* PixelBufferExtractor.swift */,
+				810AC07CAE0BB6BE3C14F066 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */,
+				244B27134C6BCFE4934C51C1 /* RecoreonBroadcastUploadExtension.entitlements */,
+				208C8B3A9610B034791D7196 /* SampleHandler.swift */,
+				86E420DE76BFEF9CA7521C8C /* ScreenRecordWriter.h */,
+				2BAEF674F453692E96194B62 /* ScreenRecordWriter.m */,
 			);
 			path = RecoreonBroadcastUploadExtension;
 			sourceTree = "<group>";
 		};
-		22C18AEF2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI */ = {
+		1D14EC369A9C6357FCFCA4F4 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				22C18AF02AF2B08C00C41B49 /* BroadcastSetupViewController.swift */,
-				22C18AF22AF2B08C00C41B49 /* Info.plist */,
-				22C18B072AF2CE1300C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.entitlements */,
+				912710A0B35FD846B8AB8C72 /* ContentView.swift */,
+				EB95E9AD663D1D526ED074A0 /* RecoreonApp.swift */,
+				2A8D7E38019E981F9CEC5109 /* RecoreonBroadcastPickerRepresentable.swift */,
+				5BF418B49C2AF0B72F4F59F3 /* RecorderView */,
+				B9962E02953D79DB5A2A6B3A /* ScreenRecordView */,
 			);
-			path = RecoreonBroadcastUploadExtensionSetupUI;
+			path = UI;
 			sourceTree = "<group>";
 		};
-		22C3CCEE2AF240B30039750A = {
+		3A849BC6BA0A1E2B0395075B /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				224544762BACA8CE000724E0 /* PrivacyInfo.xcprivacy */,
-				22687E092BA21A14007104CD /* RecoreonTests.xctestplan */,
-				22687E0A2BA21A24007104CD /* RecoreonUITests.xctestplan */,
-				22C3CCF92AF240B30039750A /* Recoreon */,
-				22C3CD0A2AF240B40039750A /* RecoreonTests */,
-				22C3CD142AF240B40039750A /* RecoreonUITests */,
-				22C18AE42AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */,
-				22C18AEF2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI */,
-				2284B9322B94DE21008DF56F /* RecoreonCommon */,
-				22C3CCF82AF240B30039750A /* Products */,
-				2284B93A2B94DE38008DF56F /* Frameworks */,
+				CBF6E9724BC6C777A14CA704 /* DefaultEncodeService.swift */,
+				280AC3F90F19E731E96E9C08 /* DefaultRecordNoteService.swift */,
+				AF485F72C2CA9DA0D1A5E183 /* DefaultRecoreonServices.swift */,
+				8418765F5C3EF665CA08F887 /* DefaultScreenRecordService.swift */,
+				08EEBB33B98FF62F7CF5E313 /* EncodeService.swift */,
+				5031979D8BE5AB3E8EF46E91 /* RecordNoteService.swift */,
+				1E6526EC8AF604E6689AF50C /* RecoreonServices.swift */,
+				EFABEDBF1C9B3064138C7547 /* ScreenRecordService.swift */,
 			);
+			path = Services;
 			sourceTree = "<group>";
 		};
-		22C3CCF82AF240B30039750A /* Products */ = {
+		55C521DE4AD56134CBF7D245 /* RecoreonCommon */ = {
 			isa = PBXGroup;
 			children = (
-				22C3CCF72AF240B30039750A /* Recoreon.app */,
-				22C3CD072AF240B40039750A /* RecoreonTests.xctest */,
-				22C3CD112AF240B40039750A /* RecoreonUITests.xctest */,
-				22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */,
-				22C18AEC2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex */,
-				2284B9312B94DE21008DF56F /* libRecoreonCommon.a */,
+				55CB96FA2BED56044727AC9D /* AppGroupsPreferenceService.swift */,
+				1353DB3986948098D83DCCA2 /* RecoreonCommon.swift */,
+				96B03C7227F56619CC71E794 /* RecoreonPathService.swift */,
+			);
+			path = RecoreonCommon;
+			sourceTree = "<group>";
+		};
+		5BF418B49C2AF0B72F4F59F3 /* RecorderView */ = {
+			isa = PBXGroup;
+			children = (
+				783758CF494FCF6E44EA408D /* RecorderView.swift */,
+			);
+			path = RecorderView;
+			sourceTree = "<group>";
+		};
+		65BD859D1737AE14863FFC26 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				952DB69D2AAC4414A21438E3 /* libRecoreonCommon.a */,
+				B6EE6BAFF1D4255419932FBC /* Recoreon.app */,
+				EFC761EA64987D94507E7F88 /* RecoreonBroadcastUploadExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		22C3CCF92AF240B30039750A /* Recoreon */ = {
+		65CC6B4908B6B156E5AB3457 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				223B057D2B90BD0500A16852 /* Models */,
-				22C3CD002AF240B30039750A /* Preview Content */,
-				223B057E2B90BD1D00A16852 /* Services */,
-				223B057F2B90BD3700A16852 /* Stores */,
-				223B05782B90BC9B00A16852 /* UI */,
-				22C3CCFE2AF240B30039750A /* Assets.xcassets */,
-				22C3CD2A2AF28CED0039750A /* Info.plist */,
-				22AAC7F22B90B7B500078129 /* Localizable.xcstrings */,
-				22C3CD242AF241140039750A /* Recoreon-Bridging-Header.h */,
-				22C18B052AF2C20800C41B49 /* Recoreon.entitlements */,
-			);
-			path = Recoreon;
-			sourceTree = "<group>";
-		};
-		22C3CD002AF240B30039750A /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				22C3CD012AF240B30039750A /* Preview Assets.xcassets */,
-				2232A95A2AFD80A200330C23 /* Preview01.mp4 */,
-				22AA3D8F2B9567C700C64E7E /* Preview02.mp4 */,
-				2232A1832B92485900F646E3 /* PreviewEncodeService.swift */,
-				223427A42B93934500F25052 /* PreviewRecoreonServices.swift */,
-				223B05872B90CD8700A16852 /* Record01-1.txt */,
-				223B05882B90CDA400A16852 /* Record01-2.txt */,
-				223427B72B94CC9A00F25052 /* Record01-summary.txt */,
-				22966A222AFE29660080324D /* Record01.mkv */,
-				22C148D52B98D8C6005BE7F8 /* Record02.mkv */,
+				E6586719E1580CAFD4935D46 /* Preview Assets.xcassets */,
+				CB9AAEB317EFAE939D975236 /* Preview01.mp4 */,
+				44F3C7FD41C990B307581DC9 /* Preview02.mp4 */,
+				29F6CD54DDB5FB9CDDD73642 /* PreviewEncodeService.swift */,
+				9E54C48F21E0C83BEFF35C6C /* PreviewRecoreonServices.swift */,
+				0C5CD3A779AB2F0856B69FB1 /* Record01-1.txt */,
+				FE34045CA4713AEBC0B28471 /* Record01-2.txt */,
+				4E5528BA021F34B5677227DA /* Record01-summary.txt */,
+				71397CBB30E8E8FE57F094ED /* Record01.mkv */,
+				067AA379139FCF5E1C4E8EB5 /* Record02.mkv */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		22C3CD0A2AF240B40039750A /* RecoreonTests */ = {
+		75C3729785FA58B4F0BB8243 /* Recoreon */ = {
 			isa = PBXGroup;
 			children = (
-				220DBE592BA365FA00A903ED /* Models */,
-				22400E5D2B01509E00900660 /* RecoreonTests-Bridging-Header.h */,
-				22C3CD0B2AF240B40039750A /* RecoreonTests.swift */,
-				22400E5E2B01509E00900660 /* ScreenRecordWriterTests.m */,
+				A8CDE419B8A50BF498F1B958 /* Assets.xcassets */,
+				883D6818260DF1FC80D87198 /* Info.plist */,
+				D8686D24F3B6213BF23C4822 /* Localizable.xcstrings */,
+				7296F2F56CA7C704EFBEA08C /* Recoreon-Bridging-Header.h */,
+				65BC2C475961434B43F6CEDC /* Recoreon.entitlements */,
+				04F17121E7E5B9FA41A640E4 /* Models */,
+				65CC6B4908B6B156E5AB3457 /* Preview Content */,
+				3A849BC6BA0A1E2B0395075B /* Services */,
+				8F10AEAC19302F222EE5E8AF /* Stores */,
+				1D14EC369A9C6357FCFCA4F4 /* UI */,
 			);
-			path = RecoreonTests;
+			path = Recoreon;
 			sourceTree = "<group>";
 		};
-		22C3CD142AF240B40039750A /* RecoreonUITests */ = {
+		8F10AEAC19302F222EE5E8AF /* Stores */ = {
 			isa = PBXGroup;
 			children = (
-				22C3CD152AF240B40039750A /* RecoreonUITests.swift */,
-				22C3CD172AF240B40039750A /* RecoreonUITestsLaunchTests.swift */,
+				63524FE03906FCFE80CE3F5F /* RecordNoteStore.swift */,
+				DF7A6B4BC5F6AA631040872F /* ScreenRecordStore.swift */,
 			);
-			path = RecoreonUITests;
+			path = Stores;
+			sourceTree = "<group>";
+		};
+		B9962E02953D79DB5A2A6B3A /* ScreenRecordView */ = {
+			isa = PBXGroup;
+			children = (
+				A6737AF501F4404DAC63E3D4 /* RecordNoteEditorView.swift */,
+				66546597F0ACCD776AA3BDEB /* ScreenRecordDetailView.swift */,
+				937997E9584456EC28795E84 /* ScreenRecordEncoderView.swift */,
+				B7A5BF29ACF60DD487E439E6 /* ScreenRecordListView.swift */,
+				DFF7D82DA1EF67D8440A53CD /* ScreenRecordPreviewView.swift */,
+				C6B50204BFB78A65BD8FD741 /* ScreenRecordView.swift */,
+			);
+			path = ScreenRecordView;
+			sourceTree = "<group>";
+		};
+		F915810041F8FB8BA188AA87 = {
+			isa = PBXGroup;
+			children = (
+				75C3729785FA58B4F0BB8243 /* Recoreon */,
+				1CBD56C6B434640B259A2C73 /* RecoreonBroadcastUploadExtension */,
+				55C521DE4AD56134CBF7D245 /* RecoreonCommon */,
+				65BD859D1737AE14863FFC26 /* Products */,
+			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2284B9302B94DE21008DF56F /* RecoreonCommon */ = {
+		401A5F37DC984977A3008D93 /* RecoreonBroadcastUploadExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2284B9372B94DE21008DF56F /* Build configuration list for PBXNativeTarget "RecoreonCommon" */;
+			buildConfigurationList = B30BA0916C96C6A219F8C8A5 /* Build configuration list for PBXNativeTarget "RecoreonBroadcastUploadExtension" */;
 			buildPhases = (
-				2284B92D2B94DE21008DF56F /* Sources */,
-				2284B92E2B94DE21008DF56F /* Frameworks */,
-				2284B92F2B94DE21008DF56F /* CopyFiles */,
+				09E8ABB84A2DC2653A05A285 /* Sources */,
+				5E7E7B0E17FE10E47091D8F6 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0CE38F55F0E7D2B1FD464886 /* PBXTargetDependency */,
+			);
+			name = RecoreonBroadcastUploadExtension;
+			packageProductDependencies = (
+				78CAB5C0AEAC23B51D8D6932 /* FFmpegKit */,
+			);
+			productName = RecoreonBroadcastUploadExtension;
+			productReference = EFC761EA64987D94507E7F88 /* RecoreonBroadcastUploadExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		682D9FD735596B44E1893DE4 /* Recoreon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 189DE011213BD6ADFF47912F /* Build configuration list for PBXNativeTarget "Recoreon" */;
+			buildPhases = (
+				1D7C5F6AF62A06EEEC7893E4 /* Sources */,
+				A639AB7B5C39F6341A7B3665 /* Resources */,
+				9A5EF5E589023E4159392B85 /* Frameworks */,
+				E2F58C395C36B5B3809DA14B /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				53D1953D64BF6C90AE961FD8 /* PBXTargetDependency */,
+				66C8DD22F1F26ED9F593E561 /* PBXTargetDependency */,
+			);
+			name = Recoreon;
+			packageProductDependencies = (
+				ABAE020C9A853DDAA1AFF7B6 /* FFmpegKit */,
+			);
+			productName = Recoreon;
+			productReference = B6EE6BAFF1D4255419932FBC /* Recoreon.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F3D1E7C63915C097C8E83327 /* RecoreonCommon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D305A3B55D1323F0598F268E /* Build configuration list for PBXNativeTarget "RecoreonCommon" */;
+			buildPhases = (
+				16FBEC13172E1B3B5B821719 /* Sources */,
+				D469E6A5FC04B262D830FD5E /* Copy Swift Objective-C Interface Header */,
 			);
 			buildRules = (
 			);
@@ -483,521 +379,192 @@
 			);
 			name = RecoreonCommon;
 			productName = RecoreonCommon;
-			productReference = 2284B9312B94DE21008DF56F /* libRecoreonCommon.a */;
+			productReference = 952DB69D2AAC4414A21438E3 /* libRecoreonCommon.a */;
 			productType = "com.apple.product-type.library.static";
-		};
-		22C18AE12AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 22C18AFC2AF2B08C00C41B49 /* Build configuration list for PBXNativeTarget "RecoreonBroadcastUploadExtension" */;
-			buildPhases = (
-				22C18ADE2AF2B08B00C41B49 /* Sources */,
-				22C18ADF2AF2B08B00C41B49 /* Frameworks */,
-				22C18AE02AF2B08B00C41B49 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				2284B9392B94DE31008DF56F /* PBXTargetDependency */,
-			);
-			name = RecoreonBroadcastUploadExtension;
-			packageProductDependencies = (
-				22F103D12B8F22C900F192E6 /* FFmpegKit */,
-			);
-			productName = RecoreonBroadcastUploadExtension;
-			productReference = 22C18AE22AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
-		22C18AEB2AF2B08B00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 22C18AF92AF2B08C00C41B49 /* Build configuration list for PBXNativeTarget "RecoreonBroadcastUploadExtensionSetupUI" */;
-			buildPhases = (
-				22C18AE82AF2B08B00C41B49 /* Sources */,
-				22C18AE92AF2B08B00C41B49 /* Frameworks */,
-				22C18AEA2AF2B08B00C41B49 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = RecoreonBroadcastUploadExtensionSetupUI;
-			productName = RecoreonBroadcastUploadExtensionSetupUI;
-			productReference = 22C18AEC2AF2B08C00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
-		22C3CCF62AF240B30039750A /* Recoreon */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 22C3CD1B2AF240B40039750A /* Build configuration list for PBXNativeTarget "Recoreon" */;
-			buildPhases = (
-				22C3CCF32AF240B30039750A /* Sources */,
-				22C3CCF42AF240B30039750A /* Frameworks */,
-				22C3CCF52AF240B30039750A /* Resources */,
-				22C18AC92AF2AEAA00C41B49 /* Embed Foundation Extensions */,
-				22BBF4EB2AFADDF00093AA57 /* Run Script */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				2284B93E2B94DE7D008DF56F /* PBXTargetDependency */,
-				22C18AF42AF2B08C00C41B49 /* PBXTargetDependency */,
-				22C18AF72AF2B08C00C41B49 /* PBXTargetDependency */,
-			);
-			name = Recoreon;
-			packageProductDependencies = (
-				22F103CE2B8F212600F192E6 /* FFmpegKit */,
-			);
-			productName = Recoreon;
-			productReference = 22C3CCF72AF240B30039750A /* Recoreon.app */;
-			productType = "com.apple.product-type.application";
-		};
-		22C3CD062AF240B40039750A /* RecoreonTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 22C3CD1E2AF240B40039750A /* Build configuration list for PBXNativeTarget "RecoreonTests" */;
-			buildPhases = (
-				22C3CD032AF240B40039750A /* Sources */,
-				22C3CD042AF240B40039750A /* Frameworks */,
-				22C3CD052AF240B40039750A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				22C3CD092AF240B40039750A /* PBXTargetDependency */,
-			);
-			name = RecoreonTests;
-			packageProductDependencies = (
-				22F103D72B8F2CF400F192E6 /* FFmpegKit */,
-			);
-			productName = RecoreonTests;
-			productReference = 22C3CD072AF240B40039750A /* RecoreonTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		22C3CD102AF240B40039750A /* RecoreonUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 22C3CD212AF240B40039750A /* Build configuration list for PBXNativeTarget "RecoreonUITests" */;
-			buildPhases = (
-				22C3CD0D2AF240B40039750A /* Sources */,
-				22C3CD0E2AF240B40039750A /* Frameworks */,
-				22C3CD0F2AF240B40039750A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				22C3CD132AF240B40039750A /* PBXTargetDependency */,
-			);
-			name = RecoreonUITests;
-			productName = RecoreonUITests;
-			productReference = 22C3CD112AF240B40039750A /* RecoreonUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		22C3CCEF2AF240B30039750A /* Project object */ = {
+		271F96DA191CE45FF84DA3D1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1520;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					2284B9302B94DE21008DF56F = {
-						CreatedOnToolsVersion = 15.2;
+					401A5F37DC984977A3008D93 = {
+						DevelopmentTeam = 4HMJS6J4MZ;
+						ProvisioningStyle = Automatic;
 					};
-					22C18AE12AF2B08B00C41B49 = {
-						CreatedOnToolsVersion = 15.0;
-						LastSwiftMigration = 1500;
+					682D9FD735596B44E1893DE4 = {
+						DevelopmentTeam = 4HMJS6J4MZ;
+						ProvisioningStyle = Automatic;
 					};
-					22C18AEB2AF2B08B00C41B49 = {
-						CreatedOnToolsVersion = 15.0;
-					};
-					22C3CCF62AF240B30039750A = {
-						CreatedOnToolsVersion = 15.0;
-						LastSwiftMigration = 1500;
-					};
-					22C3CD062AF240B40039750A = {
-						CreatedOnToolsVersion = 15.0;
-						LastSwiftMigration = 1500;
-						TestTargetID = 22C3CCF62AF240B30039750A;
-					};
-					22C3CD102AF240B40039750A = {
-						CreatedOnToolsVersion = 15.0;
-						TestTargetID = 22C3CCF62AF240B30039750A;
+					F3D1E7C63915C097C8E83327 = {
+						DevelopmentTeam = 4HMJS6J4MZ;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = 22C3CCF22AF240B30039750A /* Build configuration list for PBXProject "Recoreon" */;
+			buildConfigurationList = E236A210D12838219DFFBDD8 /* Build configuration list for PBXProject "Recoreon" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				en,
 				ja,
 			);
-			mainGroup = 22C3CCEE2AF240B30039750A;
+			mainGroup = F915810041F8FB8BA188AA87;
 			packageReferences = (
-				22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */,
+				D62949E0204524BE89E7A31C /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */,
 			);
-			productRefGroup = 22C3CCF82AF240B30039750A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				22C3CCF62AF240B30039750A /* Recoreon */,
-				22C3CD062AF240B40039750A /* RecoreonTests */,
-				22C3CD102AF240B40039750A /* RecoreonUITests */,
-				22C18AE12AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */,
-				22C18AEB2AF2B08B00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI */,
-				2284B9302B94DE21008DF56F /* RecoreonCommon */,
+				682D9FD735596B44E1893DE4 /* Recoreon */,
+				401A5F37DC984977A3008D93 /* RecoreonBroadcastUploadExtension */,
+				F3D1E7C63915C097C8E83327 /* RecoreonCommon */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		22C18AE02AF2B08B00C41B49 /* Resources */ = {
+		A639AB7B5C39F6341A7B3665 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				224544782BACA8CE000724E0 /* PrivacyInfo.xcprivacy in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C18AEA2AF2B08B00C41B49 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C3CCF52AF240B30039750A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				22C3CCFF2AF240B30039750A /* Assets.xcassets in Resources */,
-				22AAC7F32B90B7B500078129 /* Localizable.xcstrings in Resources */,
-				22C3CD022AF240B30039750A /* Preview Assets.xcassets in Resources */,
-				2232A95C2AFD80A200330C23 /* Preview01.mp4 in Resources */,
-				22AA3D912B9567C700C64E7E /* Preview02.mp4 in Resources */,
-				224544772BACA8CE000724E0 /* PrivacyInfo.xcprivacy in Resources */,
-				223B05892B90D5D800A16852 /* Record01-1.txt in Resources */,
-				223B058A2B90D5D800A16852 /* Record01-2.txt in Resources */,
-				223427B82B94CC9A00F25052 /* Record01-summary.txt in Resources */,
-				22966A232AFE29660080324D /* Record01.mkv in Resources */,
-				22C148D62B98D8C6005BE7F8 /* Record02.mkv in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C3CD052AF240B40039750A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C3CD0F2AF240B40039750A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				4AAF7E5CD3AE5055F2919ADE /* Assets.xcassets in Resources */,
+				BD3398233549482BC6F9D9DA /* Localizable.xcstrings in Resources */,
+				8BFB6BFE4D7F5EB371413746 /* Preview Assets.xcassets in Resources */,
+				ED4ECA6B9F74F25885160386 /* Preview01.mp4 in Resources */,
+				F1E6AA8A4B9FD8368259C5A7 /* Preview02.mp4 in Resources */,
+				1FDCB165F74C768879385B86 /* Record01-1.txt in Resources */,
+				23E38DE79073F7DF32EC0E44 /* Record01-2.txt in Resources */,
+				C16A586739D752F79FD154CF /* Record01-summary.txt in Resources */,
+				611D9203945496BACFA3875F /* Record01.mkv in Resources */,
+				A864305E4BF80677ECB325BC /* Record02.mkv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		22BBF4EB2AFADDF00093AA57 /* Run Script */ = {
+		D469E6A5FC04B262D830FD5E /* Copy Swift Objective-C Interface Header */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
+				"$(DERIVED_SOURCES_DIR)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
 			);
-			name = "Run Script";
-			outputFileListPaths = (
-			);
+			name = "Copy Swift Objective-C Interface Header";
 			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/include/$(PRODUCT_MODULE_NAME)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif command -v swiftlint > /dev/null\nthen\n  swiftlint\nfi\n";
+			shellScript = "ditto \"${SCRIPT_INPUT_FILE_0}\" \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		2284B92D2B94DE21008DF56F /* Sources */ = {
+		09E8ABB84A2DC2653A05A285 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2284B9422B94E407008DF56F /* AppGroupsPreferenceService.swift in Sources */,
-				2284B9442B94E4F2008DF56F /* RecoreonCommon.swift in Sources */,
-				2284B93C2B94DE4C008DF56F /* RecoreonPathService.swift in Sources */,
+				7AF104883C21A7FC87CF77AB /* PixelBufferExtractor.swift in Sources */,
+				1EEF5AB3F7531FD606EBAE60 /* SampleHandler.swift in Sources */,
+				D9E5D7CCAD34642DABD5FB23 /* ScreenRecordWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		22C18ADE2AF2B08B00C41B49 /* Sources */ = {
+		16FBEC13172E1B3B5B821719 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2232A94F2AFD3FEE00330C23 /* PixelBufferExtractor.swift in Sources */,
-				22C18AE62AF2B08B00C41B49 /* SampleHandler.swift in Sources */,
-				224E5D842B01F3A400E9C628 /* ScreenRecordWriter.m in Sources */,
+				48DC6768993E75D9D5CE7C46 /* AppGroupsPreferenceService.swift in Sources */,
+				CC7A0938C62C3FE2EF470052 /* RecoreonCommon.swift in Sources */,
+				8F97B4B97327058A640167D8 /* RecoreonPathService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		22C18AE82AF2B08B00C41B49 /* Sources */ = {
+		1D7C5F6AF62A06EEEC7893E4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22C18AF12AF2B08C00C41B49 /* BroadcastSetupViewController.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C3CCF32AF240B30039750A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				22C3CCFD2AF240B30039750A /* ContentView.swift in Sources */,
-				223427B02B93996800F25052 /* DefaultEncodeService.swift in Sources */,
-				223427AE2B93991E00F25052 /* DefaultRecordNoteService.swift in Sources */,
-				223427A72B9393CF00F25052 /* DefaultRecoreonServices.swift in Sources */,
-				223427A92B93944B00F25052 /* DefaultScreenRecordService.swift in Sources */,
-				2232A1822B9223D000F646E3 /* EncodedVideoEntry.swift in Sources */,
-				2232A1802B9220A600F646E3 /* EncodeService.swift in Sources */,
-				226DA51B2AFCD43000F00B0D /* EncodingPreset.swift in Sources */,
-				2232A1842B92485900F646E3 /* PreviewEncodeService.swift in Sources */,
-				223427A52B93934500F25052 /* PreviewRecoreonServices.swift in Sources */,
-				2232A9532AFD469400330C23 /* RecorderView.swift in Sources */,
-				2232A1862B92557D00F646E3 /* RecordNoteEditorView.swift in Sources */,
-				223B05862B90CC3400A16852 /* RecordNoteEntry.swift in Sources */,
-				2232A1792B91F66300F646E3 /* RecordNoteService.swift in Sources */,
-				22183B492B9100E9004D6FAD /* RecordNoteStore.swift in Sources */,
-				22C3CCFB2AF240B30039750A /* RecoreonApp.swift in Sources */,
-				2232A9492AFD273900330C23 /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
-				223427A32B93920000F25052 /* RecoreonServices.swift in Sources */,
-				22966A212AFD9ED40080324D /* ScreenRecordDetailView.swift in Sources */,
-				22966A282AFE50B10080324D /* ScreenRecordEncoderView.swift in Sources */,
-				226A89922AFB30D900EBD2CA /* ScreenRecordEntry.swift in Sources */,
-				2232A9552AFD46ED00330C23 /* ScreenRecordListView.swift in Sources */,
-				223B05822B90C34700A16852 /* ScreenRecordPreviewView.swift in Sources */,
-				226A89852AFB1B7F00EBD2CA /* ScreenRecordService.swift in Sources */,
-				22966A332AFE8D1B0080324D /* ScreenRecordStore.swift in Sources */,
-				22966A2E2AFE756F0080324D /* ScreenRecordView.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C3CD032AF240B40039750A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				220DBE5B2BA3661400A903ED /* EncodedVideoEntryTest.swift in Sources */,
-				22C3CD0C2AF240B40039750A /* RecoreonTests.swift in Sources */,
-				224E5D862B01F3C700E9C628 /* ScreenRecordWriter.m in Sources */,
-				22400E5F2B01509E00900660 /* ScreenRecordWriterTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C3CD0D2AF240B40039750A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				22C3CD162AF240B40039750A /* RecoreonUITests.swift in Sources */,
-				22C3CD182AF240B40039750A /* RecoreonUITestsLaunchTests.swift in Sources */,
+				85DD12CCBFB78BB0183FF591 /* ContentView.swift in Sources */,
+				18B2BE17DC53BA02655117B2 /* DefaultEncodeService.swift in Sources */,
+				F3074570E9833F76BE563CA7 /* DefaultRecordNoteService.swift in Sources */,
+				98F95BC4A5C53E363965C3EF /* DefaultRecoreonServices.swift in Sources */,
+				9D70A755E2EE1A45141C1BCA /* DefaultScreenRecordService.swift in Sources */,
+				E28F09D97023599DABCC549D /* EncodeService.swift in Sources */,
+				3E4736BB3C4A8F2297F9C06D /* EncodedVideoCollection.swift in Sources */,
+				24AE38192E8259AB0B0A9D20 /* EncodedVideoEntry.swift in Sources */,
+				18ACBD823C361BF9AD031594 /* EncodingPreset.swift in Sources */,
+				B6B1D832EE43004FD8C2D035 /* PreviewEncodeService.swift in Sources */,
+				65193E9BAF14CDEFD8DFD384 /* PreviewRecoreonServices.swift in Sources */,
+				80234D6A9402B7E1B2F0E540 /* RecordNoteEditorView.swift in Sources */,
+				84463A303B73D08A66B48B02 /* RecordNoteEntry.swift in Sources */,
+				6474E4B6CAD478F2E97030C0 /* RecordNoteService.swift in Sources */,
+				5C7E86E3433C0BB2DC81FB1B /* RecordNoteStore.swift in Sources */,
+				B774EEAC43693E8B8C4894D7 /* RecorderView.swift in Sources */,
+				AD74F6FA737C539683D3C077 /* RecoreonApp.swift in Sources */,
+				42B1C9C44C31AAD2B954423B /* RecoreonBroadcastPickerRepresentable.swift in Sources */,
+				AC98C8B8BE0EB518A01DA63C /* RecoreonServices.swift in Sources */,
+				1E37E65B9BDCC90BCB55CBD6 /* ScreenRecordDetailView.swift in Sources */,
+				19D1C5F22A06DD5EDDF00830 /* ScreenRecordEncoderView.swift in Sources */,
+				0667AE776C9CFFE02334ECE9 /* ScreenRecordEntry.swift in Sources */,
+				CC1C1956ACBC06EBEC03C256 /* ScreenRecordListView.swift in Sources */,
+				C91225A8BC08FC4CC6130D4A /* ScreenRecordPreviewView.swift in Sources */,
+				E143FA755480B0C9A840B4DD /* ScreenRecordService.swift in Sources */,
+				37F16DD56CF9FF88F49F1642 /* ScreenRecordStore.swift in Sources */,
+				EE94E46B4DC41D0F353E002F /* ScreenRecordView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		2284B9392B94DE31008DF56F /* PBXTargetDependency */ = {
+		0CE38F55F0E7D2B1FD464886 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2284B9302B94DE21008DF56F /* RecoreonCommon */;
-			targetProxy = 2284B9382B94DE31008DF56F /* PBXContainerItemProxy */;
+			target = F3D1E7C63915C097C8E83327 /* RecoreonCommon */;
+			targetProxy = 9F913F7202A3BF78C915AD89 /* PBXContainerItemProxy */;
 		};
-		2284B93E2B94DE7D008DF56F /* PBXTargetDependency */ = {
+		53D1953D64BF6C90AE961FD8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2284B9302B94DE21008DF56F /* RecoreonCommon */;
-			targetProxy = 2284B93D2B94DE7D008DF56F /* PBXContainerItemProxy */;
+			target = F3D1E7C63915C097C8E83327 /* RecoreonCommon */;
+			targetProxy = 3BA9F2FBEE59F3309467E3C1 /* PBXContainerItemProxy */;
 		};
-		22C18AF42AF2B08C00C41B49 /* PBXTargetDependency */ = {
+		66C8DD22F1F26ED9F593E561 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 22C18AEB2AF2B08B00C41B49 /* RecoreonBroadcastUploadExtensionSetupUI */;
-			targetProxy = 22C18AF32AF2B08C00C41B49 /* PBXContainerItemProxy */;
-		};
-		22C18AF72AF2B08C00C41B49 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 22C18AE12AF2B08B00C41B49 /* RecoreonBroadcastUploadExtension */;
-			targetProxy = 22C18AF62AF2B08C00C41B49 /* PBXContainerItemProxy */;
-		};
-		22C3CD092AF240B40039750A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 22C3CCF62AF240B30039750A /* Recoreon */;
-			targetProxy = 22C3CD082AF240B40039750A /* PBXContainerItemProxy */;
-		};
-		22C3CD132AF240B40039750A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 22C3CCF62AF240B30039750A /* Recoreon */;
-			targetProxy = 22C3CD122AF240B40039750A /* PBXContainerItemProxy */;
+			target = 401A5F37DC984977A3008D93 /* RecoreonBroadcastUploadExtension */;
+			targetProxy = 3C866D0B9AE2EEC3C2484C45 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		2284B9352B94DE21008DF56F /* Debug */ = {
+		121B2A522103CA40439F1502 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonCommon;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		2284B9362B94DE21008DF56F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		22C18AFA2AF2B08C00C41B49 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtensionSetupUI/RecoreonBroadcastUploadExtensionSetupUI.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RecoreonBroadcastUploadExtensionSetupUI/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = RecoreonBroadcastUploadExtensionSetupUI;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.Recoreon.RecoreonBroadcastUploadExtensionSetupUI;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		22C18AFB2AF2B08C00C41B49 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtensionSetupUI/RecoreonBroadcastUploadExtensionSetupUI.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RecoreonBroadcastUploadExtensionSetupUI/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = RecoreonBroadcastUploadExtensionSetupUI;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.Recoreon.RecoreonBroadcastUploadExtensionSetupUI;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		22C18AFD2AF2B08C00C41B49 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RecoreonBroadcastUploadExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Recoreon;
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app do not use a camera.";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		22C18AFE2AF2B08C00C41B49 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = RecoreonBroadcastUploadExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Recoreon;
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app do not use a camera.";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		22C3CD192AF240B40039750A /* Debug */ = {
+		22C24234D56C2B26CAC49425 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
@@ -1007,7 +574,7 @@
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -1016,25 +583,166 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		2E47ED64B7ECB1F7E0DB3E1B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension.entitlements;
+				INFOPLIST_FILE = RecoreonBroadcastUploadExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonBroadcastUploadExtension;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		66C99C3F8173617940CD69D1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonCommon;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6A1B5FF912FA1D390F292113 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Recoreon/Recoreon.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_ASSET_PATHS = "\"Recoreon/Preview Content\"";
+				INFOPLIST_FILE = Recoreon/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.Recoreon;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ABFCA6224618FB888A723485 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Recoreon/Recoreon.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_ASSET_PATHS = "\"Recoreon/Preview Content\"";
+				INFOPLIST_FILE = Recoreon/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.Recoreon;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E803B0CFF39916E517954F6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
+					"DEBUG=1",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -1043,301 +751,82 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
-		22C3CD1A2AF240B40039750A /* Release */ = {
+		F83175A3EC4A73777D06C136 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		22C3CD1C2AF240B40039750A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Recoreon/Recoreon.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Recoreon/Preview Content\"";
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Recoreon/Info.plist;
-				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app does not use a camera.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "This app adds a video of a screen record.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				CODE_SIGN_ENTITLEMENTS = RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension.entitlements;
+				INFOPLIST_FILE = RecoreonBroadcastUploadExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.Recoreon;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Recoreon/Recoreon-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		22C3CD1D2AF240B40039750A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Recoreon/Recoreon.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Recoreon/Preview Content\"";
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Recoreon/Info.plist;
-				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app does not use a camera.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "This app adds a video of a screen record.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_SEARCH_PATHS = (
+				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"@executable_path/Frameworks",
+					"-ObjC",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.Recoreon;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Recoreon/Recoreon-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonBroadcastUploadExtension;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		22C3CD1F2AF240B40039750A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "RecoreonTests/RecoreonTests-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Recoreon.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Recoreon";
-			};
-			name = Debug;
-		};
-		22C3CD202AF240B40039750A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "RecoreonTests/RecoreonTests-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Recoreon.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Recoreon";
-			};
-			name = Release;
-		};
-		22C3CD222AF240B40039750A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Recoreon;
-			};
-			name = Debug;
-		};
-		22C3CD232AF240B40039750A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4HMJS6J4MZ;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Recoreon;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2284B9372B94DE21008DF56F /* Build configuration list for PBXNativeTarget "RecoreonCommon" */ = {
+		189DE011213BD6ADFF47912F /* Build configuration list for PBXNativeTarget "Recoreon" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2284B9352B94DE21008DF56F /* Debug */,
-				2284B9362B94DE21008DF56F /* Release */,
+				6A1B5FF912FA1D390F292113 /* Debug */,
+				ABFCA6224618FB888A723485 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
-		22C18AF92AF2B08C00C41B49 /* Build configuration list for PBXNativeTarget "RecoreonBroadcastUploadExtensionSetupUI" */ = {
+		B30BA0916C96C6A219F8C8A5 /* Build configuration list for PBXNativeTarget "RecoreonBroadcastUploadExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				22C18AFA2AF2B08C00C41B49 /* Debug */,
-				22C18AFB2AF2B08C00C41B49 /* Release */,
+				2E47ED64B7ECB1F7E0DB3E1B /* Debug */,
+				F83175A3EC4A73777D06C136 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
-		22C18AFC2AF2B08C00C41B49 /* Build configuration list for PBXNativeTarget "RecoreonBroadcastUploadExtension" */ = {
+		D305A3B55D1323F0598F268E /* Build configuration list for PBXNativeTarget "RecoreonCommon" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				22C18AFD2AF2B08C00C41B49 /* Debug */,
-				22C18AFE2AF2B08C00C41B49 /* Release */,
+				66C99C3F8173617940CD69D1 /* Debug */,
+				121B2A522103CA40439F1502 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
-		22C3CCF22AF240B30039750A /* Build configuration list for PBXProject "Recoreon" */ = {
+		E236A210D12838219DFFBDD8 /* Build configuration list for PBXProject "Recoreon" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				22C3CD192AF240B40039750A /* Debug */,
-				22C3CD1A2AF240B40039750A /* Release */,
+				E803B0CFF39916E517954F6F /* Debug */,
+				22C24234D56C2B26CAC49425 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		22C3CD1B2AF240B40039750A /* Build configuration list for PBXNativeTarget "Recoreon" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				22C3CD1C2AF240B40039750A /* Debug */,
-				22C3CD1D2AF240B40039750A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		22C3CD1E2AF240B40039750A /* Build configuration list for PBXNativeTarget "RecoreonTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				22C3CD1F2AF240B40039750A /* Debug */,
-				22C3CD202AF240B40039750A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		22C3CD212AF240B40039750A /* Build configuration list for PBXNativeTarget "RecoreonUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				22C3CD222AF240B40039750A /* Debug */,
-				22C3CD232AF240B40039750A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */ = {
+		D62949E0204524BE89E7A31C /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kaito-tokyo/ffmpeg-kit-spm.git";
 			requirement = {
@@ -1348,22 +837,17 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		22F103CE2B8F212600F192E6 /* FFmpegKit */ = {
+		78CAB5C0AEAC23B51D8D6932 /* FFmpegKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
+			package = D62949E0204524BE89E7A31C /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
 			productName = FFmpegKit;
 		};
-		22F103D12B8F22C900F192E6 /* FFmpegKit */ = {
+		ABAE020C9A853DDAA1AFF7B6 /* FFmpegKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
-			productName = FFmpegKit;
-		};
-		22F103D72B8F2CF400F192E6 /* FFmpegKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 22F103CD2B8F212600F192E6 /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
+			package = D62949E0204524BE89E7A31C /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
 			productName = FFmpegKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 22C3CCEF2AF240B30039750A /* Project object */;
+	rootObject = 271F96DA191CE45FF84DA3D1 /* Project object */;
 }
