@@ -138,8 +138,10 @@ schemes:
     build:
       targets:
         Recoreon: "all"
-        RecoreonTests: "test"
-        RecoreonUITests: "test"
+        RecoreonTests:
+          - "test"
+        RecoreonUITests:
+          - "test"
     test:
       testPlans:
         - path: "RecoreonTests.xctestplan"
