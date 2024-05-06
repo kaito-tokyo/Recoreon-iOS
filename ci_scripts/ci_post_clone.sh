@@ -6,4 +6,4 @@ export HOMEBREW_NO_INSTALL_CLEANUP=1
 
 brew install xcodegen
 
-xcodegen generate
+( cd .. && xcodegen generate )
