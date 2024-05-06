@@ -2,7 +2,6 @@
 dirs=(
   Recoreon
   RecoreonBroadcastUploadExtension
-  RecoreonBroadcastUploadExtensionSetupUI
   RecoreonTests
   RecoreonUITests
 )
