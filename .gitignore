@@ -39,3 +39,8 @@ Pods/
 DerivedData/
 *.xctestproducts/
 *.coverage.txt
+Recoreon.xcodeproj/
+Recoreon/Info.plist
+RecoreonBroadcastUploadExtension/Info.plist
+RecoreonTests/Info.plist
+RecoreonUITests/Info.plist
