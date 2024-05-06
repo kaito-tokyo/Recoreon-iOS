@@ -37,15 +37,15 @@ targets:
     info:
       path: "RecoreonBroadcastUploadExtension/Info.plist"
       properties:
-        CFBundleIdentifier: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension"
-        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
-        CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: "Recoreon"
+        CFBundleIdentifier: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        NSCameraUsageDescription: "This app do not use a camera."
         NSExtension:
           NSExtensionPointIdentifier: "com.apple.broadcast-services-upload"
           NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).SampleHandler"
           RPBroadcastProcessMode: "RPBroadcastProcessModeSampleBuffer"
-        NSCameraUsageDescription: "This app do not use a camera."
     entitlements:
       path: "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension.entitlements"
       properties:
@@ -66,9 +66,22 @@ targets:
     info:
       path: "Recoreon/Info.plist"
       properties:
-        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         ITSAppUsesNonExemptEncryption: false
+        LSRequiresIPhoneOS: true
+        NSCameraUsageDescription: "This app do not use a camera."
+        UIApplicationSupportsIndirectInputEvents: true
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations~ipad:
+          - "UIInterfaceOrientationPortrait"
+          - "UIInterfaceOrientationPortraitUpsideDown"
+          - "UIInterfaceOrientationLandscapeLeft"
+          - "UIInterfaceOrientationLandscapeRight"
+        UISupportedInterfaceOrientations~iphone:
+          - "UIInterfaceOrientationPortrait"
+          - "UIInterfaceOrientationLandscapeLeft"
+          - "UIInterfaceOrientationLandscapeRight"
     entitlements:
       path: "Recoreon/Recoreon.entitlements"
       properties:
