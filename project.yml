@@ -15,6 +15,8 @@ settings:
   CLANG_ENABLE_MODULES: true
   CLANG_WARN_DOCUMENTATION_COMMENTS: false
   CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: false
+  GCC_GENERATE_TEST_COVERAGE_FILES: true
+  GCC_INSTRUMENT_PROGRAM_FLOW_ARCS: true
 
 packages:
   FFmpegKit:
@@ -105,6 +107,8 @@ targets:
     dependencies:
       - target: "Recoreon"
       - package: "FFmpegKit"
+    settings:
+      SWIFT_OBJC_BRIDGING_HEADER: "RecoreonTests/RecoreonTests-Bridging-Header.h"
     info:
       path: "RecoreonTests/Info.plist"
       properties:
