@@ -36,11 +36,20 @@ Temporary Items
 # CocoaPods
 Pods/
 
+
 DerivedData/
 *.xctestproducts/
 *.coverage.txt
-Recoreon.xcodeproj/
 Recoreon/Info.plist
 RecoreonBroadcastUploadExtension/Info.plist
 RecoreonTests/Info.plist
 RecoreonUITests/Info.plist
+
+Recoreon.xcodeproj/**
+!Recoreon.xcodeproj/project.xcworkspace
+Recoreon.xcodeproj/project.xcworkspace/*
+!Recoreon.xcodeproj/project.xcworkspace/xcshareddata
+Recoreon.xcodeproj/project.xcworkspace/xcshareddata/*
+!Recoreon.xcodeproj/project.xcworkspace/xcshareddata/swiftpm
+Recoreon.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/*
+!Recoreon.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved

@@ -1,0 +1,15 @@
+{
+  "originHash" : "8741862eef32bb20765cb7c49226ada77f94692e208bd29289c5ab93debd5f59",
+  "pins" : [
+    {
+      "identity" : "ffmpeg-kit-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kaito-tokyo/ffmpeg-kit-spm.git",
+      "state" : {
+        "revision" : "3f9c7b0968299cb49fca2d86e66a9e1fcc2f19f0",
+        "version" : "6.0.3"
+      }
+    }
+  ],
+  "version" : 3
+}
