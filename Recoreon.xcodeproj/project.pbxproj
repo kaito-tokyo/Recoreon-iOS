@@ -21,6 +21,7 @@
 		396FB836404A6F2F41E9D37A /* RecoreonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D206FE0FEFC159DFEB59ED9 /* RecoreonTests.swift */; };
 		3E4736BB3C4A8F2297F9C06D /* EncodedVideoCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D19B2CBC1C6528E2C5C670E /* EncodedVideoCollection.swift */; };
 		42B1C9C44C31AAD2B954423B /* RecoreonBroadcastPickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8D7E38019E981F9CEC5109 /* RecoreonBroadcastPickerRepresentable.swift */; };
+		42C00D90F320358C21D898DE /* RecoreonUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18801FCE3F6C6CB747760FE0 /* RecoreonUITestsLaunchTests.swift */; };
 		48DC6768993E75D9D5CE7C46 /* AppGroupsPreferenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55CB96FA2BED56044727AC9D /* AppGroupsPreferenceService.swift */; };
 		4AAF7E5CD3AE5055F2919ADE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A8CDE419B8A50BF498F1B958 /* Assets.xcassets */; };
 		5C630C80A33E6029FA79BEB7 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BAEF674F453692E96194B62 /* ScreenRecordWriter.m */; };
@@ -51,6 +52,7 @@
 		C91225A8BC08FC4CC6130D4A /* ScreenRecordPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFF7D82DA1EF67D8440A53CD /* ScreenRecordPreviewView.swift */; };
 		CC1C1956ACBC06EBEC03C256 /* ScreenRecordListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A5BF29ACF60DD487E439E6 /* ScreenRecordListView.swift */; };
 		CC7A0938C62C3FE2EF470052 /* RecoreonCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1353DB3986948098D83DCCA2 /* RecoreonCommon.swift */; };
+		D96C11D5E7624E919E805884 /* RecoreonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6EEE7E059DC2D4E1CD1A103 /* RecoreonUITests.swift */; };
 		D9E5D7CCAD34642DABD5FB23 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BAEF674F453692E96194B62 /* ScreenRecordWriter.m */; };
 		E143FA755480B0C9A840B4DD /* ScreenRecordService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFABEDBF1C9B3064138C7547 /* ScreenRecordService.swift */; };
 		E28F09D97023599DABCC549D /* EncodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EEBB33B98FF62F7CF5E313 /* EncodeService.swift */; };
@@ -91,6 +93,13 @@
 			remoteGlobalIDString = F3D1E7C63915C097C8E83327;
 			remoteInfo = RecoreonCommon;
 		};
+		CAE3140D46943185F2F1CEC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 271F96DA191CE45FF84DA3D1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 682D9FD735596B44E1893DE4;
+			remoteInfo = Recoreon;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -113,6 +122,8 @@
 		0C5CD3A779AB2F0856B69FB1 /* Record01-1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-1.txt"; sourceTree = "<group>"; };
 		1072C58A48B566D89749D463 /* EncodedVideoEntryTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoEntryTest.swift; sourceTree = "<group>"; };
 		1353DB3986948098D83DCCA2 /* RecoreonCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonCommon.swift; sourceTree = "<group>"; };
+		179685F359F781B21C6A1F66 /* RecoreonUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RecoreonUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		18801FCE3F6C6CB747760FE0 /* RecoreonUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		1D19B2CBC1C6528E2C5C670E /* EncodedVideoCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoCollection.swift; sourceTree = "<group>"; };
 		1E6526EC8AF604E6689AF50C /* RecoreonServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonServices.swift; sourceTree = "<group>"; };
 		208C8B3A9610B034791D7196 /* SampleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
@@ -129,6 +140,7 @@
 		5031979D8BE5AB3E8EF46E91 /* RecordNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteService.swift; sourceTree = "<group>"; };
 		55CB96FA2BED56044727AC9D /* AppGroupsPreferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupsPreferenceService.swift; sourceTree = "<group>"; };
 		570CA372240DFA6610B6F578 /* ScreenRecordEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordEntry.swift; sourceTree = "<group>"; };
+		5745F1DAF471718278B7EEFB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		608FF8CD834FA6386FBFC262 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		63524FE03906FCFE80CE3F5F /* RecordNoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteStore.swift; sourceTree = "<group>"; };
 		65BC2C475961434B43F6CEDC /* Recoreon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Recoreon.entitlements; sourceTree = "<group>"; };
@@ -150,6 +162,7 @@
 		98D82F222540023C98A43724 /* RecoreonTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		9E54C48F21E0C83BEFF35C6C /* PreviewRecoreonServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewRecoreonServices.swift; sourceTree = "<group>"; };
 		A6737AF501F4404DAC63E3D4 /* RecordNoteEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEditorView.swift; sourceTree = "<group>"; };
+		A6EEE7E059DC2D4E1CD1A103 /* RecoreonUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonUITests.swift; sourceTree = "<group>"; };
 		A8CDE419B8A50BF498F1B958 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AEE9FEA4869C982176FF8F50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AF485F72C2CA9DA0D1A5E183 /* DefaultRecoreonServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultRecoreonServices.swift; sourceTree = "<group>"; };
@@ -277,6 +290,7 @@
 				B6EE6BAFF1D4255419932FBC /* Recoreon.app */,
 				EFC761EA64987D94507E7F88 /* RecoreonBroadcastUploadExtension.appex */,
 				670887C9ADA38CF229DCDE42 /* RecoreonTests.xctest */,
+				179685F359F781B21C6A1F66 /* RecoreonUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -344,6 +358,16 @@
 			path = RecoreonTests;
 			sourceTree = "<group>";
 		};
+		B8701CDA3C3D45992071B9D3 /* RecoreonUITests */ = {
+			isa = PBXGroup;
+			children = (
+				5745F1DAF471718278B7EEFB /* Info.plist */,
+				A6EEE7E059DC2D4E1CD1A103 /* RecoreonUITests.swift */,
+				18801FCE3F6C6CB747760FE0 /* RecoreonUITestsLaunchTests.swift */,
+			);
+			path = RecoreonUITests;
+			sourceTree = "<group>";
+		};
 		B9962E02953D79DB5A2A6B3A /* ScreenRecordView */ = {
 			isa = PBXGroup;
 			children = (
@@ -364,6 +388,7 @@
 				1CBD56C6B434640B259A2C73 /* RecoreonBroadcastUploadExtension */,
 				55C521DE4AD56134CBF7D245 /* RecoreonCommon */,
 				9D0AEF43D8BE9C0EB4076B6D /* RecoreonTests */,
+				B8701CDA3C3D45992071B9D3 /* RecoreonUITests */,
 				65BD859D1737AE14863FFC26 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -413,6 +438,22 @@
 			productName = Recoreon;
 			productReference = B6EE6BAFF1D4255419932FBC /* Recoreon.app */;
 			productType = "com.apple.product-type.application";
+		};
+		71A4E81DBB3CC6AF23DE9932 /* RecoreonUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F956709179CAC75CDD204557 /* Build configuration list for PBXNativeTarget "RecoreonUITests" */;
+			buildPhases = (
+				F61C4960B1490C04B44DA1FC /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8BF6A205CD0FF18357470F5B /* PBXTargetDependency */,
+			);
+			name = RecoreonUITests;
+			productName = RecoreonUITests;
+			productReference = 179685F359F781B21C6A1F66 /* RecoreonUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		9EDF32C6584ACD28761B21DE /* RecoreonTests */ = {
 			isa = PBXNativeTarget;
@@ -467,6 +508,11 @@
 						DevelopmentTeam = 4HMJS6J4MZ;
 						ProvisioningStyle = Automatic;
 					};
+					71A4E81DBB3CC6AF23DE9932 = {
+						DevelopmentTeam = 4HMJS6J4MZ;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 682D9FD735596B44E1893DE4;
+					};
 					9EDF32C6584ACD28761B21DE = {
 						DevelopmentTeam = 4HMJS6J4MZ;
 						ProvisioningStyle = Automatic;
@@ -497,6 +543,7 @@
 				401A5F37DC984977A3008D93 /* RecoreonBroadcastUploadExtension */,
 				F3D1E7C63915C097C8E83327 /* RecoreonCommon */,
 				9EDF32C6584ACD28761B21DE /* RecoreonTests */,
+				71A4E81DBB3CC6AF23DE9932 /* RecoreonUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -606,6 +653,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F61C4960B1490C04B44DA1FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D96C11D5E7624E919E805884 /* RecoreonUITests.swift in Sources */,
+				42C00D90F320358C21D898DE /* RecoreonUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -623,6 +679,11 @@
 			isa = PBXTargetDependency;
 			target = 401A5F37DC984977A3008D93 /* RecoreonBroadcastUploadExtension */;
 			targetProxy = 3C866D0B9AE2EEC3C2484C45 /* PBXContainerItemProxy */;
+		};
+		8BF6A205CD0FF18357470F5B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 682D9FD735596B44E1893DE4 /* Recoreon */;
+			targetProxy = CAE3140D46943185F2F1CEC0 /* PBXContainerItemProxy */;
 		};
 		D4007042CB9D6955F063F081 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -802,6 +863,40 @@
 			};
 			name = Release;
 		};
+		BB601B4F7F2B0B106506726E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = RecoreonUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Recoreon;
+			};
+			name = Release;
+		};
+		CE3691F3BD130C92317B07F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = RecoreonUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Recoreon;
+			};
+			name = Debug;
+		};
 		D904DF02D3A8F587CF3130EE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -951,6 +1046,15 @@
 			buildConfigurations = (
 				E803B0CFF39916E517954F6F /* Debug */,
 				22C24234D56C2B26CAC49425 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F956709179CAC75CDD204557 /* Build configuration list for PBXNativeTarget "RecoreonUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE3691F3BD130C92317B07F6 /* Debug */,
+				BB601B4F7F2B0B106506726E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

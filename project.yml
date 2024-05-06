@@ -103,13 +103,28 @@ targets:
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
 
+  RecoreonUITests:
+    type: "bundle.ui-testing"
+    platform: "iOS"
+    sources:
+      - "RecoreonUITests"
+    dependencies:
+      - target: "Recoreon"
+    info:
+      path: "RecoreonUITests/Info.plist"
+      properties:
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+
 schemes:
   Recoreon:
     build:
       targets:
         Recoreon: "all"
         RecoreonTests: "test"
+        RecoreonUITests: "test"
     test:
       testPlans:
         - path: "RecoreonTests.xctestplan"
           defaultPlan: true
+        - path: "RecoreonUITests.xctestplan"
