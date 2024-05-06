@@ -87,3 +87,29 @@ targets:
       properties:
         com.apple.security.application-groups:
           - "group.com.github.umireon.Recoreon"
+
+  RecoreonTests:
+    type: "bundle.unit-test"
+    platform: "iOS"
+    sources:
+      - "RecoreonTests"
+      - path: "RecoreonBroadcastUploadExtension/ScreenRecordWriter.m"
+    dependencies:
+      - target: "Recoreon"
+      - package: "FFmpegKit"
+    info:
+      path: "RecoreonTests/Info.plist"
+      properties:
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+
+schemes:
+  Recoreon:
+    build:
+      targets:
+        Recoreon: "all"
+        RecoreonTests: "test"
+    test:
+      testPlans:
+        - path: "RecoreonTests.xctestplan"
+          defaultPlan: true

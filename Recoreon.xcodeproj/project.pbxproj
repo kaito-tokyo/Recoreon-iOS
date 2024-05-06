@@ -16,16 +16,20 @@
 		1FDCB165F74C768879385B86 /* Record01-1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0C5CD3A779AB2F0856B69FB1 /* Record01-1.txt */; };
 		23E38DE79073F7DF32EC0E44 /* Record01-2.txt in Resources */ = {isa = PBXBuildFile; fileRef = FE34045CA4713AEBC0B28471 /* Record01-2.txt */; };
 		24AE38192E8259AB0B0A9D20 /* EncodedVideoEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89449BA6A4847D241D4C6BC /* EncodedVideoEntry.swift */; };
+		31CE90B0241360721F306506 /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7758DFA463A4763261C3010A /* FFmpegKit */; };
 		37F16DD56CF9FF88F49F1642 /* ScreenRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF7A6B4BC5F6AA631040872F /* ScreenRecordStore.swift */; };
+		396FB836404A6F2F41E9D37A /* RecoreonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D206FE0FEFC159DFEB59ED9 /* RecoreonTests.swift */; };
 		3E4736BB3C4A8F2297F9C06D /* EncodedVideoCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D19B2CBC1C6528E2C5C670E /* EncodedVideoCollection.swift */; };
 		42B1C9C44C31AAD2B954423B /* RecoreonBroadcastPickerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8D7E38019E981F9CEC5109 /* RecoreonBroadcastPickerRepresentable.swift */; };
 		48DC6768993E75D9D5CE7C46 /* AppGroupsPreferenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55CB96FA2BED56044727AC9D /* AppGroupsPreferenceService.swift */; };
 		4AAF7E5CD3AE5055F2919ADE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A8CDE419B8A50BF498F1B958 /* Assets.xcassets */; };
+		5C630C80A33E6029FA79BEB7 /* ScreenRecordWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BAEF674F453692E96194B62 /* ScreenRecordWriter.m */; };
 		5C7E86E3433C0BB2DC81FB1B /* RecordNoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63524FE03906FCFE80CE3F5F /* RecordNoteStore.swift */; };
 		611D9203945496BACFA3875F /* Record01.mkv in Resources */ = {isa = PBXBuildFile; fileRef = 71397CBB30E8E8FE57F094ED /* Record01.mkv */; };
 		6443D0D2F77C3CA0625CEEDB /* RecoreonBroadcastUploadExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EFC761EA64987D94507E7F88 /* RecoreonBroadcastUploadExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6474E4B6CAD478F2E97030C0 /* RecordNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5031979D8BE5AB3E8EF46E91 /* RecordNoteService.swift */; };
 		65193E9BAF14CDEFD8DFD384 /* PreviewRecoreonServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E54C48F21E0C83BEFF35C6C /* PreviewRecoreonServices.swift */; };
+		68C531D27658A2D5676FED25 /* EncodedVideoEntryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1072C58A48B566D89749D463 /* EncodedVideoEntryTest.swift */; };
 		69C4F41E225205B57295F99F /* FFmpegKit in Frameworks */ = {isa = PBXBuildFile; productRef = 78CAB5C0AEAC23B51D8D6932 /* FFmpegKit */; };
 		7380AD79C6709695BB803BE2 /* libRecoreonCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 952DB69D2AAC4414A21438E3 /* libRecoreonCommon.a */; };
 		7AF104883C21A7FC87CF77AB /* PixelBufferExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8738BD3AD61CE02ED6348AC9 /* PixelBufferExtractor.swift */; };
@@ -55,6 +59,7 @@
 		F1E6AA8A4B9FD8368259C5A7 /* Preview02.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 44F3C7FD41C990B307581DC9 /* Preview02.mp4 */; };
 		F3074570E9833F76BE563CA7 /* DefaultRecordNoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280AC3F90F19E731E96E9C08 /* DefaultRecordNoteService.swift */; };
 		F308AACD440B99970B4430AB /* libRecoreonCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 952DB69D2AAC4414A21438E3 /* libRecoreonCommon.a */; };
+		FDE1FACA0D66799F9450500D /* ScreenRecordWriterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E6740BB9CD0593DBAAEAA82 /* ScreenRecordWriterTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +76,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 401A5F37DC984977A3008D93;
 			remoteInfo = RecoreonBroadcastUploadExtension;
+		};
+		4BE4DB7A92FFB5580E639562 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 271F96DA191CE45FF84DA3D1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 682D9FD735596B44E1893DE4;
+			remoteInfo = Recoreon;
 		};
 		9F913F7202A3BF78C915AD89 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -99,6 +111,7 @@
 		067AA379139FCF5E1C4E8EB5 /* Record02.mkv */ = {isa = PBXFileReference; path = Record02.mkv; sourceTree = "<group>"; };
 		08EEBB33B98FF62F7CF5E313 /* EncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeService.swift; sourceTree = "<group>"; };
 		0C5CD3A779AB2F0856B69FB1 /* Record01-1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-1.txt"; sourceTree = "<group>"; };
+		1072C58A48B566D89749D463 /* EncodedVideoEntryTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoEntryTest.swift; sourceTree = "<group>"; };
 		1353DB3986948098D83DCCA2 /* RecoreonCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonCommon.swift; sourceTree = "<group>"; };
 		1D19B2CBC1C6528E2C5C670E /* EncodedVideoCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodedVideoCollection.swift; sourceTree = "<group>"; };
 		1E6526EC8AF604E6689AF50C /* RecoreonServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonServices.swift; sourceTree = "<group>"; };
@@ -110,14 +123,18 @@
 		2A8D7E38019E981F9CEC5109 /* RecoreonBroadcastPickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonBroadcastPickerRepresentable.swift; sourceTree = "<group>"; };
 		2BAEF674F453692E96194B62 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
 		32B831D58B0513C8FBFBC723 /* RecordNoteEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEntry.swift; sourceTree = "<group>"; };
+		3D206FE0FEFC159DFEB59ED9 /* RecoreonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonTests.swift; sourceTree = "<group>"; };
 		44F3C7FD41C990B307581DC9 /* Preview02.mp4 */ = {isa = PBXFileReference; path = Preview02.mp4; sourceTree = "<group>"; };
 		4E5528BA021F34B5677227DA /* Record01-summary.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-summary.txt"; sourceTree = "<group>"; };
 		5031979D8BE5AB3E8EF46E91 /* RecordNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteService.swift; sourceTree = "<group>"; };
 		55CB96FA2BED56044727AC9D /* AppGroupsPreferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupsPreferenceService.swift; sourceTree = "<group>"; };
 		570CA372240DFA6610B6F578 /* ScreenRecordEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordEntry.swift; sourceTree = "<group>"; };
+		608FF8CD834FA6386FBFC262 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		63524FE03906FCFE80CE3F5F /* RecordNoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteStore.swift; sourceTree = "<group>"; };
 		65BC2C475961434B43F6CEDC /* Recoreon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Recoreon.entitlements; sourceTree = "<group>"; };
 		66546597F0ACCD776AA3BDEB /* ScreenRecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordDetailView.swift; sourceTree = "<group>"; };
+		670887C9ADA38CF229DCDE42 /* RecoreonTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RecoreonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E6740BB9CD0593DBAAEAA82 /* ScreenRecordWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriterTests.m; sourceTree = "<group>"; };
 		71397CBB30E8E8FE57F094ED /* Record01.mkv */ = {isa = PBXFileReference; path = Record01.mkv; sourceTree = "<group>"; };
 		7296F2F56CA7C704EFBEA08C /* Recoreon-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Recoreon-Bridging-Header.h"; sourceTree = "<group>"; };
 		783758CF494FCF6E44EA408D /* RecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderView.swift; sourceTree = "<group>"; };
@@ -130,6 +147,7 @@
 		937997E9584456EC28795E84 /* ScreenRecordEncoderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordEncoderView.swift; sourceTree = "<group>"; };
 		952DB69D2AAC4414A21438E3 /* libRecoreonCommon.a */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRecoreonCommon.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		96B03C7227F56619CC71E794 /* RecoreonPathService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonPathService.swift; sourceTree = "<group>"; };
+		98D82F222540023C98A43724 /* RecoreonTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		9E54C48F21E0C83BEFF35C6C /* PreviewRecoreonServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewRecoreonServices.swift; sourceTree = "<group>"; };
 		A6737AF501F4404DAC63E3D4 /* RecordNoteEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEditorView.swift; sourceTree = "<group>"; };
 		A8CDE419B8A50BF498F1B958 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -152,6 +170,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3D45D286C7783EAB94F0F728 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31CE90B0241360721F306506 /* FFmpegKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5E7E7B0E17FE10E47091D8F6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -250,6 +276,7 @@
 				952DB69D2AAC4414A21438E3 /* libRecoreonCommon.a */,
 				B6EE6BAFF1D4255419932FBC /* Recoreon.app */,
 				EFC761EA64987D94507E7F88 /* RecoreonBroadcastUploadExtension.appex */,
+				670887C9ADA38CF229DCDE42 /* RecoreonTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -288,6 +315,14 @@
 			path = Recoreon;
 			sourceTree = "<group>";
 		};
+		7C2E3E5C3ACAC316DB65A883 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1072C58A48B566D89749D463 /* EncodedVideoEntryTest.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		8F10AEAC19302F222EE5E8AF /* Stores */ = {
 			isa = PBXGroup;
 			children = (
@@ -295,6 +330,18 @@
 				DF7A6B4BC5F6AA631040872F /* ScreenRecordStore.swift */,
 			);
 			path = Stores;
+			sourceTree = "<group>";
+		};
+		9D0AEF43D8BE9C0EB4076B6D /* RecoreonTests */ = {
+			isa = PBXGroup;
+			children = (
+				608FF8CD834FA6386FBFC262 /* Info.plist */,
+				98D82F222540023C98A43724 /* RecoreonTests-Bridging-Header.h */,
+				3D206FE0FEFC159DFEB59ED9 /* RecoreonTests.swift */,
+				6E6740BB9CD0593DBAAEAA82 /* ScreenRecordWriterTests.m */,
+				7C2E3E5C3ACAC316DB65A883 /* Models */,
+			);
+			path = RecoreonTests;
 			sourceTree = "<group>";
 		};
 		B9962E02953D79DB5A2A6B3A /* ScreenRecordView */ = {
@@ -316,6 +363,7 @@
 				75C3729785FA58B4F0BB8243 /* Recoreon */,
 				1CBD56C6B434640B259A2C73 /* RecoreonBroadcastUploadExtension */,
 				55C521DE4AD56134CBF7D245 /* RecoreonCommon */,
+				9D0AEF43D8BE9C0EB4076B6D /* RecoreonTests */,
 				65BD859D1737AE14863FFC26 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -366,6 +414,26 @@
 			productReference = B6EE6BAFF1D4255419932FBC /* Recoreon.app */;
 			productType = "com.apple.product-type.application";
 		};
+		9EDF32C6584ACD28761B21DE /* RecoreonTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 52453820B2DC5163E1415090 /* Build configuration list for PBXNativeTarget "RecoreonTests" */;
+			buildPhases = (
+				61CD0CA5F6EAAA0A5A73B226 /* Sources */,
+				3D45D286C7783EAB94F0F728 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D4007042CB9D6955F063F081 /* PBXTargetDependency */,
+			);
+			name = RecoreonTests;
+			packageProductDependencies = (
+				7758DFA463A4763261C3010A /* FFmpegKit */,
+			);
+			productName = RecoreonTests;
+			productReference = 670887C9ADA38CF229DCDE42 /* RecoreonTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		F3D1E7C63915C097C8E83327 /* RecoreonCommon */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D305A3B55D1323F0598F268E /* Build configuration list for PBXNativeTarget "RecoreonCommon" */;
@@ -399,6 +467,10 @@
 						DevelopmentTeam = 4HMJS6J4MZ;
 						ProvisioningStyle = Automatic;
 					};
+					9EDF32C6584ACD28761B21DE = {
+						DevelopmentTeam = 4HMJS6J4MZ;
+						ProvisioningStyle = Automatic;
+					};
 					F3D1E7C63915C097C8E83327 = {
 						DevelopmentTeam = 4HMJS6J4MZ;
 						ProvisioningStyle = Automatic;
@@ -424,6 +496,7 @@
 				682D9FD735596B44E1893DE4 /* Recoreon */,
 				401A5F37DC984977A3008D93 /* RecoreonBroadcastUploadExtension */,
 				F3D1E7C63915C097C8E83327 /* RecoreonCommon */,
+				9EDF32C6584ACD28761B21DE /* RecoreonTests */,
 			);
 		};
 /* End PBXProject section */
@@ -522,6 +595,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		61CD0CA5F6EAAA0A5A73B226 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68C531D27658A2D5676FED25 /* EncodedVideoEntryTest.swift in Sources */,
+				396FB836404A6F2F41E9D37A /* RecoreonTests.swift in Sources */,
+				5C630C80A33E6029FA79BEB7 /* ScreenRecordWriter.m in Sources */,
+				FDE1FACA0D66799F9450500D /* ScreenRecordWriterTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -539,6 +623,11 @@
 			isa = PBXTargetDependency;
 			target = 401A5F37DC984977A3008D93 /* RecoreonBroadcastUploadExtension */;
 			targetProxy = 3C866D0B9AE2EEC3C2484C45 /* PBXContainerItemProxy */;
+		};
+		D4007042CB9D6955F063F081 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 682D9FD735596B44E1893DE4 /* Recoreon */;
+			targetProxy = 4BE4DB7A92FFB5580E639562 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -674,6 +763,23 @@
 			};
 			name = Debug;
 		};
+		8418E36E525A704FA469B6BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = RecoreonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Recoreon.app/Recoreon";
+			};
+			name = Debug;
+		};
 		ABFCA6224618FB888A723485 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -693,6 +799,23 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.Recoreon;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D904DF02D3A8F587CF3130EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = RecoreonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.umireon.RecoreonTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Recoreon.app/Recoreon";
 			};
 			name = Release;
 		};
@@ -796,6 +919,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		52453820B2DC5163E1415090 /* Build configuration list for PBXNativeTarget "RecoreonTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8418E36E525A704FA469B6BE /* Debug */,
+				D904DF02D3A8F587CF3130EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		B30BA0916C96C6A219F8C8A5 /* Build configuration list for PBXNativeTarget "RecoreonBroadcastUploadExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -837,6 +969,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7758DFA463A4763261C3010A /* FFmpegKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D62949E0204524BE89E7A31C /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
+			productName = FFmpegKit;
+		};
 		78CAB5C0AEAC23B51D8D6932 /* FFmpegKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = D62949E0204524BE89E7A31C /* XCRemoteSwiftPackageReference "ffmpeg-kit-spm" */;
