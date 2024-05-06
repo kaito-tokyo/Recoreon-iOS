@@ -6,6 +6,11 @@ options:
   deploymentTarget:
     iOS: "16.0"
 
+fileGroups:
+  - "PrivacyInfo.xcprivacy"
+  - "RecoreonTests.xctestplan"
+  - "RecoreonUITests.xctestplan"
+
 settings:
   CODE_SIGN_STYLE: "Automatic"
   DEVELOPMENT_TEAM: "4HMJS6J4MZ"
