@@ -11,6 +11,10 @@ settings:
   DEVELOPMENT_TEAM: "4HMJS6J4MZ"
   MARKETING_VERSION: "1.0"
   CURRENT_PROJECT_VERSION: 1
+  SWIFT_EMIT_LOC_STRINGS: true
+  CLANG_ENABLE_MODULES: true
+  CLANG_WARN_DOCUMENTATION_COMMENTS: false
+  CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: false
 
 packages:
   FFmpegKit:
@@ -34,11 +38,12 @@ targets:
       - package: "FFmpegKit"
     settings:
       SWIFT_OBJC_BRIDGING_HEADER: "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension-Bridging-Header.h"
+      PRODUCT_BUNDLE_IDENTIFIER: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension"
+      SKIP_INSTALL: true
     info:
       path: "RecoreonBroadcastUploadExtension/Info.plist"
       properties:
         CFBundleDisplayName: "Recoreon"
-        CFBundleIdentifier: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         NSCameraUsageDescription: "This app do not use a camera."
@@ -60,6 +65,8 @@ targets:
     settings:
       DEVELOPMENT_ASSET_PATHS: '"Recoreon/Preview Content"'
       ENABLE_PREVIEWS: true
+      ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "AccentColor"
+      SWIFT_OBJC_BRIDGING_HEADER: "Recoreon/Recoreon-Bridging-Header.h"
     dependencies:
       - package: "FFmpegKit"
       - target: "RecoreonCommon"
