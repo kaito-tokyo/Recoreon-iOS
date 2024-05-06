@@ -1,5 +1,5 @@
 ---
-name: "CodeQL"
+name: "codeql"
 
 "on":
   push:
@@ -9,26 +9,33 @@ name: "CodeQL"
     - cron: "44 16 * * 4"
 
 env:
-  DEVELOPER_DIR: "/Applications/Xcode_15.2.app"
+  DEVELOPER_DIR: "/Applications/Xcode_15.3.app"
 
 jobs:
-  analyze:
-    name: "Analyze"
-    runs-on: "macos-13"
+  Analyze:
+    runs-on: "macos-14"
+
     timeout-minutes: 120
+
     permissions:
       security-events: "write"
       actions: "read"
       contents: "read"
 
     steps:
-      - name: "Checkout repository"
+      - name: "Brew install"
+        run: "brew install xcodegen"
+
+      - name: "Checkout"
         uses: "actions/checkout@v4"
 
       - name: "Initialize CodeQL"
         uses: "github/codeql-action/init@v3"
         with:
           languages: "swift"
+
+      - name: "Xcodegen"
+        run: "xcodegen generate"
 
       - name: "Build"
         run: |
