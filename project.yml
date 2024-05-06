@@ -1,34 +1,39 @@
 ---
 name: "Recoreon"
+
 options:
   bundleIdPrefix: com.github.umireon
   deploymentTarget:
     iOS: "16.0"
-packages:
-  FFmpegKit:
-    url: "https://github.com/kaito-tokyo/ffmpeg-kit-spm.git"
-    from: "6.0.3"
+
 settings:
   CODE_SIGN_STYLE: "Automatic"
   DEVELOPMENT_TEAM: "4HMJS6J4MZ"
   MARKETING_VERSION: "1.0"
   CURRENT_PROJECT_VERSION: 1
+
+packages:
+  FFmpegKit:
+    url: "https://github.com/kaito-tokyo/ffmpeg-kit-spm.git"
+    from: "6.0.3"
+
 targets:
   RecoreonCommon:
     type: "library.static"
     platform: "iOS"
     sources:
       - "RecoreonCommon"
+
   RecoreonBroadcastUploadExtension:
     type: "app-extension"
     platform: "iOS"
     sources:
       - "RecoreonBroadcastUploadExtension"
-    settings:
-      SWIFT_OBJC_BRIDGING_HEADER: "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension-Bridging-Header.h"
     dependencies:
       - target: "RecoreonCommon"
       - package: "FFmpegKit"
+    settings:
+      SWIFT_OBJC_BRIDGING_HEADER: "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension-Bridging-Header.h"
     info:
       path: "RecoreonBroadcastUploadExtension/Info.plist"
       properties:
@@ -40,11 +45,13 @@ targets:
           NSExtensionPointIdentifier: "com.apple.broadcast-services-upload"
           NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).SampleHandler"
           RPBroadcastProcessMode: "RPBroadcastProcessModeSampleBuffer"
+        NSCameraUsageDescription: "This app do not use a camera."
     entitlements:
       path: "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension.entitlements"
       properties:
         com.apple.security.application-groups:
           - "group.com.github.umireon.Recoreon"
+
   Recoreon:
     type: "application"
     platform: "iOS"

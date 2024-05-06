@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -96,7 +96,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		067AA379139FCF5E1C4E8EB5 /* Record02.mkv */ = {isa = PBXFileReference; lastKnownFileType = file; path = Record02.mkv; sourceTree = "<group>"; };
+		067AA379139FCF5E1C4E8EB5 /* Record02.mkv */ = {isa = PBXFileReference; path = Record02.mkv; sourceTree = "<group>"; };
 		08EEBB33B98FF62F7CF5E313 /* EncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeService.swift; sourceTree = "<group>"; };
 		0C5CD3A779AB2F0856B69FB1 /* Record01-1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-1.txt"; sourceTree = "<group>"; };
 		1353DB3986948098D83DCCA2 /* RecoreonCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonCommon.swift; sourceTree = "<group>"; };
@@ -110,7 +110,7 @@
 		2A8D7E38019E981F9CEC5109 /* RecoreonBroadcastPickerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoreonBroadcastPickerRepresentable.swift; sourceTree = "<group>"; };
 		2BAEF674F453692E96194B62 /* ScreenRecordWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScreenRecordWriter.m; sourceTree = "<group>"; };
 		32B831D58B0513C8FBFBC723 /* RecordNoteEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteEntry.swift; sourceTree = "<group>"; };
-		44F3C7FD41C990B307581DC9 /* Preview02.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Preview02.mp4; sourceTree = "<group>"; };
+		44F3C7FD41C990B307581DC9 /* Preview02.mp4 */ = {isa = PBXFileReference; path = Preview02.mp4; sourceTree = "<group>"; };
 		4E5528BA021F34B5677227DA /* Record01-summary.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Record01-summary.txt"; sourceTree = "<group>"; };
 		5031979D8BE5AB3E8EF46E91 /* RecordNoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteService.swift; sourceTree = "<group>"; };
 		55CB96FA2BED56044727AC9D /* AppGroupsPreferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupsPreferenceService.swift; sourceTree = "<group>"; };
@@ -118,7 +118,7 @@
 		63524FE03906FCFE80CE3F5F /* RecordNoteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordNoteStore.swift; sourceTree = "<group>"; };
 		65BC2C475961434B43F6CEDC /* Recoreon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Recoreon.entitlements; sourceTree = "<group>"; };
 		66546597F0ACCD776AA3BDEB /* ScreenRecordDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordDetailView.swift; sourceTree = "<group>"; };
-		71397CBB30E8E8FE57F094ED /* Record01.mkv */ = {isa = PBXFileReference; lastKnownFileType = file; path = Record01.mkv; sourceTree = "<group>"; };
+		71397CBB30E8E8FE57F094ED /* Record01.mkv */ = {isa = PBXFileReference; path = Record01.mkv; sourceTree = "<group>"; };
 		7296F2F56CA7C704EFBEA08C /* Recoreon-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Recoreon-Bridging-Header.h"; sourceTree = "<group>"; };
 		783758CF494FCF6E44EA408D /* RecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderView.swift; sourceTree = "<group>"; };
 		810AC07CAE0BB6BE3C14F066 /* RecoreonBroadcastUploadExtension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RecoreonBroadcastUploadExtension-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -138,7 +138,7 @@
 		B6EE6BAFF1D4255419932FBC /* Recoreon.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Recoreon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7A5BF29ACF60DD487E439E6 /* ScreenRecordListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordListView.swift; sourceTree = "<group>"; };
 		C6B50204BFB78A65BD8FD741 /* ScreenRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordView.swift; sourceTree = "<group>"; };
-		CB9AAEB317EFAE939D975236 /* Preview01.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = Preview01.mp4; sourceTree = "<group>"; };
+		CB9AAEB317EFAE939D975236 /* Preview01.mp4 */ = {isa = PBXFileReference; path = Preview01.mp4; sourceTree = "<group>"; };
 		CBF6E9724BC6C777A14CA704 /* DefaultEncodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultEncodeService.swift; sourceTree = "<group>"; };
 		D8686D24F3B6213BF23C4822 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		DF7A6B4BC5F6AA631040872F /* ScreenRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordStore.swift; sourceTree = "<group>"; };
