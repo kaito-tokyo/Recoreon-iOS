@@ -1,3 +1,5 @@
+import Foundation
+
 protocol EncodeService {
   func generateEncodedVideoURL(screenRecordEntry: ScreenRecordEntry, preset: EncodingPreset) -> URL
   func removeEncodedVideo(encodedVideoEntry: EncodedVideoEntry)

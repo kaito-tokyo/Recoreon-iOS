@@ -1,3 +1,5 @@
+import Foundation
+
 struct EncodedVideoEntry: Identifiable, Hashable {
   let url: URL
   let preset: EncodingPreset

@@ -1,3 +1,5 @@
+import Foundation
+
 protocol RecordNoteService {
   func listRecordNoteEntries(screenRecordEntry: ScreenRecordEntry) -> [RecordNoteEntry]
   func filterOutReservedRecordNoteEntries(recordNoteEntries: [RecordNoteEntry]) -> [RecordNoteEntry]

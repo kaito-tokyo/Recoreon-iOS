@@ -1,3 +1,5 @@
+import Foundation
+
 struct ScreenRecordEntry: Identifiable, Hashable {
   let url: URL
   let size: UInt64

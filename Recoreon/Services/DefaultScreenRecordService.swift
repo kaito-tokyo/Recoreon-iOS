@@ -1,4 +1,6 @@
+import Foundation
 import RecoreonCommon
+import ffmpegkit
 
 struct DefaultScreenRecordService: ScreenRecordService {
   private let fileManager: FileManager

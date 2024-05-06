@@ -1,4 +1,6 @@
+import Foundation
 import RecoreonCommon
+import ffmpegkit
 
 struct DefaultEncodeService: EncodeService {
   private let fileManager: FileManager

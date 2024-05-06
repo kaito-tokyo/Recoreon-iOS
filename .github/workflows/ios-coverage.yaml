@@ -16,7 +16,7 @@ defaults:
 env:
   IOS_DEVICE: "iPhone 15"
   IOS_RUNTIME: "17.2"
-  DEVELOPER_DIR: "/Applications/Xcode_15.2.app"
+  DEVELOPER_DIR: "/Applications/Xcode_15.3.app"
 
 concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
@@ -32,8 +32,8 @@ jobs:
       TEST_PLAN_NAME: "RecoreonTests"
 
     steps:
-      - name: "Install gcovr"
-        run: "brew install gcovr"
+      - name: "Brew install"
+        run: "brew install gcovr xcodegen"
 
       - name: "Start yeetd"
         working-directory: "${{ runner.temp }}"
@@ -44,6 +44,9 @@ jobs:
 
       - name: "Checkout"
         uses: "actions/checkout@v4"
+
+      - name: "Xcodegen"
+        run: "xcodegen generate"
 
       - name: "Build tests"
         run: |
@@ -90,6 +93,9 @@ jobs:
       TEST_PLAN_NAME: "RecoreonUITests"
 
     steps:
+      - name: "Brew install"
+        run: "brew install xcodegen"
+
       - name: "Start yeetd"
         working-directory: "${{ runner.temp }}"
         run: |
@@ -99,6 +105,9 @@ jobs:
 
       - name: "Checkout"
         uses: "actions/checkout@v4"
+
+      - name: "Xcodegen"
+        run: "xcodegen generate"
 
       - name: "Build tests"
         run: |
