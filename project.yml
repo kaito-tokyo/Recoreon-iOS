@@ -29,6 +29,12 @@ packages:
     from: "6.0.3"
 
 targets:
+  ScreenRecordWriter:
+    type: "library.static"
+    platform: "iOS"
+    sources:
+      - "ScreenRecordWriter"
+
   RecoreonCommon:
     type: "library.static"
     platform: "iOS"
@@ -41,6 +47,7 @@ targets:
     sources:
       - "RecoreonBroadcastUploadExtension"
     dependencies:
+      - target: "ScreenRecordWriter"
       - target: "RecoreonCommon"
       - package: "FFmpegKit"
     settings:
@@ -108,9 +115,9 @@ targets:
     platform: "iOS"
     sources:
       - "RecoreonTests"
-      - path: "RecoreonBroadcastUploadExtension/ScreenRecordWriter.m"
     dependencies:
       - target: "Recoreon"
+      - target: "ScreenRecordWriter"
       - package: "FFmpegKit"
     settings:
       SWIFT_OBJC_BRIDGING_HEADER: "RecoreonTests/RecoreonTests-Bridging-Header.h"
