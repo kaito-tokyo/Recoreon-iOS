@@ -1,5 +1,5 @@
 ---
-name: "xcode-unittest"
+name: "xcode-recoreon-tests"
 
 "on":
   push:

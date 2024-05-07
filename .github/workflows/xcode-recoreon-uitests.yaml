@@ -1,5 +1,5 @@
 ---
-name: "xcode-uitest"
+name: "xcode-recoreon-uitests"
 
 "on":
   push:
