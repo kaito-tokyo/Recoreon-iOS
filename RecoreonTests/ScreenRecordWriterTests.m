@@ -1,7 +1,7 @@
 #import <CommonCrypto/CommonHMAC.h>
 #import <XCTest/XCTest.h>
 
-#import "../RecoreonBroadcastUploadExtension/ScreenRecordWriter.h"
+#import "../ScreenRecordWriter/ScreenRecordWriter.h"
 
 typedef struct VideoInfo {
   int width;

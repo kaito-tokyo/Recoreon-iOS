@@ -1,0 +1,89 @@
+---
+name: "xcode-recoreon-tests"
+
+"on":
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+defaults:
+  run:
+    shell: "bash"
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: "${{ github.ref != 'refs/heads/main' }}"
+
+env:
+  IOS_DEVICE: "iPhone 15"
+  IOS_RUNTIME: "17.4"
+  DEVELOPER_DIR: "/Applications/Xcode_15.3.app"
+  TEST_PLAN_NAME: "RecoreonTests"
+
+# yamllint disable rule:line-length
+
+jobs:
+  XcodeRecoreonTests:
+    runs-on: "macos-14"
+
+    timeout-minutes: 30
+
+    steps:
+      - name: "Start yeetd"
+        working-directory: "${{ runner.temp }}"
+        run: |
+          wget https://github.com/biscuitehh/yeetd/releases/download/1.0/yeetd-normal.pkg
+          sudo installer -pkg yeetd-normal.pkg -target /
+          yeetd &
+
+      - name: "Brew install"
+        run: "brew install gcovr xcodegen"
+
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+
+      - name: "Xcodegen"
+        run: "xcodegen generate"
+
+      - name: "Build tests"
+        run: |
+          xcodebuild \
+            -sdk iphonesimulator \
+            -project ./Recoreon.xcodeproj \
+            -scheme Recoreon \
+            -testPlan "$TEST_PLAN_NAME" \
+            -derivedDataPath ./DerivedData \
+            -testProductsPath "./$TEST_PLAN_NAME.xctestproducts" \
+            build-for-testing
+
+      - name: "Run tests"
+        run: |
+          xcodebuild \
+            -derivedDataPath ./DerivedData \
+            -destination "platform=iOS Simulator,name=$IOS_DEVICE,OS=$IOS_RUNTIME" \
+            -testProductsPath ./$TEST_PLAN_NAME.xctestproducts \
+            test-without-building
+
+      - name: "Export Swift coverage"
+        run: |
+          xcrun llvm-cov show \
+            --arch arm64 \
+            --instr-profile ./DerivedData/Build/ProfileData/*/Coverage.profdata \
+            --ignore-filename-regex=".*/Recoreon/(Preview Content|UI)/.*" \
+            ./DerivedData/Build/Products/Debug-iphonesimulator/Recoreon.app/Recoreon \
+            >"$TEST_PLAN_NAME.coverage.txt"
+
+      - name: "Export Objective-C coverage"
+        run: "gcovr --cobertura $TEST_PLAN_NAME.coverage.xml --exclude RecoreonTests"
+
+      - name: "Upload coverage to Codecov"
+        uses: "codecov/codecov-action@v4"
+        with:
+          token: "${{ secrets.CODECOV_TOKEN }}"
+          disable_search: true
+          files: "${{ env.TEST_PLAN_NAME }}.coverage.txt,${{ env.TEST_PLAN_NAME }}.coverage.xml"
+
+# yamllint enable
