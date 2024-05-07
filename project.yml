@@ -12,11 +12,13 @@ fileGroups:
   - "RecoreonUITests.xctestplan"
 
 settings:
+  # Signing settings
   CODE_SIGN_STYLE: "Automatic"
   DEVELOPMENT_TEAM: "4HMJS6J4MZ"
+
+  # Versioning settings
   MARKETING_VERSION: "1.0"
   CURRENT_PROJECT_VERSION: 1
-  SWIFT_EMIT_LOC_STRINGS: true
   CLANG_ENABLE_MODULES: true
   CLANG_WARN_DOCUMENTATION_COMMENTS: false
   CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: false
@@ -85,6 +87,8 @@ targets:
       - package: "FFmpegKit"
       - target: "RecoreonCommon"
       - target: "RecoreonBroadcastUploadExtension"
+    settings:
+      SWIFT_EMIT_LOC_STRINGS: true
     info:
       path: "Recoreon/Info.plist"
       properties:
