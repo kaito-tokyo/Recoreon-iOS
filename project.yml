@@ -12,16 +12,20 @@ fileGroups:
   - "RecoreonUITests.xctestplan"
 
 settings:
+  # Signing settings
   CODE_SIGN_STYLE: "Automatic"
   DEVELOPMENT_TEAM: "4HMJS6J4MZ"
+
+  # Versioning settings
   MARKETING_VERSION: "1.0"
   CURRENT_PROJECT_VERSION: 1
-  SWIFT_EMIT_LOC_STRINGS: true
+
+  # Objective-C settings
   CLANG_ENABLE_MODULES: true
+
+  # Warnings settings
   CLANG_WARN_DOCUMENTATION_COMMENTS: false
   CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: false
-  GCC_GENERATE_TEST_COVERAGE_FILES: true
-  GCC_INSTRUMENT_PROGRAM_FLOW_ARCS: true
 
 packages:
   FFmpegKit:
@@ -34,6 +38,8 @@ targets:
     platform: "iOS"
     sources:
       - "ScreenRecordWriter"
+    dependencies:
+      - package: "FFmpegKit"
 
   RecoreonCommon:
     type: "library.static"
@@ -82,9 +88,13 @@ targets:
       ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "AccentColor"
       SWIFT_OBJC_BRIDGING_HEADER: "Recoreon/Recoreon-Bridging-Header.h"
     dependencies:
-      - package: "FFmpegKit"
       - target: "RecoreonCommon"
       - target: "RecoreonBroadcastUploadExtension"
+      - package: "FFmpegKit"
+    settings:
+      GCC_GENERATE_TEST_COVERAGE_FILES: true
+      GCC_INSTRUMENT_PROGRAM_FLOW_ARCS: true
+      SWIFT_EMIT_LOC_STRINGS: true
     info:
       path: "Recoreon/Info.plist"
       properties:
