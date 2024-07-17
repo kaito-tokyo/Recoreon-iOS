@@ -22,14 +22,13 @@ final class RealtimeVideoTranscoderTests: XCTestCase {
   func testSendImageBuffer() async throws {
     let width = 888
     let height = 1920
-    let bytesPerRow = 1024
     let frameRate = 60
     let initialPTS = CMTime(value: 100, timescale: CMTimeScale(frameRate))
 
     let videoTranscoder = try RealtimeVideoTranscoder(width: width, height: height)
 
-    let dummyVideoGenerator = DummyVideoGenerator(
-      width: width, height: height, bytesPerRow: bytesPerRow, frameRate: frameRate,
+    let dummyVideoGenerator = try DummyVideoGenerator(
+      width: width, height: height, frameRate: frameRate,
       initialPTS: initialPTS)
 
     try await withThrowingTaskGroup(of: Void.self) { [self] group throws in
@@ -45,6 +44,8 @@ final class RealtimeVideoTranscoderTests: XCTestCase {
       }
 
       videoTranscoder.close()
+
+      try await group.next()
     }
   }
 }
