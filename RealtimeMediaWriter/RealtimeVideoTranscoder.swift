@@ -15,12 +15,14 @@ enum RealtimeVideoTranscoderError: CustomNSError {
   }
 }
 
-class RealtimeVideoTranscoder {
+public class RealtimeVideoTranscoder {
   private let compressionSession: VTCompressionSession
 
-  init(width: Int, height: Int) throws {
+  public init(width: Int, height: Int) throws {
     let videoEncoderSpecification =
-      [kVTVideoEncoderSpecification_EnableLowLatencyRateControl: true as CFBoolean] as CFDictionary
+      [
+        kVTVideoEncoderSpecification_RequireHardwareAcceleratedVideoEncoder: true as CFBoolean
+      ] as CFDictionary
 
     let sourceImageBufferAttributes =
       [kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange as CFNumber]
@@ -41,13 +43,14 @@ class RealtimeVideoTranscoder {
     )
 
     guard err == noErr, let compressionSession = compressionSessionOut else {
+      print(err)
       throw RealtimeVideoTranscoderError.compressionSessionCreationFailure
     }
 
     self.compressionSession = compressionSession
   }
 
-  func sendPixel(
+  public func sendImageBuffer(
     imageBuffer: CVImageBuffer, pts: CMTime, outputHandler: @escaping VTCompressionOutputHandler
   ) {
     let err = VTCompressionSessionEncodeFrame(
@@ -62,5 +65,9 @@ class RealtimeVideoTranscoder {
       print("aaa!")
       return
     }
+  }
+
+  public func close() {
+    VTCompressionSessionCompleteFrames(compressionSession, untilPresentationTimeStamp: .invalid)
   }
 }

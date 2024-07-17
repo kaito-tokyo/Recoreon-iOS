@@ -1,5 +1,7 @@
 #!/bin/bash
 dirs=(
+  RealtimeMediaWriter
+  RealtimeMediaWriterTests
   Recoreon
   RecoreonBroadcastUploadExtension
   RecoreonTests

@@ -2,7 +2,7 @@ import AVFoundation
 import CoreMedia
 import Foundation
 
-class FragmentedMP4Writer {
+public class FragmentedMP4Writer {
   private let assetWriter: AVAssetWriter
 
   private let frameRate: CMTimeScale = 60
@@ -15,11 +15,14 @@ class FragmentedMP4Writer {
 
   private var sessionStarted = false
 
-  init(outputURL: URL) throws {
+  public init(outputURL: URL, width: Int, height: Int) throws {
     assetWriter = try AVAssetWriter(outputURL: outputURL, fileType: .mp4)
     assetWriter.movieTimeScale = frameRate
 
-    videoInput = AVAssetWriterInput(mediaType: .video, outputSettings: nil)
+    let videoFormatDesc = try CMFormatDescription(
+      videoCodecType: .h264, width: width, height: height)
+    videoInput = AVAssetWriterInput(
+      mediaType: .video, outputSettings: nil, sourceFormatHint: videoFormatDesc)
     videoInput.expectsMediaDataInRealTime = true
 
     appAudioInput = AVAssetWriterInput(mediaType: .audio, outputSettings: nil)
