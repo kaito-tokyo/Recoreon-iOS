@@ -49,7 +49,7 @@ class DummyVideoGenerator {
     while yPos < height {
       var xPos: Int = 0
       while xPos < width {
-        lumaData[yPos * bytesPerRow + xPos] = UInt8((xPos + yPos + frameIndex * 3) & 0xFF)
+        lumaData[yPos * bytesPerRow + xPos] = UInt8(truncatingIfNeeded: xPos + yPos + frameIndex * 3)
         xPos += 1
       }
       yPos += 1
@@ -61,8 +61,8 @@ class DummyVideoGenerator {
     while yPos < height / 2 {
       var xPos: Int = 0
       while xPos < width {
-        chromaData[yPos * bytesPerRow + xPos] = UInt8((128 + yPos + frameIndex * 2) & 0xFF)
-        chromaData[yPos * bytesPerRow + xPos + 1] = UInt8((64 + xPos + frameIndex * 5) & 0xFF)
+        chromaData[yPos * bytesPerRow + xPos] = UInt8(truncatingIfNeeded: 128 + yPos + frameIndex * 2)
+        chromaData[yPos * bytesPerRow + xPos + 1] = UInt8(truncatingIfNeeded: 64 + xPos + frameIndex * 5)
         xPos += 1
       }
       yPos += 1

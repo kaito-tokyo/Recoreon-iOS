@@ -18,7 +18,6 @@ final class FragmentedMP4WriterTests: XCTestCase {
     let writer = try FragmentedMP4Writer(
       outputURL: outputURL, frameRate: frameRate, videoFormatDesc: videoFormatDesc)
 
-    let bytesPerRow = 1024
     let initialPTS = CMTime(value: 100, timescale: CMTimeScale(frameRate))
 
     let dummyVideoGenerator = try DummyVideoGenerator(
