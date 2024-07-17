@@ -4,7 +4,7 @@ name: "Recoreon"
 options:
   bundleIdPrefix: com.github.umireon
   deploymentTarget:
-    iOS: "17.5"
+    iOS: "17.4"
 
 fileGroups:
   - "PrivacyInfo.xcprivacy"
