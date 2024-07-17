@@ -44,25 +44,32 @@ class DummyVideoGenerator {
     self.pixelBufferPool = pixelBufferPool
   }
 
-  private func fillLumaPlane(lumaData: UnsafeMutablePointer<UInt8>, bytesPerRow: Int, frameIndex: Int) {
+  private func fillLumaPlane(
+    lumaData: UnsafeMutablePointer<UInt8>, bytesPerRow: Int, frameIndex: Int
+  ) {
     var yPos: Int = 0
     while yPos < height {
       var xPos: Int = 0
       while xPos < width {
-        lumaData[yPos * bytesPerRow + xPos] = UInt8(truncatingIfNeeded: xPos + yPos + frameIndex * 3)
+        lumaData[yPos * bytesPerRow + xPos] = UInt8(
+          truncatingIfNeeded: xPos + yPos + frameIndex * 3)
         xPos += 1
       }
       yPos += 1
     }
   }
 
-  private func fillChromaPlane(chromaData: UnsafeMutablePointer<UInt8>, bytesPerRow: Int, frameIndex: Int) {
+  private func fillChromaPlane(
+    chromaData: UnsafeMutablePointer<UInt8>, bytesPerRow: Int, frameIndex: Int
+  ) {
     var yPos: Int = 0
     while yPos < height / 2 {
       var xPos: Int = 0
       while xPos < width {
-        chromaData[yPos * bytesPerRow + xPos] = UInt8(truncatingIfNeeded: 128 + yPos + frameIndex * 2)
-        chromaData[yPos * bytesPerRow + xPos + 1] = UInt8(truncatingIfNeeded: 64 + xPos + frameIndex * 5)
+        chromaData[yPos * bytesPerRow + xPos] = UInt8(
+          truncatingIfNeeded: 128 + yPos + frameIndex * 2)
+        chromaData[yPos * bytesPerRow + xPos + 1] = UInt8(
+          truncatingIfNeeded: 64 + xPos + frameIndex * 5)
         xPos += 1
       }
       yPos += 1
@@ -71,7 +78,8 @@ class DummyVideoGenerator {
 
   func generateNextVideoFrame() throws -> VideoFrame {
     var pixelBufferOut: CVPixelBuffer?
-    let err = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, pixelBufferPool, &pixelBufferOut)
+    let err = CVPixelBufferPoolCreatePixelBuffer(
+      kCFAllocatorDefault, pixelBufferPool, &pixelBufferOut)
     guard err == noErr, let pixelBuffer = pixelBufferOut else {
       print(err)
       throw DummyVideoGeneratorError.pixelBufferCreationFailure
@@ -85,9 +93,12 @@ class DummyVideoGenerator {
     else {
       throw DummyVideoGeneratorError.pixelBufferCreationFailure
     }
-    fillLumaPlane(lumaData: lumaData.assumingMemoryBound(to: UInt8.self), bytesPerRow: lumaBytesPerRow, frameIndex: frameIndex)
+    fillLumaPlane(
+      lumaData: lumaData.assumingMemoryBound(to: UInt8.self), bytesPerRow: lumaBytesPerRow,
+      frameIndex: frameIndex)
     fillChromaPlane(
-      chromaData: chromaData.assumingMemoryBound(to: UInt8.self), bytesPerRow: chromaBytesPerRow, frameIndex: frameIndex)
+      chromaData: chromaData.assumingMemoryBound(to: UInt8.self), bytesPerRow: chromaBytesPerRow,
+      frameIndex: frameIndex)
     CVPixelBufferUnlockBaseAddress(pixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
 
     let elapsedTime = CMTime(value: CMTimeValue(frameIndex), timescale: CMTimeScale(frameRate))
