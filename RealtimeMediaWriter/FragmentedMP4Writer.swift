@@ -17,8 +17,8 @@ private class FragmentedMP4WriterDelegate: NSObject, AVAssetWriterDelegate {
   private let outputFilePrefix: String
 
   private var segmentIndex = 0
-  private (set) var initializationSegmentFilename: String?
-  private (set) var separableSegments: [SeparableSegment] = []
+  private(set) var initializationSegmentFilename: String?
+  private(set) var separableSegments: [SeparableSegment] = []
 
   init(outputDirectoryURL: URL, outputFilePrefix: String) throws {
     self.outputDirectoryURL = outputDirectoryURL
@@ -45,7 +45,8 @@ private class FragmentedMP4WriterDelegate: NSObject, AVAssetWriterDelegate {
       let timingTrackInfo = segmentReport!.trackReports.first(where: { $0.mediaType == .video })!
       let earliestPTS = timingTrackInfo.earliestPresentationTimeStamp
       let duration = timingTrackInfo.duration
-      separableSegments.append(SeparableSegment(filename: filename, earliestPTS: earliestPTS, duration: duration))
+      separableSegments.append(
+        SeparableSegment(filename: filename, earliestPTS: earliestPTS, duration: duration))
 
       segmentIndex += 1
     @unknown default:
@@ -144,12 +145,13 @@ public class FragmentedMP4Writer {
       """
 
     let separableSegments = delegate.separableSegments
-    let indexComponents = zip(separableSegments, separableSegments.dropFirst()).map { (first, second) in
+    let indexComponents = zip(separableSegments, separableSegments.dropFirst()).map {
+      (first, second) in
       let segmentDuration = second.earliestPTS - first.earliestPTS
       return """
-      #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),
-      \(first.filename)
-      """
+        #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),
+        \(first.filename)
+        """
     }
 
     let lastSeparableSegment = separableSegments.last!

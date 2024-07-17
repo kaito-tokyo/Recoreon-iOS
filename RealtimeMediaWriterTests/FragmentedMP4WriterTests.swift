@@ -21,7 +21,8 @@ final class FragmentedMP4WriterTests: XCTestCase {
     let videoFormatDesc = try CMFormatDescription(
       videoCodecType: .h264, width: width, height: height)
     let writer = try FragmentedMP4Writer(
-      outputDirectoryURL: outputDirectoryURL, outputFilePrefix: "Recoreon0T0", frameRate: frameRate, videoFormatDesc: videoFormatDesc
+      outputDirectoryURL: outputDirectoryURL, outputFilePrefix: "Recoreon0T0", frameRate: frameRate,
+      videoFormatDesc: videoFormatDesc
     )
 
     let initialPTS = CMTime(value: 100, timescale: CMTimeScale(frameRate))
