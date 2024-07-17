@@ -10,13 +10,20 @@ final class FragmentedMP4WriterTests: XCTestCase {
     let frameRate = 60
 
     let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    let outputURL = documentsURL.appending(path: "videoOnly.mp4")
-    try? FileManager.default.removeItem(at: outputURL)
+    let outputDirectoryURL = documentsURL.appending(path: "videoOnly", directoryHint: .isDirectory)
+
+    try? FileManager.default.removeItem(at: outputDirectoryURL)
+    try FileManager.default.createDirectory(
+      at: outputDirectoryURL, withIntermediateDirectories: true)
+
+    print("Output directory is \(outputDirectoryURL.path())")
 
     let videoFormatDesc = try CMFormatDescription(
       videoCodecType: .h264, width: width, height: height)
     let writer = try FragmentedMP4Writer(
-      outputURL: outputURL, frameRate: frameRate, videoFormatDesc: videoFormatDesc)
+      outputDirectoryURL: outputDirectoryURL, outputFilePrefix: "Recoreon0T0", frameRate: frameRate,
+      videoFormatDesc: videoFormatDesc
+    )
 
     let initialPTS = CMTime(value: 100, timescale: CMTimeScale(frameRate))
 
@@ -26,7 +33,7 @@ final class FragmentedMP4WriterTests: XCTestCase {
 
     let videoTranscoder = try RealtimeVideoTranscoder(width: width, height: height)
 
-    for _ in 0..<120 {
+    for _ in 0..<1200 {
       let videoFrame = try dummyVideoGenerator.generateNextVideoFrame()
       videoTranscoder.sendImageBuffer(
         imageBuffer: videoFrame.pixelBuffer,

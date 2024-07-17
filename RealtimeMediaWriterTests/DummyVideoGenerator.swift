@@ -44,38 +44,6 @@ class DummyVideoGenerator {
     self.pixelBufferPool = pixelBufferPool
   }
 
-  private func fillLumaPlane(
-    lumaData: UnsafeMutablePointer<UInt8>, bytesPerRow: Int, frameIndex: Int
-  ) {
-    var yPos: Int = 0
-    while yPos < height {
-      var xPos: Int = 0
-      while xPos < width {
-        lumaData[yPos * bytesPerRow + xPos] = UInt8(
-          truncatingIfNeeded: xPos + yPos + frameIndex * 3)
-        xPos += 1
-      }
-      yPos += 1
-    }
-  }
-
-  private func fillChromaPlane(
-    chromaData: UnsafeMutablePointer<UInt8>, bytesPerRow: Int, frameIndex: Int
-  ) {
-    var yPos: Int = 0
-    while yPos < height / 2 {
-      var xPos: Int = 0
-      while xPos < width {
-        chromaData[yPos * bytesPerRow + xPos] = UInt8(
-          truncatingIfNeeded: 128 + yPos + frameIndex * 2)
-        chromaData[yPos * bytesPerRow + xPos + 1] = UInt8(
-          truncatingIfNeeded: 64 + xPos + frameIndex * 5)
-        xPos += 1
-      }
-      yPos += 1
-    }
-  }
-
   func generateNextVideoFrame() throws -> VideoFrame {
     var pixelBufferOut: CVPixelBuffer?
     let err = CVPixelBufferPoolCreatePixelBuffer(
@@ -86,6 +54,7 @@ class DummyVideoGenerator {
     }
 
     CVPixelBufferLockBaseAddress(pixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
+
     let lumaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 0)
     let chromaBytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(pixelBuffer, 1)
     guard let lumaData = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0),
@@ -93,12 +62,10 @@ class DummyVideoGenerator {
     else {
       throw DummyVideoGeneratorError.pixelBufferCreationFailure
     }
-    fillLumaPlane(
-      lumaData: lumaData.assumingMemoryBound(to: UInt8.self), bytesPerRow: lumaBytesPerRow,
-      frameIndex: frameIndex)
-    fillChromaPlane(
-      chromaData: chromaData.assumingMemoryBound(to: UInt8.self), bytesPerRow: chromaBytesPerRow,
-      frameIndex: frameIndex)
+
+    fillLumaPlane(lumaData, width, height, lumaBytesPerRow, frameIndex)
+    fillChromaPlane(chromaData, width, height, chromaBytesPerRow, frameIndex)
+
     CVPixelBufferUnlockBaseAddress(pixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
 
     let elapsedTime = CMTime(value: CMTimeValue(frameIndex), timescale: CMTimeScale(frameRate))

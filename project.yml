@@ -47,6 +47,8 @@ targets:
       - "RealtimeMediaWriterTests"
     dependencies:
       - target: "RealtimeMediaWriter"
+    settings:
+      SWIFT_OBJC_BRIDGING_HEADER: "RealtimeMediaWriterTests/RealtimeMediaWriterTests-Bridging-Header.h"
     info:
       path: "RecoreonUITests/Info.plist"
       properties:
