@@ -28,10 +28,12 @@ final class FragmentedMP4WriterTests: XCTestCase {
 
     for _ in 0..<120 {
       let videoFrame = try dummyVideoGenerator.generateNextVideoFrame()
-      videoTranscoder.sendImageBuffer(imageBuffer: videoFrame.pixelBuffer, pts: videoFrame.pts) {
-        (status, infoFlags, sbuf) in
+      videoTranscoder.sendImageBuffer(
+        imageBuffer: videoFrame.pixelBuffer,
+        pts: videoFrame.pts
+      ) { (status, _, sbuf) in
         guard status == noErr, let sampleBuffer = sbuf else { return }
-        try! writer.sendVideoSampleBuffer(sampleBuffer: sampleBuffer)
+        try? writer.sendVideoSampleBuffer(sampleBuffer: sampleBuffer)
       }
     }
 
