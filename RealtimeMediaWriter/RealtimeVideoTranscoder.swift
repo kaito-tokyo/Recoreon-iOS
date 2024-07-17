@@ -1,3 +1,4 @@
+import AVFoundation
 import CoreVideo
 import Foundation
 import VideoToolbox
