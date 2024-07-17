@@ -20,7 +20,6 @@ class DummyVideoGenerator {
 
   private var frameIndex: Int = 0
 
-  private let pixelBufferAttributes: CFDictionary
   private let pixelBufferPool: CVPixelBufferPool
 
   init(width: Int, height: Int, frameRate: Int, initialPTS: CMTime) throws {
@@ -29,7 +28,7 @@ class DummyVideoGenerator {
     self.frameRate = frameRate
     self.initialPTS = initialPTS
 
-    pixelBufferAttributes =
+    let pixelBufferAttributes =
       [
         kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
         kCVPixelBufferWidthKey: width as CFNumber,
@@ -72,8 +71,7 @@ class DummyVideoGenerator {
 
   func generateNextVideoFrame() throws -> VideoFrame {
     var pixelBufferOut: CVPixelBuffer?
-    let err = CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(
-      kCFAllocatorDefault, pixelBufferPool, pixelBufferAttributes, &pixelBufferOut)
+    let err = CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, pixelBufferPool, &pixelBufferOut)
     guard err == noErr, let pixelBuffer = pixelBufferOut else {
       print(err)
       throw DummyVideoGeneratorError.pixelBufferCreationFailure
