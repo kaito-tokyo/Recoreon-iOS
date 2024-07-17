@@ -3,23 +3,23 @@ import RealtimeMediaWriter
 import VideoToolbox
 import XCTest
 
-final class RealtimeMediaWriterTests: XCTestCase {
+final class RealtimeVideoTranscoderTests: XCTestCase {
 
   let hundredMilliSeconds: UInt64 = 100_000_000
 
-  func sendFrameToTranscoder(videoTranscoder: RealtimeVideoTranscoder, videoFrame: VideoFrame) async
-    -> (OSStatus, VTEncodeInfoFlags, CMSampleBuffer?)
-  {
+  func sendFrameToTranscoder(
+    videoTranscoder: RealtimeVideoTranscoder, videoFrame: VideoFrame
+  ) async -> CMSampleBuffer? {
     return await withCheckedContinuation { continuation in
       videoTranscoder.sendImageBuffer(
         imageBuffer: videoFrame.pixelBuffer, pts: videoFrame.pts
-      ) {
-        (status, infoFlags, sbuf) in continuation.resume(returning: (status, infoFlags, sbuf))
+      ) { (_, _, sbuf) in
+        continuation.resume(returning: sbuf)
       }
     }
   }
 
-  func testRealtimeVideoTranscoderSendImageBuffer() async throws {
+  func testSendImageBuffer() async throws {
     let width = 888
     let height = 1920
     let bytesPerRow = 1024
@@ -33,12 +33,12 @@ final class RealtimeMediaWriterTests: XCTestCase {
       initialPTS: initialPTS)
 
     try await withThrowingTaskGroup(of: Void.self) { [self] group throws in
-      for i in 0..<5 {
+      for _ in 0..<5 {
         group.addTask {
           let videoFrame = try dummyVideoGenerator.generateNextVideoFrame()
-          let (_, _, sbuf) = await self.sendFrameToTranscoder(videoTranscoder: videoTranscoder, videoFrame: videoFrame)
-          XCTAssert(sbuf?.presentationTimeStamp == CMTime(value: 100 + CMTimeValue(i), timescale: CMTimeScale(frameRate)))
-          return
+          let sbuf = await self.sendFrameToTranscoder(
+            videoTranscoder: videoTranscoder, videoFrame: videoFrame)
+          XCTAssert(sbuf?.presentationTimeStamp == videoFrame.pts)
         }
 
         try await Task.sleep(nanoseconds: 100_000_000)

@@ -34,27 +34,27 @@ class DummyVideoGenerator {
   }
 
   private func fillLumaPlane(frameIndex: Int) {
-    var y: Int = 0
-    var x: Int = 0
-    while y < height {
-      while x < width {
-        lumaData[y * bytesPerRow + x] = UInt8((x + y + frameIndex * 3) & 0xFF)
-        x += 1
+    var yPos: Int = 0
+    var xPos: Int = 0
+    while yPos < height {
+      while xPos < width {
+        lumaData[yPos * bytesPerRow + xPos] = UInt8((xPos + yPos + frameIndex * 3) & 0xFF)
+        xPos += 1
       }
-      y += 1
+      yPos += 1
     }
   }
 
   private func fillChromaPlane(frameIndex: Int) {
-    var y: Int = 0
-    var x: Int = 0
-    while y < height / 2 {
-      while x < width {
-        chromaData[y * bytesPerRow + x] = UInt8((128 + y + frameIndex * 2) & 0xFF)
-        chromaData[y * bytesPerRow + x + 1] = UInt8((64 + x + frameIndex * 5) & 0xFF)
-        x += 1
+    var yPos: Int = 0
+    var xPos: Int = 0
+    while yPos < height / 2 {
+      while xPos < width {
+        chromaData[yPos * bytesPerRow + xPos] = UInt8((128 + yPos + frameIndex * 2) & 0xFF)
+        chromaData[yPos * bytesPerRow + xPos + 1] = UInt8((64 + xPos + frameIndex * 5) & 0xFF)
+        xPos += 1
       }
-      y += 1
+      yPos += 1
     }
   }
 
