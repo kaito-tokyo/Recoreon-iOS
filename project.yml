@@ -4,12 +4,13 @@ name: "Recoreon"
 options:
   bundleIdPrefix: com.github.umireon
   deploymentTarget:
-    iOS: "16.0"
+    iOS: "17.4"
 
 fileGroups:
   - "PrivacyInfo.xcprivacy"
   - "RecoreonTests.xctestplan"
   - "RecoreonUITests.xctestplan"
+  - "RealtimeMediaWriterTests.xctestplan"
 
 settings:
   # Signing settings
@@ -33,6 +34,25 @@ packages:
     from: "6.0.3"
 
 targets:
+  RealtimeMediaWriter:
+    type: "library.static"
+    platform: "iOS"
+    sources:
+      - "RealtimeMediaWriter"
+
+  RealtimeMediaWriterTests:
+    type: "bundle.unit-test"
+    platform: "iOS"
+    sources:
+      - "RealtimeMediaWriterTests"
+    dependencies:
+      - target: "RealtimeMediaWriter"
+    info:
+      path: "RecoreonUITests/Info.plist"
+      properties:
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+
   ScreenRecordWriter:
     type: "library.static"
     platform: "iOS"
@@ -164,3 +184,4 @@ schemes:
         - path: "RecoreonTests.xctestplan"
           defaultPlan: true
         - path: "RecoreonUITests.xctestplan"
+        - path: "RealtimeMediaWriterTests.xctestplan"

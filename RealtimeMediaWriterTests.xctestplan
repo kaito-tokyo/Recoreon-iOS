@@ -1,7 +1,7 @@
 {
   "configurations" : [
     {
-      "id" : "90B05652-AE6B-42F3-8967-3C044FECE570",
+      "id" : "B2C634CD-61EF-480D-A3D7-5667145A1CC2",
       "name" : "Configuration 1",
       "options" : {
 
@@ -9,16 +9,14 @@
     }
   ],
   "defaultOptions" : {
-    "language" : "en",
-    "region" : "US"
+
   },
   "testTargets" : [
     {
-      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:Recoreon.xcodeproj",
-        "identifier" : "9EDF32C6584ACD28761B21DE",
-        "name" : "RecoreonTests"
+        "identifier" : "9C846C6885638E59E1D9DD35",
+        "name" : "RealtimeMediaWriterTests"
       }
     }
   ],
