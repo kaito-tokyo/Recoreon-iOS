@@ -48,9 +48,14 @@ class DummyAudioGenerator {
   }
 
   func generateNextAudioFrame() -> AudioFrame {
-    let ab = AudioBuffer(
-      mNumberChannels: UInt32(numChannels), mDataByteSize: UInt32(dataByteSize), mData: state.data)
-    let abl = AudioBufferList(mNumberBuffers: 1, mBuffers: ab)
+    let audioBufferList = AudioBufferList(
+      mNumberBuffers: 1,
+      mBuffers: AudioBuffer(
+        mNumberChannels: UInt32(numChannels),
+        mDataByteSize: UInt32(dataByteSize),
+        mData: state.data
+      )
+    )
     fillAudio(&state)
 
     let elapsedTime = CMTime(value: CMTimeValue(sampleIndex), timescale: CMTimeScale(sampleRate))
@@ -59,7 +64,7 @@ class DummyAudioGenerator {
     sampleIndex += numSamples
 
     return AudioFrame(
-      audioBufferList: abl,
+      audioBufferList: audioBufferList,
       pts: pts
     )
   }

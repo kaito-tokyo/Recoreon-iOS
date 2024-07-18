@@ -164,8 +164,9 @@ public class FragmentedMP4Writer {
       """
 
     let separableSegments = delegate.separableSegments
-    let indexComponents = zip(separableSegments, separableSegments.dropFirst()).map {
-      (first, second) in
+    let indexComponents = zip(
+      separableSegments, separableSegments.dropFirst()
+    ).map { (first, second) in
       let segmentDuration = second.earliestPTS - first.earliestPTS
       return """
         #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),

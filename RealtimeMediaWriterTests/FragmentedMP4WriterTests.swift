@@ -6,6 +6,7 @@ import XCTest
 
 final class FragmentedMP4WriterTests: XCTestCase {
 
+  // swiftlint:disable function_body_length
   func testVideoOnly() async throws {
     let width = 888
     let height = 1920
@@ -70,7 +71,7 @@ final class FragmentedMP4WriterTests: XCTestCase {
         sampleBufferOut: &sampleBufferOut
       )
       guard let sampleBuffer = sampleBufferOut else {
-        XCTFail()
+        XCTFail("error")
         return
       }
 
@@ -102,7 +103,7 @@ final class FragmentedMP4WriterTests: XCTestCase {
         sampleBufferOut: &sampleBufferOut
       )
       guard err == noErr, let sampleBuffer = sampleBufferOut else {
-        XCTFail()
+        XCTFail("error")
         return
       }
 
@@ -139,5 +140,6 @@ final class FragmentedMP4WriterTests: XCTestCase {
 
     try await writer.close()
   }
+  // swiftlint:enable function_body_length
 
 }
