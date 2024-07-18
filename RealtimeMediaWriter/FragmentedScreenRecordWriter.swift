@@ -1,5 +1,5 @@
-import Foundation
 import CoreMedia
+import Foundation
 
 public struct FragmentedScreenRecordWriter {
   private let outputDirectoryURL: URL
@@ -10,7 +10,6 @@ public struct FragmentedScreenRecordWriter {
 
   private let appAudioWriter: FragmentedAudioWriter
   private let micAudioWriter: FragmentedAudioWriter
-
 
   public init(
     outputDirectoryURL: URL,
@@ -39,34 +38,36 @@ public struct FragmentedScreenRecordWriter {
       outputDirectoryURL: outputDirectoryURL,
       outputFilePrefix: "\(outputFilePrefix)-app",
       sampleRate: 44_100,
-      sourceFormatHint: CMFormatDescription(audioStreamBasicDescription: AudioStreamBasicDescription(
-        mSampleRate: 44_100,
-        mFormatID: kAudioFormatLinearPCM,
-        mFormatFlags: kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked,
-        mBytesPerPacket: 4,
-        mFramesPerPacket: 1,
-        mBytesPerFrame: 4,
-        mChannelsPerFrame: 2,
-        mBitsPerChannel: 16,
-        mReserved: 0
-      ))
+      sourceFormatHint: CMFormatDescription(
+        audioStreamBasicDescription: AudioStreamBasicDescription(
+          mSampleRate: 44_100,
+          mFormatID: kAudioFormatLinearPCM,
+          mFormatFlags: kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked,
+          mBytesPerPacket: 4,
+          mFramesPerPacket: 1,
+          mBytesPerFrame: 4,
+          mChannelsPerFrame: 2,
+          mBitsPerChannel: 16,
+          mReserved: 0
+        ))
     )
 
     micAudioWriter = try FragmentedAudioWriter(
       outputDirectoryURL: outputDirectoryURL,
       outputFilePrefix: "\(outputFilePrefix)-mic",
       sampleRate: 44_100,
-      sourceFormatHint: CMFormatDescription(audioStreamBasicDescription: AudioStreamBasicDescription(
-        mSampleRate: 44_100,
-        mFormatID: kAudioFormatLinearPCM,
-        mFormatFlags: kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked,
-        mBytesPerPacket: 4,
-        mFramesPerPacket: 1,
-        mBytesPerFrame: 4,
-        mChannelsPerFrame: 2,
-        mBitsPerChannel: 16,
-        mReserved: 0
-      ))
+      sourceFormatHint: CMFormatDescription(
+        audioStreamBasicDescription: AudioStreamBasicDescription(
+          mSampleRate: 44_100,
+          mFormatID: kAudioFormatLinearPCM,
+          mFormatFlags: kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked,
+          mBytesPerPacket: 4,
+          mFramesPerPacket: 1,
+          mBytesPerFrame: 4,
+          mChannelsPerFrame: 2,
+          mBitsPerChannel: 16,
+          mReserved: 0
+        ))
     )
   }
 

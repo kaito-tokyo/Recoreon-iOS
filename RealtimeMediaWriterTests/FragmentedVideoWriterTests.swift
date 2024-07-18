@@ -3,10 +3,10 @@ import Foundation
 import RealtimeMediaWriter
 import XCTest
 
-fileprivate let width = 888
-fileprivate let height = 1920
-fileprivate let frameRate = 60
-fileprivate let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+private let width = 888
+private let height = 1920
+private let frameRate = 60
+private let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
 final class FragmentedVideoWriterTests: XCTestCase {
 

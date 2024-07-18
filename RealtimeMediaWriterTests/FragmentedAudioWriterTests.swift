@@ -3,10 +3,10 @@ import Foundation
 import RealtimeMediaWriter
 import XCTest
 
-fileprivate let appSampleRate = 44_100
-fileprivate let height = 1920
-fileprivate let frameRate = 60
-fileprivate let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+private let appSampleRate = 44_100
+private let height = 1920
+private let frameRate = 60
+private let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
 final class FragmentedAudioWriterTests: XCTestCase {
 
@@ -22,7 +22,8 @@ final class FragmentedAudioWriterTests: XCTestCase {
 
     print("Output directory is \(outputDirectoryURL.path())")
 
-    let dummyAppAudioGenerator = try DummyAudioGenerator(sampleRate: sampleRate, initialPTS: CMTime.zero)
+    let dummyAppAudioGenerator = try DummyAudioGenerator(
+      sampleRate: sampleRate, initialPTS: CMTime.zero)
 
     let audioWriter = try FragmentedAudioWriter(
       outputDirectoryURL: outputDirectoryURL,
