@@ -1,6 +1,8 @@
 import CoreMedia
 import RealtimeMediaWriter
 import XCTest
+import AVFoundation
+import VideoToolbox
 
 final class FragmentedMP4WriterTests: XCTestCase {
 
@@ -18,11 +20,27 @@ final class FragmentedMP4WriterTests: XCTestCase {
 
     print("Output directory is \(outputDirectoryURL.path())")
 
-    let videoFormatDesc = try CMFormatDescription(
-      videoCodecType: .h264, width: width, height: height)
+    let videoOutputSettings: [String: Any] = [
+      AVVideoCodecKey: AVVideoCodecType.h264,
+      AVVideoWidthKey: width,
+      AVVideoHeightKey: height,
+      AVVideoCompressionPropertiesKey: [
+        kVTCompressionPropertyKey_MaxKeyFrameInterval: frameRate * 2,
+        kVTCompressionPropertyKey_AverageBitRate: 8_000_000,
+        kVTCompressionPropertyKey_ProfileLevel: kVTProfileLevel_H264_High_4_2,
+        kVTCompressionPropertyKey_RealTime: true,
+        kVTCompressionPropertyKey_ExpectedFrameRate: frameRate,
+      ],
+    ]
+    let audioOutputSettings: [String: Any] = [
+      AVFormatIDKey: kAudioFormatMPEG4AAC,
+      AVSampleRateKey: kRealTimeAudioTranscoderInputASBD.mSampleRate,
+      AVNumberOfChannelsKey: kRealTimeAudioTranscoderInputASBD.mChannelsPerFrame,
+      AVEncoderBitRateKey: 320_000,
+    ]
     let writer = try FragmentedMP4Writer(
       outputDirectoryURL: outputDirectoryURL, outputFilePrefix: "Recoreon0T0", frameRate: frameRate,
-      videoFormatDesc: videoFormatDesc
+      videoOutputSettings: videoOutputSettings, appAudioOutputSettings: audioOutputSettings
     )
 
     let initialPTS = CMTime(value: 100, timescale: CMTimeScale(frameRate))
@@ -31,20 +49,65 @@ final class FragmentedMP4WriterTests: XCTestCase {
       width: width, height: height, frameRate: frameRate,
       initialPTS: initialPTS)
 
-    let videoTranscoder = try RealtimeVideoTranscoder(width: width, height: height)
+    let dummyAudioGenerator = DummyAudioGenerator(sampleRate: 48_000, initialPTS: CMTime(value: 80_000, timescale: 48_000))
 
-    for _ in 0..<1200 {
-      let videoFrame = try dummyVideoGenerator.generateNextVideoFrame()
-      videoTranscoder.sendImageBuffer(
-        imageBuffer: videoFrame.pixelBuffer,
-        pts: videoFrame.pts
-      ) { (status, _, sbuf) in
-        guard status == noErr, let sampleBuffer = sbuf else { return }
+    for _ in 0..<10 {
+      for _ in 0..<60 {
+        let videoFrame = try dummyVideoGenerator.generateNextVideoFrame()
+
+        var sampleTiming = CMSampleTimingInfo(
+          duration: CMTime(value: 1, timescale: CMTimeScale(frameRate)),
+          presentationTimeStamp: videoFrame.pts,
+          decodeTimeStamp: videoFrame.pts
+        )
+        var sampleBufferOut: CMSampleBuffer?
+        CMSampleBufferCreateForImageBuffer(
+          allocator: kCFAllocatorDefault,
+          imageBuffer: videoFrame.pixelBuffer,
+          dataReady: true,
+          makeDataReadyCallback: nil,
+          refcon: nil,
+          formatDescription: try CMVideoFormatDescription(imageBuffer: videoFrame.pixelBuffer),
+          sampleTiming: &sampleTiming,
+          sampleBufferOut: &sampleBufferOut
+        )
+        guard let sampleBuffer = sampleBufferOut else {
+          XCTFail()
+          return
+        }
+
         try? writer.sendVideoSampleBuffer(sampleBuffer: sampleBuffer)
+
+        try await Task.sleep(nanoseconds: UInt64(1e9 / Double(frameRate)))
+      }
+
+      for _ in 0..<1 {
+        let audioFrame = dummyAudioGenerator.generateNextAudioFrame()
+
+        var sampleTiming = CMSampleTimingInfo(
+          duration: CMTime(value: CMTimeValue(audioFrame.audioBufferList.mBuffers.mDataByteSize / 4), timescale: 48_000),
+          presentationTimeStamp: audioFrame.pts,
+          decodeTimeStamp: audioFrame.pts
+        )
+        var sampleBufferOut: CMSampleBuffer?
+        CMSampleBufferCreate(
+          allocator: kCFAllocatorDefault,
+          dataBuffer: nil,
+          dataReady: false,
+          makeDataReadyCallback: nil,
+          refcon: nil,
+          formatDescription: try CMFormatDescription(audioStreamBasicDescription: kRealTimeAudioTranscoderOutputASBD),
+          sampleCount: Int(audioFrame.audioBufferList.mBuffers.mDataByteSize / 4),
+          sampleTimingEntryCount: 1,
+          sampleTimingArray: &sampleTiming,
+          sampleSizeEntryCount: 0,
+          sampleSizeArray: nil,
+          sampleBufferOut: &sampleBufferOut
+        )
+
       }
     }
 
-    videoTranscoder.close()
     try await writer.close()
   }
 

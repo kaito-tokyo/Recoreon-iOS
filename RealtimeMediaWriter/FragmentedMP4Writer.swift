@@ -65,12 +65,13 @@ public class FragmentedMP4Writer {
   private let assetWriter: AVAssetWriter
   private let delegate: FragmentedMP4WriterDelegate
   private let videoInput: AVAssetWriterInput
+  private let appAudioInput: AVAssetWriterInput
 
   private var sessionStarted = false
 
   public init(
     outputDirectoryURL: URL, outputFilePrefix: String, frameRate: Int,
-    videoFormatDesc: CMFormatDescription
+    videoOutputSettings: [String: Any], appAudioOutputSettings: [String: Any]
   ) throws {
     self.outputDirectoryURL = outputDirectoryURL
     self.outputFilePrefix = outputFilePrefix
@@ -86,11 +87,14 @@ public class FragmentedMP4Writer {
       outputDirectoryURL: outputDirectoryURL, outputFilePrefix: outputFilePrefix)
     assetWriter.delegate = delegate
 
-    videoInput = AVAssetWriterInput(
-      mediaType: .video, outputSettings: nil, sourceFormatHint: videoFormatDesc)
+    videoInput = AVAssetWriterInput(mediaType: .video, outputSettings: videoOutputSettings)
     videoInput.expectsMediaDataInRealTime = true
 
+    appAudioInput = AVAssetWriterInput(mediaType: .audio, outputSettings: appAudioOutputSettings)
+    appAudioInput.expectsMediaDataInRealTime = true
+
     assetWriter.add(videoInput)
+    assetWriter.add(appAudioInput)
 
     guard assetWriter.startWriting() else {
       throw assetWriter.error!
@@ -109,6 +113,20 @@ public class FragmentedMP4Writer {
 
     if videoInput.isReadyForMoreMediaData {
       try sampleBuffer.setOutputPresentationTimeStamp(rescaledPTS)
+      videoInput.append(sampleBuffer)
+    } else {
+      print(
+        String(
+          format: "Error: VideoSink dropped a frame [PTS: %.3f]",
+          sampleBuffer.presentationTimeStamp.seconds
+        ))
+    }
+  }
+
+  public func sendAppAudioSampleBuffer(sampleBuffer: CMSampleBuffer) throws {
+    guard sessionStarted else { return }
+
+    if appAudioInput.isReadyForMoreMediaData {
       videoInput.append(sampleBuffer)
     } else {
       print(

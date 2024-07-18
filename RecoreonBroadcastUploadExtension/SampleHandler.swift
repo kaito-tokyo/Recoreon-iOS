@@ -349,7 +349,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       let buf = abl.mBuffers.mData
     else { return }
 
-    print(format)
+    print(abl)
 
     var inData: UnsafePointer<UInt8>
     let numBytes = abl.mBuffers.mDataByteSize
