@@ -187,3 +187,8 @@ schemes:
           defaultPlan: true
         - path: "RecoreonUITests.xctestplan"
         - path: "RealtimeMediaWriterTests.xctestplan"
+
+  RecoreonBroadcastUploadExtension:
+    build:
+      targets:
+        RecoreonBroadcastUploadExtension: "all"
