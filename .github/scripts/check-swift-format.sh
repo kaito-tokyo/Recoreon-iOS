@@ -1,7 +1,7 @@
 #!/bin/bash
 dirs=(
-  RealtimeMediaWriter
-  RealtimeMediaWriterTests
+  FragmentedScreenRecordWriter
+  FragmentedScreenRecordWriterTests
   Recoreon
   RecoreonBroadcastUploadExtension
   RecoreonTests

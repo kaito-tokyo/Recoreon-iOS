@@ -10,7 +10,7 @@ fileGroups:
   - "PrivacyInfo.xcprivacy"
   - "RecoreonTests.xctestplan"
   - "RecoreonUITests.xctestplan"
-  - "RealtimeMediaWriterTests.xctestplan"
+  - "FragmentedScreenRecordWriterTests.xctestplan"
 
 settings:
   # Signing settings
@@ -34,21 +34,21 @@ packages:
     from: "6.0.3"
 
 targets:
-  RealtimeMediaWriter:
+  FragmentedScreenRecordWriter:
     type: "library.static"
     platform: "iOS"
     sources:
-      - "RealtimeMediaWriter"
+      - "FragmentedScreenRecordWriter"
 
-  RealtimeMediaWriterTests:
+  FragmentedScreenRecordWriterTests:
     type: "bundle.unit-test"
     platform: "iOS"
     sources:
-      - "RealtimeMediaWriterTests"
+      - "FragmentedScreenRecordWriterTests"
     dependencies:
-      - target: "RealtimeMediaWriter"
+      - target: "FragmentedScreenRecordWriter"
     settings:
-      SWIFT_OBJC_BRIDGING_HEADER: "RealtimeMediaWriterTests/RealtimeMediaWriterTests-Bridging-Header.h"
+      SWIFT_OBJC_BRIDGING_HEADER: "FragmentedScreenRecordWriterTests/FragmentedScreenRecordWriterTests-Bridging-Header.h"
     info:
       path: "RecoreonUITests/Info.plist"
       properties:
@@ -186,7 +186,7 @@ schemes:
         - path: "RecoreonTests.xctestplan"
           defaultPlan: true
         - path: "RecoreonUITests.xctestplan"
-        - path: "RealtimeMediaWriterTests.xctestplan"
+        - path: "FragmentedScreenRecordWriterTests.xctestplan"
 
   RecoreonBroadcastUploadExtension:
     build:
