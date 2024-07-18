@@ -2,7 +2,7 @@
 setopt EXTENDED_GLOB
 setopt PIPE_FAIL
 
-local -a files=(Recoreon*/**/*.(swift|m|h|plist|json)(.N))
+local -a files=((Recoreon|FragmentedScreenRecordWriter)*/**/*.(swift|m|h|plist|json)(.N))
 files+=(*.(xcodeproj|xcworkspace)/**/*(.N))
 files=(${files:#**/xcuserdata/**})
 files+=((.github|ci_scripts)/**/*(.N))
