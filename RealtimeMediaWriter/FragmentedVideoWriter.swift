@@ -17,7 +17,7 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
 
   private var segmentIndex = 0
   private(set) var initializationSegmentFilename: String?
-  private(set) var separableSegments: [SeparableSegment] = []
+  private(set) var separableSegments: [SeparableVideoSegment] = []
 
   init(outputDirectoryURL: URL, outputFilePrefix: String) throws {
     self.outputDirectoryURL = outputDirectoryURL
@@ -45,7 +45,7 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
       let earliestPTS = timingTrackInfo.earliestPresentationTimeStamp
       let duration = timingTrackInfo.duration
       separableSegments.append(
-        SeparableSegment(filename: filename, earliestPTS: earliestPTS, duration: duration))
+        SeparableVideoSegment(filename: filename, earliestPTS: earliestPTS, duration: duration))
 
       segmentIndex += 1
     @unknown default:
