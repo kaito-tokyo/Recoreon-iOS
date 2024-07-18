@@ -55,7 +55,7 @@ public class RealtimeVideoTranscoder {
     self.compressionSession = compressionSession
   }
 
-  public func sendImageBuffer(
+  public func send(
     imageBuffer: CVImageBuffer,
     pts: CMTime,
     outputHandler: @escaping VTCompressionOutputHandler

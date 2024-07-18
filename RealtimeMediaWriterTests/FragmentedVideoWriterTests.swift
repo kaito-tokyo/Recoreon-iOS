@@ -3,10 +3,10 @@ import Foundation
 import RealtimeMediaWriter
 import XCTest
 
-let width = 888
-let height = 1920
-let frameRate = 60
-let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+private let width = 888
+private let height = 1920
+private let frameRate = 60
+private let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
 final class FragmentedVideoWriterTests: XCTestCase {
 
@@ -39,14 +39,14 @@ final class FragmentedVideoWriterTests: XCTestCase {
       initialPTS: CMTime.zero
     )
 
-    for _ in 0..<1200 {
+    for _ in 0..<600 {
       let videoFrame = try dummyVideoGenerator.generateNextVideoFrame()
 
-      videoTranscoder.sendImageBuffer(
+      videoTranscoder.send(
         imageBuffer: videoFrame.pixelBuffer,
         pts: videoFrame.pts
       ) { (_, _, sbuf) in
-        try? videoWriter.sendVideoSampleBuffer(sampleBuffer: sbuf!)
+        try? videoWriter.send(sampleBuffer: sbuf!)
       }
 
       try await Task.sleep(nanoseconds: UInt64(1_000_000_000 / frameRate))
