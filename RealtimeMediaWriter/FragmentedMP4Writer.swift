@@ -123,11 +123,11 @@ public class FragmentedMP4Writer {
     }
   }
 
-  public func sendAppAudioSampleBuffer(sampleBuffer: CMSampleBuffer) throws {
+  public func sendAppAudio(sampleBuffer: CMSampleBuffer) throws {
     guard sessionStarted else { return }
 
     if appAudioInput.isReadyForMoreMediaData {
-      videoInput.append(sampleBuffer)
+      appAudioInput.append(sampleBuffer)
     } else {
       print(
         String(
@@ -139,6 +139,7 @@ public class FragmentedMP4Writer {
 
   public func close() async throws {
     videoInput.markAsFinished()
+    appAudioInput.markAsFinished()
 
     await assetWriter.finishWriting()
     if assetWriter.status == .failed {

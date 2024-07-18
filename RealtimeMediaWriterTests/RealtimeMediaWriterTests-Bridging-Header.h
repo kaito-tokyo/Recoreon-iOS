@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <stdint.h>
+#include <stdio.h>
 
 static inline void fillLumaPlane(uint8_t *__nonnull lumaData, long width, long height, long bytesPerRow, long frameIndex) {
   for (long y = 0; y < height; y++) {
@@ -29,12 +30,12 @@ struct DummyAudioGeneratorState {
   double tincr2;
 };
 
-static inline void fillAudio(struct DummyAudioGeneratorState *audioFrame) {
-  long numSamples = audioFrame->numSamples;
-  long numChannels = audioFrame->numChannels;
-  double t = audioFrame->t;
-  double tincr = audioFrame->tincr;
-  double tincr2 = audioFrame->tincr2;
+static inline void fillAudio(struct DummyAudioGeneratorState *state) {
+  long numSamples = state->numSamples;
+  long numChannels = state->numChannels;
+  double t = state->t;
+  double tincr = state->tincr;
+  double tincr2 = state->tincr2;
 
   for (long i = 0; i < numSamples; i++) {
     t += tincr;
@@ -42,10 +43,10 @@ static inline void fillAudio(struct DummyAudioGeneratorState *audioFrame) {
     int16_t value = sin(t) * 10000;
 
     for (long j = 0; j < numChannels; j++) {
-      audioFrame->data[i * numChannels + j] = value;
+      state->data[i * numChannels + j] = value;
     }
   }
 
-  audioFrame->t = t;
-  audioFrame->tincr = tincr;
+  state->t = t;
+  state->tincr = tincr;
 }

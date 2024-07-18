@@ -8,6 +8,8 @@ struct AudioFrame {
 }
 
 class DummyAudioGenerator {
+  public let formatDesc: CMFormatDescription
+
   private let sampleRate: Int
   private let initialPTS: CMTime
 
@@ -18,17 +20,29 @@ class DummyAudioGenerator {
   private let numChannels = 2
   private let dataByteSize = 4096
 
-  init(sampleRate: Int, initialPTS: CMTime) {
+  init(sampleRate: Int, initialPTS: CMTime) throws {
+    formatDesc = try CMFormatDescription(audioStreamBasicDescription: AudioStreamBasicDescription(
+      mSampleRate: Float64(sampleRate),
+      mFormatID: kAudioFormatLinearPCM,
+      mFormatFlags: kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked,
+      mBytesPerPacket: 4,
+      mFramesPerPacket: 1,
+      mBytesPerFrame: 4,
+      mChannelsPerFrame: 2,
+      mBitsPerChannel: 16,
+      mReserved: 0
+    ))
+
     self.sampleRate = sampleRate
     self.initialPTS = initialPTS
   
     self.state = DummyAudioGeneratorState(
-      data: .allocate(capacity: numSamples * numChannels),
+      data: .allocate(capacity: numSamples * numChannels * 10),
       numSamples: numSamples,
       numChannels: numChannels,
       t: 0,
       tincr: 2 * Double.pi * 330.0 / Double(sampleRate),
-      tincr2:  2 * Double.pi * 330.0 / Double(sampleRate) / Double(sampleRate)
+      tincr2: 2 * Double.pi * 330.0 / Double(sampleRate) / Double(sampleRate)
     )
   }
 
