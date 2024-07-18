@@ -2,22 +2,23 @@ import AVFoundation
 import CoreMedia
 import Foundation
 
-enum FragmentedVideoWriterError: CustomNSError {
+enum FragmentedAudioWriterError: CustomNSError {
+  case notImplementedError
 }
 
-struct SeparableVideoSegment {
+struct SeparableAudioSegment {
   let filename: String
   let earliestPTS: CMTime
   let duration: CMTime
 }
 
-private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
+private class FragmentedAudioWriterDelegate: NSObject, AVAssetWriterDelegate {
   private let outputDirectoryURL: URL
   private let outputFilePrefix: String
 
   private var segmentIndex = 0
   private(set) var initializationSegmentFilename: String?
-  private(set) var separableSegments: [SeparableVideoSegment] = []
+  private(set) var separableSegments: [SeparableAudioSegment] = []
 
   init(outputDirectoryURL: URL, outputFilePrefix: String) throws {
     self.outputDirectoryURL = outputDirectoryURL
@@ -41,11 +42,11 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
       let filename = "\(outputFilePrefix)-\(paddedSegmentIndex).m4s"
       outputURL = outputDirectoryURL.appending(path: filename)
 
-      let timingTrackInfo = segmentReport!.trackReports.first(where: { $0.mediaType == .video })!
+      let timingTrackInfo = segmentReport!.trackReports[0]
       let earliestPTS = timingTrackInfo.earliestPresentationTimeStamp
       let duration = timingTrackInfo.duration
       separableSegments.append(
-        SeparableVideoSegment(filename: filename, earliestPTS: earliestPTS, duration: duration))
+        SeparableAudioSegment(filename: filename, earliestPTS: earliestPTS, duration: duration))
 
       segmentIndex += 1
     @unknown default:
@@ -56,44 +57,52 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
   }
 }
 
-public class FragmentedVideoWriter {
+public class FragmentedAudioWriter {
   private let outputDirectoryURL: URL
   private let outputFilePrefix: String
-  private let frameRate: CMTimeScale
+  private let sampleRate: Int
 
   private let assetWriter: AVAssetWriter
-  private let delegate: FragmentedVideoWriterDelegate
-  private let videoInput: AVAssetWriterInput
+  private let delegate: FragmentedAudioWriterDelegate
+  private let audioInput: AVAssetWriterInput
 
   private var sessionStarted = false
 
   public init(
     outputDirectoryURL: URL,
     outputFilePrefix: String,
-    frameRate: Int,
+    sampleRate: Int,
     sourceFormatHint: CMFormatDescription
   ) throws {
     self.outputDirectoryURL = outputDirectoryURL
     self.outputFilePrefix = outputFilePrefix
-    self.frameRate = CMTimeScale(frameRate)
+    self.sampleRate = sampleRate
 
     assetWriter = AVAssetWriter(contentType: .mpeg4Movie)
-    assetWriter.movieTimeScale = self.frameRate
     assetWriter.outputFileTypeProfile = .mpeg4AppleHLS
     assetWriter.preferredOutputSegmentInterval = CMTime(seconds: 6, preferredTimescale: 1)
     assetWriter.initialSegmentStartTime = CMTime.zero
 
-    delegate = try FragmentedVideoWriterDelegate(
+    delegate = try FragmentedAudioWriterDelegate(
       outputDirectoryURL: outputDirectoryURL,
       outputFilePrefix: outputFilePrefix
     )
     assetWriter.delegate = delegate
 
-    videoInput = AVAssetWriterInput(
-      mediaType: .video, outputSettings: nil, sourceFormatHint: sourceFormatHint)
-    videoInput.expectsMediaDataInRealTime = true
+    let audioOutputSettings: [String: Any] = [
+      AVFormatIDKey: kAudioFormatMPEG4AAC,
+      AVSampleRateKey: 48_000,
+      AVNumberOfChannelsKey: 2,
+      AVEncoderBitRateKey: 320_000,
+    ]
+    audioInput = AVAssetWriterInput(
+      mediaType: .audio,
+      outputSettings: audioOutputSettings,
+      sourceFormatHint: sourceFormatHint
+    )
+    audioInput.expectsMediaDataInRealTime = true
 
-    assetWriter.add(videoInput)
+    assetWriter.add(audioInput)
 
     guard assetWriter.startWriting() else {
       throw assetWriter.error!
@@ -103,7 +112,7 @@ public class FragmentedVideoWriter {
   public func send(sampleBuffer: CMSampleBuffer) throws {
     let rescaledPTS = CMTimeConvertScale(
       sampleBuffer.presentationTimeStamp,
-      timescale: frameRate,
+      timescale: CMTimeScale(sampleRate),
       method: .roundTowardPositiveInfinity
     )
 
@@ -112,35 +121,23 @@ public class FragmentedVideoWriter {
       sessionStarted = true
     }
 
-    if videoInput.isReadyForMoreMediaData {
-      try sampleBuffer.setOutputPresentationTimeStamp(rescaledPTS)
-      videoInput.append(sampleBuffer)
+    if audioInput.isReadyForMoreMediaData {
+      audioInput.append(sampleBuffer)
     } else {
       print(
         String(
-          format: "Error: VideoSink dropped a frame [PTS: %.3f]",
+          format: "Error: AudioSink dropped a frame [PTS: %.3f]",
           sampleBuffer.presentationTimeStamp.seconds
         ))
     }
   }
 
   public func close() async throws {
-    videoInput.markAsFinished()
+    audioInput.markAsFinished()
 
     await assetWriter.finishWriting()
     if assetWriter.status == .failed {
       throw assetWriter.error!
-    }
-  }
-
-  private func writeIndexPlaylist() throws {
-    let outputIndexURL = outputDirectoryURL.appending(
-      path: "\(outputFilePrefix).m3u8",
-      directoryHint: .notDirectory
-    )
-
-    guard let initializationSegmentFilename = delegate.initializationSegmentFilename else {
-      return
     }
   }
 
