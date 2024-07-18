@@ -11,6 +11,7 @@ public enum RealtimeAudioTranscoderError: CustomNSError {
   case outputAudioFormatNotSupported(formatID: AudioFormatID)
   case audioConverterCreationFailure(err: OSStatus)
   case audioConverterConversionFailure(err: OSStatus)
+  case audioConverterNoPropertyOfMaximumOutputPacketSize(err: OSStatus)
 
   public var errorUserInfo: [String: Any] {
     switch self {
@@ -29,6 +30,11 @@ public enum RealtimeAudioTranscoderError: CustomNSError {
     case .audioConverterConversionFailure(let err):
       return [
         NSLocalizedFailureReasonErrorKey: "Could not open the video codec! Error code is \(err)"
+      ]
+    case .audioConverterNoPropertyOfMaximumOutputPacketSize(let err):
+      return [
+        NSLocalizedFailureReasonErrorKey:
+          "Could not get MaximumOutputPacketSize! Error code is \(err)"
       ]
     }
   }
@@ -126,12 +132,16 @@ public struct RealtimeAudioTranscoder {
 
     var maxOutputPacketSize: UInt32 = 0
     var maxOutputPacketSizeDataSize = UInt32(MemoryLayout<UInt32>.size)
-    let _ = AudioConverterGetProperty(
+    let err2 = AudioConverterGetProperty(
       audioConverter,
       kAudioConverterPropertyMaximumOutputPacketSize,
       &maxOutputPacketSizeDataSize,
       &maxOutputPacketSize
     )
+    guard err2 == noErr else {
+      throw RealtimeAudioTranscoderError.audioConverterNoPropertyOfMaximumOutputPacketSize(
+        err: err2)
+    }
     self.maxOutputPacketSize = Int(maxOutputPacketSize)
 
     packetBuffer = .allocate(
@@ -142,9 +152,10 @@ public struct RealtimeAudioTranscoder {
     packetDescriptions = .allocate(capacity: packetsPerLoop)
   }
 
-  public func send(inputBuffer: UnsafeMutableRawPointer, numInputSamples: Int) throws
-    -> RealtimAudioTranscoderResult
-  {
+  public func send(
+    inputBuffer: UnsafeMutableRawPointer,
+    numInputSamples: Int
+  ) throws -> RealtimAudioTranscoderResult {
     var inputContext = InputContext(
       numChannels: inputAudioStreamBasicDescription.mChannelsPerFrame,
       numInputSamples: UInt32(numInputSamples),

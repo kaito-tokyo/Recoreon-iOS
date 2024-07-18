@@ -10,7 +10,7 @@ private let frameRate = 60
 private let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
 final class FragmentedAudioWriterTests: XCTestCase {
-
+  // swiftlint:disable function_body_length
   func testCreateAppAudioStream() async throws {
     let sampleRate = appSampleRate
     let name = "FragmentedAudioWriterTests_testCreateAppAudioStream"
@@ -122,4 +122,5 @@ final class FragmentedAudioWriterTests: XCTestCase {
 
     try audioWriter.writeIndexPlaylist()
   }
+  // swiftlint:enable function_body_length
 }
