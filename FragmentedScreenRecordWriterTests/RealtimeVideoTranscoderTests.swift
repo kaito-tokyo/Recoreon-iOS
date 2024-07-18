@@ -1,5 +1,5 @@
 import CoreMedia
-import RealtimeMediaWriter
+import FragmentedScreenRecordWriter
 import VideoToolbox
 import XCTest
 
@@ -11,7 +11,7 @@ final class RealtimeVideoTranscoderTests: XCTestCase {
     videoTranscoder: RealtimeVideoTranscoder, videoFrame: VideoFrame
   ) async -> CMSampleBuffer? {
     return await withCheckedContinuation { continuation in
-      videoTranscoder.sendImageBuffer(
+      videoTranscoder.send(
         imageBuffer: videoFrame.pixelBuffer, pts: videoFrame.pts
       ) { (_, _, sbuf) in
         continuation.resume(returning: sbuf)

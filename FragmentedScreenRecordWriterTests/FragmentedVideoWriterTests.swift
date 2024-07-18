@@ -1,6 +1,6 @@
 import AVFoundation
 import Foundation
-import RealtimeMediaWriter
+import FragmentedScreenRecordWriter
 import XCTest
 
 private let width = 888

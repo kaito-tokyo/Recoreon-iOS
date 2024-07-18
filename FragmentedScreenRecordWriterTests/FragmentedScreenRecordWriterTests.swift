@@ -1,6 +1,6 @@
 import AVFoundation
 import CoreMedia
-import RealtimeMediaWriter
+import FragmentedScreenRecordWriter
 import VideoToolbox
 import XCTest
 

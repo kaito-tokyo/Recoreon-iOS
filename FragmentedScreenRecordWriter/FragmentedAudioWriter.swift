@@ -89,15 +89,9 @@ public class FragmentedAudioWriter {
     )
     assetWriter.delegate = delegate
 
-    let audioOutputSettings: [String: Any] = [
-      AVFormatIDKey: kAudioFormatMPEG4AAC,
-      AVSampleRateKey: 48_000,
-      AVNumberOfChannelsKey: 2,
-      AVEncoderBitRateKey: 320_000,
-    ]
     audioInput = AVAssetWriterInput(
       mediaType: .audio,
-      outputSettings: audioOutputSettings,
+      outputSettings: nil,
       sourceFormatHint: sourceFormatHint
     )
     audioInput.expectsMediaDataInRealTime = true
