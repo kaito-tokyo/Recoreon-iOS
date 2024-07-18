@@ -89,7 +89,8 @@ public class FragmentedVideoWriter {
     )
     assetWriter.delegate = delegate
 
-    videoInput = AVAssetWriterInput(mediaType: .video, outputSettings: nil, sourceFormatHint: sourceFormatHint)
+    videoInput = AVAssetWriterInput(
+      mediaType: .video, outputSettings: nil, sourceFormatHint: sourceFormatHint)
     videoInput.expectsMediaDataInRealTime = true
 
     assetWriter.add(videoInput)

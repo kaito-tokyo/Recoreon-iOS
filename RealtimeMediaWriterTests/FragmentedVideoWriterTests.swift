@@ -1,7 +1,7 @@
-import Foundation
 import AVFoundation
-import XCTest
+import Foundation
 import RealtimeMediaWriter
+import XCTest
 
 let width = 888
 let height = 1920
@@ -14,7 +14,8 @@ final class FragmentedVideoWriterTests: XCTestCase {
     let name = "FragmentedVideoWriterTests_testCreateVideoStream"
     let outputDirectoryURL = documentsURL.appending(path: name, directoryHint: .isDirectory)
     try? FileManager.default.removeItem(at: outputDirectoryURL)
-    try FileManager.default.createDirectory(at: outputDirectoryURL, withIntermediateDirectories: true)
+    try FileManager.default.createDirectory(
+      at: outputDirectoryURL, withIntermediateDirectories: true)
 
     print("Output directory is \(outputDirectoryURL.path())")
 
@@ -28,7 +29,7 @@ final class FragmentedVideoWriterTests: XCTestCase {
         height: height
       )
     )
-    
+
     let videoTranscoder = try RealtimeVideoTranscoder(width: width, height: height)
 
     let dummyVideoGenerator = try DummyVideoGenerator(
