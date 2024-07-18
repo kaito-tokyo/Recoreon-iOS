@@ -1,8 +1,8 @@
+import AVFoundation
 import CoreMedia
 import RealtimeMediaWriter
-import XCTest
-import AVFoundation
 import VideoToolbox
+import XCTest
 
 final class FragmentedMP4WriterTests: XCTestCase {
 
@@ -45,7 +45,8 @@ final class FragmentedMP4WriterTests: XCTestCase {
 
     let initialPTS = CMTime.zero
 
-    let dummyVideoGenerator = try DummyVideoGenerator(width: width, height: height, frameRate: frameRate, initialPTS: initialPTS)
+    let dummyVideoGenerator = try DummyVideoGenerator(
+      width: width, height: height, frameRate: frameRate, initialPTS: initialPTS)
 
     let dummyAudioGenerator = try DummyAudioGenerator(sampleRate: 48_000, initialPTS: initialPTS)
 
@@ -78,7 +79,7 @@ final class FragmentedMP4WriterTests: XCTestCase {
 
     func send(audioFrame: AudioFrame) throws {
       var err: OSStatus
-  
+
       var sampleTiming = CMSampleTimingInfo(
         duration: CMTime(value: 1, timescale: 48_000),
         presentationTimeStamp: audioFrame.pts,
