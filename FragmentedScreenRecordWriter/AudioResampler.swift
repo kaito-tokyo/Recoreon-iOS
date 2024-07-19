@@ -37,13 +37,12 @@ public class AudioResampler {
   }
 
   private func shift() throws {
-    print(
-      "aaa", underlyingBuffer[1024 * 2 + numSamples * 2 - 12],
-      underlyingBuffer[1024 * 2 + numSamples * 2 - 11])
     let rawUnderlyingBuffer = UnsafeMutableRawPointer(underlyingBuffer)
     let tailRegionBuffer = rawUnderlyingBuffer.advanced(by: numSamples * bytesPerFrame)
     rawUnderlyingBuffer.copyMemory(
-      from: tailRegionBuffer, byteCount: numOffsetSamples * bytesPerFrame)
+      from: tailRegionBuffer,
+      byteCount: numOffsetSamples * bytesPerFrame
+    )
   }
 
   public func append(
