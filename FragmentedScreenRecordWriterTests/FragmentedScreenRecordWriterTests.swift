@@ -40,11 +40,11 @@ final class FragmentedScreenRecordWriterTests: XCTestCase {
     let dummyAppAudioGenerator = try DummyAudioGenerator(sampleRate: 44_100, initialPTS: initialPTS)
     let dummyMicAudioGenerator = try DummyAudioGenerator(sampleRate: 48_000, initialPTS: initialPTS)
 
-    func send(videoFrame: VideoFrame) throws {
+    func send(videoFrame: DummyVideoGeneratorFrame) throws {
       try screenRecordWriter.sendVideo(imageBuffer: videoFrame.pixelBuffer, pts: videoFrame.pts)
     }
 
-    func send(appAudioFrame audioFrame: AudioFrame) throws {
+    func send(appAudioFrame audioFrame: DummyAudioGeneratorFrame) throws {
       var err: OSStatus
 
       var sampleTiming = CMSampleTimingInfo(
@@ -86,7 +86,7 @@ final class FragmentedScreenRecordWriterTests: XCTestCase {
       try screenRecordWriter.sendAppAudio(sampleBuffer: sampleBuffer)
     }
 
-    func send(micAudioFrame audioFrame: AudioFrame) throws {
+    func send(micAudioFrame audioFrame: DummyAudioGeneratorFrame) throws {
       var err: OSStatus
 
       var sampleTiming = CMSampleTimingInfo(

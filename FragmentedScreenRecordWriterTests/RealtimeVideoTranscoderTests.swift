@@ -8,7 +8,7 @@ final class RealtimeVideoTranscoderTests: XCTestCase {
   let hundredMilliSeconds: UInt64 = 100_000_000
 
   func sendFrameToTranscoder(
-    videoTranscoder: RealtimeVideoTranscoder, videoFrame: VideoFrame
+    videoTranscoder: RealtimeVideoTranscoder, videoFrame: DummyVideoGeneratorFrame
   ) async -> CMSampleBuffer? {
     return await withCheckedContinuation { continuation in
       videoTranscoder.send(

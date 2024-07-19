@@ -2,7 +2,7 @@ import CoreAudio
 import CoreMedia
 import Foundation
 
-struct AudioFrame {
+struct DummyAudioGeneratorFrame {
   let audioBufferList: AudioBufferList
   let pts: CMTime
 }
@@ -47,7 +47,7 @@ class DummyAudioGenerator {
     )
   }
 
-  func generateNextAudioFrame() -> AudioFrame {
+  func generateNextAudioFrame() -> DummyAudioGeneratorFrame {
     let audioBufferList = AudioBufferList(
       mNumberBuffers: 1,
       mBuffers: AudioBuffer(
@@ -63,7 +63,7 @@ class DummyAudioGenerator {
 
     sampleIndex += numSamples
 
-    return AudioFrame(
+    return DummyAudioGeneratorFrame(
       audioBufferList: audioBufferList,
       pts: pts
     )

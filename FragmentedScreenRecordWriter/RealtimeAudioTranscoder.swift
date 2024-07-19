@@ -80,7 +80,7 @@ private func inputDataProc(
   return noErr
 }
 
-public struct RealtimAudioTranscoderResult {
+public struct RealtimeAudioTranscoderResult {
   public let audioBufferList: AudioBufferList
   public let packetDescriptions: UnsafePointer<AudioStreamPacketDescription>
 }
@@ -155,7 +155,7 @@ public struct RealtimeAudioTranscoder {
   public func send(
     inputBuffer: UnsafeMutableRawPointer,
     numInputSamples: Int
-  ) throws -> RealtimAudioTranscoderResult {
+  ) throws -> RealtimeAudioTranscoderResult {
     var inputContext = InputContext(
       numChannels: inputAudioStreamBasicDescription.mChannelsPerFrame,
       numInputSamples: UInt32(numInputSamples),
@@ -186,7 +186,7 @@ public struct RealtimeAudioTranscoder {
       throw RealtimeAudioTranscoderError.audioConverterConversionFailure(err: err)
     }
 
-    return RealtimAudioTranscoderResult(
+    return RealtimeAudioTranscoderResult(
       audioBufferList: outputAudioBufferList,
       packetDescriptions: packetDescriptions
     )
