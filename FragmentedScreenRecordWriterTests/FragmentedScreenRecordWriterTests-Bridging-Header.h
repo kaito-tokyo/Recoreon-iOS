@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#import "../FragmentedScreenRecordWriter/FragmentedScreenRecordWriter-Bridging-Header.h"
+
 static inline void fillLumaPlane(uint8_t *__nonnull lumaData, long width,
                                  long height, long bytesPerRow,
                                  long frameIndex) {

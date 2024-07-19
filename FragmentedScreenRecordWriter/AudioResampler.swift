@@ -18,8 +18,7 @@ public class AudioResampler {
   private let outputSampleRate: Int
 
   private let underlyingBuffer: UnsafeMutablePointer<Float32>
-  private let startIndexOfSampleRegion: Int
-  private let headRegionByteCount: Int
+  private let backOffTime: CMTime
 
   private var numSamples: Int = 0
   private var currentPTS: CMTime = .invalid
@@ -27,51 +26,51 @@ public class AudioResampler {
   private let bytesPerFrame = MemoryLayout<Float32>.size * 2
   private let bufferSize = 65536
   private let numOffsetSamples = 1024
+  private let numBackOffSamples = 8
 
   public init(outputSampleRate: Int) throws {
     self.outputSampleRate = outputSampleRate
 
     underlyingBuffer = .allocate(capacity: bufferSize)
-    headRegionByteCount = numOffsetSamples * bytesPerFrame
-    startIndexOfSampleRegion = numOffsetSamples * bytesPerFrame
+    backOffTime = CMTime(
+      value: CMTimeValue(numBackOffSamples), timescale: CMTimeScale(outputSampleRate))
   }
 
   private func shift() throws {
     let rawUnderlyingBuffer = UnsafeMutableRawPointer(underlyingBuffer)
-    let startIndexOfTailRegion = numSamples * bytesPerFrame
-    let tailRegionBuffer = rawUnderlyingBuffer.advanced(by: startIndexOfTailRegion)
-    rawUnderlyingBuffer.copyMemory(from: tailRegionBuffer, byteCount: headRegionByteCount)
+    let tailRegionBuffer = rawUnderlyingBuffer.advanced(by: numSamples * bytesPerFrame)
+    rawUnderlyingBuffer.copyMemory(
+      from: tailRegionBuffer,
+      byteCount: numOffsetSamples * bytesPerFrame
+    )
   }
 
   public func append(
-    stereoInt16Buffer: UnsafePointer<Int16>, numSamples: Int, inputSampleRate: Int, pts: CMTime
+    stereoInt16Buffer: UnsafeMutablePointer<Int16>, numSamples: Int, inputSampleRate: Int,
+    pts: CMTime
   ) throws {
-    guard inputSampleRate == outputSampleRate || inputSampleRate * 2 == outputSampleRate else {
+    guard
+      inputSampleRate == outputSampleRate || inputSampleRate * 2 == outputSampleRate
+        || inputSampleRate * 6 == outputSampleRate
+    else {
       throw AudioResamplerError.appendingSampleRateNotSupported
     }
 
     try shift()
 
+    let bodyBuffer = underlyingBuffer.advanced(by: numOffsetSamples * 2)
     if inputSampleRate == outputSampleRate {
-      let bodyBuffer = underlyingBuffer.advanced(by: numOffsetSamples * 2)
-      for index in 0..<numSamples * 2 {
-        bodyBuffer[index] = Float32(stereoInt16Buffer[index]) * 3.0517578125e-05
-      }
-
+      copyStereoInt16(bodyBuffer, stereoInt16Buffer, numSamples)
       self.numSamples = numSamples
-      self.currentPTS = pts
     } else if inputSampleRate * 2 == outputSampleRate {
-      let bodyBuffer = underlyingBuffer.advanced(by: numOffsetSamples * 2)
-      for index in 0..<numSamples {
-        bodyBuffer[index * 4 + 0] = Float32(stereoInt16Buffer[index * 2 + 0]) * 3.0517578125e-05
-        bodyBuffer[index * 4 + 1] = Float32(stereoInt16Buffer[index * 2 + 1]) * 3.0517578125e-05
-        bodyBuffer[index * 4 + 2] = Float32(stereoInt16Buffer[index * 2 + 0]) * 3.0517578125e-05
-        bodyBuffer[index * 4 + 3] = Float32(stereoInt16Buffer[index * 2 + 1]) * 3.0517578125e-05
-      }
-
+      copyStereoInt16UpsamplingBy2(bodyBuffer, stereoInt16Buffer, numSamples)
       self.numSamples = numSamples * 2
-      self.currentPTS = pts
+    } else if inputSampleRate * 6 == outputSampleRate {
+      copyStereoInt16UpsamplingBy6(bodyBuffer, stereoInt16Buffer, numSamples)
+      self.numSamples = numSamples * 6
     }
+
+    self.currentPTS = pts
   }
 
   public func getCurrentFrame() -> AudioResamplerFrame {
@@ -79,8 +78,8 @@ public class AudioResampler {
       numChannels: 2,
       bytesPerFrame: 8,
       numSamples: numSamples,
-      pts: currentPTS,
-      data: underlyingBuffer.advanced(by: numOffsetSamples * 2)
+      pts: CMTimeSubtract(currentPTS, backOffTime),
+      data: underlyingBuffer.advanced(by: (numOffsetSamples - numBackOffSamples) * 2)
     )
   }
 }
