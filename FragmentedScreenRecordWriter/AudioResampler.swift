@@ -18,8 +18,7 @@ public class AudioResampler {
   private let outputSampleRate: Int
 
   private let underlyingBuffer: UnsafeMutablePointer<Float32>
-  private let startIndexOfSampleRegion: Int
-  private let headRegionByteCount: Int
+  private let backOffTime: CMTime
 
   private var numSamples: Int = 0
   private var currentPTS: CMTime = .invalid
@@ -27,20 +26,20 @@ public class AudioResampler {
   private let bytesPerFrame = MemoryLayout<Float32>.size * 2
   private let bufferSize = 65536
   private let numOffsetSamples = 1024
+  private let numBackOffSamples = 8
 
   public init(outputSampleRate: Int) throws {
     self.outputSampleRate = outputSampleRate
 
     underlyingBuffer = .allocate(capacity: bufferSize)
-    headRegionByteCount = numOffsetSamples * bytesPerFrame
-    startIndexOfSampleRegion = numOffsetSamples * bytesPerFrame
+    backOffTime = CMTime(value: CMTimeValue(numBackOffSamples), timescale: CMTimeScale(outputSampleRate))
   }
 
   private func shift() throws {
+    print("aaa", underlyingBuffer[1024 * 2 + numSamples * 2 - 12], underlyingBuffer[1024 * 2 + numSamples * 2 - 11])
     let rawUnderlyingBuffer = UnsafeMutableRawPointer(underlyingBuffer)
-    let startIndexOfTailRegion = numSamples * bytesPerFrame
-    let tailRegionBuffer = rawUnderlyingBuffer.advanced(by: startIndexOfTailRegion)
-    rawUnderlyingBuffer.copyMemory(from: tailRegionBuffer, byteCount: headRegionByteCount)
+    let tailRegionBuffer = rawUnderlyingBuffer.advanced(by: numSamples * bytesPerFrame)
+    rawUnderlyingBuffer.copyMemory(from: tailRegionBuffer, byteCount: numOffsetSamples * bytesPerFrame)
   }
 
   public func append(
@@ -60,16 +59,15 @@ public class AudioResampler {
     if inputSampleRate == outputSampleRate {
       copyStereoInt16(bodyBuffer, stereoInt16Buffer, numSamples)
       self.numSamples = numSamples
-      self.currentPTS = pts
     } else if inputSampleRate * 2 == outputSampleRate {
       copyStereoInt16UpsamplingBy2(bodyBuffer, stereoInt16Buffer, numSamples)
       self.numSamples = numSamples * 2
-      self.currentPTS = pts
     } else if inputSampleRate * 6 == outputSampleRate {
       copyStereoInt16UpsamplingBy6(bodyBuffer, stereoInt16Buffer, numSamples)
       self.numSamples = numSamples * 6
-      self.currentPTS = pts
     }
+
+    self.currentPTS = pts
   }
 
   public func getCurrentFrame() -> AudioResamplerFrame {
@@ -77,8 +75,8 @@ public class AudioResampler {
       numChannels: 2,
       bytesPerFrame: 8,
       numSamples: numSamples,
-      pts: currentPTS,
-      data: underlyingBuffer.advanced(by: numOffsetSamples * 2)
+      pts: CMTimeSubtract(currentPTS, backOffTime),
+      data: underlyingBuffer.advanced(by: (numOffsetSamples - numBackOffSamples) * 2)
     )
   }
 }
