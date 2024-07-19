@@ -3,8 +3,8 @@ import CoreAudio
 import CoreMedia
 import Foundation
 
-let kRealtimeAudioTranscoder_NoInputContextError: OSStatus = 9999
-let kRealtimeAudioTranscoder_RanOutOfInputSamples: OSStatus = 9998
+let kRealtimeAudioTranscoderNoInputContextError: OSStatus = 9999
+let kRealtimeAudioTranscoderRanOutOfInputSamples: OSStatus = 9998
 
 public enum RealtimeAudioTranscoderError: CustomNSError {
   case inputAudioFormatNotSupported(formatID: AudioFormatID)
@@ -59,12 +59,12 @@ private func inputDataProc(
 ) -> OSStatus {
   guard let inputContext = inUserData?.assumingMemoryBound(to: InputContext.self) else {
     ioNumberDataPackets.pointee = 0
-    return kRealtimeAudioTranscoder_NoInputContextError
+    return kRealtimeAudioTranscoderNoInputContextError
   }
 
   guard !inputContext.pointee.done else {
     ioNumberDataPackets.pointee = 0
-    return kRealtimeAudioTranscoder_RanOutOfInputSamples
+    return kRealtimeAudioTranscoderRanOutOfInputSamples
   }
 
   ioData.pointee.mNumberBuffers = 1
