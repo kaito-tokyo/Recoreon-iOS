@@ -1,5 +1,5 @@
-import Foundation
 import CoreMedia
+import Foundation
 
 public enum AudioResamplerError: CustomNSError {
   case numChannelsNotSupported
@@ -43,20 +43,35 @@ public class AudioResampler {
     rawUnderlyingBuffer.copyMemory(from: tailRegionBuffer, byteCount: headRegionByteCount)
   }
 
-  public func append(stereoInt16Buffer: UnsafePointer<Int16>, numSamples: Int, inputSampleRate: Int, pts: CMTime) throws {
-    guard inputSampleRate == outputSampleRate else {
+  public func append(
+    stereoInt16Buffer: UnsafePointer<Int16>, numSamples: Int, inputSampleRate: Int, pts: CMTime
+  ) throws {
+    guard inputSampleRate == outputSampleRate || inputSampleRate * 2 == outputSampleRate else {
       throw AudioResamplerError.appendingSampleRateNotSupported
     }
 
     try shift()
 
-    let bodyBuffer = underlyingBuffer.advanced(by: numOffsetSamples * 2)
-    for index in 0..<numSamples * 2 {
-      bodyBuffer[index] = Float32(stereoInt16Buffer[index]) * 3.0517578125e-05
-    }
+    if inputSampleRate == outputSampleRate {
+      let bodyBuffer = underlyingBuffer.advanced(by: numOffsetSamples * 2)
+      for index in 0..<numSamples * 2 {
+        bodyBuffer[index] = Float32(stereoInt16Buffer[index]) * 3.0517578125e-05
+      }
 
-    self.numSamples = numSamples
-    self.currentPTS = pts
+      self.numSamples = numSamples
+      self.currentPTS = pts
+    } else if inputSampleRate * 2 == outputSampleRate {
+      let bodyBuffer = underlyingBuffer.advanced(by: numOffsetSamples * 2)
+      for index in 0..<numSamples {
+        bodyBuffer[index * 4 + 0] = Float32(stereoInt16Buffer[index * 2 + 0]) * 3.0517578125e-05
+        bodyBuffer[index * 4 + 1] = Float32(stereoInt16Buffer[index * 2 + 1]) * 3.0517578125e-05
+        bodyBuffer[index * 4 + 2] = Float32(stereoInt16Buffer[index * 2 + 0]) * 3.0517578125e-05
+        bodyBuffer[index * 4 + 3] = Float32(stereoInt16Buffer[index * 2 + 1]) * 3.0517578125e-05
+      }
+
+      self.numSamples = numSamples * 2
+      self.currentPTS = pts
+    }
   }
 
   public func getCurrentFrame() -> AudioResamplerFrame {

@@ -81,6 +81,7 @@ private func inputDataProc(
 }
 
 public struct RealtimeAudioTranscoderResult {
+  public let numPackets: Int
   public let audioBufferList: AudioBufferList
   public let packetDescriptions: UnsafePointer<AudioStreamPacketDescription>
 }
@@ -187,6 +188,7 @@ public struct RealtimeAudioTranscoder {
     }
 
     return RealtimeAudioTranscoderResult(
+      numPackets: Int(numPackets),
       audioBufferList: outputAudioBufferList,
       packetDescriptions: packetDescriptions
     )
