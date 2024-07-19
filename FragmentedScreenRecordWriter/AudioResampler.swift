@@ -32,14 +32,18 @@ public class AudioResampler {
     self.outputSampleRate = outputSampleRate
 
     underlyingBuffer = .allocate(capacity: bufferSize)
-    backOffTime = CMTime(value: CMTimeValue(numBackOffSamples), timescale: CMTimeScale(outputSampleRate))
+    backOffTime = CMTime(
+      value: CMTimeValue(numBackOffSamples), timescale: CMTimeScale(outputSampleRate))
   }
 
   private func shift() throws {
-    print("aaa", underlyingBuffer[1024 * 2 + numSamples * 2 - 12], underlyingBuffer[1024 * 2 + numSamples * 2 - 11])
+    print(
+      "aaa", underlyingBuffer[1024 * 2 + numSamples * 2 - 12],
+      underlyingBuffer[1024 * 2 + numSamples * 2 - 11])
     let rawUnderlyingBuffer = UnsafeMutableRawPointer(underlyingBuffer)
     let tailRegionBuffer = rawUnderlyingBuffer.advanced(by: numSamples * bytesPerFrame)
-    rawUnderlyingBuffer.copyMemory(from: tailRegionBuffer, byteCount: numOffsetSamples * bytesPerFrame)
+    rawUnderlyingBuffer.copyMemory(
+      from: tailRegionBuffer, byteCount: numOffsetSamples * bytesPerFrame)
   }
 
   public func append(
