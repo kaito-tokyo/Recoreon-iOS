@@ -3,3 +3,5 @@ excluded:
   - "**/DerivedSources/**"
 disabled_rules:
   - trailing_comma
+  - inclusive_language
+  - identifier_name

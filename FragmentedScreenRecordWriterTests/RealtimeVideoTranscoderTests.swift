@@ -1,5 +1,5 @@
 import CoreMedia
-import RealtimeMediaWriter
+import FragmentedScreenRecordWriter
 import VideoToolbox
 import XCTest
 
@@ -8,10 +8,10 @@ final class RealtimeVideoTranscoderTests: XCTestCase {
   let hundredMilliSeconds: UInt64 = 100_000_000
 
   func sendFrameToTranscoder(
-    videoTranscoder: RealtimeVideoTranscoder, videoFrame: VideoFrame
+    videoTranscoder: RealtimeVideoTranscoder, videoFrame: DummyVideoGeneratorFrame
   ) async -> CMSampleBuffer? {
     return await withCheckedContinuation { continuation in
-      videoTranscoder.sendImageBuffer(
+      videoTranscoder.send(
         imageBuffer: videoFrame.pixelBuffer, pts: videoFrame.pts
       ) { (_, _, sbuf) in
         continuation.resume(returning: sbuf)

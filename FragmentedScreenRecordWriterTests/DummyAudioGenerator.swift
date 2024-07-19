@@ -2,9 +2,11 @@ import CoreAudio
 import CoreMedia
 import Foundation
 
-struct AudioFrame {
-  let audioBufferList: AudioBufferList
+struct DummyAudioGeneratorFrame {
+  let numSamples: Int
   let pts: CMTime
+  let data: UnsafeMutablePointer<Int16>
+  let audioBufferList: AudioBufferList
 }
 
 class DummyAudioGenerator {
@@ -47,25 +49,26 @@ class DummyAudioGenerator {
     )
   }
 
-  func generateNextAudioFrame() -> AudioFrame {
-    let audioBufferList = AudioBufferList(
-      mNumberBuffers: 1,
-      mBuffers: AudioBuffer(
-        mNumberChannels: UInt32(numChannels),
-        mDataByteSize: UInt32(dataByteSize),
-        mData: state.data
-      )
-    )
-    fillAudio(&state)
-
+  func generateNextAudioFrame() -> DummyAudioGeneratorFrame {
     let elapsedTime = CMTime(value: CMTimeValue(sampleIndex), timescale: CMTimeScale(sampleRate))
     let pts = CMTimeAdd(initialPTS, elapsedTime)
 
+    fillAudio(&state)
+
     sampleIndex += numSamples
 
-    return AudioFrame(
-      audioBufferList: audioBufferList,
-      pts: pts
+    return DummyAudioGeneratorFrame(
+      numSamples: numSamples,
+      pts: pts,
+      data: state.data,
+      audioBufferList: AudioBufferList(
+        mNumberBuffers: 1,
+        mBuffers: AudioBuffer(
+          mNumberChannels: UInt32(numChannels),
+          mDataByteSize: UInt32(dataByteSize),
+          mData: state.data
+        )
+      )
     )
   }
 }

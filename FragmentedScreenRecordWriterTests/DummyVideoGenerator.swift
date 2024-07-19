@@ -7,7 +7,7 @@ enum DummyVideoGeneratorError: Error {
   case pixelBufferCreationFailure
 }
 
-struct VideoFrame {
+struct DummyVideoGeneratorFrame {
   let pixelBuffer: CVPixelBuffer
   let pts: CMTime
 }
@@ -44,7 +44,7 @@ class DummyVideoGenerator {
     self.pixelBufferPool = pixelBufferPool
   }
 
-  func generateNextVideoFrame() throws -> VideoFrame {
+  func generateNextVideoFrame() throws -> DummyVideoGeneratorFrame {
     var pixelBufferOut: CVPixelBuffer?
     let err = CVPixelBufferPoolCreatePixelBuffer(
       kCFAllocatorDefault, pixelBufferPool, &pixelBufferOut)
@@ -73,6 +73,6 @@ class DummyVideoGenerator {
 
     frameIndex += 1
 
-    return VideoFrame(pixelBuffer: pixelBuffer, pts: pts)
+    return DummyVideoGeneratorFrame(pixelBuffer: pixelBuffer, pts: pts)
   }
 }

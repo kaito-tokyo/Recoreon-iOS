@@ -1,6 +1,7 @@
 import AVFoundation
+import CoreAudio
 import Foundation
-import RealtimeMediaWriter
+import FragmentedScreenRecordWriter
 import XCTest
 
 private let appSampleRate = 44_100
@@ -9,7 +10,7 @@ private let frameRate = 60
 private let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
 final class FragmentedAudioWriterTests: XCTestCase {
-
+  // swiftlint:disable function_body_length
   func testCreateAppAudioStream() async throws {
     let sampleRate = appSampleRate
     let name = "FragmentedAudioWriterTests_testCreateAppAudioStream"
@@ -22,6 +23,38 @@ final class FragmentedAudioWriterTests: XCTestCase {
 
     print("Output directory is \(outputDirectoryURL.path())")
 
+    let inputAudioStreamBasicDescription = AudioStreamBasicDescription(
+      mSampleRate: Float64(sampleRate),
+      mFormatID: kAudioFormatLinearPCM,
+      mFormatFlags: kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked,
+      mBytesPerPacket: 4,
+      mFramesPerPacket: 1,
+      mBytesPerFrame: 4,
+      mChannelsPerFrame: 2,
+      mBitsPerChannel: 16,
+      mReserved: 0
+    )
+
+    let outputAudioStreamBasicDescription = AudioStreamBasicDescription(
+      mSampleRate: Float64(sampleRate),
+      mFormatID: kAudioFormatMPEG4AAC,
+      mFormatFlags: 0,
+      mBytesPerPacket: 0,
+      mFramesPerPacket: 1024,
+      mBytesPerFrame: 0,
+      mChannelsPerFrame: 2,
+      mBitsPerChannel: 0,
+      mReserved: 0
+    )
+
+    let outputFormatDesc = try CMFormatDescription(
+      audioStreamBasicDescription: outputAudioStreamBasicDescription)
+
+    let audioTranscoder = try RealtimeAudioTranscoder(
+      inputAudioStreamBasicDescription: inputAudioStreamBasicDescription,
+      outputAudioStreamBasicDescription: outputAudioStreamBasicDescription
+    )
+
     let dummyAppAudioGenerator = try DummyAudioGenerator(
       sampleRate: sampleRate, initialPTS: CMTime.zero)
 
@@ -29,12 +62,20 @@ final class FragmentedAudioWriterTests: XCTestCase {
       outputDirectoryURL: outputDirectoryURL,
       outputFilePrefix: "\(name)-app",
       sampleRate: sampleRate,
-      sourceFormatHint: dummyAppAudioGenerator.formatDesc
+      sourceFormatHint: outputFormatDesc
     )
 
     for _ in 0..<sampleRate * 10 / 1024 {
-      var err: OSStatus
       let audioFrame = dummyAppAudioGenerator.generateNextAudioFrame()
+
+      guard let inputBuffer = audioFrame.audioBufferList.mBuffers.mData else {
+        XCTFail("Could not get data from AudioBufferList!")
+        return
+      }
+      let numInputSamples = Int(audioFrame.audioBufferList.mBuffers.mDataByteSize / 4)
+      let audioTranscoderResult = try audioTranscoder.send(
+        inputBuffer: inputBuffer, numInputSamples: numInputSamples)
+      var audioBufferList = audioTranscoderResult.audioBufferList
 
       var sampleTiming = CMSampleTimingInfo(
         duration: CMTime(value: 1, timescale: CMTimeScale(sampleRate)),
@@ -43,34 +84,31 @@ final class FragmentedAudioWriterTests: XCTestCase {
       )
 
       var sampleBufferOut: CMSampleBuffer?
-      err = CMSampleBufferCreate(
+      let err1 = CMAudioSampleBufferCreateWithPacketDescriptions(
         allocator: kCFAllocatorDefault,
         dataBuffer: nil,
         dataReady: false,
         makeDataReadyCallback: nil,
         refcon: nil,
-        formatDescription: dummyAppAudioGenerator.formatDesc,
-        sampleCount: CMItemCount(audioFrame.audioBufferList.mBuffers.mDataByteSize / 4),
-        sampleTimingEntryCount: 1,
-        sampleTimingArray: &sampleTiming,
-        sampleSizeEntryCount: 0,
-        sampleSizeArray: nil,
+        formatDescription: outputFormatDesc,
+        sampleCount: Int(audioBufferList.mNumberBuffers),
+        presentationTimeStamp: audioFrame.pts,
+        packetDescriptions: audioTranscoderResult.packetDescriptions,
         sampleBufferOut: &sampleBufferOut
       )
-      guard err == noErr, let sampleBuffer = sampleBufferOut else {
+      guard err1 == noErr, let sampleBuffer = sampleBufferOut else {
         XCTFail("Could not create CMSampleBuffer for AudioBufferList!")
         return
       }
 
-      var audioBufferList = audioFrame.audioBufferList
-      err = CMSampleBufferSetDataBufferFromAudioBufferList(
+      let err2 = CMSampleBufferSetDataBufferFromAudioBufferList(
         sampleBuffer,
         blockBufferAllocator: kCFAllocatorDefault,
         blockBufferMemoryAllocator: kCFAllocatorDefault,
         flags: 0,
         bufferList: &audioBufferList
       )
-      guard err == noErr else {
+      guard err2 == noErr else {
         XCTFail("Could not load AudioBufferList to CMSampleBuffer!")
         return
       }
@@ -81,5 +119,8 @@ final class FragmentedAudioWriterTests: XCTestCase {
     }
 
     try await audioWriter.close()
+
+    try audioWriter.writeIndexPlaylist()
   }
+  // swiftlint:enable function_body_length
 }
