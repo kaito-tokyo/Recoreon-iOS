@@ -125,17 +125,17 @@ class SampleHandler: RPBroadcastSampleHandler {
     let outputDirectoryURL = recoreonPathService.generateAppGroupsFragmentedRecordURL(
       recordID: recordID)
     do {
-      videoWriter = try FragmentedVideoWriter(
+      let videoTranscoder = try RealtimeVideoTranscoder(width: width, height: height)
+
+      let videoWriter = try FragmentedVideoWriter(
         outputDirectoryURL: outputDirectoryURL,
         outputFilePrefix: "\(recordID)-video",
         frameRate: frameRate,
-        sourceFormatHint: CMFormatDescription(
-          videoCodecType: .h264,
-          width: width,
-          height: height
-        )
+        sourceFormatHint: videoTranscoder.outputFormatDesc
       )
-      videoTranscoder = try RealtimeVideoTranscoder(width: width, height: height)
+
+      self.videoTranscoder = videoTranscoder
+      self.videoWriter = videoWriter
     } catch {
       finishBroadcastWithError(error)
     }

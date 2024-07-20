@@ -21,9 +21,17 @@ public enum RealtimeVideoTranscoderError: CustomNSError {
 }
 
 public class RealtimeVideoTranscoder {
+  public let outputFormatDesc: CMFormatDescription
+
   private let compressionSession: VTCompressionSession
 
   public init(width: Int, height: Int) throws {
+    self.outputFormatDesc = try CMFormatDescription(
+      videoCodecType: .h264,
+      width: width,
+      height: height
+    )
+
     let videoEncoderSpecification =
       [
         kVTVideoEncoderSpecification_RequireHardwareAcceleratedVideoEncoder: true as CFBoolean
