@@ -6,6 +6,7 @@ public struct RecoreonPathService {
   private let appGroupsDir: URL
   private let appGroupsDocumentsDir: URL
   private let appGroupsRecordsDir: URL
+  private let appGroupsFragmentedRecordsDir: URL
   private let libraryDir: URL
   private let previewVideosDir: URL
   private let encodedVideosDir: URL
@@ -19,6 +20,10 @@ public struct RecoreonPathService {
       forSecurityApplicationGroupIdentifier: appGroupsIdentifier)!
     appGroupsDocumentsDir = appGroupsDir.appending(
       component: "Documents", directoryHint: .isDirectory)
+    appGroupsFragmentedRecordsDir = appGroupsDocumentsDir.appending(
+      path: "FragmentedRecords",
+      directoryHint: .isDirectory
+    )
     appGroupsRecordsDir = appGroupsDocumentsDir.appending(
       path: "Records", directoryHint: .isDirectory)
     libraryDir = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first!
@@ -68,6 +73,15 @@ public struct RecoreonPathService {
     return appGroupScreenRecordURL
   }
 
+  public func generateAppGroupsFragmentedRecordURL(recordID: String) -> URL {
+    let appGroupsScreenRecordDIrectoryURL = appGroupsFragmentedRecordsDir.appending(
+      path: recordID,
+      directoryHint: .isDirectory
+    )
+    mkdirp(url: appGroupsScreenRecordDIrectoryURL)
+    return appGroupsScreenRecordDIrectoryURL
+  }
+
   public func listScreenRecordURLs() -> [URL] {
     guard
       let screenRecordURLs = try? fileManager.contentsOfDirectory(
@@ -79,6 +93,20 @@ public struct RecoreonPathService {
       $0.lastPathComponent.compare($1.lastPathComponent) == .orderedAscending
     })
   }
+
+  public func listFragmentedRecordURLs() -> [URL] {
+    guard
+      let fragmentedRecordURLs = try? fileManager.contentsOfDirectory(
+        at: appGroupsFragmentedRecordsDir,
+        includingPropertiesForKeys: nil
+      )
+    else { return [] }
+
+    return fragmentedRecordURLs.sorted(by: {
+      $0.lastPathComponent.compare($1.lastPathComponent) == .orderedAscending
+    })
+  }
+
 
   // RecordNote
 
