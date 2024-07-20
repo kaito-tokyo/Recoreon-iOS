@@ -1,7 +1,7 @@
+import CoreMedia
+import FragmentedScreenRecordWriter
 import RecoreonCommon
 import ReplayKit
-import FragmentedScreenRecordWriter
-import CoreMedia
 
 // swiftlint:disable function_parameter_count
 private func copyPlane(
@@ -122,7 +122,8 @@ class SampleHandler: RPBroadcastSampleHandler {
     let height = 1920
     let frameRate = 60
     let recordID = recoreonPathService.generateRecordID(date: .now)
-    let outputDirectoryURL = recoreonPathService.generateAppGroupsFragmentedRecordURL(recordID: recordID)
+    let outputDirectoryURL = recoreonPathService.generateAppGroupsFragmentedRecordURL(
+      recordID: recordID)
     do {
       videoWriter = try FragmentedVideoWriter(
         outputDirectoryURL: outputDirectoryURL,
@@ -330,7 +331,8 @@ class SampleHandler: RPBroadcastSampleHandler {
     let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
     screenElapsedTime = elapsedTime
 
-    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: pts) { [weak self] (status, infoFlags, sbuf) in
+    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: pts) {
+      [weak self] (status, infoFlags, sbuf) in
       if let sampleBuffer = sbuf {
         try? self?.videoWriter?.send(sampleBuffer: sampleBuffer)
       }
