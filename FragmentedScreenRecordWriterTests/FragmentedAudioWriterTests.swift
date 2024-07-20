@@ -51,8 +51,8 @@ final class FragmentedAudioWriterTests: XCTestCase {
       audioStreamBasicDescription: outputAudioStreamBasicDescription)
 
     let audioTranscoder = try RealtimeAudioTranscoder(
-      inputAudioStreamBasicDescription: inputAudioStreamBasicDescription,
-      outputAudioStreamBasicDescription: outputAudioStreamBasicDescription
+      inputAudioStreamBasicDesc: inputAudioStreamBasicDescription,
+      outputSampleRate: sampleRate
     )
 
     let dummyAppAudioGenerator = try DummyAudioGenerator(

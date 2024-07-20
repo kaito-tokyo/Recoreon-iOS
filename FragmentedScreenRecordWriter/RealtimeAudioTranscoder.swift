@@ -87,8 +87,9 @@ public struct RealtimeAudioTranscoderResult {
 }
 
 public struct RealtimeAudioTranscoder {
-  private let inputAudioStreamBasicDescription: AudioStreamBasicDescription
-  private let outputAudioStreamBasicDescription: AudioStreamBasicDescription
+  public let inputAudioStreamBasicDesc: AudioStreamBasicDescription
+  public let outputAudioStreamBasicDesc: AudioStreamBasicDescription
+  public let outputFormatDesc: CMFormatDescription
 
   private let audioConverter: AudioConverterRef
 
@@ -99,31 +100,36 @@ public struct RealtimeAudioTranscoder {
   private let packetsPerLoop = 10000
 
   public init(
-    inputAudioStreamBasicDescription: AudioStreamBasicDescription,
-    outputAudioStreamBasicDescription: AudioStreamBasicDescription
+    inputAudioStreamBasicDesc: AudioStreamBasicDescription,
+    outputSampleRate: Int
   ) throws {
-    guard inputAudioStreamBasicDescription.mFormatID == kAudioFormatLinearPCM else {
+    guard inputAudioStreamBasicDesc.mFormatID == kAudioFormatLinearPCM else {
       throw RealtimeAudioTranscoderError.inputAudioFormatNotSupported(
-        formatID: inputAudioStreamBasicDescription.mFormatID
+        formatID: inputAudioStreamBasicDesc.mFormatID
       )
     }
 
-    guard outputAudioStreamBasicDescription.mFormatID == kAudioFormatMPEG4AAC else {
-      throw RealtimeAudioTranscoderError.outputAudioFormatNotSupported(
-        formatID: outputAudioStreamBasicDescription.mFormatID
-      )
-    }
+    var inputAudioStreamBasicDesc = inputAudioStreamBasicDesc
+    var outputAudioStreamBasicDesc = AudioStreamBasicDescription(
+      mSampleRate: Float64(outputSampleRate),
+      mFormatID: kAudioFormatMPEG4AAC,
+      mFormatFlags: 0,
+      mBytesPerPacket: 0,
+      mFramesPerPacket: 1024,
+      mBytesPerFrame: 0,
+      mChannelsPerFrame: 2,
+      mBitsPerChannel: 0,
+      mReserved: 0
+    )
 
-    self.inputAudioStreamBasicDescription = inputAudioStreamBasicDescription
-    self.outputAudioStreamBasicDescription = outputAudioStreamBasicDescription
-
-    var inputAudioStreamBasicDescription = inputAudioStreamBasicDescription
-    var outputAudioStreamBasicDescription = outputAudioStreamBasicDescription
+    self.inputAudioStreamBasicDesc = inputAudioStreamBasicDesc
+    self.outputAudioStreamBasicDesc = outputAudioStreamBasicDesc
+    self.outputFormatDesc = try CMFormatDescription(audioStreamBasicDescription: outputAudioStreamBasicDesc)
 
     var audioConverterOut: AudioConverterRef?
     let err1 = AudioConverterNew(
-      &inputAudioStreamBasicDescription,
-      &outputAudioStreamBasicDescription,
+      &inputAudioStreamBasicDesc,
+      &outputAudioStreamBasicDesc,
       &audioConverterOut
     )
     guard err1 == noErr, let audioConverter = audioConverterOut else {
@@ -158,9 +164,9 @@ public struct RealtimeAudioTranscoder {
     numInputSamples: Int
   ) throws -> RealtimeAudioTranscoderResult {
     var inputContext = InputContext(
-      numChannels: inputAudioStreamBasicDescription.mChannelsPerFrame,
+      numChannels: inputAudioStreamBasicDesc.mChannelsPerFrame,
       numInputSamples: UInt32(numInputSamples),
-      numBytesPerFrame: inputAudioStreamBasicDescription.mBytesPerFrame,
+      numBytesPerFrame: inputAudioStreamBasicDesc.mBytesPerFrame,
       inputBuffer: inputBuffer,
       done: false
     )
@@ -168,7 +174,7 @@ public struct RealtimeAudioTranscoder {
     var outputAudioBufferList = AudioBufferList(
       mNumberBuffers: 1,
       mBuffers: AudioBuffer(
-        mNumberChannels: outputAudioStreamBasicDescription.mChannelsPerFrame,
+        mNumberChannels: outputAudioStreamBasicDesc.mChannelsPerFrame,
         mDataByteSize: UInt32(packetBuffer.count),
         mData: packetBuffer.baseAddress
       )

@@ -15,6 +15,9 @@ public struct AudioResamplerFrame {
 }
 
 public class AudioResampler {
+  public let duration: CMTime
+  public let outputAudioStreamBasicDesc: AudioStreamBasicDescription
+
   private let outputSampleRate: Int
 
   private let underlyingBuffer: UnsafeMutablePointer<Float32>
@@ -29,6 +32,20 @@ public class AudioResampler {
   private let numBackOffSamples = 8
 
   public init(outputSampleRate: Int) throws {
+    self.duration = CMTime(value: 1, timescale: CMTimeScale(outputSampleRate))
+
+    self.outputAudioStreamBasicDesc = AudioStreamBasicDescription(
+      mSampleRate: Float64(outputSampleRate),
+      mFormatID: kAudioFormatLinearPCM,
+      mFormatFlags: kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked,
+      mBytesPerPacket: 8,
+      mFramesPerPacket: 1,
+      mBytesPerFrame: 8,
+      mChannelsPerFrame: 2,
+      mBitsPerChannel: 32,
+      mReserved: 0
+    )
+
     self.outputSampleRate = outputSampleRate
 
     underlyingBuffer = .allocate(capacity: bufferSize)
