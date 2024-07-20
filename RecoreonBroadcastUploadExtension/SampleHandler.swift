@@ -1,5 +1,7 @@
 import RecoreonCommon
 import ReplayKit
+import FragmentedScreenRecordWriter
+import CoreMedia
 
 // swiftlint:disable function_parameter_count
 private func copyPlane(
@@ -112,7 +114,30 @@ class SampleHandler: RPBroadcastSampleHandler {
   var screenStartupCount = 10
   let screenStartupThrottlingFactor = 2
 
+  var videoWriter: FragmentedVideoWriter?
+  var videoTranscoder: RealtimeVideoTranscoder?
+
   override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
+    let width = 888
+    let height = 1920
+    let frameRate = 60
+    let recordID = recoreonPathService.generateRecordID(date: .now)
+    let outputDirectoryURL = recoreonPathService.generateAppGroupsFragmentedRecordURL(recordID: recordID)
+    do {
+      videoWriter = try FragmentedVideoWriter(
+        outputDirectoryURL: outputDirectoryURL,
+        outputFilePrefix: "\(recordID)-video",
+        frameRate: frameRate,
+        sourceFormatHint: CMFormatDescription(
+          videoCodecType: .h264,
+          width: width,
+          height: height
+        )
+      )
+      videoTranscoder = try RealtimeVideoTranscoder(width: width, height: height)
+    } catch {
+      finishBroadcastWithError(error)
+    }
     startRecording()
   }
 
@@ -125,7 +150,8 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   override func processSampleBuffer(
-    _ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType
+    _ sampleBuffer: CMSampleBuffer,
+    with sampleBufferType: RPSampleBufferType
   ) {
     let ongoingRecordingTimestamp =
       appGroupsUserDefaults?.double(
@@ -135,12 +161,13 @@ class SampleHandler: RPBroadcastSampleHandler {
     if now - ongoingRecordingTimestamp > 1 {
       appGroupsUserDefaults?.set(
         Date().timeIntervalSince1970,
-        forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
+        forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey
+      )
     }
 
     switch sampleBufferType {
     case RPSampleBufferType.video:
-      processScreenVideoSample(sampleBuffer)
+      processVideoSample(sampleBuffer)
     case RPSampleBufferType.audioApp:
       let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
       guard let firstTime = screenFirstTime else { return }
@@ -167,6 +194,14 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   override func broadcastFinished() {
+    let semaphore = DispatchSemaphore(value: 0)
+    Task { [weak self] in
+      self?.videoTranscoder?.close()
+      try await self?.videoWriter?.close()
+      try self?.videoWriter?.writeIndexPlaylist()
+      semaphore.signal()
+    }
+    semaphore.wait()
     stopRecording()
   }
 
@@ -267,7 +302,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     )
   }
 
-  func processScreenVideoSample(_ sampleBuffer: CMSampleBuffer) {
+  func processVideoSample(_ sampleBuffer: CMSampleBuffer) {
     guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
     if !isOutputStarted {
@@ -295,36 +330,11 @@ class SampleHandler: RPBroadcastSampleHandler {
     let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
     screenElapsedTime = elapsedTime
 
-    writeVideoFrame(index: 0, pixelBuffer, outputPTS: outputPTS)
-  }
-
-  func writeVideoFrame(index: Int, _ pixelBuffer: CVPixelBuffer, outputPTS: Int64) {
-    guard let frame = pixelBufferExtractorRef?.extract(pixelBuffer) else { return }
-
-    writer.makeFrameWritable(index)
-
-    let width = min(frame.width, writer.getWidth(index))
-    let height = min(frame.height, writer.getHeight(index))
-
-    copyPlane(
-      fromData: frame.lumaData,
-      toData: writer.getBaseAddress(index, ofPlane: 0),
-      width: width,
-      height: height,
-      fromBytesPerRow: frame.lumaBytesPerRow,
-      toBytesPerRow: writer.getBytesPerRow(index, ofPlane: 0)
-    )
-
-    copyPlane(
-      fromData: frame.chromaData,
-      toData: writer.getBaseAddress(index, ofPlane: 1),
-      width: width,
-      height: height / 2,
-      fromBytesPerRow: frame.chromaBytesPerRow,
-      toBytesPerRow: writer.getBytesPerRow(index, ofPlane: 1)
-    )
-
-    writer.writeVideo(index, outputPTS: outputPTS)
+    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: pts) { [weak self] (status, infoFlags, sbuf) in
+      if let sampleBuffer = sbuf {
+        try? self?.videoWriter?.send(sampleBuffer: sampleBuffer)
+      }
+    }
   }
 
   func processAudioSample(
