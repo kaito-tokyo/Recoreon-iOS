@@ -113,6 +113,10 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
 }
 
 public class FragmentedVideoWriter {
+  public var playlistURL: URL {
+    delegate.playlistURL
+  }
+
   private let outputDirectoryURL: URL
   private let outputFilePrefix: String
   private let frameRate: CMTimeScale

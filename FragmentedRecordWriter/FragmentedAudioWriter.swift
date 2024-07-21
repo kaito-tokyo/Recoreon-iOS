@@ -93,6 +93,10 @@ private class FragmentedAudioWriterDelegate: NSObject, AVAssetWriterDelegate {
 }
 
 public class FragmentedAudioWriter {
+  public var playlistURL: URL {
+    delegate.playlistURL
+  }
+
   private let outputDirectoryURL: URL
   private let outputFilePrefix: String
   private let sampleRate: Int

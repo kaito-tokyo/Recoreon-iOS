@@ -126,11 +126,7 @@ class SampleHandler: RPBroadcastSampleHandler {
 
       self.videoTranscoder = videoTranscoder
       self.videoWriter = videoWriter
-    } catch {
-      finishBroadcastWithError(error)
-    }
 
-    do {
       let appAudioResampler = try AudioResampler(outputSampleRate: appSampleRate)
 
       let appAudioTranscoder = try RealtimeAudioTranscoder(
@@ -151,16 +147,12 @@ class SampleHandler: RPBroadcastSampleHandler {
       self.appAudioResampler = appAudioResampler
       self.appAudioTranscoder = appAudioTranscoder
       self.appAudioWriter = appAudioWriter
-    } catch {
-      finishBroadcastWithError(error)
-    }
 
-    do {
       let micAudioResampler = try AudioResampler(outputSampleRate: micSampleRate)
 
       let micAudioTranscoder = try RealtimeAudioTranscoder(
         inputAudioStreamBasicDesc: micAudioResampler.outputAudioStreamBasicDesc,
-        outputSampleRate: appSampleRate
+        outputSampleRate: micSampleRate
       )
 
       let micAudioTranscoderOutputFormatDesc = try CMFormatDescription(
@@ -169,13 +161,22 @@ class SampleHandler: RPBroadcastSampleHandler {
       let micAudioWriter = try FragmentedAudioWriter(
         outputDirectoryURL: outputDirectoryURL,
         outputFilePrefix: "\(recordID)-mic",
-        sampleRate: appSampleRate,
+        sampleRate: micSampleRate,
         sourceFormatHint: micAudioTranscoderOutputFormatDesc
       )
 
       self.micAudioResampler = micAudioResampler
       self.micAudioTranscoder = micAudioTranscoder
       self.micAudioWriter = micAudioWriter
+
+      let masterPlaylistWriter = MasterPlaylistWriter()
+      try masterPlaylistWriter.write(
+        outputDirectoryURL: outputDirectoryURL,
+        outputFilePrefix: recordID,
+        videoIndexURL: videoWriter.playlistURL,
+        appAudioIndexURL: appAudioWriter.playlistURL,
+        micAudioIndexURL: micAudioWriter.playlistURL
+      )
     } catch {
       finishBroadcastWithError(error)
     }
@@ -225,6 +226,8 @@ class SampleHandler: RPBroadcastSampleHandler {
       let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: 44_100)
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
+      print("app", sampleBuffer.formatDescription?.audioStreamBasicDescription?.mSampleRate)
+
       do {
         try write(
           audioWriter: appAudioWriter,
@@ -247,6 +250,8 @@ class SampleHandler: RPBroadcastSampleHandler {
       let elapsedCount = CMTimeMultiply(
         CMTimeSubtract(pts, firstTime), multiplier: 48_000)
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
+
+      print("mic", sampleBuffer.formatDescription?.audioStreamBasicDescription?.mSampleRate)
 
       do {
         try write(
@@ -281,8 +286,6 @@ class SampleHandler: RPBroadcastSampleHandler {
     guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
     if !isOutputStarted {
-      let width = CVPixelBufferGetWidth(pixelBuffer)
-      let height = CVPixelBufferGetHeight(pixelBuffer)
       isOutputStarted = true
     }
 
@@ -342,22 +345,40 @@ class SampleHandler: RPBroadcastSampleHandler {
       return
     }
 
-    print(audioStreamBasicDesc)
     let isSignedInteger = audioStreamBasicDesc.mFormatFlags & kAudioFormatFlagIsSignedInteger != 0
     let isMono = audioStreamBasicDesc.mChannelsPerFrame == 1
     let isStereo = audioStreamBasicDesc.mChannelsPerFrame == 2
+    let isBigEndian = audioStreamBasicDesc.mFormatFlags & kAudioFormatFlagIsBigEndian != 0
     let bytesPerSample = Int(audioStreamBasicDesc.mBytesPerFrame) / (isStereo ? 2 : 1)
     let inputSampleRate = Int(audioStreamBasicDesc.mSampleRate)
-    if isStereo && isSignedInteger && bytesPerSample == 2 {
+    if isStereo && isSignedInteger && bytesPerSample == 2 && !isBigEndian {
       try audioResampler.append(
         stereoInt16Buffer: data.assumingMemoryBound(to: Int16.self),
         numSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
         inputSampleRate: inputSampleRate,
         pts: pts
       )
-    } else if isMono && isSignedInteger && bytesPerSample == 2 {
+    } else if isMono && isSignedInteger && bytesPerSample == 2 && !isBigEndian {
+      print("2")
+      print(inputSampleRate)
       try audioResampler.append(
         monoInt16Buffer: data.assumingMemoryBound(to: Int16.self),
+        numSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
+        inputSampleRate: inputSampleRate,
+        pts: pts
+      )
+    } else if isStereo && isSignedInteger && bytesPerSample == 2 && isBigEndian {
+      print("3")
+      print(inputSampleRate)
+      try audioResampler.append(
+        stereoInt16BufferWithSwap: data.assumingMemoryBound(to: Int16.self),
+        numSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
+        inputSampleRate: inputSampleRate,
+        pts: pts
+      )
+    } else if isMono && isSignedInteger && bytesPerSample == 2 && isBigEndian {
+      try audioResampler.append(
+        monoInt16BufferWithSwap: data.assumingMemoryBound(to: Int16.self),
         numSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
         inputSampleRate: inputSampleRate,
         pts: pts
@@ -371,6 +392,8 @@ class SampleHandler: RPBroadcastSampleHandler {
       inputBuffer: audioResamplerFrame.data,
       numInputSamples: audioResamplerFrame.numSamples
     )
+
+    guard audioTranscoderFrame.numPackets > 0 else { return }
     let packetDescs = Array(
       UnsafeBufferPointer(
         start: audioTranscoderFrame.packetDescs,
