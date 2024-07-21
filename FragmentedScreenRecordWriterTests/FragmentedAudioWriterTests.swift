@@ -73,9 +73,9 @@ final class FragmentedAudioWriterTests: XCTestCase {
         return
       }
       let numInputSamples = Int(audioFrame.audioBufferList.mBuffers.mDataByteSize / 4)
-      let audioTranscoderResult = try audioTranscoder.send(
+      let audioTranscoderFrame = try audioTranscoder.send(
         inputBuffer: inputBuffer, numInputSamples: numInputSamples)
-      var audioBufferList = audioTranscoderResult.audioBufferList
+      var audioBufferList = audioTranscoderFrame.audioBufferList
 
       var sampleTiming = CMSampleTimingInfo(
         duration: CMTime(value: 1, timescale: CMTimeScale(sampleRate)),
@@ -93,7 +93,7 @@ final class FragmentedAudioWriterTests: XCTestCase {
         formatDescription: outputFormatDesc,
         sampleCount: Int(audioBufferList.mNumberBuffers),
         presentationTimeStamp: audioFrame.pts,
-        packetDescriptions: audioTranscoderResult.packetDescriptions,
+        packetDescriptions: audioTranscoderFrame.packetDescs,
         sampleBufferOut: &sampleBufferOut
       )
       guard err1 == noErr, let sampleBuffer = sampleBufferOut else {

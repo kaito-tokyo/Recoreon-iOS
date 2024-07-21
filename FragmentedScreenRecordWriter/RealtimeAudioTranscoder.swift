@@ -80,24 +80,26 @@ private func inputDataProc(
   return noErr
 }
 
-public struct RealtimeAudioTranscoderResult {
+public struct RealtimeAudioTranscoderFrame {
   public let numPackets: Int
   public let audioBufferList: AudioBufferList
-  public let packetDescriptions: UnsafePointer<AudioStreamPacketDescription>
+  public let packetDescs: UnsafePointer<AudioStreamPacketDescription>
 }
 
-public struct RealtimeAudioTranscoder {
+public class RealtimeAudioTranscoder {
   public let inputAudioStreamBasicDesc: AudioStreamBasicDescription
   public let outputAudioStreamBasicDesc: AudioStreamBasicDescription
   public let outputFormatDesc: CMFormatDescription
 
   private let audioConverter: AudioConverterRef
 
-  private let maxOutputPacketSize: Int
-  private let packetBuffer: UnsafeMutableRawBufferPointer
-  private let packetDescriptions: UnsafeMutablePointer<AudioStreamPacketDescription>
+  private let packetBufferArray: [UnsafeMutableRawBufferPointer]
+  private let packetDescsArray: [UnsafeMutablePointer<AudioStreamPacketDescription>]
 
-  private let packetsPerLoop = 10000
+  private var bufferIndex = 0
+
+  private let packetsPerLoop = 10
+  private let numBuffers = 16
 
   public init(
     inputAudioStreamBasicDesc: AudioStreamBasicDescription,
@@ -113,7 +115,7 @@ public struct RealtimeAudioTranscoder {
     var outputAudioStreamBasicDesc = AudioStreamBasicDescription(
       mSampleRate: Float64(outputSampleRate),
       mFormatID: kAudioFormatMPEG4AAC,
-      mFormatFlags: 0,
+      mFormatFlags: kAudioFormatFlagsAreAllClear,
       mBytesPerPacket: 0,
       mFramesPerPacket: 1024,
       mBytesPerFrame: 0,
@@ -124,7 +126,9 @@ public struct RealtimeAudioTranscoder {
 
     self.inputAudioStreamBasicDesc = inputAudioStreamBasicDesc
     self.outputAudioStreamBasicDesc = outputAudioStreamBasicDesc
-    self.outputFormatDesc = try CMFormatDescription(audioStreamBasicDescription: outputAudioStreamBasicDesc)
+    self.outputFormatDesc = try CMFormatDescription(
+      audioStreamBasicDescription: outputAudioStreamBasicDesc
+    )
 
     var audioConverterOut: AudioConverterRef?
     let err1 = AudioConverterNew(
@@ -149,20 +153,26 @@ public struct RealtimeAudioTranscoder {
       throw RealtimeAudioTranscoderError.audioConverterNoPropertyOfMaximumOutputPacketSize(
         err: err2)
     }
-    self.maxOutputPacketSize = Int(maxOutputPacketSize)
 
-    packetBuffer = .allocate(
-      byteCount: packetsPerLoop * self.maxOutputPacketSize,
-      alignment: 1
-    )
-
-    packetDescriptions = .allocate(capacity: packetsPerLoop)
+    var packetBufferArray: [UnsafeMutableRawBufferPointer] = []
+    var packetDescsArray: [UnsafeMutablePointer<AudioStreamPacketDescription>] = []
+    for _ in 0..<numBuffers {
+      packetBufferArray.append(.allocate(
+        byteCount: packetsPerLoop * Int(maxOutputPacketSize),
+        alignment: 1
+      ))
+      packetDescsArray.append(.allocate(capacity: packetsPerLoop))
+    }
+    self.packetBufferArray = packetBufferArray
+    self.packetDescsArray = packetDescsArray
   }
 
   public func send(
     inputBuffer: UnsafeMutableRawPointer,
     numInputSamples: Int
-  ) throws -> RealtimeAudioTranscoderResult {
+  ) throws -> RealtimeAudioTranscoderFrame {
+    bufferIndex = (bufferIndex + 1) % numBuffers
+
     var inputContext = InputContext(
       numChannels: inputAudioStreamBasicDesc.mChannelsPerFrame,
       numInputSamples: UInt32(numInputSamples),
@@ -171,6 +181,7 @@ public struct RealtimeAudioTranscoder {
       done: false
     )
     var numPackets = UInt32(packetsPerLoop)
+    let packetBuffer = packetBufferArray[bufferIndex]
     var outputAudioBufferList = AudioBufferList(
       mNumberBuffers: 1,
       mBuffers: AudioBuffer(
@@ -179,7 +190,7 @@ public struct RealtimeAudioTranscoder {
         mData: packetBuffer.baseAddress
       )
     )
-
+    let packetDescs = packetDescsArray[bufferIndex]
     let err = AudioConverterFillComplexBuffer(
       audioConverter,
       inputDataProc(
@@ -187,16 +198,16 @@ public struct RealtimeAudioTranscoder {
       &inputContext,
       &numPackets,
       &outputAudioBufferList,
-      packetDescriptions
+      packetDescs
     )
     guard err == noErr || err == 9998 else {
       throw RealtimeAudioTranscoderError.audioConverterConversionFailure(err: err)
     }
 
-    return RealtimeAudioTranscoderResult(
+    return RealtimeAudioTranscoderFrame(
       numPackets: Int(numPackets),
       audioBufferList: outputAudioBufferList,
-      packetDescriptions: packetDescriptions
+      packetDescs: packetDescs
     )
   }
 }

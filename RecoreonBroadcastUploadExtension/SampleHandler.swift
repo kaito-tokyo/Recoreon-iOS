@@ -340,9 +340,14 @@ class SampleHandler: RPBroadcastSampleHandler {
       let audioStreamBasicDesc = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee,
       audioStreamBasicDesc.mFormatID == kAudioFormatLinearPCM,
       let data = audioBufferList.mBuffers.mData
-    else { return }
+    else {
+      print("err1")
+      return
+    }
 
+    print(audioStreamBasicDesc)
     let isSignedInteger = audioStreamBasicDesc.mFormatFlags & kAudioFormatFlagIsSignedInteger != 0
+    let isMono = audioStreamBasicDesc.mChannelsPerFrame == 1
     let isStereo = audioStreamBasicDesc.mChannelsPerFrame == 2
     let bytesPerSample = Int(audioStreamBasicDesc.mBytesPerFrame) / (isStereo ? 2 : 1)
     let inputSampleRate = Int(audioStreamBasicDesc.mSampleRate)
@@ -353,47 +358,39 @@ class SampleHandler: RPBroadcastSampleHandler {
         inputSampleRate: inputSampleRate,
         pts: pts
       )
+    } else if isMono && isSignedInteger && bytesPerSample == 2 {
+      try audioResampler.append(
+        monoInt16Buffer: data.assumingMemoryBound(to: Int16.self),
+        numSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
+        inputSampleRate: inputSampleRate,
+        pts: pts
+      )
+    } else {
+      print("Sample format is not supported!")
     }
 
     let audioResamplerFrame = audioResampler.getCurrentFrame()
-    let audioTranscoderResult = try audioTranscoder.send(
+    let audioTranscoderFrame = try audioTranscoder.send(
       inputBuffer: audioResamplerFrame.data,
       numInputSamples: audioResamplerFrame.numSamples
     )
+    let packetDescs = Array(UnsafeBufferPointer(
+      start: audioTranscoderFrame.packetDescs,
+      count: audioTranscoderFrame.numPackets
+    ))
 
-    var sampleTiming = CMSampleTimingInfo(
-      duration: audioResampler.duration,
-      presentationTimeStamp: pts,
-      decodeTimeStamp: .invalid
+    let buffer = UnsafeMutableRawBufferPointer(
+      start: audioTranscoderFrame.audioBufferList.mBuffers.mData,
+      count: Int(audioTranscoderFrame.audioBufferList.mBuffers.mDataByteSize)
     )
-
-    var sampleBufferOut: CMSampleBuffer?
-    let err1 = CMAudioSampleBufferCreateWithPacketDescriptions(
-      allocator: kCFAllocatorDefault,
-      dataBuffer: nil,
-      dataReady: false,
-      makeDataReadyCallback: nil,
-      refcon: nil,
+    let blockBuffer = try CMBlockBuffer(buffer: buffer, allocator: kCFAllocatorNull)
+    let sampleBuffer = try CMSampleBuffer(
+      dataBuffer: blockBuffer,
       formatDescription: audioTranscoder.outputFormatDesc,
-      sampleCount: Int(audioBufferList.mNumberBuffers),
+      numSamples: audioTranscoderFrame.numPackets,
       presentationTimeStamp: pts,
-      packetDescriptions: audioTranscoderResult.packetDescriptions,
-      sampleBufferOut: &sampleBufferOut
+      packetDescriptions: packetDescs
     )
-    guard err1 == noErr, let sampleBuffer = sampleBufferOut else {
-      return
-    }
-
-    let err2 = CMSampleBufferSetDataBufferFromAudioBufferList(
-      sampleBuffer,
-      blockBufferAllocator: kCFAllocatorDefault,
-      blockBufferMemoryAllocator: kCFAllocatorDefault,
-      flags: 0,
-      bufferList: &audioBufferList
-    )
-    guard err2 == noErr else {
-      return
-    }
 
     try audioWriter.send(sampleBuffer: sampleBuffer)
   }

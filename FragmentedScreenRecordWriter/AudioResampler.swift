@@ -90,6 +90,34 @@ public class AudioResampler {
     self.currentPTS = pts
   }
 
+  public func append(
+    monoInt16Buffer: UnsafeMutablePointer<Int16>, numSamples: Int, inputSampleRate: Int,
+    pts: CMTime
+  ) throws {
+    guard
+      inputSampleRate == outputSampleRate || inputSampleRate * 2 == outputSampleRate
+        || inputSampleRate * 6 == outputSampleRate
+    else {
+      throw AudioResamplerError.appendingSampleRateNotSupported
+    }
+
+    try shift()
+
+    let bodyBuffer = underlyingBuffer.advanced(by: numOffsetSamples * 2)
+    if inputSampleRate == outputSampleRate {
+      copyMonoInt16(bodyBuffer, monoInt16Buffer, numSamples)
+      self.numSamples = numSamples
+    } else if inputSampleRate * 2 == outputSampleRate {
+      copyMonoInt16UpsamplingBy2(bodyBuffer, monoInt16Buffer, numSamples)
+      self.numSamples = numSamples * 2
+    } else if inputSampleRate * 6 == outputSampleRate {
+      copyMonoInt16UpsamplingBy6(bodyBuffer, monoInt16Buffer, numSamples)
+      self.numSamples = numSamples * 6
+    }
+
+    self.currentPTS = pts
+  }
+
   public func getCurrentFrame() -> AudioResamplerFrame {
     return AudioResamplerFrame(
       numChannels: 2,
