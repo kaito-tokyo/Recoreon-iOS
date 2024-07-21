@@ -84,10 +84,11 @@ final class AudioResamplerTests: XCTestCase {
         numInputSamples: numInputSamples
       )
 
-      let packetDescs = Array(UnsafeBufferPointer(
-        start: audioTranscoderFrame.packetDescs,
-        count: audioTranscoderFrame.numPackets
-      ))
+      let packetDescs = Array(
+        UnsafeBufferPointer(
+          start: audioTranscoderFrame.packetDescs,
+          count: audioTranscoderFrame.numPackets
+        ))
 
       let buffer = UnsafeMutableRawBufferPointer(
         start: audioTranscoderFrame.audioBufferList.mBuffers.mData,

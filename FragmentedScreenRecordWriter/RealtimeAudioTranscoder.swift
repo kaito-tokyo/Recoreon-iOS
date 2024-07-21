@@ -157,10 +157,11 @@ public class RealtimeAudioTranscoder {
     var packetBufferArray: [UnsafeMutableRawBufferPointer] = []
     var packetDescsArray: [UnsafeMutablePointer<AudioStreamPacketDescription>] = []
     for _ in 0..<numBuffers {
-      packetBufferArray.append(.allocate(
-        byteCount: packetsPerLoop * Int(maxOutputPacketSize),
-        alignment: 1
-      ))
+      packetBufferArray.append(
+        .allocate(
+          byteCount: packetsPerLoop * Int(maxOutputPacketSize),
+          alignment: 1
+        ))
       packetDescsArray.append(.allocate(capacity: packetsPerLoop))
     }
     self.packetBufferArray = packetBufferArray

@@ -65,7 +65,7 @@ static inline void copyStereoInt16UpsamplingBy6(float *__nonnull dst,
 }
 
 static inline void copyMonoInt16(float *__nonnull dst, int16_t *__nonnull src,
-                                   long numSamples) {
+                                 long numSamples) {
   for (long i = 0; i < numSamples; i++) {
     float x = INT16_TO_FLOAT(src[i]);
     dst[i * 2] = dst[i * 2 + 1] = x;
@@ -73,13 +73,14 @@ static inline void copyMonoInt16(float *__nonnull dst, int16_t *__nonnull src,
 }
 
 static inline void copyMonoInt16UpsamplingBy2(float *__nonnull dst,
-                                                int16_t *__nonnull src,
-                                                long numSamples) {
+                                              int16_t *__nonnull src,
+                                              long numSamples) {
   {
     float x0 = dst[-4];
     float x1 = INT16_TO_FLOAT(src[0]);
     for (long j = 1; j <= 2; j++) {
-      dst[j * 2 - 4] = dst[j * 2 - 3] = dst[j * 2 - 3] = x0 + (x1 - x0) * j / 2.0;
+      dst[j * 2 - 4] = dst[j * 2 - 3] = dst[j * 2 - 3] =
+          x0 + (x1 - x0) * j / 2.0;
     }
   }
 
@@ -93,8 +94,8 @@ static inline void copyMonoInt16UpsamplingBy2(float *__nonnull dst,
 }
 
 static inline void copyMonoInt16UpsamplingBy6(float *__nonnull dst,
-                                                int16_t *__nonnull src,
-                                                long numSamples) {
+                                              int16_t *__nonnull src,
+                                              long numSamples) {
   {
     float x0 = dst[-12];
     float x1 = INT16_TO_FLOAT(src[0]);

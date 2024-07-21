@@ -206,11 +206,11 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
 
     guard let appAudioResampler = appAudioResampler,
-          let appAudioTranscoder = appAudioTranscoder,
-          let appAudioWriter = appAudioWriter,
-          let micAudioResampler = micAudioResampler,
-          let micAudioTranscoder = micAudioTranscoder,
-          let micAudioWriter = micAudioWriter
+      let appAudioTranscoder = appAudioTranscoder,
+      let appAudioWriter = appAudioWriter,
+      let micAudioResampler = micAudioResampler,
+      let micAudioTranscoder = micAudioTranscoder,
+      let micAudioWriter = micAudioWriter
     else {
       return
     }
@@ -374,10 +374,11 @@ class SampleHandler: RPBroadcastSampleHandler {
       inputBuffer: audioResamplerFrame.data,
       numInputSamples: audioResamplerFrame.numSamples
     )
-    let packetDescs = Array(UnsafeBufferPointer(
-      start: audioTranscoderFrame.packetDescs,
-      count: audioTranscoderFrame.numPackets
-    ))
+    let packetDescs = Array(
+      UnsafeBufferPointer(
+        start: audioTranscoderFrame.packetDescs,
+        count: audioTranscoderFrame.numPackets
+      ))
 
     let buffer = UnsafeMutableRawBufferPointer(
       start: audioTranscoderFrame.audioBufferList.mBuffers.mData,
