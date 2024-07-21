@@ -95,20 +95,20 @@ public struct FragmentedScreenRecordWriter {
   }
 
   public func writeMasterPlaylist() throws {
-//    let videoIndexURL = try videoWriter.writeIndexPlaylist()
-//    let appAudioIndexURL = try appAudioWriter.writeIndexPlaylist()
-//    let micAudioIndexURL = try micAudioWriter.writeIndexPlaylist()
-//
-//    let masterPlaylistURL = outputDirectoryURL.appending(path: "\(outputFilePrefix).m3u8")
-//    let masterPlaylistContent = """
-//      #EXTM3U
-//      #EXT-X-STREAM-INF:BANDWIDTH=150000,CODECS="avc1.42e00a,mp4a.40.2",AUDIO="audio"
-//      \(videoIndexURL.lastPathComponent)
-//
-//      #EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",NAME="App",DEFAULT=YES,URI="\(appAudioIndexURL.lastPathComponent)"
-//      #EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",NAME="Mic",DEFAULT=NO,URI="\(micAudioIndexURL.lastPathComponent)"
-//      """
-//
-//    try masterPlaylistContent.write(to: masterPlaylistURL, atomically: true, encoding: .utf8)
+    //    let videoIndexURL = try videoWriter.writeIndexPlaylist()
+    //    let appAudioIndexURL = try appAudioWriter.writeIndexPlaylist()
+    //    let micAudioIndexURL = try micAudioWriter.writeIndexPlaylist()
+    //
+    //    let masterPlaylistURL = outputDirectoryURL.appending(path: "\(outputFilePrefix).m3u8")
+    //    let masterPlaylistContent = """
+    //      #EXTM3U
+    //      #EXT-X-STREAM-INF:BANDWIDTH=150000,CODECS="avc1.42e00a,mp4a.40.2",AUDIO="audio"
+    //      \(videoIndexURL.lastPathComponent)
+    //
+    //      #EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",NAME="App",DEFAULT=YES,URI="\(appAudioIndexURL.lastPathComponent)"
+    //      #EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",NAME="Mic",DEFAULT=NO,URI="\(micAudioIndexURL.lastPathComponent)"
+    //      """
+    //
+    //    try masterPlaylistContent.write(to: masterPlaylistURL, atomically: true, encoding: .utf8)
   }
 }

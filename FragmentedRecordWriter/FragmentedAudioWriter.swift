@@ -24,7 +24,7 @@ private class FragmentedAudioWriterDelegate: NSObject, AVAssetWriterDelegate {
     self.outputFilePrefix = outputFilePrefix
     super.init()
 
-    let playlistHeader =  """
+    let playlistHeader = """
       #EXTM3U
       #EXT-X-TARGETDURATION:6
       #EXT-X-VERSION:7
@@ -56,9 +56,9 @@ private class FragmentedAudioWriterDelegate: NSObject, AVAssetWriterDelegate {
 
       if let segmentDuration = segmentReport?.trackReports.first?.duration {
         let playlistContent = """
-            #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),
-            \(outputURL.lastPathComponent)\n
-            """
+          #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),
+          \(outputURL.lastPathComponent)\n
+          """
         writeToPlaylist(content: playlistContent, append: true)
       }
 

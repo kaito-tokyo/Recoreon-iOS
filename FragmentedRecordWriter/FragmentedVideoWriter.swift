@@ -26,7 +26,7 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
 
     super.init()
 
-    let playlistHeader =  """
+    let playlistHeader = """
       #EXTM3U
       #EXT-X-TARGETDURATION:6
       #EXT-X-VERSION:7
@@ -57,9 +57,11 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
       let filename = "\(outputFilePrefix)-\(paddedSegmentIndex).m4s"
       outputURL = outputDirectoryURL.appending(path: filename)
 
-      if let lastEarliestPTS = lastSeparableSegmentReport?.trackReports.first?.earliestPresentationTimeStamp,
-         let earliestPTS = segmentReport?.trackReports.first?.earliestPresentationTimeStamp,
-         let lastSeparableSegmentURL = lastSeparableSegmentURL {
+      if let lastEarliestPTS = lastSeparableSegmentReport?.trackReports.first?
+        .earliestPresentationTimeStamp,
+        let earliestPTS = segmentReport?.trackReports.first?.earliestPresentationTimeStamp,
+        let lastSeparableSegmentURL = lastSeparableSegmentURL
+      {
         let lastSegmentDuration = earliestPTS - lastEarliestPTS
         let playlistContent = """
           #EXTINF:\(String(format: "%1.5f", lastSegmentDuration.seconds)),
@@ -81,7 +83,8 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
 
   func close() {
     if let lastDuration = lastSeparableSegmentReport?.trackReports.first?.duration,
-    let lastSeparableSegmentURL = lastSeparableSegmentURL {
+      let lastSeparableSegmentURL = lastSeparableSegmentURL
+    {
       let playlistContent = """
         #EXTINF:\(String(format: "%1.5f", lastDuration.seconds)),
         \(lastSeparableSegmentURL.lastPathComponent)\n
