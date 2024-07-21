@@ -14,15 +14,32 @@ struct SeparableVideoSegment {
 private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
   private let outputDirectoryURL: URL
   private let outputFilePrefix: String
+  private let playlistURL: URL
 
   private var segmentIndex = 0
-  private(set) var initializationSegmentFilename: String?
+  private var lastSegmentReport: AVAssetSegmentReport?
   private(set) var separableSegments: [SeparableVideoSegment] = []
 
   init(outputDirectoryURL: URL, outputFilePrefix: String) throws {
     self.outputDirectoryURL = outputDirectoryURL
     self.outputFilePrefix = outputFilePrefix
+
+    let playlistURL = outputDirectoryURL.appending(
+      path: "\(outputFilePrefix).m3u8",
+      directoryHint: .notDirectory
+    )
+    self.playlistOutputStream = OutputStream(url: playlistURL, append: false)
     super.init()
+
+    let playlistHeader =  """
+      #EXTM3U
+      #EXT-X-TARGETDURATION:6
+      #EXT-X-VERSION:7
+      #EXT-X-MEDIA-SEQUENCE:1
+      #EXT-X-PLAYLIST-TYPE:VOD
+      #EXT-X-INDEPENDENT-SEGMENTS\n
+      """
+    writeToPlaylist(content: playlistHeader, append: false)
   }
 
   func assetWriter(
@@ -35,7 +52,11 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
     case .initialization:
       let filename = "\(outputFilePrefix)-init.m4s"
       outputURL = outputDirectoryURL.appending(path: filename)
-      initializationSegmentFilename = filename
+
+      let playlistContent = """
+        #EXT-X-MAP:URI="\(filename)"\n
+        """
+      writeToPlaylist(content: playlistContent, append: true)
     case .separable:
       let paddedSegmentIndex = String(format: "%06d", segmentIndex)
       let filename = "\(outputFilePrefix)-\(paddedSegmentIndex).m4s"
@@ -47,12 +68,45 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
       separableSegments.append(
         SeparableVideoSegment(filename: filename, earliestPTS: earliestPTS, duration: duration))
 
+      if let lastEarliestPTS = lastSegmentReport?.trackReports.first,
+         let earliestPTS = segmentReport?.trackReports.first {
+        let duration = earliestPTS.duration - lastEarliestPTS
+        let playlistContent = """
+          #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),
+          \(lastSeparableSegment.filename)
+          """
+        writeToPlaylist(content: playlistContent, append: true)
+      }
+
+      lastSegmentReport = segmentReport
+
       segmentIndex += 1
     @unknown default:
       print("Skipping segment with unrecognized type \(segmentType)")
       return
     }
     try? segmentData.write(to: outputURL)
+  }
+
+  func close() {
+    if let lastDuration = lastSegmentReport?.trackReports.first?.duration {
+      let playlistContent = """
+        #EXTINF:\(String(format: "%1.5f", lastDuration.seconds)),
+        \(lastSeparableSegment.filename)\n
+        """
+      writeToPlaylist(content: playlistContent, append: true)
+    }
+    writeToPlaylist(content: "#EXT-X-ENDLIST\n", append: true)
+  }
+
+  private func writeToPlaylist(content: String, append: Bool) {
+    let outputStream = OutputStream(url: playlistURL, append: append)
+    outputStream.open()
+    defer outputStream.close()
+
+    content.withUTF8 { bytes in
+      outputStream.write(bytes, maxLength: bytes.count)
+    }
   }
 }
 

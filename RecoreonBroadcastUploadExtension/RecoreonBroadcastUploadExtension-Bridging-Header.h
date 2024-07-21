@@ -1,2 +1,2 @@
-#import "../FragmentedScreenRecordWriter/FragmentedScreenRecordWriter-Bridging-Header.h"
+#import "../FragmentedRecordWriter/FragmentedRecordWriter-Bridging-Header.h"
 #import "ScreenRecordWriter.h"

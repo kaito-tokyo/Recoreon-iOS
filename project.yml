@@ -40,7 +40,7 @@ targets:
     sources:
       - "FragmentedRecordWriter"
     settings:
-      SWIFT_OBJC_BRIDGING_HEADER: "FragmentedScreenRecordWriter/FragmentedScreenRecordWriter-Bridging-Header.h"
+      SWIFT_OBJC_BRIDGING_HEADER: "FragmentedRecordWriter/FragmentedRecordWriter-Bridging-Header.h"
 
   FragmentedScreenRecordWriterTests:
     type: "bundle.unit-test"
