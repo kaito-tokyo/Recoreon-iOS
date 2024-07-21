@@ -5,30 +5,25 @@ import Foundation
 enum FragmentedVideoWriterError: CustomNSError {
 }
 
-struct SeparableVideoSegment {
-  let filename: String
-  let earliestPTS: CMTime
-  let duration: CMTime
-}
-
 private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
+  public let playlistURL: URL
+
   private let outputDirectoryURL: URL
   private let outputFilePrefix: String
-  private let playlistURL: URL
 
   private var segmentIndex = 0
-  private var lastSegmentReport: AVAssetSegmentReport?
-  private(set) var separableSegments: [SeparableVideoSegment] = []
+  private var lastSeparableSegmentReport: AVAssetSegmentReport?
+  private var lastSeparableSegmentURL: URL?
 
   init(outputDirectoryURL: URL, outputFilePrefix: String) throws {
-    self.outputDirectoryURL = outputDirectoryURL
-    self.outputFilePrefix = outputFilePrefix
-
-    let playlistURL = outputDirectoryURL.appending(
+    playlistURL = outputDirectoryURL.appending(
       path: "\(outputFilePrefix).m3u8",
       directoryHint: .notDirectory
     )
-    self.playlistOutputStream = OutputStream(url: playlistURL, append: false)
+
+    self.outputDirectoryURL = outputDirectoryURL
+    self.outputFilePrefix = outputFilePrefix
+
     super.init()
 
     let playlistHeader =  """
@@ -62,23 +57,19 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
       let filename = "\(outputFilePrefix)-\(paddedSegmentIndex).m4s"
       outputURL = outputDirectoryURL.appending(path: filename)
 
-      let timingTrackInfo = segmentReport!.trackReports.first(where: { $0.mediaType == .video })!
-      let earliestPTS = timingTrackInfo.earliestPresentationTimeStamp
-      let duration = timingTrackInfo.duration
-      separableSegments.append(
-        SeparableVideoSegment(filename: filename, earliestPTS: earliestPTS, duration: duration))
-
-      if let lastEarliestPTS = lastSegmentReport?.trackReports.first,
-         let earliestPTS = segmentReport?.trackReports.first {
-        let duration = earliestPTS.duration - lastEarliestPTS
+      if let lastEarliestPTS = lastSeparableSegmentReport?.trackReports.first?.earliestPresentationTimeStamp,
+         let earliestPTS = segmentReport?.trackReports.first?.earliestPresentationTimeStamp,
+         let lastSeparableSegmentURL = lastSeparableSegmentURL {
+        let lastSegmentDuration = earliestPTS - lastEarliestPTS
         let playlistContent = """
-          #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),
-          \(lastSeparableSegment.filename)
+          #EXTINF:\(String(format: "%1.5f", lastSegmentDuration.seconds)),
+          \(lastSeparableSegmentURL.lastPathComponent)\n
           """
         writeToPlaylist(content: playlistContent, append: true)
       }
 
-      lastSegmentReport = segmentReport
+      lastSeparableSegmentReport = segmentReport
+      lastSeparableSegmentURL = outputURL
 
       segmentIndex += 1
     @unknown default:
@@ -89,10 +80,11 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
   }
 
   func close() {
-    if let lastDuration = lastSegmentReport?.trackReports.first?.duration {
+    if let lastDuration = lastSeparableSegmentReport?.trackReports.first?.duration,
+    let lastSeparableSegmentURL = lastSeparableSegmentURL {
       let playlistContent = """
         #EXTINF:\(String(format: "%1.5f", lastDuration.seconds)),
-        \(lastSeparableSegment.filename)\n
+        \(lastSeparableSegmentURL.lastPathComponent)\n
         """
       writeToPlaylist(content: playlistContent, append: true)
     }
@@ -100,12 +92,19 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
   }
 
   private func writeToPlaylist(content: String, append: Bool) {
-    let outputStream = OutputStream(url: playlistURL, append: append)
+    guard let outputStream = OutputStream(url: playlistURL, append: append) else {
+      return
+    }
     outputStream.open()
-    defer outputStream.close()
+    defer {
+      outputStream.close()
+    }
 
+    var content = content
     content.withUTF8 { bytes in
-      outputStream.write(bytes, maxLength: bytes.count)
+      if let buffer = bytes.baseAddress {
+        outputStream.write(buffer, maxLength: bytes.count)
+      }
     }
   }
 }
@@ -185,65 +184,7 @@ public class FragmentedVideoWriter {
     if assetWriter.status == .failed {
       throw assetWriter.error!
     }
-  }
 
-  private func writeIndexPlaylist() throws {
-    let outputIndexURL = outputDirectoryURL.appending(
-      path: "\(outputFilePrefix).m3u8",
-      directoryHint: .notDirectory
-    )
-
-    guard let initializationSegmentFilename = delegate.initializationSegmentFilename else {
-      return
-    }
-  }
-
-  public func writeIndexPlaylist() throws -> URL {
-    let outputIndexURL = outputDirectoryURL.appending(
-      path: "\(outputFilePrefix).m3u8",
-      directoryHint: .notDirectory
-    )
-
-    guard let initializationSegmentFilename = delegate.initializationSegmentFilename else {
-      throw FragmentedAudioWriterError.notImplementedError
-    }
-
-    let indexHeader = """
-      #EXTM3U
-      #EXT-X-TARGETDURATION:6
-      #EXT-X-VERSION:7
-      #EXT-X-MEDIA-SEQUENCE:1
-      #EXT-X-PLAYLIST-TYPE:VOD
-      #EXT-X-INDEPENDENT-SEGMENTS
-      #EXT-X-MAP:URI="\(initializationSegmentFilename)"
-      """
-
-    let separableSegments = delegate.separableSegments
-    let indexComponents = zip(
-      separableSegments, separableSegments.dropFirst()
-    ).map { (first, second) in
-      let segmentDuration = second.earliestPTS - first.earliestPTS
-      return """
-        #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),
-        \(first.filename)
-        """
-    }
-
-    let lastSeparableSegment = separableSegments.last!
-    let segmentDuration = lastSeparableSegment.duration
-    let indexFooter = """
-      #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),
-      \(lastSeparableSegment.filename)
-      #EXT-X-ENDLIST
-      """
-
-    let indexContent = """
-      \(indexHeader)
-      \(indexComponents.joined(separator: "\n"))
-      \(indexFooter)
-      """
-    try indexContent.write(to: outputIndexURL, atomically: true, encoding: .utf8)
-
-    return outputIndexURL
+    delegate.close()
   }
 }

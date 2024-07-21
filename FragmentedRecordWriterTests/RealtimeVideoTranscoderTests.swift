@@ -1,5 +1,5 @@
 import CoreMedia
-import FragmentedScreenRecordWriter
+import FragmentedRecordWriter
 import VideoToolbox
 import XCTest
 
