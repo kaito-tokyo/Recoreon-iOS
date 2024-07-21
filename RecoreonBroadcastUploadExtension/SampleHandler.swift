@@ -126,11 +126,7 @@ class SampleHandler: RPBroadcastSampleHandler {
 
       self.videoTranscoder = videoTranscoder
       self.videoWriter = videoWriter
-    } catch {
-      finishBroadcastWithError(error)
-    }
 
-    do {
       let appAudioResampler = try AudioResampler(outputSampleRate: appSampleRate)
 
       let appAudioTranscoder = try RealtimeAudioTranscoder(
@@ -151,11 +147,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       self.appAudioResampler = appAudioResampler
       self.appAudioTranscoder = appAudioTranscoder
       self.appAudioWriter = appAudioWriter
-    } catch {
-      finishBroadcastWithError(error)
-    }
 
-    do {
       let micAudioResampler = try AudioResampler(outputSampleRate: micSampleRate)
 
       let micAudioTranscoder = try RealtimeAudioTranscoder(
@@ -176,6 +168,15 @@ class SampleHandler: RPBroadcastSampleHandler {
       self.micAudioResampler = micAudioResampler
       self.micAudioTranscoder = micAudioTranscoder
       self.micAudioWriter = micAudioWriter
+
+      let masterPlaylistWriter = MasterPlaylistWriter()
+      try masterPlaylistWriter.write(
+        outputDirectoryURL: outputDirectoryURL,
+        outputFilePrefix: recordID,
+        videoIndexURL: videoWriter.playlistURL,
+        appAudioIndexURL: appAudioWriter.playlistURL,
+        micAudioIndexURL: micAudioWriter.playlistURL
+      )
     } catch {
       finishBroadcastWithError(error)
     }
