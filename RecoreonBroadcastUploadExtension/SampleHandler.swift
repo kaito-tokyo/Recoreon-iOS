@@ -78,26 +78,6 @@ enum SampleHandlerError: CustomNSError {
 }
 
 class SampleHandler: RPBroadcastSampleHandler {
-  struct Spec {
-    let ext: String
-    let frameRate: Int
-    let videoBitRate: Int
-    let screenAudioSampleRate: Int
-    let screenAudioBitRate: Int
-    let micAudioSampleRate: Int
-    let micAudioBitRate: Int
-  }
-
-  let spec = Spec(
-    ext: "mkv",
-    frameRate: 60,
-    videoBitRate: 8_000_000,
-    screenAudioSampleRate: 44100,
-    screenAudioBitRate: 320_000,
-    micAudioSampleRate: 48000,
-    micAudioBitRate: 320_000
-  )
-
   let recoreonPathService = RecoreonPathService(fileManager: FileManager.default)
   let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults
 
@@ -114,13 +94,23 @@ class SampleHandler: RPBroadcastSampleHandler {
   var screenStartupCount = 10
   let screenStartupThrottlingFactor = 2
 
-  var videoWriter: FragmentedVideoWriter?
   var videoTranscoder: RealtimeVideoTranscoder?
+  var videoWriter: FragmentedVideoWriter?
+
+  var appAudioResampler: AudioResampler?
+  var appAudioTranscoder: RealtimeAudioTranscoder?
+  var appAudioWriter: FragmentedAudioWriter?
+
+  var micAudioResampler: AudioResampler?
+  var micAudioTranscoder: RealtimeAudioTranscoder?
+  var micAudioWriter: FragmentedAudioWriter?
 
   override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
     let width = 888
     let height = 1920
     let frameRate = 60
+    let appSampleRate = 44_100
+    let micSampleRate = 48_000
     let recordID = recoreonPathService.generateRecordID(date: .now)
     let outputDirectoryURL = recoreonPathService.generateAppGroupsFragmentedRecordURL(
       recordID: recordID)
@@ -139,7 +129,56 @@ class SampleHandler: RPBroadcastSampleHandler {
     } catch {
       finishBroadcastWithError(error)
     }
-    startRecording()
+
+    do {
+      let appAudioResampler = try AudioResampler(outputSampleRate: appSampleRate)
+
+      let appAudioTranscoder = try RealtimeAudioTranscoder(
+        inputAudioStreamBasicDesc: appAudioResampler.outputAudioStreamBasicDesc,
+        outputSampleRate: appSampleRate
+      )
+
+      let appAudioTranscoderOutputFormatDesc = try CMFormatDescription(
+        audioStreamBasicDescription: appAudioTranscoder.outputAudioStreamBasicDesc
+      )
+      let appAudioWriter = try FragmentedAudioWriter(
+        outputDirectoryURL: outputDirectoryURL,
+        outputFilePrefix: "\(recordID)-app",
+        sampleRate: appSampleRate,
+        sourceFormatHint: appAudioTranscoderOutputFormatDesc
+      )
+
+      self.appAudioResampler = appAudioResampler
+      self.appAudioTranscoder = appAudioTranscoder
+      self.appAudioWriter = appAudioWriter
+    } catch {
+      finishBroadcastWithError(error)
+    }
+
+    do {
+      let micAudioResampler = try AudioResampler(outputSampleRate: micSampleRate)
+
+      let micAudioTranscoder = try RealtimeAudioTranscoder(
+        inputAudioStreamBasicDesc: micAudioResampler.outputAudioStreamBasicDesc,
+        outputSampleRate: appSampleRate
+      )
+
+      let micAudioTranscoderOutputFormatDesc = try CMFormatDescription(
+        audioStreamBasicDescription: micAudioTranscoder.outputAudioStreamBasicDesc
+      )
+      let micAudioWriter = try FragmentedAudioWriter(
+        outputDirectoryURL: outputDirectoryURL,
+        outputFilePrefix: "\(recordID)-mic",
+        sampleRate: appSampleRate,
+        sourceFormatHint: micAudioTranscoderOutputFormatDesc
+      )
+
+      self.micAudioResampler = micAudioResampler
+      self.micAudioTranscoder = micAudioTranscoder
+      self.micAudioWriter = micAudioWriter
+    } catch {
+      finishBroadcastWithError(error)
+    }
   }
 
   override func broadcastPaused() {
@@ -166,6 +205,16 @@ class SampleHandler: RPBroadcastSampleHandler {
       )
     }
 
+    guard let appAudioResampler = appAudioResampler,
+      let appAudioTranscoder = appAudioTranscoder,
+      let appAudioWriter = appAudioWriter,
+      let micAudioResampler = micAudioResampler,
+      let micAudioTranscoder = micAudioTranscoder,
+      let micAudioWriter = micAudioWriter
+    else {
+      return
+    }
+
     switch sampleBufferType {
     case RPSampleBufferType.video:
       processVideoSample(sampleBuffer)
@@ -173,10 +222,20 @@ class SampleHandler: RPBroadcastSampleHandler {
       let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
       guard let firstTime = screenFirstTime else { return }
       let elapsedTime = CMTimeSubtract(pts, firstTime)
-      let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: Int32(spec.screenAudioSampleRate))
+      let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: 44_100)
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
-      processAudioSample(index: 1, outputPTS: outputPTS, sampleBuffer)
+      do {
+        try write(
+          audioWriter: appAudioWriter,
+          audioTranscoder: appAudioTranscoder,
+          audioResampler: appAudioResampler,
+          sampleBuffer: sampleBuffer,
+          pts: elapsedTime
+        )
+      } catch {
+        print(error)
+      }
     case RPSampleBufferType.audioMic:
       let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
       if micFirstTime == nil {
@@ -184,11 +243,22 @@ class SampleHandler: RPBroadcastSampleHandler {
         micFirstTime = CMTimeSubtract(pts, elapsedTime)
       }
       guard let firstTime = micFirstTime else { return }
+      let elapsedTime = CMTimeSubtract(pts, firstTime)
       let elapsedCount = CMTimeMultiply(
-        CMTimeSubtract(pts, firstTime), multiplier: Int32(spec.micAudioSampleRate))
+        CMTimeSubtract(pts, firstTime), multiplier: 48_000)
       let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
 
-      processAudioSample(index: 2, outputPTS: outputPTS, sampleBuffer)
+      do {
+        try write(
+          audioWriter: micAudioWriter,
+          audioTranscoder: micAudioTranscoder,
+          audioResampler: micAudioResampler,
+          sampleBuffer: sampleBuffer,
+          pts: elapsedTime
+        )
+      } catch {
+        print(error)
+      }
     @unknown default:
       fatalError("Unknown type of sample buffer")
     }
@@ -197,110 +267,17 @@ class SampleHandler: RPBroadcastSampleHandler {
   override func broadcastFinished() {
     let semaphore = DispatchSemaphore(value: 0)
     Task { [weak self] in
-      self?.videoTranscoder?.close()
-      try await self?.videoWriter?.close()
-      try self?.videoWriter?.writeIndexPlaylist()
+      guard let self = self else { return }
+      self.videoTranscoder?.close()
+      try await self.videoWriter?.close()
+      try await self.appAudioWriter?.close()
+      try await self.micAudioWriter?.close()
+      _ = try self.videoWriter?.writeIndexPlaylist()
+      _ = try self.appAudioWriter?.writeIndexPlaylist()
+      _ = try self.micAudioWriter?.writeIndexPlaylist()
       semaphore.signal()
     }
     semaphore.wait()
-    stopRecording()
-  }
-
-  func startRecording() {
-    let recordID = recoreonPathService.generateRecordID(date: Date())
-    let appGroupsScreenRecordURL = recoreonPathService.generateAppGroupsScreenRecordURL(
-      recordID: recordID, ext: spec.ext)
-
-    appGroupsUserDefaults?.set(
-      appGroupsScreenRecordURL.absoluteString,
-      forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey)
-
-    let openVideoCodecResult = writer.openVideoCodec("h264_videotoolbox")
-    if !openVideoCodecResult {
-      finishBroadcastWithError(SampleHandlerError.videoCodecOpeningError)
-      return
-    }
-
-    let openAudioCodecResult = writer.openAudioCodec("aac_at")
-    if !openAudioCodecResult {
-      finishBroadcastWithError(SampleHandlerError.audioCodecOpeningError)
-      return
-    }
-
-    let openOutputFileResult = writer.openOutputFile(appGroupsScreenRecordURL.path())
-    if !openOutputFileResult {
-      finishBroadcastWithError(SampleHandlerError.outputFileOpeningError)
-      return
-    }
-  }
-
-  func initAllStreams(width: Int, height: Int) {
-    let addVideoStream0Result = writer.addVideoStream(
-      0, width: width, height: height, frameRate: spec.frameRate, bitRate: spec.videoBitRate)
-    if !addVideoStream0Result {
-      finishBroadcastWithError(SampleHandlerError.videoStreamAddingError)
-      return
-    }
-
-    let addAudioStream1Result = writer.addAudioStream(
-      1, sampleRate: spec.screenAudioSampleRate, bitRate: spec.screenAudioBitRate)
-    if !addAudioStream1Result {
-      finishBroadcastWithError(SampleHandlerError.audioStreamAddingError)
-      return
-    }
-
-    let addAudioStream2Result = writer.addAudioStream(
-      2, sampleRate: spec.micAudioSampleRate, bitRate: spec.micAudioBitRate)
-    if !addAudioStream2Result {
-      finishBroadcastWithError(SampleHandlerError.audioStreamAddingError)
-      return
-    }
-
-    let setTitle1Result = writer.setTitle(1, value: "App")
-    if !setTitle1Result {
-      print(SampleHandlerError.titleSettingError)
-      finishBroadcastWithError(SampleHandlerError.titleSettingError)
-      return
-    }
-
-    let setTitle2Result = writer.setTitle(2, value: "Mic")
-    if !setTitle2Result {
-      print(SampleHandlerError.titleSettingError)
-      finishBroadcastWithError(SampleHandlerError.titleSettingError)
-      return
-    }
-
-    let openVideo0Result = writer.openVideo(0)
-    if !openVideo0Result {
-      finishBroadcastWithError(SampleHandlerError.videoOpeningError)
-      return
-    }
-
-    let openAudio1Result = writer.openAudio(1)
-    if !openAudio1Result {
-      finishBroadcastWithError(SampleHandlerError.audioOpeningError)
-      return
-    }
-
-    let openAudio2Result = writer.openAudio(2)
-    if !openAudio2Result {
-      finishBroadcastWithError(SampleHandlerError.audioOpeningError)
-      return
-    }
-
-    let startOutputResult = writer.startOutput()
-    if !startOutputResult {
-      finishBroadcastWithError(SampleHandlerError.outputStartingError)
-      return
-    }
-
-    let lumaBytesPerRow = writer.getBytesPerRow(0, ofPlane: 0)
-    let chromaBytesPerRow = writer.getBytesPerRow(0, ofPlane: 1)
-    pixelBufferExtractorRef = PixelBufferExtractor(
-      height: height,
-      lumaBytesPerRow: lumaBytesPerRow,
-      chromaBytesPerRow: chromaBytesPerRow
-    )
   }
 
   func processVideoSample(_ sampleBuffer: CMSampleBuffer) {
@@ -309,7 +286,6 @@ class SampleHandler: RPBroadcastSampleHandler {
     if !isOutputStarted {
       let width = CVPixelBufferGetWidth(pixelBuffer)
       let height = CVPixelBufferGetHeight(pixelBuffer)
-      initAllStreams(width: width, height: height)
       isOutputStarted = true
     }
 
@@ -327,7 +303,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
     guard let firstTime = self.screenFirstTime else { return }
     let elapsedTime = CMTimeSubtract(pts, firstTime)
-    let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: Int32(spec.frameRate))
+    let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: 60)
     let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
     screenElapsedTime = elapsedTime
 
@@ -339,57 +315,84 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
   }
 
-  func processAudioSample(
-    index: Int, outputPTS: Int64, _ sampleBuffer: CMSampleBuffer
-  ) {
-    var blockBuffer: CMBlockBuffer?
-    var abl = AudioBufferList()
+  func write(
+    audioWriter: FragmentedAudioWriter,
+    audioTranscoder: RealtimeAudioTranscoder,
+    audioResampler: AudioResampler,
+    sampleBuffer: CMSampleBuffer,
+    pts: CMTime
+  ) throws {
+    var blockBufferOut: CMBlockBuffer?
+    var audioBufferList = AudioBufferList()
     CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
       sampleBuffer,
       bufferListSizeNeededOut: nil,
-      bufferListOut: &abl,
+      bufferListOut: &audioBufferList,
       bufferListSize: MemoryLayout<AudioBufferList>.size,
-      blockBufferAllocator: nil,
-      blockBufferMemoryAllocator: nil,
+      blockBufferAllocator: kCFAllocatorDefault,
+      blockBufferMemoryAllocator: kCFAllocatorDefault,
       flags: 0,
-      blockBufferOut: &blockBuffer
+      blockBufferOut: &blockBufferOut
     )
 
     guard
       let format = CMSampleBufferGetFormatDescription(sampleBuffer),
-      let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee,
-      let buf = abl.mBuffers.mData
-    else { return }
-
-    print(abl)
-
-    var inData: UnsafePointer<UInt8>
-    let numBytes = abl.mBuffers.mDataByteSize
-    let numSamples = numBytes / 2 / asbd.mChannelsPerFrame
-    if asbd.mFormatFlags & kAudioFormatFlagIsBigEndian == 0 {
-      inData = UnsafePointer<UInt8>(buf.assumingMemoryBound(to: UInt8.self))
-    } else {
-      let dstView = swapBuf.assumingMemoryBound(to: UInt16.self)
-      let srcView = buf.assumingMemoryBound(to: UInt16.self)
-      writer.swapInt16Bytes(dstView, from: srcView, numBytes: Int(numBytes))
-      inData = UnsafePointer<UInt8>(swapBuf.assumingMemoryBound(to: UInt8.self))
+      let audioStreamBasicDesc = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee,
+      audioStreamBasicDesc.mFormatID == kAudioFormatLinearPCM,
+      let data = audioBufferList.mBuffers.mData
+    else {
+      print("err1")
+      return
     }
 
-    writer.ensureResamplerIsInitialted(
-      index, sampleRate: asbd.mSampleRate, numChannels: asbd.mChannelsPerFrame)
-    writer.writeAudio(index, outputPTS: outputPTS, inData: inData, inCount: Int32(numSamples))
-    writer.flushAudio(withResampling: index)
-  }
+    print(audioStreamBasicDesc)
+    let isSignedInteger = audioStreamBasicDesc.mFormatFlags & kAudioFormatFlagIsSignedInteger != 0
+    let isMono = audioStreamBasicDesc.mChannelsPerFrame == 1
+    let isStereo = audioStreamBasicDesc.mChannelsPerFrame == 2
+    let bytesPerSample = Int(audioStreamBasicDesc.mBytesPerFrame) / (isStereo ? 2 : 1)
+    let inputSampleRate = Int(audioStreamBasicDesc.mSampleRate)
+    if isStereo && isSignedInteger && bytesPerSample == 2 {
+      try audioResampler.append(
+        stereoInt16Buffer: data.assumingMemoryBound(to: Int16.self),
+        numSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
+        inputSampleRate: inputSampleRate,
+        pts: pts
+      )
+    } else if isMono && isSignedInteger && bytesPerSample == 2 {
+      try audioResampler.append(
+        monoInt16Buffer: data.assumingMemoryBound(to: Int16.self),
+        numSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
+        inputSampleRate: inputSampleRate,
+        pts: pts
+      )
+    } else {
+      print("Sample format is not supported!")
+    }
 
-  func stopRecording() {
-    appGroupsUserDefaults?.set(0, forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
-    writer.finishStream(0)
-    writer.finishStream(1)
-    writer.finishStream(2)
-    writer.finishOutput()
-    writer.closeStream(0)
-    writer.closeStream(1)
-    writer.closeStream(2)
-    writer.closeOutput()
+    let audioResamplerFrame = audioResampler.getCurrentFrame()
+    let audioTranscoderFrame = try audioTranscoder.send(
+      inputBuffer: audioResamplerFrame.data,
+      numInputSamples: audioResamplerFrame.numSamples
+    )
+    let packetDescs = Array(
+      UnsafeBufferPointer(
+        start: audioTranscoderFrame.packetDescs,
+        count: audioTranscoderFrame.numPackets
+      ))
+
+    let buffer = UnsafeMutableRawBufferPointer(
+      start: audioTranscoderFrame.audioBufferList.mBuffers.mData,
+      count: Int(audioTranscoderFrame.audioBufferList.mBuffers.mDataByteSize)
+    )
+    let blockBuffer = try CMBlockBuffer(buffer: buffer, allocator: kCFAllocatorNull)
+    let sampleBuffer = try CMSampleBuffer(
+      dataBuffer: blockBuffer,
+      formatDescription: audioTranscoder.outputFormatDesc,
+      numSamples: audioTranscoderFrame.numPackets,
+      presentationTimeStamp: pts,
+      packetDescriptions: packetDescs
+    )
+
+    try audioWriter.send(sampleBuffer: sampleBuffer)
   }
 }

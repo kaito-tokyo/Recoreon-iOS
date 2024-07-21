@@ -195,3 +195,4 @@ schemes:
     build:
       targets:
         RecoreonBroadcastUploadExtension: "all"
+        Recoreon: "none"

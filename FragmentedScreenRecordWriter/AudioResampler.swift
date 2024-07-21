@@ -15,6 +15,9 @@ public struct AudioResamplerFrame {
 }
 
 public class AudioResampler {
+  public let duration: CMTime
+  public let outputAudioStreamBasicDesc: AudioStreamBasicDescription
+
   private let outputSampleRate: Int
 
   private let underlyingBuffer: UnsafeMutablePointer<Float32>
@@ -29,6 +32,20 @@ public class AudioResampler {
   private let numBackOffSamples = 8
 
   public init(outputSampleRate: Int) throws {
+    self.duration = CMTime(value: 1, timescale: CMTimeScale(outputSampleRate))
+
+    self.outputAudioStreamBasicDesc = AudioStreamBasicDescription(
+      mSampleRate: Float64(outputSampleRate),
+      mFormatID: kAudioFormatLinearPCM,
+      mFormatFlags: kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked,
+      mBytesPerPacket: 8,
+      mFramesPerPacket: 1,
+      mBytesPerFrame: 8,
+      mChannelsPerFrame: 2,
+      mBitsPerChannel: 32,
+      mReserved: 0
+    )
+
     self.outputSampleRate = outputSampleRate
 
     underlyingBuffer = .allocate(capacity: bufferSize)
@@ -67,6 +84,34 @@ public class AudioResampler {
       self.numSamples = numSamples * 2
     } else if inputSampleRate * 6 == outputSampleRate {
       copyStereoInt16UpsamplingBy6(bodyBuffer, stereoInt16Buffer, numSamples)
+      self.numSamples = numSamples * 6
+    }
+
+    self.currentPTS = pts
+  }
+
+  public func append(
+    monoInt16Buffer: UnsafeMutablePointer<Int16>, numSamples: Int, inputSampleRate: Int,
+    pts: CMTime
+  ) throws {
+    guard
+      inputSampleRate == outputSampleRate || inputSampleRate * 2 == outputSampleRate
+        || inputSampleRate * 6 == outputSampleRate
+    else {
+      throw AudioResamplerError.appendingSampleRateNotSupported
+    }
+
+    try shift()
+
+    let bodyBuffer = underlyingBuffer.advanced(by: numOffsetSamples * 2)
+    if inputSampleRate == outputSampleRate {
+      copyMonoInt16(bodyBuffer, monoInt16Buffer, numSamples)
+      self.numSamples = numSamples
+    } else if inputSampleRate * 2 == outputSampleRate {
+      copyMonoInt16UpsamplingBy2(bodyBuffer, monoInt16Buffer, numSamples)
+      self.numSamples = numSamples * 2
+    } else if inputSampleRate * 6 == outputSampleRate {
+      copyMonoInt16UpsamplingBy6(bodyBuffer, monoInt16Buffer, numSamples)
       self.numSamples = numSamples * 6
     }
 
