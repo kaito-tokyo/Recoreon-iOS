@@ -94,9 +94,7 @@ private class FragmentedAudioWriterDelegate: NSObject, AVAssetWriterDelegate {
 
 public class FragmentedAudioWriter {
   public var playlistURL: URL {
-    get {
-      delegate.playlistURL
-    }
+    delegate.playlistURL
   }
 
   private let outputDirectoryURL: URL

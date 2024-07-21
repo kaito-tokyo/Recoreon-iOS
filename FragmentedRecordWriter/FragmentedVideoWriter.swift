@@ -114,9 +114,7 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
 
 public class FragmentedVideoWriter {
   public var playlistURL: URL {
-    get {
-      delegate.playlistURL
-    }
+    delegate.playlistURL
   }
 
   private let outputDirectoryURL: URL
