@@ -1,7 +1,7 @@
 #!/bin/bash
 dirs=(
-  FragmentedScreenRecordWriter
-  FragmentedScreenRecordWriterTests
+  FragmentedRecordWriter
+  FragmentedRecordWriterTests
   Recoreon
   RecoreonBroadcastUploadExtension
   RecoreonTests
