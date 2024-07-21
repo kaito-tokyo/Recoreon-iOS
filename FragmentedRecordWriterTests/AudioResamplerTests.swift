@@ -1,7 +1,7 @@
 import AVFoundation
 import CoreAudio
 import Foundation
-import FragmentedScreenRecordWriter
+import FragmentedRecordWriter
 import XCTest
 
 private let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -109,8 +109,6 @@ final class AudioResamplerTests: XCTestCase {
     }
 
     try await audioWriter.close()
-
-    _ = try audioWriter.writeIndexPlaylist()
   }
 }
 // swiftlint:enable function_body_length

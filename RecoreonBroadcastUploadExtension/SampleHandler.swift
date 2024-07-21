@@ -1,5 +1,5 @@
 import CoreMedia
-import FragmentedScreenRecordWriter
+import FragmentedRecordWriter
 import RecoreonCommon
 import ReplayKit
 
@@ -272,9 +272,6 @@ class SampleHandler: RPBroadcastSampleHandler {
       try await self.videoWriter?.close()
       try await self.appAudioWriter?.close()
       try await self.micAudioWriter?.close()
-      _ = try self.videoWriter?.writeIndexPlaylist()
-      _ = try self.appAudioWriter?.writeIndexPlaylist()
-      _ = try self.micAudioWriter?.writeIndexPlaylist()
       semaphore.signal()
     }
     semaphore.wait()

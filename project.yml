@@ -10,7 +10,7 @@ fileGroups:
   - "PrivacyInfo.xcprivacy"
   - "RecoreonTests.xctestplan"
   - "RecoreonUITests.xctestplan"
-  - "FragmentedScreenRecordWriterTests.xctestplan"
+  - "FragmentedRecordWriterTests.xctestplan"
 
 settings:
   # Signing settings
@@ -34,25 +34,25 @@ packages:
     from: "6.0.3"
 
 targets:
-  FragmentedScreenRecordWriter:
+  FragmentedRecordWriter:
     type: "library.static"
     platform: "iOS"
     sources:
-      - "FragmentedScreenRecordWriter"
+      - "FragmentedRecordWriter"
     settings:
-      SWIFT_OBJC_BRIDGING_HEADER: "FragmentedScreenRecordWriter/FragmentedScreenRecordWriter-Bridging-Header.h"
+      SWIFT_OBJC_BRIDGING_HEADER: "FragmentedRecordWriter/FragmentedRecordWriter-Bridging-Header.h"
 
-  FragmentedScreenRecordWriterTests:
+  FragmentedRecordWriterTests:
     type: "bundle.unit-test"
     platform: "iOS"
     sources:
-      - "FragmentedScreenRecordWriterTests"
+      - "FragmentedRecordWriterTests"
     dependencies:
-      - target: "FragmentedScreenRecordWriter"
+      - target: "FragmentedRecordWriter"
     settings:
-      SWIFT_OBJC_BRIDGING_HEADER: "FragmentedScreenRecordWriterTests/FragmentedScreenRecordWriterTests-Bridging-Header.h"
+      SWIFT_OBJC_BRIDGING_HEADER: "FragmentedRecordWriterTests/FragmentedRecordWriterTests-Bridging-Header.h"
     info:
-      path: "RecoreonUITests/Info.plist"
+      path: "FragmentedRecordWriterTests/Info.plist"
       properties:
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
@@ -77,7 +77,7 @@ targets:
     sources:
       - "RecoreonBroadcastUploadExtension"
     dependencies:
-      - target: "FragmentedScreenRecordWriter"
+      - target: "FragmentedRecordWriter"
       - target: "ScreenRecordWriter"
       - target: "RecoreonCommon"
       - package: "FFmpegKit"
@@ -189,7 +189,7 @@ schemes:
         - path: "RecoreonTests.xctestplan"
           defaultPlan: true
         - path: "RecoreonUITests.xctestplan"
-        - path: "FragmentedScreenRecordWriterTests.xctestplan"
+        - path: "FragmentedRecordWriterTests.xctestplan"
 
   RecoreonBroadcastUploadExtension:
     build:

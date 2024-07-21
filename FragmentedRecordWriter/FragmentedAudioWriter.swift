@@ -6,24 +6,33 @@ enum FragmentedAudioWriterError: CustomNSError {
   case notImplementedError
 }
 
-struct SeparableAudioSegment {
-  let filename: String
-  let earliestPTS: CMTime
-  let duration: CMTime
-}
-
 private class FragmentedAudioWriterDelegate: NSObject, AVAssetWriterDelegate {
+  public let playlistURL: URL
+
   private let outputDirectoryURL: URL
   private let outputFilePrefix: String
 
   private var segmentIndex = 0
-  private(set) var initializationSegmentFilename: String?
-  private(set) var separableSegments: [SeparableAudioSegment] = []
 
   init(outputDirectoryURL: URL, outputFilePrefix: String) throws {
+    playlistURL = outputDirectoryURL.appending(
+      path: "\(outputFilePrefix).m3u8",
+      directoryHint: .notDirectory
+    )
+
     self.outputDirectoryURL = outputDirectoryURL
     self.outputFilePrefix = outputFilePrefix
     super.init()
+
+    let playlistHeader = """
+      #EXTM3U
+      #EXT-X-TARGETDURATION:6
+      #EXT-X-VERSION:7
+      #EXT-X-MEDIA-SEQUENCE:1
+      #EXT-X-PLAYLIST-TYPE:VOD
+      #EXT-X-INDEPENDENT-SEGMENTS\n
+      """
+    writeToPlaylist(content: playlistHeader, append: false)
   }
 
   func assetWriter(
@@ -36,17 +45,22 @@ private class FragmentedAudioWriterDelegate: NSObject, AVAssetWriterDelegate {
     case .initialization:
       let filename = "\(outputFilePrefix)-init.m4s"
       outputURL = outputDirectoryURL.appending(path: filename)
-      initializationSegmentFilename = filename
+
+      let playlistContent = """
+        #EXT-X-MAP:URI="\(filename)"\n
+        """
+      writeToPlaylist(content: playlistContent, append: true)
     case .separable:
-      let paddedSegmentIndex = String(format: "%06d", segmentIndex)
-      let filename = "\(outputFilePrefix)-\(paddedSegmentIndex).m4s"
+      let filename = "\(outputFilePrefix)-\(String(format: "%06d", segmentIndex)).m4s"
       outputURL = outputDirectoryURL.appending(path: filename)
 
-      let timingTrackInfo = segmentReport!.trackReports[0]
-      let earliestPTS = timingTrackInfo.earliestPresentationTimeStamp
-      let duration = timingTrackInfo.duration
-      separableSegments.append(
-        SeparableAudioSegment(filename: filename, earliestPTS: earliestPTS, duration: duration))
+      if let segmentDuration = segmentReport?.trackReports.first?.duration {
+        let playlistContent = """
+          #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),
+          \(outputURL.lastPathComponent)\n
+          """
+        writeToPlaylist(content: playlistContent, append: true)
+      }
 
       segmentIndex += 1
     @unknown default:
@@ -54,6 +68,27 @@ private class FragmentedAudioWriterDelegate: NSObject, AVAssetWriterDelegate {
       return
     }
     try? segmentData.write(to: outputURL)
+  }
+
+  func close() {
+    writeToPlaylist(content: "#EXT-X-ENDLIST\n", append: true)
+  }
+
+  private func writeToPlaylist(content: String, append: Bool) {
+    guard let outputStream = OutputStream(url: playlistURL, append: append) else {
+      return
+    }
+    outputStream.open()
+    defer {
+      outputStream.close()
+    }
+
+    var content = content
+    content.withUTF8 { bytes in
+      if let buffer = bytes.baseAddress {
+        outputStream.write(buffer, maxLength: bytes.count)
+      }
+    }
   }
 }
 
@@ -133,54 +168,7 @@ public class FragmentedAudioWriter {
     if assetWriter.status == .failed {
       throw assetWriter.error!
     }
-  }
 
-  public func writeIndexPlaylist() throws -> URL {
-    let outputIndexURL = outputDirectoryURL.appending(
-      path: "\(outputFilePrefix).m3u8",
-      directoryHint: .notDirectory
-    )
-
-    guard let initializationSegmentFilename = delegate.initializationSegmentFilename else {
-      throw FragmentedAudioWriterError.notImplementedError
-    }
-
-    let indexHeader = """
-      #EXTM3U
-      #EXT-X-TARGETDURATION:6
-      #EXT-X-VERSION:7
-      #EXT-X-MEDIA-SEQUENCE:1
-      #EXT-X-PLAYLIST-TYPE:VOD
-      #EXT-X-INDEPENDENT-SEGMENTS
-      #EXT-X-MAP:URI="\(initializationSegmentFilename)"
-      """
-
-    let separableSegments = delegate.separableSegments
-    let indexComponents = zip(
-      separableSegments, separableSegments.dropFirst()
-    ).map { (first, second) in
-      let segmentDuration = second.earliestPTS - first.earliestPTS
-      return """
-        #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),
-        \(first.filename)
-        """
-    }
-
-    let lastSeparableSegment = separableSegments.last!
-    let segmentDuration = lastSeparableSegment.duration
-    let indexFooter = """
-      #EXTINF:\(String(format: "%1.5f", segmentDuration.seconds)),
-      \(lastSeparableSegment.filename)
-      #EXT-X-ENDLIST
-      """
-
-    let indexContent = """
-      \(indexHeader)
-      \(indexComponents.joined(separator: "\n"))
-      \(indexFooter)
-      """
-    try indexContent.write(to: outputIndexURL, atomically: true, encoding: .utf8)
-
-    return outputIndexURL
+    delegate.close()
   }
 }

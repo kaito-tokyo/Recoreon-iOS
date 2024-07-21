@@ -1,7 +1,7 @@
 import AVFoundation
 import CoreAudio
 import Foundation
-import FragmentedScreenRecordWriter
+import FragmentedRecordWriter
 import XCTest
 
 private let appSampleRate = 44_100
@@ -119,8 +119,6 @@ final class FragmentedAudioWriterTests: XCTestCase {
     }
 
     try await audioWriter.close()
-
-    try audioWriter.writeIndexPlaylist()
   }
   // swiftlint:enable function_body_length
 }
