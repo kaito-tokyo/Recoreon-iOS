@@ -44,6 +44,14 @@ final class AudioResamplerTests: XCTestCase {
     )
   }
 
+  func testUpsamplingFrom44100To48000() async throws {
+    try await run(
+      name: "AudioResamplerTests_testUpsamplingFrom44100To48000",
+      inputSampleRate: 44_100,
+      outputSampleRate: 48_000
+    )
+  }
+
   private func run(name: String, inputSampleRate: Int, outputSampleRate: Int) async throws {
     let outputDirectoryURL = try getOutputDirectoryURL(name: name)
     print("Output directory is \(outputDirectoryURL.path())")
@@ -72,7 +80,7 @@ final class AudioResamplerTests: XCTestCase {
 
       try audioResampler.append(
         stereoInt16Buffer: dummyAudioFrame.data,
-        numSamples: Int(dummyAudioFrame.audioBufferList.mBuffers.mDataByteSize / 4),
+        numInputSamples: Int(dummyAudioFrame.audioBufferList.mBuffers.mDataByteSize / 4),
         inputSampleRate: inputSampleRate,
         pts: dummyAudioFrame.pts
       )
