@@ -110,13 +110,13 @@ public class AudioResampler {
 
     switch mode {
     case .copy:
-      copyStereoInt16(bodyBuffer, stereoInt16Buffer, numSamples)
+      copyStereoInt16(bodyBuffer, stereoInt16Buffer, numInputSamples)
       self.numSamples = numInputSamples
     case .upsampleBy2:
-      copyStereoInt16UpsamplingBy2(bodyBuffer, stereoInt16Buffer, numSamples)
+      copyStereoInt16UpsamplingBy2(bodyBuffer, stereoInt16Buffer, numInputSamples)
       self.numSamples = numInputSamples * 2
     case .upsampleBy6:
-      copyStereoInt16UpsamplingBy6(bodyBuffer, stereoInt16Buffer, numSamples)
+      copyStereoInt16UpsamplingBy6(bodyBuffer, stereoInt16Buffer, numInputSamples)
       self.numSamples = numInputSamples * 6
     case .upsampleFrom44100To48000:
       let numOutputSamples = numInputSamples * outputSampleRate / inputSampleRate
@@ -164,13 +164,13 @@ public class AudioResampler {
 
     switch mode {
     case .copy:
-      copyMonoInt16(bodyBuffer, monoInt16Buffer, numSamples)
+      copyMonoInt16(bodyBuffer, monoInt16Buffer, numInputSamples)
       self.numSamples = numInputSamples
     case .upsampleBy2:
-      copyMonoInt16UpsamplingBy2(bodyBuffer, monoInt16Buffer, numSamples)
+      copyMonoInt16UpsamplingBy2(bodyBuffer, monoInt16Buffer, numInputSamples)
       self.numSamples = numInputSamples * 2
     case .upsampleBy6:
-      copyMonoInt16UpsamplingBy6(bodyBuffer, monoInt16Buffer, numSamples)
+      copyMonoInt16UpsamplingBy6(bodyBuffer, monoInt16Buffer, numInputSamples)
       self.numSamples = numInputSamples * 6
     case .upsampleFrom44100To48000:
       let numOutputSamples = numInputSamples * outputSampleRate / inputSampleRate
@@ -217,13 +217,13 @@ public class AudioResampler {
 
     switch mode {
     case .copy:
-      copyStereoInt16WithSwap(bodyBuffer, stereoInt16BufferWithSwap, numSamples)
+      copyStereoInt16WithSwap(bodyBuffer, stereoInt16BufferWithSwap, numInputSamples)
       self.numSamples = numInputSamples
     case .upsampleBy2:
-      copyStereoInt16UpsamplingBy2WithSwap(bodyBuffer, stereoInt16BufferWithSwap, numSamples)
-      self.numSamples = numInputSamples
+      copyStereoInt16UpsamplingBy2WithSwap(bodyBuffer, stereoInt16BufferWithSwap, numInputSamples)
+      self.numSamples = numInputSamples * 2
     case .upsampleBy6:
-      copyStereoInt16UpsamplingBy6WithSwap(bodyBuffer, stereoInt16BufferWithSwap, numSamples)
+      copyStereoInt16UpsamplingBy6WithSwap(bodyBuffer, stereoInt16BufferWithSwap, numInputSamples)
       self.numSamples = numInputSamples * 6
     case .upsampleFrom44100To48000:
       let numOutputSamples = numInputSamples * outputSampleRate / inputSampleRate
@@ -258,13 +258,13 @@ public class AudioResampler {
 
     switch mode {
     case .copy:
-      copyMonoInt16WithSwap(bodyBuffer, monoInt16BufferWithSwap, numSamples)
+      copyMonoInt16WithSwap(bodyBuffer, monoInt16BufferWithSwap, numInputSamples)
       self.numSamples = numInputSamples
     case .upsampleBy2:
-      copyMonoInt16UpsamplingBy2WithSwap(bodyBuffer, monoInt16BufferWithSwap, numSamples)
-      self.numSamples = numInputSamples
+      copyMonoInt16UpsamplingBy2WithSwap(bodyBuffer, monoInt16BufferWithSwap, numInputSamples)
+      self.numSamples = numInputSamples * 2
     case .upsampleBy6:
-      copyMonoInt16UpsamplingBy6WithSwap(bodyBuffer, monoInt16BufferWithSwap, numSamples)
+      copyMonoInt16UpsamplingBy6WithSwap(bodyBuffer, monoInt16BufferWithSwap, numInputSamples)
       self.numSamples = numInputSamples * 6
     case .upsampleFrom44100To48000:
       let numOutputSamples = numInputSamples * outputSampleRate / inputSampleRate
