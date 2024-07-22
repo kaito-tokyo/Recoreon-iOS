@@ -45,7 +45,9 @@ class DummyAudioGenerator {
     if bytesPerSample == 1 {
       formatFlags = kAudioFormatFlagIsPacked
     } else if bytesPerSample == 2 {
-      formatFlags = kAudioFormatFlagIsSignedInteger | (isSwapped ? kAudioFormatFlagIsBigEndian : 0) | kAudioFormatFlagIsPacked
+      formatFlags =
+        kAudioFormatFlagIsSignedInteger | (isSwapped ? kAudioFormatFlagIsBigEndian : 0)
+        | kAudioFormatFlagIsPacked
     } else {
       throw DummyAudioGeneratorError.initializingParameterNotSupported(
         numChannels: numChannels,

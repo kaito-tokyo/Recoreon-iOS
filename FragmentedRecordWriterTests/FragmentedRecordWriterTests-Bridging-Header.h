@@ -1,8 +1,8 @@
 #pragma once
 
 #include <math.h>
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #import "../FragmentedRecordWriter/FragmentedRecordWriter-Bridging-Header.h"
 
