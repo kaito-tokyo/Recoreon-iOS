@@ -8,6 +8,8 @@ private let documentsURL = FileManager.default.urls(for: .documentDirectory, in:
 
 // swiftlint:disable function_body_length
 final class AudioResamplerTests: XCTestCase {
+  let className = "AudioResamplerTests"
+
   func getOutputDirectoryURL(name: String) throws -> URL {
     let outputDirectoryURL = documentsURL.appending(path: name)
 
@@ -20,41 +22,72 @@ final class AudioResamplerTests: XCTestCase {
     return outputDirectoryURL
   }
 
-  func testAsIs() async throws {
-    try await run(
-      name: "AudioResamplerTests_testAsIs",
-      inputSampleRate: 48_000,
-      outputSampleRate: 48_000
-    )
+  func testCopyInt16() async throws {
+    for numChannels in [1, 2] {
+      for isSwapped in [false, true] {
+        try await run(
+          name: "\(className)_testCopyInt16_\(numChannels)_\(isSwapped)",
+          inputSampleRate: 48_000,
+          outputSampleRate: 48_000,
+          numChannels: numChannels,
+          bytesPerSample: 2,
+          isSwapped: isSwapped
+        )
+      }
+    }
   }
 
   func testUpsamplingBy2() async throws {
     try await run(
-      name: "AudioResamplerTests_testUpsamplingBy2",
+      name: "\(className)_\(#function)",
       inputSampleRate: 24_000,
-      outputSampleRate: 48_000
+      outputSampleRate: 48_000,
+      numChannels: 2,
+      bytesPerSample: 2,
+      isSwapped: false
     )
   }
 
   func testUpsamplingBy6() async throws {
     try await run(
-      name: "AudioResamplerTests_testUpsamplingBy6",
+      name: "\(className)_\(#function)",
       inputSampleRate: 8_000,
-      outputSampleRate: 48_000
+      outputSampleRate: 48_000,
+      numChannels: 2,
+      bytesPerSample: 2,
+      isSwapped: false
     )
   }
 
   func testUpsamplingFrom44100To48000() async throws {
     try await run(
-      name: "AudioResamplerTests_testUpsamplingFrom44100To48000",
+      name: "\(className)_\(#function)",
       inputSampleRate: 44_100,
-      outputSampleRate: 48_000
+      outputSampleRate: 48_000,
+      numChannels: 2,
+      bytesPerSample: 2,
+      isSwapped: false
     )
   }
 
-  private func run(name: String, inputSampleRate: Int, outputSampleRate: Int) async throws {
+  private func run(
+    name: String,
+    inputSampleRate: Int,
+    outputSampleRate: Int,
+    numChannels: Int,
+    bytesPerSample: Int,
+    isSwapped: Bool
+  ) async throws {
     let outputDirectoryURL = try getOutputDirectoryURL(name: name)
     print("Output directory is \(outputDirectoryURL.path())")
+
+    let dummyAppAudioGenerator = try DummyAudioGenerator(
+      sampleRate: inputSampleRate,
+      numChannels: numChannels,
+      bytesPerSample: bytesPerSample,
+      isSwapped: isSwapped,
+      initialPTS: .zero
+    )
 
     let audioResampler = try AudioResampler(outputSampleRate: outputSampleRate)
 
@@ -70,20 +103,45 @@ final class AudioResamplerTests: XCTestCase {
       sourceFormatHint: audioTranscoder.outputFormatDesc
     )
 
-    let dummyAppAudioGenerator = try DummyAudioGenerator(
-      sampleRate: inputSampleRate,
-      initialPTS: CMTime.zero
-    )
-
     for _ in 0..<inputSampleRate * 10 / 1024 {
       let dummyAudioFrame = dummyAppAudioGenerator.generateNextAudioFrame()
 
-      try audioResampler.append(
-        stereoInt16Buffer: dummyAudioFrame.data,
-        numInputSamples: Int(dummyAudioFrame.audioBufferList.mBuffers.mDataByteSize / 4),
-        inputSampleRate: inputSampleRate,
-        pts: dummyAudioFrame.pts
-      )
+      if bytesPerSample == 1 {
+      } else if bytesPerSample == 2 {
+        if numChannels == 1 {
+          if isSwapped {
+            try audioResampler.append(
+              monoInt16BufferWithSwap: dummyAudioFrame.data.assumingMemoryBound(to: Int16.self),
+              numInputSamples: dummyAudioFrame.numSamples,
+              inputSampleRate: inputSampleRate,
+              pts: dummyAudioFrame.pts
+            )
+          } else {
+            try audioResampler.append(
+              monoInt16Buffer: dummyAudioFrame.data.assumingMemoryBound(to: Int16.self),
+              numInputSamples: dummyAudioFrame.numSamples,
+              inputSampleRate: inputSampleRate,
+              pts: dummyAudioFrame.pts
+            )
+          }
+        } else if numChannels == 2 {
+          if isSwapped {
+            try audioResampler.append(
+              stereoInt16BufferWithSwap: dummyAudioFrame.data.assumingMemoryBound(to: Int16.self),
+              numInputSamples: dummyAudioFrame.numSamples,
+              inputSampleRate: inputSampleRate,
+              pts: dummyAudioFrame.pts
+            )
+          } else {
+            try audioResampler.append(
+              stereoInt16Buffer: dummyAudioFrame.data.assumingMemoryBound(to: Int16.self),
+              numInputSamples: dummyAudioFrame.numSamples,
+              inputSampleRate: inputSampleRate,
+              pts: dummyAudioFrame.pts
+            )
+          }
+        }
+      }
       let audioResamplerFrame = audioResampler.getCurrentFrame()
 
       let numInputSamples = audioResamplerFrame.numSamples

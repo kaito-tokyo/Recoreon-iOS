@@ -56,7 +56,12 @@ final class FragmentedAudioWriterTests: XCTestCase {
     )
 
     let dummyAppAudioGenerator = try DummyAudioGenerator(
-      sampleRate: sampleRate, initialPTS: CMTime.zero)
+      sampleRate: sampleRate,
+      numChannels: 2,
+      bytesPerSample: 2,
+      isSwapped: false,
+      initialPTS: .zero
+    )
 
     let audioWriter = try FragmentedAudioWriter(
       outputDirectoryURL: outputDirectoryURL,
