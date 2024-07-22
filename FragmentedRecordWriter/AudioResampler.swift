@@ -14,7 +14,7 @@ public struct AudioResamplerFrame {
   public let data: UnsafeMutablePointer<Float32>
 }
 
-fileprivate enum AudioResamplerMode {
+private enum AudioResamplerMode {
   case copy
   case upsampleBy2
   case upsampleBy6
@@ -121,13 +121,18 @@ public class AudioResampler {
     case .upsampleFrom44100To48000:
       let numOutputSamples = numInputSamples * outputSampleRate / inputSampleRate
       for outputIndex in 0..<numOutputSamples {
-        let inputSamplingPoint = Float(outputIndex) * Float(inputSampleRate) / Float(outputSampleRate)
+        let inputSamplingPoint =
+          Float(outputIndex) * Float(inputSampleRate) / Float(outputSampleRate)
         let inputIndex = Int(inputSamplingPoint)
         let fraction = inputSamplingPoint - Float(inputIndex)
         bodyBuffer[outputIndex * 2 + 0] =
-        Float(stereoInt16Buffer[inputIndex * 2 + 0]) / 32768.0 + fraction * (Float(stereoInt16Buffer[inputIndex * 2 + 2]) - Float(stereoInt16Buffer[inputIndex * 2 + 0])) / 32768.0
+          Float(stereoInt16Buffer[inputIndex * 2 + 0]) / 32768.0 + fraction
+          * (Float(stereoInt16Buffer[inputIndex * 2 + 2])
+            - Float(stereoInt16Buffer[inputIndex * 2 + 0])) / 32768.0
         bodyBuffer[outputIndex * 2 + 1] =
-        Float(stereoInt16Buffer[inputIndex * 2 + 1]) / 32768.0 + fraction * (Float(stereoInt16Buffer[inputIndex * 2 + 3]) - Float(stereoInt16Buffer[inputIndex * 2 + 1])) / 32768.0
+          Float(stereoInt16Buffer[inputIndex * 2 + 1]) / 32768.0 + fraction
+          * (Float(stereoInt16Buffer[inputIndex * 2 + 3])
+            - Float(stereoInt16Buffer[inputIndex * 2 + 1])) / 32768.0
       }
       self.numSamples = numOutputSamples
     case .notSupported:
@@ -170,10 +175,13 @@ public class AudioResampler {
     case .upsampleFrom44100To48000:
       let numOutputSamples = numInputSamples * outputSampleRate / inputSampleRate
       for outputIndex in 0..<numOutputSamples {
-        let inputSamplingPoint = Float(outputIndex) * Float(inputSampleRate) / Float(outputSampleRate)
+        let inputSamplingPoint =
+          Float(outputIndex) * Float(inputSampleRate) / Float(outputSampleRate)
         let inputIndex = Int(inputSamplingPoint)
         let fraction = inputSamplingPoint - Float(inputIndex)
-        let value = Float(monoInt16Buffer[inputIndex]) / 32768.0 + fraction * (Float(monoInt16Buffer[inputIndex + 1]) - Float(monoInt16Buffer[inputIndex])) / 32768.0
+        let value =
+          Float(monoInt16Buffer[inputIndex]) / 32768.0 + fraction
+          * (Float(monoInt16Buffer[inputIndex + 1]) - Float(monoInt16Buffer[inputIndex])) / 32768.0
         bodyBuffer[outputIndex * 2 + 0] = value
         bodyBuffer[outputIndex * 2 + 1] = value
       }
@@ -228,7 +236,8 @@ public class AudioResampler {
   }
 
   public func append(
-    monoInt16BufferWithSwap: UnsafeMutablePointer<Int16>, numInputSamples: Int, inputSampleRate: Int,
+    monoInt16BufferWithSwap: UnsafeMutablePointer<Int16>, numInputSamples: Int,
+    inputSampleRate: Int,
     pts: CMTime
   ) throws {
     let mode = AudioResamplerMode.calculateMode(
