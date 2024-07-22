@@ -71,7 +71,7 @@ final class AudioResamplerTests: XCTestCase {
     for numChannels in [1, 2] {
       for isSwapped in [false, true] {
         try await run(
-          name:  "\(className)_testUpsampleFrom44100To48000_\(numChannels)_\(isSwapped)",
+          name: "\(className)_testUpsampleFrom44100To48000_\(numChannels)_\(isSwapped)",
           inputSampleRate: 44_100,
           outputSampleRate: 48_000,
           numChannels: 2,
