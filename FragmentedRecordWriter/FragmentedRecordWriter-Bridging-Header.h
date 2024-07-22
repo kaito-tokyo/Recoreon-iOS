@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdint.h>
-#include <stdio.h>
 
 #define INT16_TO_FLOAT(x) (x * 3.0517578125e-05)
 

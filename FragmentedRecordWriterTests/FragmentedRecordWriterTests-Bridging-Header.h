@@ -2,7 +2,7 @@
 
 #include <math.h>
 #include <stdint.h>
-#include <stdio.h>
+#include <stdbool.h>
 
 #import "../FragmentedRecordWriter/FragmentedRecordWriter-Bridging-Header.h"
 
@@ -28,9 +28,11 @@ static inline void fillChromaPlane(uint8_t *__nonnull chromaData, long width,
 }
 
 struct DummyAudioGeneratorState {
-  int16_t *__nonnull data;
+  void *__nonnull data;
   long numSamples;
   long numChannels;
+  long bytesPerSample;
+  bool isSwapped;
   double t;
   double tincr;
   double tincr2;
@@ -43,13 +45,44 @@ static inline void fillAudio(struct DummyAudioGeneratorState *state) {
   double tincr = state->tincr;
   double tincr2 = state->tincr2;
 
-  for (long i = 0; i < numSamples; i++) {
-    t += tincr;
-    tincr += tincr2;
-    int16_t value = sin(t) * 10000;
+  if (state->bytesPerSample == 1) {
+    uint8_t *buffer = state->data;
 
-    for (long j = 0; j < numChannels; j++) {
-      state->data[i * numChannels + j] = value;
+    for (long i = 0; i < numSamples; i++) {
+      t += tincr;
+      tincr += tincr2;
+      uint8_t value = sin(t) * 100 + 128;
+
+      for (long j = 0; j < numChannels; j++) {
+        buffer[i * numChannels + j] = value;
+      }
+    }
+  } else if (state->bytesPerSample == 2) {
+    if (state->isSwapped) {
+      for (long i = 0; i < numSamples; i++) {
+        uint8_t *buffer = state->data;
+
+        t += tincr;
+        tincr += tincr2;
+        int16_t value = sin(t) * 10000;
+
+        for (long j = 0; j < numChannels; j++) {
+          buffer[(i * numChannels + j) * 2 + 0] = *((uint8_t *)&value + 1);
+          buffer[(i * numChannels + j) * 2 + 1] = *((uint8_t *)&value + 0);
+        }
+      }
+    } else {
+      int16_t *buffer = state->data;
+
+      for (long i = 0; i < numSamples; i++) {
+        t += tincr;
+        tincr += tincr2;
+        int16_t value = sin(t) * 10000;
+
+        for (long j = 0; j < numChannels; j++) {
+          buffer[i * numChannels + j] = value;
+        }
+      }
     }
   }
 
