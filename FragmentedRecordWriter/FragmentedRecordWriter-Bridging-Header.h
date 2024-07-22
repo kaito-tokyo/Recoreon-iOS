@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdio.h>
 
 #define INT16_TO_FLOAT(x) (x * 3.0517578125e-05)
 
@@ -78,8 +79,7 @@ static inline void copyMonoInt16UpsamplingBy2(float *__nonnull dst,
     float x0 = dst[-4];
     float x1 = INT16_TO_FLOAT(src[0]);
     for (long j = 1; j <= 2; j++) {
-      dst[j * 2 - 4] = dst[j * 2 - 3] = dst[j * 2 - 3] =
-          x0 + (x1 - x0) * j / 2.0;
+      dst[j * 2 - 4] = dst[j * 2 - 3] = x0 + (x1 - x0) * j / 2.0;
     }
   }
 
@@ -104,8 +104,8 @@ static inline void copyMonoInt16UpsamplingBy6(float *__nonnull dst,
   }
 
   for (long i = 0; i < numSamples - 1; i++) {
-    float x0 = INT16_TO_FLOAT(src[i * 2 + 0]);
-    float x1 = INT16_TO_FLOAT(src[i * 2 + 2]);
+    float x0 = INT16_TO_FLOAT(src[i + 0]);
+    float x1 = INT16_TO_FLOAT(src[i + 1]);
     for (long j = 1; j <= 6; j++) {
       dst[i * 12 + j * 2] = dst[i * 12 + j * 2 + 1] = x0 + (x1 - x0) * j / 6.0;
     }
@@ -220,8 +220,8 @@ static inline void copyMonoInt16UpsamplingBy6WithSwap(float *__nonnull dst,
   }
 
   for (long i = 0; i < numSamples - 1; i++) {
-    float x0 = int16ToFloatWithSwap(src[i * 2 + 0]);
-    float x1 = int16ToFloatWithSwap(src[i * 2 + 2]);
+    float x0 = int16ToFloatWithSwap(src[i + 0]);
+    float x1 = int16ToFloatWithSwap(src[i + 1]);
     for (long j = 1; j <= 6; j++) {
       dst[i * 12 + j * 2] = dst[i * 12 + j * 2 + 1] = x0 + (x1 - x0) * j / 6.0;
     }

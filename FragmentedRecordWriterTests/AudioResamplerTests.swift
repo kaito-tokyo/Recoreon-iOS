@@ -37,26 +37,34 @@ final class AudioResamplerTests: XCTestCase {
     }
   }
 
-  func testUpsamplingBy2() async throws {
-    try await run(
-      name: "\(className)_\(#function)",
-      inputSampleRate: 24_000,
-      outputSampleRate: 48_000,
-      numChannels: 2,
-      bytesPerSample: 2,
-      isSwapped: false
-    )
+  func testUpsampleBy2Int16() async throws {
+    for numChannels in [1, 2] {
+      for isSwapped in [false, true] {
+        try await run(
+          name: "\(className)_testUpsampleBy2Int16_\(numChannels)_\(isSwapped)",
+          inputSampleRate: 24_000,
+          outputSampleRate: 48_000,
+          numChannels: numChannels,
+          bytesPerSample: 2,
+          isSwapped: isSwapped
+        )
+      }
+    }
   }
 
-  func testUpsamplingBy6() async throws {
-    try await run(
-      name: "\(className)_\(#function)",
-      inputSampleRate: 8_000,
-      outputSampleRate: 48_000,
-      numChannels: 2,
-      bytesPerSample: 2,
-      isSwapped: false
-    )
+  func testUpsampleBy6Int16() async throws {
+    for numChannels in [1, 2] {
+      for isSwapped in [false, true] {
+        try await run(
+          name: "\(className)_testUpsampleBy6Int16_\(numChannels)_\(isSwapped)",
+          inputSampleRate: 8_000,
+          outputSampleRate: 48_000,
+          numChannels: numChannels,
+          bytesPerSample: 2,
+          isSwapped: isSwapped
+        )
+      }
+    }
   }
 
   func testUpsamplingFrom44100To48000() async throws {
