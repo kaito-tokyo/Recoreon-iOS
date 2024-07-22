@@ -363,7 +363,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       print(inputSampleRate)
       try audioResampler.append(
         monoInt16Buffer: data.assumingMemoryBound(to: Int16.self),
-        numSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 2,
+        numInputSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 2,
         inputSampleRate: inputSampleRate,
         pts: pts
       )
@@ -372,14 +372,14 @@ class SampleHandler: RPBroadcastSampleHandler {
       print(inputSampleRate)
       try audioResampler.append(
         stereoInt16BufferWithSwap: data.assumingMemoryBound(to: Int16.self),
-        numSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
+        numInputSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
         inputSampleRate: inputSampleRate,
         pts: pts
       )
     } else if isMono && isSignedInteger && bytesPerSample == 2 && isBigEndian {
       try audioResampler.append(
         monoInt16BufferWithSwap: data.assumingMemoryBound(to: Int16.self),
-        numSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 2,
+        numInputSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 2,
         inputSampleRate: inputSampleRate,
         pts: pts
       )
