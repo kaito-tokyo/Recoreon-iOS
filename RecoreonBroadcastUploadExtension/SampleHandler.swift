@@ -218,48 +218,28 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     switch sampleBufferType {
     case RPSampleBufferType.video:
+      print("vid", sampleBuffer.presentationTimeStamp)
       processVideoSample(sampleBuffer)
     case RPSampleBufferType.audioApp:
-      let pts = sampleBuffer.presentationTimeStamp
-      print("app", pts)
-      guard let firstTime = screenFirstTime else { return }
-      let elapsedTime = CMTimeSubtract(pts, firstTime)
-      let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: 44_100)
-      let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
-
       do {
         try write(
           audioWriter: appAudioWriter,
           audioTranscoder: appAudioTranscoder,
           audioResampler: appAudioResampler,
           sampleBuffer: sampleBuffer,
-          pts: elapsedTime
+          pts: sampleBuffer.presentationTimeStamp
         )
       } catch {
         print(error)
       }
     case RPSampleBufferType.audioMic:
-      let pts = sampleBuffer.presentationTimeStamp
-      print("mic", pts)
-      if micFirstTime == nil {
-        guard let elapsedTime = screenElapsedTime else { return }
-        micFirstTime = CMTimeSubtract(pts, elapsedTime)
-      }
-      guard let firstTime = micFirstTime else { return }
-      let elapsedTime = CMTimeSubtract(pts, firstTime)
-      let elapsedCount = CMTimeMultiply(
-        CMTimeSubtract(pts, firstTime), multiplier: 48_000)
-      let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
-
-      print("mic", sampleBuffer.formatDescription?.audioStreamBasicDescription?.mSampleRate)
-
       do {
         try write(
           audioWriter: micAudioWriter,
           audioTranscoder: micAudioTranscoder,
           audioResampler: micAudioResampler,
           sampleBuffer: sampleBuffer,
-          pts: elapsedTime
+          pts: sampleBuffer.presentationTimeStamp
         )
       } catch {
         print(error)
@@ -297,17 +277,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       }
     }
 
-    let pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-    if screenFirstTime == nil {
-      screenFirstTime = pts
-    }
-    guard let firstTime = self.screenFirstTime else { return }
-    let elapsedTime = CMTimeSubtract(pts, firstTime)
-    let elapsedCount = CMTimeMultiply(elapsedTime, multiplier: 60)
-    let outputPTS = elapsedCount.value / Int64(elapsedCount.timescale)
-    screenElapsedTime = elapsedTime
-
-    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: pts) {
+    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: sampleBuffer.presentationTimeStamp) {
       [weak self] (status, infoFlags, sbuf) in
       if let sampleBuffer = sbuf {
         try? self?.videoWriter?.send(sampleBuffer: sampleBuffer)
