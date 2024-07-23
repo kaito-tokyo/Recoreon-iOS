@@ -107,16 +107,15 @@ targets:
     platform: "iOS"
     sources:
       - "Recoreon"
-    settings:
-      DEVELOPMENT_ASSET_PATHS: '"Recoreon/Preview Content"'
-      ENABLE_PREVIEWS: true
-      ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "AccentColor"
-      SWIFT_OBJC_BRIDGING_HEADER: "Recoreon/Recoreon-Bridging-Header.h"
     dependencies:
       - target: "RecoreonCommon"
       - target: "RecoreonBroadcastUploadExtension"
       - package: "FFmpegKit"
     settings:
+      DEVELOPMENT_ASSET_PATHS: '"Recoreon/Preview Content"'
+      ENABLE_PREVIEWS: true
+      ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "AccentColor"
+      SWIFT_OBJC_BRIDGING_HEADER: "Recoreon/Recoreon-Bridging-Header.h"
       GCC_GENERATE_TEST_COVERAGE_FILES: true
       GCC_INSTRUMENT_PROGRAM_FLOW_ARCS: true
       SWIFT_EMIT_LOC_STRINGS: true

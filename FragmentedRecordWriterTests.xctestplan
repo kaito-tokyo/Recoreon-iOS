@@ -15,8 +15,8 @@
     {
       "target" : {
         "containerPath" : "container:Recoreon.xcodeproj",
-        "identifier" : "9C846C6885638E59E1D9DD35",
-        "name" : "RealtimeMediaWriterTests"
+        "identifier" : "1BF2A5E882081DBA0A3D4441",
+        "name" : "FragmentedRecordWriterTests"
       }
     }
   ],

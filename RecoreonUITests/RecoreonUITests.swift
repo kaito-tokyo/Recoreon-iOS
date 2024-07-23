@@ -65,7 +65,7 @@ final class RecoreonUITests: XCTestCase {
 
     app.buttons.matching(identifier: "ScreenRecordEntry").element(boundBy: 1).tap()
     app.buttons.matching(identifier: "RecordNoteEntryButton").element(boundBy: 0).tap()
-    XCTAssert(app.staticTexts["Record01-1.txt"].waitForExistence(timeout: 10))
+    XCTAssert(app.staticTexts["Recoreon20240724T063654-1.txt"].waitForExistence(timeout: 10))
   }
 
   //  func testLaunchPerformance() throws {
