@@ -88,7 +88,7 @@ struct PreviewRecoreonServices: RecoreonServices {
           forResource: streamFile,
           withExtension: "m4s"
         )!,
-        to: Recoreon20240724T063710URL.appending(
+        to: recoreon20240724T063710URL.appending(
           path: "\(streamFile).m4s", directoryHint: .notDirectory)
       )
     }
@@ -106,7 +106,7 @@ struct PreviewRecoreonServices: RecoreonServices {
           forResource: indexFile,
           withExtension: "m3u8"
         )!,
-        to: Recoreon20240724T063710URL.appending(
+        to: recoreon20240724T063710URL.appending(
           path: "\(indexFile).m3u8", directoryHint: .notDirectory)
       )
     }
