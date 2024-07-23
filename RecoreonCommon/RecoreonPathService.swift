@@ -14,22 +14,60 @@ public struct RecoreonPathService {
   private let recordsDir: URL
   private let recordNotesDir: URL
 
-  public init(fileManager: FileManager) {
+  public init(fileManager: FileManager, isUITest: Bool = false) {
     self.fileManager = fileManager
+
+#if DEBUG
+    let isPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+#else
+    let isPreview = false
+#endif
+
     appGroupsDir = fileManager.containerURL(
-      forSecurityApplicationGroupIdentifier: appGroupsIdentifier)!
-    appGroupsDocumentsDir = appGroupsDir.appending(
-      component: "Documents", directoryHint: .isDirectory)
+      forSecurityApplicationGroupIdentifier: appGroupsIdentifier
+    )!
+
+    if isPreview || isUITest {
+      appGroupsDocumentsDir = appGroupsDir.appending(
+        path: "Library/Caches/PreviewDocuments",
+        directoryHint: .isDirectory
+      )
+
+      libraryDir = fileManager.urls(
+        for: .libraryDirectory,
+        in: .userDomainMask
+      )[0].appending(
+        path: "Caches/PreviewLibrary",
+        directoryHint: .isDirectory
+      )
+
+      documentsDir = fileManager.urls(
+        for: .libraryDirectory,
+        in: .userDomainMask
+      )[0].appending(
+        path: "Caches/PreviewDocuments",
+        directoryHint: .isDirectory
+      )
+    } else {
+      appGroupsDocumentsDir = appGroupsDir.appending(
+        path: "Documents",
+        directoryHint: .isDirectory
+      )
+
+      libraryDir = fileManager.urls(for: .libraryDirectory, in: .userDomainMask)[0]
+
+      documentsDir = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+
     appGroupsFragmentedRecordsDir = appGroupsDocumentsDir.appending(
       path: "FragmentedRecords",
       directoryHint: .isDirectory
     )
     appGroupsRecordsDir = appGroupsDocumentsDir.appending(
       path: "Records", directoryHint: .isDirectory)
-    libraryDir = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first!
+
     previewVideosDir = libraryDir.appending(path: "PreviewVideos", directoryHint: .isDirectory)
     encodedVideosDir = libraryDir.appending(path: "EncodedVideos", directoryHint: .isDirectory)
-    documentsDir = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
     recordsDir = documentsDir.appending(path: "Records", directoryHint: .isDirectory)
     recordNotesDir = documentsDir.appending(path: "RecordNotes", directoryHint: .isDirectory)
   }
