@@ -22,7 +22,8 @@ struct PreviewRecoreonServices: RecoreonServices {
   }
 
   func deployAllAssets() {
-    let recoreon20240724T063654URL = recoreonPathService.generateAppGroupsFragmentedRecordURL(recordID: "Recoreon20240724T063654")
+    let recoreon20240724T063654URL = recoreonPathService.generateAppGroupsFragmentedRecordURL(
+      recordID: "Recoreon20240724T063654")
 
     let recoreon20240724T063654StreamFiles = [
       "Recoreon20240724T063654-app-000000",
@@ -44,7 +45,8 @@ struct PreviewRecoreonServices: RecoreonServices {
           forResource: streamFile,
           withExtension: "m4s"
         )!,
-        to: recoreon20240724T063654URL.appending(path: "\(streamFile).m4s", directoryHint: .notDirectory)
+        to: recoreon20240724T063654URL.appending(
+          path: "\(streamFile).m4s", directoryHint: .notDirectory)
       )
     }
 
@@ -61,13 +63,15 @@ struct PreviewRecoreonServices: RecoreonServices {
           forResource: indexFile,
           withExtension: "m3u8"
         )!,
-        to: recoreon20240724T063654URL.appending(path: "\(indexFile).m3u8", directoryHint: .notDirectory)
+        to: recoreon20240724T063654URL.appending(
+          path: "\(indexFile).m3u8", directoryHint: .notDirectory)
       )
     }
 
-    let Recoreon20240724T063710URL = recoreonPathService.generateAppGroupsFragmentedRecordURL(recordID: "Recoreon20240724T063710")
+    let recoreon20240724T063710URL = recoreonPathService.generateAppGroupsFragmentedRecordURL(
+      recordID: "Recoreon20240724T063710")
 
-    let Recoreon20240724T063710StreamFiles = [
+    let recoreon20240724T063710StreamFiles = [
       "Recoreon20240724T063710-app-000000",
       "Recoreon20240724T063710-app-000001",
       "Recoreon20240724T063710-app-init",
@@ -78,41 +82,45 @@ struct PreviewRecoreonServices: RecoreonServices {
       "Recoreon20240724T063710-video-000001",
       "Recoreon20240724T063710-video-init",
     ]
-    for streamFile in Recoreon20240724T063710StreamFiles {
+    for streamFile in recoreon20240724T063710StreamFiles {
       copyIfNotExists(
         at: Bundle.main.url(
           forResource: streamFile,
           withExtension: "m4s"
         )!,
-        to: Recoreon20240724T063710URL.appending(path: "\(streamFile).m4s", directoryHint: .notDirectory)
+        to: Recoreon20240724T063710URL.appending(
+          path: "\(streamFile).m4s", directoryHint: .notDirectory)
       )
     }
 
-    let Recoreon20240724T063710IndexFiles = [
+    let recoreon20240724T063710IndexFiles = [
       "Recoreon20240724T063710-app",
       "Recoreon20240724T063710-mic",
       "Recoreon20240724T063710-video",
       "Recoreon20240724T063710",
     ]
 
-    for indexFile in Recoreon20240724T063710IndexFiles {
+    for indexFile in recoreon20240724T063710IndexFiles {
       copyIfNotExists(
         at: Bundle.main.url(
           forResource: indexFile,
           withExtension: "m3u8"
         )!,
-        to: Recoreon20240724T063710URL.appending(path: "\(indexFile).m3u8", directoryHint: .notDirectory)
+        to: Recoreon20240724T063710URL.appending(
+          path: "\(indexFile).m3u8", directoryHint: .notDirectory)
       )
     }
 
     copyIfNotExists(
       at: Bundle.main.url(forResource: "Recoreon20240724T063654-1", withExtension: "txt")!,
-      to: recoreonPathService.generateRecordNoteURL(recordID: "Recoreon20240724T063654", shortName: "1")
+      to: recoreonPathService.generateRecordNoteURL(
+        recordID: "Recoreon20240724T063654", shortName: "1")
     )
 
     copyIfNotExists(
       at: Bundle.main.url(forResource: "Recoreon20240724T063654-2", withExtension: "txt")!,
-      to: recoreonPathService.generateRecordNoteURL(recordID: "Recoreon20240724T063654", shortName: "2")
+      to: recoreonPathService.generateRecordNoteURL(
+        recordID: "Recoreon20240724T063654", shortName: "2")
     )
 
     copyIfNotExists(
