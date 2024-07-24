@@ -31,5 +31,7 @@ final class HLSServerTests: XCTestCase {
     let (data, response) = try await URLSession.shared.data(from: url)
 
     XCTAssert(String(decoding: data, as: UTF8.self) == testFileContent)
+
+    try await server.close()
   }
 }
