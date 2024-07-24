@@ -26,7 +26,7 @@ public struct MasterPlaylistWriter {
       \(videoIndexURL.lastPathComponent)
 
       #EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",NAME="App",DEFAULT=YES,URI="\(appAudioIndexURL.lastPathComponent)"
-      #EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",NAME="Mic",DEFAULT=NO,URI="\(micAudioIndexURL.lastPathComponent)"
+      #EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID="audio",NAME="Mic",DEFAULT=NO,URI="\(micAudioIndexURL.lastPathComponent)"\n
       """
 
     try masterPlaylistContent.write(to: masterPlaylistURL, atomically: true, encoding: .utf8)

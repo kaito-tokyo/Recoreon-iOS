@@ -7,4 +7,5 @@ struct ScreenRecordEntry: Identifiable, Hashable {
   let summaryBody: String
 
   var id: URL { url }
+  var recordID: String { url.lastPathComponent }
 }

@@ -145,6 +145,10 @@ public struct RecoreonPathService {
     })
   }
 
+  public func getMasterPlaylistURL(fragmentedRecordURL: URL) -> URL {
+    let recordID = fragmentedRecordURL.lastPathComponent
+    return fragmentedRecordURL.appending(path: "\(recordID).m3u8", directoryHint: .notDirectory)
+  }
 
   // RecordNote
 

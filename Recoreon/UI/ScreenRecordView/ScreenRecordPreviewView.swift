@@ -1,4 +1,5 @@
 import AVKit
+import HLSServer
 import SwiftUI
 
 struct ScreenRecordPreviewViewRoute: Hashable {
@@ -9,40 +10,62 @@ struct ScreenRecordPreviewView: View {
   let recoreonServices: RecoreonServices
   let screenRecordEntry: ScreenRecordEntry
 
-  @State var player = AVPlayer()
+  func openHLSServer(fragmentedRecordURL: URL) -> HLSServer? {
+    return try? HLSServer(
+      htdocs: screenRecordEntry.url.path(percentEncoded: false),
+      host: "::1"
+    )
+  }
 
-  @State var isRemuxing: Bool = false
+  func getMasterPlaylistRemoteURL(
+    server: HLSServer?,
+    fragmentedRecordURL: URL
+  ) -> URL? {
+    guard let port = server?.port else { return nil }
 
-  @State var isShowingRemoveConfirmation = false
+    let recoreonPathService = recoreonServices.recoreonPathService
+
+    let masterPlaylistName = recoreonPathService.getMasterPlaylistURL(
+      fragmentedRecordURL: screenRecordEntry.url
+    ).lastPathComponent
+
+    let masterPlaylistRemoteURL = URL(
+      string: "http://[::1]:\(port)/\(masterPlaylistName)"
+    )
+
+    return masterPlaylistRemoteURL
+  }
+
+  func createPreviewPlayer(masterPlaylistRemoteURL: URL?) -> AVPlayer {
+    if let masterPlaylistRemoteURL = masterPlaylistRemoteURL {
+      return AVPlayer(url: masterPlaylistRemoteURL)
+    } else {
+      return AVPlayer()
+    }
+  }
 
   var body: some View {
-    ZStack {
-      VideoPlayer(player: player)
-        .accessibilityIdentifier("PreviewVideoPlayer")
-        .onAppear {
-          Task {
-            isRemuxing = true
-            guard
-              let previewURL = await recoreonServices.screenRecordService.remuxPreviewVideo(
-                screenRecordEntry: screenRecordEntry)
-            else {
-              isRemuxing = false
-              return
-            }
-            player.replaceCurrentItem(with: AVPlayerItem(url: previewURL))
-            isRemuxing = false
-            player.play()
-          }
+    let server = openHLSServer(
+      fragmentedRecordURL: screenRecordEntry.url
+    )
+
+    let masterPlaylistRemoteURL = getMasterPlaylistRemoteURL(
+      server: server,
+      fragmentedRecordURL: screenRecordEntry.url
+    )
+
+    let player: AVPlayer = createPreviewPlayer(
+      masterPlaylistRemoteURL: masterPlaylistRemoteURL
+    )
+
+    VideoPlayer(player: player)
+      .accessibilityIdentifier("PreviewVideoPlayer")
+      .onDisappear {
+        player.pause()
+        Task {
+          try await server?.close()
         }
-        .onDisappear {
-          player.pause()
-        }
-      if isRemuxing {
-        ProgressView()
-          .tint(.white)
-          .scaleEffect(CGSize(width: 10, height: 10))
       }
-    }
   }
 }
 
@@ -65,6 +88,7 @@ struct ScreenRecordPreviewViewContainer: View {
 
 #Preview {
   let recoreonServices = PreviewRecoreonServices()
+  recoreonServices.recoreonPathService.wipe()
   recoreonServices.deployAllAssets()
   let screenRecordService = recoreonServices.screenRecordService
   let screenRecordEntries = screenRecordService.listScreenRecordEntries()
