@@ -12,11 +12,13 @@ struct ScreenRecordPreviewView: View {
 
   var body: some View {
     let recoreonPathService = recoreonServices.recoreonPathService
-    let masterPlaylistURL = recoreonPathService.getMasterPlaylistURL(fragmentedRecordURL: screenRecordEntry.url)
+    let masterPlaylistURL = recoreonPathService.getMasterPlaylistURL(
+      fragmentedRecordURL: screenRecordEntry.url)
     let server = demoServer(screenRecordEntry.url.path(percentEncoded: false))
     let _ = try? server.start(47510)
 
-    let player = AVPlayer(url: URL(string: "http://localhost:47510/public/\(masterPlaylistURL.lastPathComponent)")!)
+    let player = AVPlayer(
+      url: URL(string: "http://localhost:47510/public/\(masterPlaylistURL.lastPathComponent)")!)
 
     VideoPlayer(player: player)
       .accessibilityIdentifier("PreviewVideoPlayer")
