@@ -177,7 +177,8 @@ public class RealtimeAudioTranscoder {
         err: err3)
     }
 
-    let magicCookie: UnsafeMutableRawPointer = .allocate(byteCount: Int(magicCookieSize), alignment: 1)
+    let magicCookie: UnsafeMutableRawPointer = .allocate(
+      byteCount: Int(magicCookieSize), alignment: 1)
     let err4 = AudioConverterGetProperty(
       audioConverter,
       kAudioConverterCompressionMagicCookie,
