@@ -33,6 +33,10 @@ packages:
     url: "https://github.com/kaito-tokyo/ffmpeg-kit-spm.git"
     from: "6.0.3"
 
+  Swifter:
+    url: "https://github.com/httpswift/swifter.git"
+    from: "1.5.0"
+
 targets:
   FragmentedRecordWriter:
     type: "library.static"
@@ -111,6 +115,7 @@ targets:
       - target: "RecoreonCommon"
       - target: "RecoreonBroadcastUploadExtension"
       - package: "FFmpegKit"
+      - package: "Swifter"
     settings:
       DEVELOPMENT_ASSET_PATHS: '"Recoreon/Preview Content"'
       ENABLE_PREVIEWS: true

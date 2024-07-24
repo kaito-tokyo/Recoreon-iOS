@@ -1,5 +1,6 @@
 import AVKit
 import SwiftUI
+import Swifter
 
 struct ScreenRecordPreviewViewRoute: Hashable {
   let screenRecordEntry: ScreenRecordEntry
@@ -9,40 +10,19 @@ struct ScreenRecordPreviewView: View {
   let recoreonServices: RecoreonServices
   let screenRecordEntry: ScreenRecordEntry
 
-  @State var player = AVPlayer()
-
-  @State var isRemuxing: Bool = false
-
-  @State var isShowingRemoveConfirmation = false
-
   var body: some View {
-    ZStack {
-      VideoPlayer(player: player)
-        .accessibilityIdentifier("PreviewVideoPlayer")
-        .onAppear {
-          Task {
-            isRemuxing = true
-            guard
-              let previewURL = await recoreonServices.screenRecordService.remuxPreviewVideo(
-                screenRecordEntry: screenRecordEntry)
-            else {
-              isRemuxing = false
-              return
-            }
-            player.replaceCurrentItem(with: AVPlayerItem(url: previewURL))
-            isRemuxing = false
-            player.play()
-          }
-        }
-        .onDisappear {
-          player.pause()
-        }
-      if isRemuxing {
-        ProgressView()
-          .tint(.white)
-          .scaleEffect(CGSize(width: 10, height: 10))
+    let recoreonPathService = recoreonServices.recoreonPathService
+    let masterPlaylistURL = recoreonPathService.getMasterPlaylistURL(fragmentedRecordURL: screenRecordEntry.url)
+    let server = demoServer(screenRecordEntry.url.path(percentEncoded: false))
+    let _ = try? server.start(47510)
+
+    let player = AVPlayer(url: URL(string: "http://localhost:47510/public/\(masterPlaylistURL.lastPathComponent)")!)
+
+    VideoPlayer(player: player)
+      .accessibilityIdentifier("PreviewVideoPlayer")
+      .onDisappear {
+        player.pause()
       }
-    }
   }
 }
 
@@ -65,6 +45,7 @@ struct ScreenRecordPreviewViewContainer: View {
 
 #Preview {
   let recoreonServices = PreviewRecoreonServices()
+  recoreonServices.recoreonPathService.wipe()
   recoreonServices.deployAllAssets()
   let screenRecordService = recoreonServices.screenRecordService
   let screenRecordEntries = screenRecordService.listScreenRecordEntries()

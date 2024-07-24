@@ -1,5 +1,5 @@
 {
-  "originHash" : "8741862eef32bb20765cb7c49226ada77f94692e208bd29289c5ab93debd5f59",
+  "originHash" : "4b3c80c906e0f5d1f2f61afb4904f454349087fdd81b1b51f5712824bdda2d5e",
   "pins" : [
     {
       "identity" : "ffmpeg-kit-spm",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "3f9c7b0968299cb49fca2d86e66a9e1fcc2f19f0",
         "version" : "6.0.3"
+      }
+    },
+    {
+      "identity" : "swifter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/httpswift/swifter.git",
+      "state" : {
+        "revision" : "9483a5d459b45c3ffd059f7b55f9638e268632fd",
+        "version" : "1.5.0"
       }
     }
   ],
