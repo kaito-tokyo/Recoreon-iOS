@@ -1,6 +1,6 @@
 import AVKit
-import SwiftUI
 import HLSServer
+import SwiftUI
 
 struct ScreenRecordPreviewViewRoute: Hashable {
   let screenRecordEntry: ScreenRecordEntry
