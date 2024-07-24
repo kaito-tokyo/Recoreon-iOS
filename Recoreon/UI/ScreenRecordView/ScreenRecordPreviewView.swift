@@ -1,6 +1,6 @@
 import AVKit
 import SwiftUI
-import Swifter
+import HLSServer
 
 struct ScreenRecordPreviewViewRoute: Hashable {
   let screenRecordEntry: ScreenRecordEntry
@@ -10,20 +10,61 @@ struct ScreenRecordPreviewView: View {
   let recoreonServices: RecoreonServices
   let screenRecordEntry: ScreenRecordEntry
 
-  var body: some View {
-    let recoreonPathService = recoreonServices.recoreonPathService
-    let masterPlaylistURL = recoreonPathService.getMasterPlaylistURL(
-      fragmentedRecordURL: screenRecordEntry.url)
-    let server = demoServer(screenRecordEntry.url.path(percentEncoded: false))
-    let _ = try? server.start(47510)
+  func openHLSServer(fragmentedRecordURL: URL) -> HLSServer? {
+    return try? HLSServer(
+      htdocs: screenRecordEntry.url.path(percentEncoded: false),
+      host: "::1"
+    )
+  }
 
-    let player = AVPlayer(
-      url: URL(string: "http://localhost:47510/public/\(masterPlaylistURL.lastPathComponent)")!)
+  func getMasterPlaylistRemoteURL(
+    server: HLSServer?,
+    fragmentedRecordURL: URL
+  ) -> URL? {
+    guard let port = server?.port else { return nil }
+
+    let recoreonPathService = recoreonServices.recoreonPathService
+
+    let masterPlaylistName = recoreonPathService.getMasterPlaylistURL(
+      fragmentedRecordURL: screenRecordEntry.url
+    ).lastPathComponent
+
+    let masterPlaylistRemoteURL = URL(
+      string: "http://[::1]:\(port)/\(masterPlaylistName)"
+    )
+
+    return masterPlaylistRemoteURL
+  }
+
+  func createPreviewPlayer(masterPlaylistRemoteURL: URL?) -> AVPlayer {
+    if let masterPlaylistRemoteURL = masterPlaylistRemoteURL {
+      return AVPlayer(url: masterPlaylistRemoteURL)
+    } else {
+      return AVPlayer()
+    }
+  }
+
+  var body: some View {
+    let server = openHLSServer(
+      fragmentedRecordURL: screenRecordEntry.url
+    )
+
+    let masterPlaylistRemoteURL = getMasterPlaylistRemoteURL(
+      server: server,
+      fragmentedRecordURL: screenRecordEntry.url
+    )
+
+    let player: AVPlayer = createPreviewPlayer(
+      masterPlaylistRemoteURL: masterPlaylistRemoteURL
+    )
 
     VideoPlayer(player: player)
       .accessibilityIdentifier("PreviewVideoPlayer")
       .onDisappear {
         player.pause()
+        Task {
+          try await server?.close()
+        }
       }
   }
 }

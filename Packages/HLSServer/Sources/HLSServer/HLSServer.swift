@@ -23,7 +23,7 @@ enum HLSServerError: Error {
   case localAddressPortNotAvailable
 }
 
-struct HLSServer {
+public struct HLSServer {
   public let port: Int
 
   private let channel: Channel
@@ -59,7 +59,7 @@ struct HLSServer {
     self.port = port
   }
 
-  func close() async throws {
+  public func close() async throws {
     try await channel.eventLoop.shutdownGracefully()
   }
 
