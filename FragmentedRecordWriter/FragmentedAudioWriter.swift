@@ -118,7 +118,7 @@ public class FragmentedAudioWriter {
     self.sampleRate = sampleRate
 
     assetWriter = AVAssetWriter(contentType: .mpeg4Movie)
-    assetWriter.outputFileTypeProfile = .mpeg4AppleHLS
+    assetWriter.outputFileTypeProfile = .mpeg4CMAFCompliant
     assetWriter.preferredOutputSegmentInterval = CMTime(seconds: 6, preferredTimescale: 1)
     assetWriter.initialSegmentStartTime = CMTime.zero
 
