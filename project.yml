@@ -37,6 +37,9 @@ packages:
     url: "https://github.com/httpswift/swifter.git"
     from: "1.5.0"
 
+  HLSServer:
+    path: "Packages/HLSServer"
+
 targets:
   FragmentedRecordWriter:
     type: "library.static"
@@ -116,6 +119,7 @@ targets:
       - target: "RecoreonBroadcastUploadExtension"
       - package: "FFmpegKit"
       - package: "Swifter"
+      - package: "HLSServer"
     settings:
       DEVELOPMENT_ASSET_PATHS: '"Recoreon/Preview Content"'
       ENABLE_PREVIEWS: true

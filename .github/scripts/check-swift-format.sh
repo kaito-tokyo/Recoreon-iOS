@@ -1,5 +1,6 @@
 #!/bin/bash
 dirs=(
+  Packages
   FragmentedRecordWriter
   FragmentedRecordWriterTests
   Recoreon
