@@ -218,7 +218,6 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     switch sampleBufferType {
     case RPSampleBufferType.video:
-      print("vid", sampleBuffer.presentationTimeStamp)
       processVideoSample(sampleBuffer)
     case RPSampleBufferType.audioApp:
       do {
@@ -277,7 +276,13 @@ class SampleHandler: RPBroadcastSampleHandler {
       }
     }
 
-    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: sampleBuffer.presentationTimeStamp) {
+    let pts = CMTimeConvertScale(
+      sampleBuffer.presentationTimeStamp,
+      timescale: 60,
+      method: .roundTowardPositiveInfinity
+    )
+
+    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: pts) {
       [weak self] (status, infoFlags, sbuf) in
       if let sampleBuffer = sbuf {
         try? self?.videoWriter?.send(sampleBuffer: sampleBuffer)
@@ -329,8 +334,6 @@ class SampleHandler: RPBroadcastSampleHandler {
         pts: pts
       )
     } else if isMono && isSignedInteger && bytesPerSample == 2 && !isBigEndian {
-      print("2")
-      print(inputSampleRate)
       try audioResampler.append(
         monoInt16Buffer: data.assumingMemoryBound(to: Int16.self),
         numInputSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 2,
@@ -338,8 +341,6 @@ class SampleHandler: RPBroadcastSampleHandler {
         pts: pts
       )
     } else if isStereo && isSignedInteger && bytesPerSample == 2 && isBigEndian {
-      print("3")
-      print(inputSampleRate)
       try audioResampler.append(
         stereoInt16BufferWithSwap: data.assumingMemoryBound(to: Int16.self),
         numInputSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
