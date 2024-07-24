@@ -126,9 +126,6 @@ public class RealtimeAudioTranscoder {
 
     self.inputAudioStreamBasicDesc = inputAudioStreamBasicDesc
     self.outputAudioStreamBasicDesc = outputAudioStreamBasicDesc
-    self.outputFormatDesc = try CMFormatDescription(
-      audioStreamBasicDescription: outputAudioStreamBasicDesc
-    )
 
     var audioConverterOut: AudioConverterRef?
     let err1 = AudioConverterNew(
@@ -166,6 +163,39 @@ public class RealtimeAudioTranscoder {
     }
     self.packetBufferArray = packetBufferArray
     self.packetDescsArray = packetDescsArray
+
+    var magicCookieSize: UInt32 = 0
+    var isWritable: DarwinBoolean = false
+    let err3 = AudioConverterGetPropertyInfo(
+      audioConverter,
+      kAudioConverterCompressionMagicCookie,
+      &magicCookieSize,
+      &isWritable
+    )
+    guard err3 == noErr else {
+      throw RealtimeAudioTranscoderError.audioConverterNoPropertyOfMaximumOutputPacketSize(
+        err: err3)
+    }
+
+    let magicCookie: UnsafeMutableRawPointer = .allocate(
+      byteCount: Int(magicCookieSize), alignment: 1)
+    let err4 = AudioConverterGetProperty(
+      audioConverter,
+      kAudioConverterCompressionMagicCookie,
+      &magicCookieSize,
+      magicCookie
+    )
+    guard err4 == noErr else {
+      throw RealtimeAudioTranscoderError.audioConverterNoPropertyOfMaximumOutputPacketSize(
+        err: err4)
+    }
+
+    let magicCookieData = Data(bytes: magicCookie, count: Int(magicCookieSize))
+
+    self.outputFormatDesc = try CMFormatDescription(
+      audioStreamBasicDescription: outputAudioStreamBasicDesc,
+      magicCookie: magicCookieData
+    )
   }
 
   public func send(
