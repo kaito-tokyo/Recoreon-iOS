@@ -11,7 +11,7 @@ public struct AudioResamplerFrame {
   public let bytesPerFrame: Int
   public let numSamples: Int
   public let pts: CMTime
-  public let data: UnsafeMutablePointer<Float32>
+  public let data: UnsafeMutableBufferPointer<Float32>
 }
 
 private enum AudioResamplerMode {
@@ -42,6 +42,7 @@ private enum AudioResamplerMode {
 public class AudioResampler {
   public let duration: CMTime
   public let outputAudioStreamBasicDesc: AudioStreamBasicDescription
+  public let outputFormatDesc: CMFormatDescription
 
   private let outputSampleRate: Int
 
@@ -58,9 +59,9 @@ public class AudioResampler {
   private let numBackOffSamples = 8
 
   public init(outputSampleRate: Int) throws {
-    self.duration = CMTime(value: 1, timescale: CMTimeScale(outputSampleRate))
+    duration = CMTime(value: 1, timescale: CMTimeScale(outputSampleRate))
 
-    self.outputAudioStreamBasicDesc = AudioStreamBasicDescription(
+    outputAudioStreamBasicDesc = AudioStreamBasicDescription(
       mSampleRate: Float64(outputSampleRate),
       mFormatID: kAudioFormatLinearPCM,
       mFormatFlags: kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked,
@@ -71,6 +72,8 @@ public class AudioResampler {
       mBitsPerChannel: 32,
       mReserved: 0
     )
+
+    outputFormatDesc = try CMFormatDescription(audioStreamBasicDescription: outputAudioStreamBasicDesc)
 
     self.outputSampleRate = outputSampleRate
 
@@ -251,12 +254,16 @@ public class AudioResampler {
   }
 
   public func getCurrentFrame() -> AudioResamplerFrame {
+    let data = UnsafeMutableBufferPointer<Float32>(
+      start: underlyingBuffer.advanced(by: (numOffsetSamples - numBackOffSamples) * 2),
+      count: numSamples * 2
+    )
     return AudioResamplerFrame(
       numChannels: 2,
       bytesPerFrame: 8,
       numSamples: numSamples,
       pts: CMTimeSubtract(currentPTS, backOffTime),
-      data: underlyingBuffer.advanced(by: (numOffsetSamples - numBackOffSamples) * 2)
+      data: data
     )
   }
 }

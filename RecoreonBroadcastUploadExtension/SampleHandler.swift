@@ -43,11 +43,9 @@ class SampleHandler: RPBroadcastSampleHandler {
   var videoWriter: FragmentedVideoWriter?
 
   var appAudioResampler: AudioResampler?
-  var appAudioTranscoder: RealtimeAudioTranscoder?
   var appAudioWriter: FragmentedAudioWriter?
 
   var micAudioResampler: AudioResampler?
-  var micAudioTranscoder: RealtimeAudioTranscoder?
   var micAudioWriter: FragmentedAudioWriter?
 
   override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
@@ -74,36 +72,37 @@ class SampleHandler: RPBroadcastSampleHandler {
 
       let appAudioResampler = try AudioResampler(outputSampleRate: appSampleRate)
 
-      let appAudioTranscoder = try RealtimeAudioTranscoder(
-        inputAudioStreamBasicDesc: appAudioResampler.outputAudioStreamBasicDesc,
-        outputSampleRate: appSampleRate
-      )
-
+      let appOutputSettings: [String: Any] = [
+        AVFormatIDKey: kAudioFormatMPEG4AAC,
+        AVSampleRateKey: appSampleRate,
+        AVNumberOfChannelsKey: 2,
+        AVEncoderBitRateKey: 320_000
+      ]
       let appAudioWriter = try FragmentedAudioWriter(
         outputDirectoryURL: outputDirectoryURL,
         outputFilePrefix: "\(recordID)-app",
-        sourceFormatHint: appAudioTranscoder.outputFormatDesc
+        outputSettings: appOutputSettings
       )
 
       self.appAudioResampler = appAudioResampler
-      self.appAudioTranscoder = appAudioTranscoder
       self.appAudioWriter = appAudioWriter
 
       let micAudioResampler = try AudioResampler(outputSampleRate: micSampleRate)
 
-      let micAudioTranscoder = try RealtimeAudioTranscoder(
-        inputAudioStreamBasicDesc: micAudioResampler.outputAudioStreamBasicDesc,
-        outputSampleRate: micSampleRate
-      )
 
+      let micOutputSettings: [String: Any] = [
+        AVFormatIDKey: kAudioFormatMPEG4AAC,
+        AVSampleRateKey: micSampleRate,
+        AVNumberOfChannelsKey: 2,
+        AVEncoderBitRateKey: 320_000
+      ]
       let micAudioWriter = try FragmentedAudioWriter(
         outputDirectoryURL: outputDirectoryURL,
         outputFilePrefix: "\(recordID)-mic",
-        sourceFormatHint: micAudioTranscoder.outputFormatDesc
+        outputSettings: micOutputSettings
       )
 
       self.micAudioResampler = micAudioResampler
-      self.micAudioTranscoder = micAudioTranscoder
       self.micAudioWriter = micAudioWriter
 
       let masterPlaylistWriter = MasterPlaylistWriter()
@@ -144,10 +143,8 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
 
     guard let appAudioResampler = appAudioResampler,
-      let appAudioTranscoder = appAudioTranscoder,
       let appAudioWriter = appAudioWriter,
       let micAudioResampler = micAudioResampler,
-      let micAudioTranscoder = micAudioTranscoder,
       let micAudioWriter = micAudioWriter
     else {
       finishBroadcastWithError(SampleHandlerError.audioWriterRetrievalFailed)
@@ -162,7 +159,6 @@ class SampleHandler: RPBroadcastSampleHandler {
         do {
           try self?.write(
             audioWriter: appAudioWriter,
-            audioTranscoder: appAudioTranscoder,
             audioResampler: appAudioResampler,
             sampleBuffer: sampleBuffer,
             pts: sampleBuffer.presentationTimeStamp
@@ -176,7 +172,6 @@ class SampleHandler: RPBroadcastSampleHandler {
         do {
           try self?.write(
             audioWriter: micAudioWriter,
-            audioTranscoder: micAudioTranscoder,
             audioResampler: micAudioResampler,
             sampleBuffer: sampleBuffer,
             pts: sampleBuffer.presentationTimeStamp
@@ -240,7 +235,6 @@ class SampleHandler: RPBroadcastSampleHandler {
 
   func write(
     audioWriter: FragmentedAudioWriter,
-    audioTranscoder: RealtimeAudioTranscoder,
     audioResampler: AudioResampler,
     sampleBuffer: CMSampleBuffer,
     pts: CMTime
@@ -307,32 +301,22 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
 
     let audioResamplerFrame = audioResampler.getCurrentFrame()
-    let audioTranscoderFrame = try audioTranscoder.send(
-      inputBuffer: audioResamplerFrame.data,
-      numInputSamples: audioResamplerFrame.numSamples
-    )
 
-    guard audioTranscoderFrame.numPackets > 0 else {
-      logger.info("No AAC packets are available!")
-      return
-    }
-    let packetDescs = Array(
-      UnsafeBufferPointer(
-        start: audioTranscoderFrame.packetDescs,
-        count: audioTranscoderFrame.numPackets
-      ))
-
-    let buffer = UnsafeMutableRawBufferPointer(
-      start: audioTranscoderFrame.audioBufferList.mBuffers.mData,
-      count: Int(audioTranscoderFrame.audioBufferList.mBuffers.mDataByteSize)
-    )
+    let buffer = UnsafeMutableRawBufferPointer(audioResamplerFrame.data)
     let blockBuffer = try CMBlockBuffer(buffer: buffer, allocator: kCFAllocatorNull)
-    let sampleBuffer = try CMSampleBuffer(
-      dataBuffer: blockBuffer,
-      formatDescription: audioTranscoder.outputFormatDesc,
-      numSamples: audioTranscoderFrame.numPackets,
+
+    let sampleTiming = CMSampleTimingInfo(
+      duration: audioResampler.duration,
       presentationTimeStamp: pts,
-      packetDescriptions: packetDescs
+      decodeTimeStamp: .invalid
+    )
+
+    let samplerBuffer = try CMSampleBuffer(
+      dataBuffer: blockBuffer,
+      formatDescription: audioResampler.outputFormatDesc,
+      numSamples: audioResamplerFrame.numSamples,
+      sampleTimings: [sampleTiming],
+      sampleSizes: []
     )
 
     try audioWriter.send(sampleBuffer: sampleBuffer)

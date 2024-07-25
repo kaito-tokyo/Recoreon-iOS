@@ -110,7 +110,7 @@ public class FragmentedAudioWriter {
   public init(
     outputDirectoryURL: URL,
     outputFilePrefix: String,
-    sourceFormatHint: CMFormatDescription
+    outputSettings: [String: Any]
   ) throws {
     self.outputDirectoryURL = outputDirectoryURL
     self.outputFilePrefix = outputFilePrefix
@@ -128,8 +128,7 @@ public class FragmentedAudioWriter {
 
     audioInput = AVAssetWriterInput(
       mediaType: .audio,
-      outputSettings: nil,
-      sourceFormatHint: sourceFormatHint
+      outputSettings: outputSettings
     )
     audioInput.expectsMediaDataInRealTime = true
 
