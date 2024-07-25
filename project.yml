@@ -33,9 +33,9 @@ packages:
     url: "https://github.com/kaito-tokyo/ffmpeg-kit-spm.git"
     from: "6.0.3"
 
-  Swifter:
-    url: "https://github.com/httpswift/swifter.git"
-    from: "1.5.0"
+  Logging:
+    url: "https://github.com/apple/swift-log.git"
+    from: "1.6.1"
 
   HLSServer:
     path: "Packages/HLSServer"
@@ -88,6 +88,7 @@ targets:
       - target: "ScreenRecordWriter"
       - target: "RecoreonCommon"
       - package: "FFmpegKit"
+      - package: "Logging"
     settings:
       SWIFT_OBJC_BRIDGING_HEADER: "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension-Bridging-Header.h"
       PRODUCT_BUNDLE_IDENTIFIER: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension"
@@ -118,7 +119,6 @@ targets:
       - target: "RecoreonCommon"
       - target: "RecoreonBroadcastUploadExtension"
       - package: "FFmpegKit"
-      - package: "Swifter"
       - package: "HLSServer"
     settings:
       DEVELOPMENT_ASSET_PATHS: '"Recoreon/Preview Content"'

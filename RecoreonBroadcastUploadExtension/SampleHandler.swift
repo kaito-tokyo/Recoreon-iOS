@@ -2,76 +2,16 @@ import CoreMedia
 import FragmentedRecordWriter
 import RecoreonCommon
 import ReplayKit
-
-// swiftlint:disable function_parameter_count
-private func copyPlane(
-  fromData: UnsafeRawPointer,
-  toData: UnsafeMutableRawPointer,
-  width: Int,
-  height: Int,
-  fromBytesPerRow: Int,
-  toBytesPerRow: Int
-) {
-  if fromBytesPerRow == toBytesPerRow {
-    toData.copyMemory(from: fromData, byteCount: fromBytesPerRow * height)
-  } else {
-    for yIndex in 0..<height {
-      let src = fromData.advanced(by: fromBytesPerRow * yIndex)
-      let dest = toData.advanced(by: toBytesPerRow * yIndex)
-      dest.copyMemory(from: src, byteCount: width)
-    }
-  }
-}
-// swiftlint:enable function_parameter_count
+import Logging
 
 enum SampleHandlerError: CustomNSError {
-  case videoCodecOpeningError
-  case audioCodecOpeningError
-  case outputFileOpeningError
-  case videoStreamAddingError
-  case audioStreamAddingError
-  case videoOpeningError
-  case audioOpeningError
-  case titleSettingError
-  case outputStartingError
+  case audioWriterRetrievalFailed
 
   var errorUserInfo: [String: Any] {
     switch self {
-    case .videoCodecOpeningError:
+    case .audioWriterRetrievalFailed:
       return [
-        NSLocalizedFailureReasonErrorKey: "Could not open the video codec!"
-      ]
-    case .audioCodecOpeningError:
-      return [
-        NSLocalizedFailureReasonErrorKey: "Could not open the audio codec!"
-      ]
-    case .outputFileOpeningError:
-      return [
-        NSLocalizedFailureReasonErrorKey: "Could not open the output file!"
-      ]
-    case .videoStreamAddingError:
-      return [
-        NSLocalizedFailureReasonErrorKey: "Could not add a video stream!"
-      ]
-    case .audioStreamAddingError:
-      return [
-        NSLocalizedFailureReasonErrorKey: "Could not add an audio stream!"
-      ]
-    case .videoOpeningError:
-      return [
-        NSLocalizedFailureReasonErrorKey: "Could not open the video!"
-      ]
-    case .audioOpeningError:
-      return [
-        NSLocalizedFailureReasonErrorKey: "Could not open the audio!"
-      ]
-    case .titleSettingError:
-      return [
-        NSLocalizedFailureReasonErrorKey: "Could not set the title!"
-      ]
-    case .outputStartingError:
-      return [
-        NSLocalizedFailureReasonErrorKey: "Could not start the output!"
+        NSLocalizedFailureReasonErrorKey: "Could not get audio writers!"
       ]
     }
   }
@@ -94,6 +34,8 @@ class SampleHandler: RPBroadcastSampleHandler {
   var screenStartupCount = 10
   let screenStartupThrottlingFactor = 2
 
+  let logger = Logger(label: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension")
+
   var videoTranscoder: RealtimeVideoTranscoder?
   var videoWriter: FragmentedVideoWriter?
 
@@ -111,6 +53,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     let frameRate = 60
     let appSampleRate = 44_100
     let micSampleRate = 48_000
+    let outputSampleRate = 44_100
     let recordID = recoreonPathService.generateRecordID(date: .now)
     let outputDirectoryURL = recoreonPathService.generateAppGroupsFragmentedRecordURL(
       recordID: recordID)
@@ -131,17 +74,13 @@ class SampleHandler: RPBroadcastSampleHandler {
 
       let appAudioTranscoder = try RealtimeAudioTranscoder(
         inputAudioStreamBasicDesc: appAudioResampler.outputAudioStreamBasicDesc,
-        outputSampleRate: appSampleRate
+        outputSampleRate: outputSampleRate
       )
 
-      let appAudioTranscoderOutputFormatDesc = try CMFormatDescription(
-        audioStreamBasicDescription: appAudioTranscoder.outputAudioStreamBasicDesc
-      )
       let appAudioWriter = try FragmentedAudioWriter(
         outputDirectoryURL: outputDirectoryURL,
         outputFilePrefix: "\(recordID)-app",
-        sampleRate: appSampleRate,
-        sourceFormatHint: appAudioTranscoderOutputFormatDesc
+        sourceFormatHint: appAudioTranscoder.outputFormatDesc
       )
 
       self.appAudioResampler = appAudioResampler
@@ -152,17 +91,13 @@ class SampleHandler: RPBroadcastSampleHandler {
 
       let micAudioTranscoder = try RealtimeAudioTranscoder(
         inputAudioStreamBasicDesc: micAudioResampler.outputAudioStreamBasicDesc,
-        outputSampleRate: micSampleRate
+        outputSampleRate: outputSampleRate
       )
 
-      let micAudioTranscoderOutputFormatDesc = try CMFormatDescription(
-        audioStreamBasicDescription: micAudioTranscoder.outputAudioStreamBasicDesc
-      )
       let micAudioWriter = try FragmentedAudioWriter(
         outputDirectoryURL: outputDirectoryURL,
         outputFilePrefix: "\(recordID)-mic",
-        sampleRate: micSampleRate,
-        sourceFormatHint: micAudioTranscoderOutputFormatDesc
+        sourceFormatHint: micAudioTranscoder.outputFormatDesc
       )
 
       self.micAudioResampler = micAudioResampler
@@ -213,6 +148,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       let micAudioTranscoder = micAudioTranscoder,
       let micAudioWriter = micAudioWriter
     else {
+      finishBroadcastWithError(SampleHandlerError.audioWriterRetrievalFailed)
       return
     }
 
@@ -251,7 +187,10 @@ class SampleHandler: RPBroadcastSampleHandler {
   override func broadcastFinished() {
     let semaphore = DispatchSemaphore(value: 0)
     Task { [weak self] in
-      guard let self = self else { return }
+      guard let self = self else {
+        print("Clean up failed!")
+        return
+      }
       self.videoTranscoder?.close()
       try await self.videoWriter?.close()
       try await self.appAudioWriter?.close()
@@ -262,7 +201,10 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   func processVideoSample(_ sampleBuffer: CMSampleBuffer) {
-    guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+    guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+      logger.warning("Video sample buffer is not available!")
+      return
+    }
 
     if !isOutputStarted {
       isOutputStarted = true
@@ -282,7 +224,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       method: .roundTowardPositiveInfinity
     )
 
-    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: pts) {
+    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: sampleBuffer.presentationTimeStamp) {
       [weak self] (status, infoFlags, sbuf) in
       if let sampleBuffer = sbuf {
         try? self?.videoWriter?.send(sampleBuffer: sampleBuffer)
@@ -316,7 +258,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       audioStreamBasicDesc.mFormatID == kAudioFormatLinearPCM,
       let data = audioBufferList.mBuffers.mData
     else {
-      print("err1")
+      logger.error("Audio input sample could not be gotten!")
       return
     }
 
@@ -355,7 +297,7 @@ class SampleHandler: RPBroadcastSampleHandler {
         pts: pts
       )
     } else {
-      print("Sample format is not supported!")
+      logger.warning("Audio sample format is not supported!")
     }
 
     let audioResamplerFrame = audioResampler.getCurrentFrame()
@@ -364,7 +306,10 @@ class SampleHandler: RPBroadcastSampleHandler {
       numInputSamples: audioResamplerFrame.numSamples
     )
 
-    guard audioTranscoderFrame.numPackets > 0 else { return }
+    guard audioTranscoderFrame.numPackets > 0 else {
+      logger.info("No AAC packets are available!")
+      return
+    }
     let packetDescs = Array(
       UnsafeBufferPointer(
         start: audioTranscoderFrame.packetDescs,

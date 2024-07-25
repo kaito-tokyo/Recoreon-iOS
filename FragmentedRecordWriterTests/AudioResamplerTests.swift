@@ -111,7 +111,6 @@ final class AudioResamplerTests: XCTestCase {
     let audioWriter = try FragmentedAudioWriter(
       outputDirectoryURL: outputDirectoryURL,
       outputFilePrefix: name,
-      sampleRate: outputSampleRate,
       sourceFormatHint: audioTranscoder.outputFormatDesc
     )
 

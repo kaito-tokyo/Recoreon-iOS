@@ -100,7 +100,6 @@ public class FragmentedAudioWriter {
 
   private let outputDirectoryURL: URL
   private let outputFilePrefix: String
-  private let sampleRate: Int
 
   private let assetWriter: AVAssetWriter
   private let delegate: FragmentedAudioWriterDelegate
@@ -111,12 +110,10 @@ public class FragmentedAudioWriter {
   public init(
     outputDirectoryURL: URL,
     outputFilePrefix: String,
-    sampleRate: Int,
     sourceFormatHint: CMFormatDescription
   ) throws {
     self.outputDirectoryURL = outputDirectoryURL
     self.outputFilePrefix = outputFilePrefix
-    self.sampleRate = sampleRate
 
     assetWriter = AVAssetWriter(contentType: .mpeg4Movie)
     assetWriter.outputFileTypeProfile = .mpeg4CMAFCompliant
@@ -144,21 +141,15 @@ public class FragmentedAudioWriter {
   }
 
   public func send(sampleBuffer: CMSampleBuffer) throws {
-    let rescaledPTS = CMTimeConvertScale(
-      sampleBuffer.presentationTimeStamp,
-      timescale: CMTimeScale(sampleRate),
-      method: .roundTowardPositiveInfinity
-    )
-
     if !sessionStarted {
-      assetWriter.startSession(atSourceTime: rescaledPTS)
+      assetWriter.startSession(atSourceTime: sampleBuffer.presentationTimeStamp)
       sessionStarted = true
     }
 
     if audioInput.isReadyForMoreMediaData {
       let isSucceeded = audioInput.append(sampleBuffer)
       if !isSucceeded {
-        print(assetWriter.status)
+        print(assetWriter.status.rawValue)
         print(assetWriter.error)
       }
     } else {
