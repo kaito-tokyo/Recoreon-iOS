@@ -180,20 +180,13 @@ public class FragmentedVideoWriter {
   }
 
   public func send(sampleBuffer: CMSampleBuffer) throws {
-    let rescaledPTS = CMTimeConvertScale(
-      sampleBuffer.presentationTimeStamp,
-      timescale: frameRate,
-      method: .roundTowardPositiveInfinity
-    )
-
     if !sessionStarted {
-      assetWriter.startSession(atSourceTime: rescaledPTS)
-      delegate.startPTS = rescaledPTS
+      assetWriter.startSession(atSourceTime: sampleBuffer.presentationTimeStamp)
+      delegate.startPTS = sampleBuffer.presentationTimeStamp
       sessionStarted = true
     }
 
     if videoInput.isReadyForMoreMediaData {
-      try sampleBuffer.setOutputPresentationTimeStamp(rescaledPTS)
       videoInput.append(sampleBuffer)
     } else {
       print(

@@ -212,6 +212,7 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     videoTranscoder.send(imageBuffer: pixelBuffer, pts: pts) { (status, infoFlags, sbuf) in
       if let sampleBuffer = sbuf {
+        try? sampleBuffer.setOutputPresentationTimeStamp(pts)
         try? videoWriter.send(sampleBuffer: sampleBuffer)
       }
     }
