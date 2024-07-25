@@ -51,6 +51,7 @@ private class FragmentedAudioWriterDelegate: NSObject, AVAssetWriterDelegate {
         """
       writeToPlaylist(content: playlistContent, append: true)
     case .separable:
+      print(outputFilePrefix, segmentIndex)
       let filename = "\(outputFilePrefix)-\(String(format: "%06d", segmentIndex)).m4s"
       outputURL = outputDirectoryURL.appending(path: filename)
 
@@ -155,7 +156,11 @@ public class FragmentedAudioWriter {
     }
 
     if audioInput.isReadyForMoreMediaData {
-      audioInput.append(sampleBuffer)
+      let isSucceeded = audioInput.append(sampleBuffer)
+      if !isSucceeded {
+        print(assetWriter.status)
+        print(assetWriter.error)
+      }
     } else {
       print(
         String(

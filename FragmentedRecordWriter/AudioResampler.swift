@@ -119,21 +119,11 @@ public class AudioResampler {
       copyStereoInt16UpsamplingBy6(bodyBuffer, stereoInt16Buffer, numInputSamples)
       self.numSamples = numInputSamples * 6
     case .upsampleFrom44100To48000:
-      let numOutputSamples = numInputSamples * outputSampleRate / inputSampleRate
-      for outputIndex in 0..<numOutputSamples {
-        let inputSamplingPoint =
-          Float(outputIndex) * Float(inputSampleRate) / Float(outputSampleRate)
-        let inputIndex = Int(inputSamplingPoint)
-        let fraction = inputSamplingPoint - Float(inputIndex)
-        bodyBuffer[outputIndex * 2 + 0] =
-          Float(stereoInt16Buffer[inputIndex * 2 + 0]) / 32768.0 + fraction
-          * (Float(stereoInt16Buffer[inputIndex * 2 + 2])
-            - Float(stereoInt16Buffer[inputIndex * 2 + 0])) / 32768.0
-        bodyBuffer[outputIndex * 2 + 1] =
-          Float(stereoInt16Buffer[inputIndex * 2 + 1]) / 32768.0 + fraction
-          * (Float(stereoInt16Buffer[inputIndex * 2 + 3])
-            - Float(stereoInt16Buffer[inputIndex * 2 + 1])) / 32768.0
-      }
+      let numOutputSamples = copyStereoInt16UpsamplingFrom44100To48000(
+        bodyBuffer,
+        stereoInt16Buffer,
+        numInputSamples
+      )
       self.numSamples = numOutputSamples
     case .notSupported:
       break
