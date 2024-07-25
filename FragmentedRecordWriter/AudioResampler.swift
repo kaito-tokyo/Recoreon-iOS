@@ -11,7 +11,7 @@ public struct AudioResamplerFrame {
   public let bytesPerFrame: Int
   public let numSamples: Int
   public let pts: CMTime
-  public let data: UnsafeMutablePointer<Float32>
+  public let data: UnsafeMutableBufferPointer<Float32>
 }
 
 private enum AudioResamplerMode {
@@ -42,6 +42,7 @@ private enum AudioResamplerMode {
 public class AudioResampler {
   public let duration: CMTime
   public let outputAudioStreamBasicDesc: AudioStreamBasicDescription
+  public let outputFormatDesc: CMFormatDescription
 
   private let outputSampleRate: Int
 
@@ -58,9 +59,9 @@ public class AudioResampler {
   private let numBackOffSamples = 8
 
   public init(outputSampleRate: Int) throws {
-    self.duration = CMTime(value: 1, timescale: CMTimeScale(outputSampleRate))
+    duration = CMTime(value: 1, timescale: CMTimeScale(outputSampleRate))
 
-    self.outputAudioStreamBasicDesc = AudioStreamBasicDescription(
+    outputAudioStreamBasicDesc = AudioStreamBasicDescription(
       mSampleRate: Float64(outputSampleRate),
       mFormatID: kAudioFormatLinearPCM,
       mFormatFlags: kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked,
@@ -71,6 +72,9 @@ public class AudioResampler {
       mBitsPerChannel: 32,
       mReserved: 0
     )
+
+    outputFormatDesc = try CMFormatDescription(
+      audioStreamBasicDescription: outputAudioStreamBasicDesc)
 
     self.outputSampleRate = outputSampleRate
 
@@ -119,23 +123,14 @@ public class AudioResampler {
       copyStereoInt16UpsamplingBy6(bodyBuffer, stereoInt16Buffer, numInputSamples)
       self.numSamples = numInputSamples * 6
     case .upsampleFrom44100To48000:
-      let numOutputSamples = numInputSamples * outputSampleRate / inputSampleRate
-      for outputIndex in 0..<numOutputSamples {
-        let inputSamplingPoint =
-          Float(outputIndex) * Float(inputSampleRate) / Float(outputSampleRate)
-        let inputIndex = Int(inputSamplingPoint)
-        let fraction = inputSamplingPoint - Float(inputIndex)
-        bodyBuffer[outputIndex * 2 + 0] =
-          Float(stereoInt16Buffer[inputIndex * 2 + 0]) / 32768.0 + fraction
-          * (Float(stereoInt16Buffer[inputIndex * 2 + 2])
-            - Float(stereoInt16Buffer[inputIndex * 2 + 0])) / 32768.0
-        bodyBuffer[outputIndex * 2 + 1] =
-          Float(stereoInt16Buffer[inputIndex * 2 + 1]) / 32768.0 + fraction
-          * (Float(stereoInt16Buffer[inputIndex * 2 + 3])
-            - Float(stereoInt16Buffer[inputIndex * 2 + 1])) / 32768.0
-      }
+      let numOutputSamples = copyStereoInt16UpsamplingFrom44100To48000(
+        bodyBuffer,
+        stereoInt16Buffer,
+        numInputSamples
+      )
       self.numSamples = numOutputSamples
     case .notSupported:
+      print("notSupported")
       break
     }
 
@@ -172,21 +167,8 @@ public class AudioResampler {
     case .upsampleBy6:
       copyMonoInt16UpsamplingBy6(bodyBuffer, monoInt16Buffer, numInputSamples)
       self.numSamples = numInputSamples * 6
-    case .upsampleFrom44100To48000:
-      let numOutputSamples = numInputSamples * outputSampleRate / inputSampleRate
-      for outputIndex in 0..<numOutputSamples {
-        let inputSamplingPoint =
-          Float(outputIndex) * Float(inputSampleRate) / Float(outputSampleRate)
-        let inputIndex = Int(inputSamplingPoint)
-        let fraction = inputSamplingPoint - Float(inputIndex)
-        let value =
-          Float(monoInt16Buffer[inputIndex]) / 32768.0 + fraction
-          * (Float(monoInt16Buffer[inputIndex + 1]) - Float(monoInt16Buffer[inputIndex])) / 32768.0
-        bodyBuffer[outputIndex * 2 + 0] = value
-        bodyBuffer[outputIndex * 2 + 1] = value
-      }
-      self.numSamples = numOutputSamples
-    case .notSupported:
+    case .notSupported, .upsampleFrom44100To48000:
+      print("notSupported")
       break
     }
 
@@ -225,10 +207,8 @@ public class AudioResampler {
     case .upsampleBy6:
       copyStereoInt16UpsamplingBy6WithSwap(bodyBuffer, stereoInt16BufferWithSwap, numInputSamples)
       self.numSamples = numInputSamples * 6
-    case .upsampleFrom44100To48000:
-      let numOutputSamples = numInputSamples * outputSampleRate / inputSampleRate
-      self.numSamples = numOutputSamples
-    case .notSupported:
+    case .notSupported, .upsampleFrom44100To48000:
+      print("notSupposrted")
       break
     }
 
@@ -266,10 +246,8 @@ public class AudioResampler {
     case .upsampleBy6:
       copyMonoInt16UpsamplingBy6WithSwap(bodyBuffer, monoInt16BufferWithSwap, numInputSamples)
       self.numSamples = numInputSamples * 6
-    case .upsampleFrom44100To48000:
-      let numOutputSamples = numInputSamples * outputSampleRate / inputSampleRate
-      self.numSamples = numOutputSamples
-    case .notSupported:
+    case .notSupported, .upsampleFrom44100To48000:
+      print("notSupported")
       break
     }
 
@@ -277,12 +255,16 @@ public class AudioResampler {
   }
 
   public func getCurrentFrame() -> AudioResamplerFrame {
+    let data = UnsafeMutableBufferPointer<Float32>(
+      start: underlyingBuffer.advanced(by: (numOffsetSamples - numBackOffSamples) * 2),
+      count: numSamples * 2
+    )
     return AudioResamplerFrame(
       numChannels: 2,
       bytesPerFrame: 8,
       numSamples: numSamples,
       pts: CMTimeSubtract(currentPTS, backOffTime),
-      data: underlyingBuffer.advanced(by: (numOffsetSamples - numBackOffSamples) * 2)
+      data: data
     )
   }
 }

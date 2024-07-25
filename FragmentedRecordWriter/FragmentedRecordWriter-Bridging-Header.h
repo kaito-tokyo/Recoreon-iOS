@@ -64,6 +64,26 @@ static inline void copyStereoInt16UpsamplingBy6(float *__nonnull dst,
   }
 }
 
+static inline long copyStereoInt16UpsamplingFrom44100To48000(
+    float *__nonnull dst, int16_t *__nonnull src, long numSamples) {
+  long numOutputSamples = numSamples * 48000 / 44100;
+  for (long outputIndex = 0; outputIndex < numOutputSamples; outputIndex++) {
+    double inputSamplingPoint = outputIndex * 44100 / 48000;
+    long inputIndex = inputSamplingPoint;
+    double fraction = inputSamplingPoint - inputIndex;
+
+    float x0 = INT16_TO_FLOAT(src[inputIndex * 2 + 0]);
+    float y0 = INT16_TO_FLOAT(src[inputIndex * 2 + 1]);
+    float x1 = INT16_TO_FLOAT(src[inputIndex * 2 + 2]);
+    float y1 = INT16_TO_FLOAT(src[inputIndex * 2 + 3]);
+
+    dst[outputIndex * 2 + 0] = x0 + fraction * (x1 - x0);
+    dst[outputIndex * 2 + 1] = y0 + fraction * (y1 - y0);
+  }
+
+  return numOutputSamples;
+}
+
 static inline void copyMonoInt16(float *__nonnull dst, int16_t *__nonnull src,
                                  long numSamples) {
   for (long i = 0; i < numSamples; i++) {

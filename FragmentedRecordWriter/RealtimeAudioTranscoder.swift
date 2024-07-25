@@ -151,18 +151,13 @@ public class RealtimeAudioTranscoder {
         err: err2)
     }
 
-    var packetBufferArray: [UnsafeMutableRawBufferPointer] = []
-    var packetDescsArray: [UnsafeMutablePointer<AudioStreamPacketDescription>] = []
-    for _ in 0..<numBuffers {
-      packetBufferArray.append(
-        .allocate(
-          byteCount: packetsPerLoop * Int(maxOutputPacketSize),
-          alignment: 1
-        ))
-      packetDescsArray.append(.allocate(capacity: packetsPerLoop))
+    let packetsPerLoop = packetsPerLoop
+    self.packetBufferArray = (0..<numBuffers).map { _ in
+      .allocate(byteCount: packetsPerLoop * Int(maxOutputPacketSize), alignment: 8)
     }
-    self.packetBufferArray = packetBufferArray
-    self.packetDescsArray = packetDescsArray
+    self.packetDescsArray = (0..<numBuffers).map { _ in
+      .allocate(capacity: packetsPerLoop)
+    }
 
     var magicCookieSize: UInt32 = 0
     var isWritable: DarwinBoolean = false

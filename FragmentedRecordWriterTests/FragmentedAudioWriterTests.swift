@@ -66,7 +66,6 @@ final class FragmentedAudioWriterTests: XCTestCase {
     let audioWriter = try FragmentedAudioWriter(
       outputDirectoryURL: outputDirectoryURL,
       outputFilePrefix: "\(name)-app",
-      sampleRate: sampleRate,
       sourceFormatHint: outputFormatDesc
     )
 
