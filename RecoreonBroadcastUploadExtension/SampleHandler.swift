@@ -21,23 +21,9 @@ class SampleHandler: RPBroadcastSampleHandler {
   let recoreonPathService = RecoreonPathService(fileManager: FileManager.default)
   let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults
 
-  let writer = ScreenRecordWriter()
-  var pixelBufferExtractorRef: PixelBufferExtractor?
-  let swapBuf = UnsafeMutableRawPointer.allocate(byteCount: 4096, alignment: 2)
-
-  var isOutputStarted: Bool = false
-
-  var screenFirstTime: CMTime?
-  var screenElapsedTime: CMTime?
-  var micFirstTime: CMTime?
-
-  var screenStartupCount = 10
-  let screenStartupThrottlingFactor = 2
-
   let logger = Logger(label: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension")
-  let audioQueue = DispatchQueue(
-    label: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension.audioQueue"
-  )
+
+  var firstVideoFrameArrived = false
 
   var videoTranscoder: RealtimeVideoTranscoder?
   var videoWriter: FragmentedVideoWriter?
@@ -141,7 +127,10 @@ class SampleHandler: RPBroadcastSampleHandler {
       )
     }
 
-    guard let appAudioResampler = appAudioResampler,
+    guard
+      let videoTranscoder = videoTranscoder,
+      let videoWriter = videoWriter,
+      let appAudioResampler = appAudioResampler,
       let appAudioWriter = appAudioWriter,
       let micAudioResampler = micAudioResampler,
       let micAudioWriter = micAudioWriter
@@ -152,32 +141,32 @@ class SampleHandler: RPBroadcastSampleHandler {
 
     switch sampleBufferType {
     case RPSampleBufferType.video:
-      processVideoSample(sampleBuffer)
+      write(
+        videoWriter: videoWriter,
+        videoTranscoder: videoTranscoder,
+        sampleBuffer: sampleBuffer
+      )
     case RPSampleBufferType.audioApp:
-      audioQueue.async { [weak self] in
-        do {
-          try self?.write(
-            audioWriter: appAudioWriter,
-            audioResampler: appAudioResampler,
-            sampleBuffer: sampleBuffer,
-            pts: sampleBuffer.presentationTimeStamp
-          )
-        } catch {
-          print(error)
-        }
+      do {
+        try write(
+          audioWriter: appAudioWriter,
+          audioResampler: appAudioResampler,
+          sampleBuffer: sampleBuffer,
+          pts: sampleBuffer.presentationTimeStamp
+        )
+      } catch {
+        print(error)
       }
     case RPSampleBufferType.audioMic:
-      audioQueue.async { [weak self] in
-        do {
-          try self?.write(
-            audioWriter: micAudioWriter,
-            audioResampler: micAudioResampler,
-            sampleBuffer: sampleBuffer,
-            pts: sampleBuffer.presentationTimeStamp
-          )
-        } catch {
-          print(error)
-        }
+      do {
+        try write(
+          audioWriter: micAudioWriter,
+          audioResampler: micAudioResampler,
+          sampleBuffer: sampleBuffer,
+          pts: sampleBuffer.presentationTimeStamp
+        )
+      } catch {
+        print(error)
       }
     @unknown default:
       fatalError("Unknown type of sample buffer")
@@ -200,22 +189,19 @@ class SampleHandler: RPBroadcastSampleHandler {
     semaphore.wait()
   }
 
-  func processVideoSample(_ sampleBuffer: CMSampleBuffer) {
+  func write(
+    videoWriter: FragmentedVideoWriter,
+    videoTranscoder: RealtimeVideoTranscoder,
+    sampleBuffer: CMSampleBuffer
+  ) {
     guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
       logger.warning("Video sample buffer is not available!")
       return
     }
 
-    if !isOutputStarted {
-      isOutputStarted = true
-    }
-
-    if screenStartupCount > 0 {
-      let value = screenStartupCount % screenStartupThrottlingFactor
-      screenStartupCount -= 1
-      if value > 0 {
-        return
-      }
+    if !firstVideoFrameArrived {
+      videoWriter.firstVideoFrameArrivalTime = .now
+      firstVideoFrameArrived = true
     }
 
     let pts = CMTimeConvertScale(
@@ -224,10 +210,9 @@ class SampleHandler: RPBroadcastSampleHandler {
       method: .roundTowardPositiveInfinity
     )
 
-    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: pts) {
-      [weak self] (status, infoFlags, sbuf) in
+    videoTranscoder.send(imageBuffer: pixelBuffer, pts: pts) { (status, infoFlags, sbuf) in
       if let sampleBuffer = sbuf {
-        try? self?.videoWriter?.send(sampleBuffer: sampleBuffer)
+        try? videoWriter.send(sampleBuffer: sampleBuffer)
       }
     }
   }
