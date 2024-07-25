@@ -6,10 +6,14 @@ enum FragmentedVideoWriterError: CustomNSError {
 }
 
 private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
+  var firstVideoFrameArrivalTime = Date(timeIntervalSince1970: 0)
+  var startPTS: CMTime = .invalid
+
   public let playlistURL: URL
 
   private let outputDirectoryURL: URL
   private let outputFilePrefix: String
+  private let dateTimeFormatter: ISO8601DateFormatter
 
   private var segmentIndex = 0
   private var lastSeparableSegmentReport: AVAssetSegmentReport?
@@ -23,6 +27,8 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
 
     self.outputDirectoryURL = outputDirectoryURL
     self.outputFilePrefix = outputFilePrefix
+    dateTimeFormatter = ISO8601DateFormatter()
+    dateTimeFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
     super.init()
 
@@ -64,6 +70,7 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
       {
         let lastSegmentDuration = earliestPTS - lastEarliestPTS
         let playlistContent = """
+          #EXT-X-PROGRAM-DATE-TIME:\(getProgramDateTime(pts: lastEarliestPTS))
           #EXTINF:\(String(format: "%1.5f", lastSegmentDuration.seconds)),
           \(lastSeparableSegmentURL.lastPathComponent)\n
           """
@@ -94,6 +101,12 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
     writeToPlaylist(content: "#EXT-X-ENDLIST\n", append: true)
   }
 
+  private func getProgramDateTime(pts: CMTime) -> String {
+    let elapsedTime = pts - startPTS
+    let targetDate = (firstVideoFrameArrivalTime + elapsedTime.seconds)
+    return dateTimeFormatter.string(from: targetDate)
+  }
+
   private func writeToPlaylist(content: String, append: Bool) {
     guard let outputStream = OutputStream(url: playlistURL, append: append) else {
       return
@@ -113,6 +126,11 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
 }
 
 public class FragmentedVideoWriter {
+  public var firstVideoFrameArrivalTime: Date {
+    get { delegate.firstVideoFrameArrivalTime }
+    set(value) { delegate.firstVideoFrameArrivalTime = value }
+  }
+
   public var playlistURL: URL {
     delegate.playlistURL
   }
@@ -126,6 +144,7 @@ public class FragmentedVideoWriter {
   private let videoInput: AVAssetWriterInput
 
   private var sessionStarted = false
+  private var startPTS: CMTime = .invalid
 
   public init(
     outputDirectoryURL: URL,
@@ -161,19 +180,13 @@ public class FragmentedVideoWriter {
   }
 
   public func send(sampleBuffer: CMSampleBuffer) throws {
-    let rescaledPTS = CMTimeConvertScale(
-      sampleBuffer.presentationTimeStamp,
-      timescale: frameRate,
-      method: .roundTowardPositiveInfinity
-    )
-
     if !sessionStarted {
-      assetWriter.startSession(atSourceTime: rescaledPTS)
+      assetWriter.startSession(atSourceTime: sampleBuffer.presentationTimeStamp)
+      delegate.startPTS = sampleBuffer.presentationTimeStamp
       sessionStarted = true
     }
 
     if videoInput.isReadyForMoreMediaData {
-      try sampleBuffer.setOutputPresentationTimeStamp(rescaledPTS)
       videoInput.append(sampleBuffer)
     } else {
       print(
