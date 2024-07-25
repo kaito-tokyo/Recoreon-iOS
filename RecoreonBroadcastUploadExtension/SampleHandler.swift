@@ -35,6 +35,9 @@ class SampleHandler: RPBroadcastSampleHandler {
   let screenStartupThrottlingFactor = 2
 
   let logger = Logger(label: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension")
+  let audioQueue = DispatchQueue(
+    label: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension.audioQueue"
+  )
 
   var videoTranscoder: RealtimeVideoTranscoder?
   var videoWriter: FragmentedVideoWriter?
@@ -53,7 +56,6 @@ class SampleHandler: RPBroadcastSampleHandler {
     let frameRate = 60
     let appSampleRate = 44_100
     let micSampleRate = 48_000
-    let outputSampleRate = 44_100
     let recordID = recoreonPathService.generateRecordID(date: .now)
     let outputDirectoryURL = recoreonPathService.generateAppGroupsFragmentedRecordURL(
       recordID: recordID)
@@ -74,7 +76,7 @@ class SampleHandler: RPBroadcastSampleHandler {
 
       let appAudioTranscoder = try RealtimeAudioTranscoder(
         inputAudioStreamBasicDesc: appAudioResampler.outputAudioStreamBasicDesc,
-        outputSampleRate: outputSampleRate
+        outputSampleRate: appSampleRate
       )
 
       let appAudioWriter = try FragmentedAudioWriter(
@@ -91,7 +93,7 @@ class SampleHandler: RPBroadcastSampleHandler {
 
       let micAudioTranscoder = try RealtimeAudioTranscoder(
         inputAudioStreamBasicDesc: micAudioResampler.outputAudioStreamBasicDesc,
-        outputSampleRate: outputSampleRate
+        outputSampleRate: micSampleRate
       )
 
       let micAudioWriter = try FragmentedAudioWriter(
@@ -156,28 +158,32 @@ class SampleHandler: RPBroadcastSampleHandler {
     case RPSampleBufferType.video:
       processVideoSample(sampleBuffer)
     case RPSampleBufferType.audioApp:
-      do {
-        try write(
-          audioWriter: appAudioWriter,
-          audioTranscoder: appAudioTranscoder,
-          audioResampler: appAudioResampler,
-          sampleBuffer: sampleBuffer,
-          pts: sampleBuffer.presentationTimeStamp
-        )
-      } catch {
-        print(error)
+      audioQueue.async { [weak self] in
+        do {
+          try self?.write(
+            audioWriter: appAudioWriter,
+            audioTranscoder: appAudioTranscoder,
+            audioResampler: appAudioResampler,
+            sampleBuffer: sampleBuffer,
+            pts: sampleBuffer.presentationTimeStamp
+          )
+        } catch {
+          print(error)
+        }
       }
     case RPSampleBufferType.audioMic:
-      do {
-        try write(
-          audioWriter: micAudioWriter,
-          audioTranscoder: micAudioTranscoder,
-          audioResampler: micAudioResampler,
-          sampleBuffer: sampleBuffer,
-          pts: sampleBuffer.presentationTimeStamp
-        )
-      } catch {
-        print(error)
+      audioQueue.async { [weak self] in
+        do {
+          try self?.write(
+            audioWriter: micAudioWriter,
+            audioTranscoder: micAudioTranscoder,
+            audioResampler: micAudioResampler,
+            sampleBuffer: sampleBuffer,
+            pts: sampleBuffer.presentationTimeStamp
+          )
+        } catch {
+          print(error)
+        }
       }
     @unknown default:
       fatalError("Unknown type of sample buffer")
@@ -224,7 +230,7 @@ class SampleHandler: RPBroadcastSampleHandler {
       method: .roundTowardPositiveInfinity
     )
 
-    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: sampleBuffer.presentationTimeStamp) {
+    videoTranscoder?.send(imageBuffer: pixelBuffer, pts: pts) {
       [weak self] (status, infoFlags, sbuf) in
       if let sampleBuffer = sbuf {
         try? self?.videoWriter?.send(sampleBuffer: sampleBuffer)
