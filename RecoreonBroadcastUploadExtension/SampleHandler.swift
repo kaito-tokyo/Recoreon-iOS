@@ -43,6 +43,12 @@ class SampleHandler: RPBroadcastSampleHandler {
     let recordID = recoreonPathService.generateRecordID(date: .now)
     let outputDirectoryURL = recoreonPathService.generateAppGroupsFragmentedRecordURL(
       recordID: recordID)
+
+    appGroupsUserDefaults?.set(
+      outputDirectoryURL.absoluteString,
+      forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
+    )
+
     do {
       let videoTranscoder = try RealtimeVideoTranscoder(width: width, height: height)
 
