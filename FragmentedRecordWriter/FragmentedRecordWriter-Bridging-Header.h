@@ -64,9 +64,8 @@ static inline void copyStereoInt16UpsamplingBy6(float *__nonnull dst,
   }
 }
 
-static inline long copyStereoInt16UpsamplingFrom44100To48000(float *__nonnull dst,
-                                                int16_t *__nonnull src,
-                                                long numSamples) {
+static inline long copyStereoInt16UpsamplingFrom44100To48000(
+    float *__nonnull dst, int16_t *__nonnull src, long numSamples) {
   long numOutputSamples = numSamples * 48000 / 44100;
   for (long outputIndex = 0; outputIndex < numOutputSamples; outputIndex++) {
     double inputSamplingPoint = outputIndex * 44100 / 48000;
