@@ -1,8 +1,8 @@
 import CoreMedia
 import FragmentedRecordWriter
+import Logging
 import RecoreonCommon
 import ReplayKit
-import Logging
 
 enum SampleHandlerError: CustomNSError {
   case audioWriterRetrievalFailed
@@ -76,7 +76,7 @@ class SampleHandler: RPBroadcastSampleHandler {
         AVFormatIDKey: kAudioFormatMPEG4AAC,
         AVSampleRateKey: appSampleRate,
         AVNumberOfChannelsKey: 2,
-        AVEncoderBitRateKey: 320_000
+        AVEncoderBitRateKey: 320_000,
       ]
       let appAudioWriter = try FragmentedAudioWriter(
         outputDirectoryURL: outputDirectoryURL,
@@ -89,12 +89,11 @@ class SampleHandler: RPBroadcastSampleHandler {
 
       let micAudioResampler = try AudioResampler(outputSampleRate: micSampleRate)
 
-
       let micOutputSettings: [String: Any] = [
         AVFormatIDKey: kAudioFormatMPEG4AAC,
         AVSampleRateKey: micSampleRate,
         AVNumberOfChannelsKey: 2,
-        AVEncoderBitRateKey: 320_000
+        AVEncoderBitRateKey: 320_000,
       ]
       let micAudioWriter = try FragmentedAudioWriter(
         outputDirectoryURL: outputDirectoryURL,

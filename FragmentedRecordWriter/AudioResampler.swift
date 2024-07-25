@@ -73,7 +73,8 @@ public class AudioResampler {
       mReserved: 0
     )
 
-    outputFormatDesc = try CMFormatDescription(audioStreamBasicDescription: outputAudioStreamBasicDesc)
+    outputFormatDesc = try CMFormatDescription(
+      audioStreamBasicDescription: outputAudioStreamBasicDesc)
 
     self.outputSampleRate = outputSampleRate
 

@@ -156,7 +156,7 @@ public class RealtimeAudioTranscoder {
       .allocate(byteCount: packetsPerLoop * Int(maxOutputPacketSize), alignment: 8)
     }
     self.packetDescsArray = (0..<numBuffers).map { _ in
-        .allocate(capacity: packetsPerLoop)
+      .allocate(capacity: packetsPerLoop)
     }
 
     var magicCookieSize: UInt32 = 0
