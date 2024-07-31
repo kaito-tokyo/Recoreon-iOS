@@ -170,9 +170,9 @@ class SampleHandler: RPBroadcastSampleHandler {
         print(error)
       }
     case RPSampleBufferType.audioMic:
-        let devicePTS = sampleBuffer.presentationTimeStamp
-        guard videoFirstTime != .invalid else { return }
-        let outputPTS = devicePTS - videoFirstTime
+      let devicePTS = sampleBuffer.presentationTimeStamp
+      guard videoFirstTime != .invalid else { return }
+      let outputPTS = devicePTS - videoFirstTime
 
       do {
         try write(
@@ -229,7 +229,8 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
 
     let elapsedTime = devicePTS - videoFirstTime
-    let outputPTS = CMTimeConvertScale(elapsedTime, timescale: 60, method: .roundTowardPositiveInfinity)
+    let outputPTS = CMTimeConvertScale(
+      elapsedTime, timescale: 60, method: .roundTowardPositiveInfinity)
 
     videoTranscoder.send(imageBuffer: pixelBuffer, pts: outputPTS) { (status, infoFlags, sbuf) in
       if let sampleBuffer = sbuf {
