@@ -34,6 +34,8 @@ class SampleHandler: RPBroadcastSampleHandler {
   var micAudioResampler: AudioResampler?
   var micAudioWriter: FragmentedAudioWriter?
 
+  var videoFirstTime: CMTime = .invalid
+
   override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
     let width = 888
     let height = 1920
@@ -153,23 +155,31 @@ class SampleHandler: RPBroadcastSampleHandler {
         sampleBuffer: sampleBuffer
       )
     case RPSampleBufferType.audioApp:
+      let devicePTS = sampleBuffer.presentationTimeStamp
+      guard videoFirstTime != .invalid else { return }
+      let outputPTS = devicePTS - videoFirstTime
+
       do {
         try write(
           audioWriter: appAudioWriter,
           audioResampler: appAudioResampler,
           sampleBuffer: sampleBuffer,
-          pts: sampleBuffer.presentationTimeStamp
+          pts: outputPTS
         )
       } catch {
         print(error)
       }
     case RPSampleBufferType.audioMic:
+      let devicePTS = sampleBuffer.presentationTimeStamp
+      guard videoFirstTime != .invalid else { return }
+      let outputPTS = devicePTS - videoFirstTime
+
       do {
         try write(
           audioWriter: micAudioWriter,
           audioResampler: micAudioResampler,
           sampleBuffer: sampleBuffer,
-          pts: sampleBuffer.presentationTimeStamp
+          pts: outputPTS
         )
       } catch {
         print(error)
@@ -180,13 +190,15 @@ class SampleHandler: RPBroadcastSampleHandler {
   }
 
   override func broadcastFinished() {
+    appGroupsUserDefaults?.set(0, forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
+    videoTranscoder?.close()
+
     let semaphore = DispatchSemaphore(value: 0)
     Task { [weak self] in
       guard let self = self else {
         print("Clean up failed!")
         return
       }
-      self.videoTranscoder?.close()
       try await self.videoWriter?.close()
       try await self.appAudioWriter?.close()
       try await self.micAudioWriter?.close()
@@ -200,7 +212,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     videoTranscoder: RealtimeVideoTranscoder,
     sampleBuffer: CMSampleBuffer
   ) {
-    guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+    guard let pixelBuffer = sampleBuffer.imageBuffer else {
       logger.warning("Video sample buffer is not available!")
       return
     }
@@ -210,15 +222,19 @@ class SampleHandler: RPBroadcastSampleHandler {
       firstVideoFrameArrived = true
     }
 
-    let pts = CMTimeConvertScale(
-      sampleBuffer.presentationTimeStamp,
-      timescale: 60,
-      method: .roundTowardPositiveInfinity
-    )
+    let devicePTS = sampleBuffer.presentationTimeStamp
 
-    videoTranscoder.send(imageBuffer: pixelBuffer, pts: pts) { (status, infoFlags, sbuf) in
+    if videoFirstTime == .invalid {
+      videoFirstTime = devicePTS
+    }
+
+    let elapsedTime = devicePTS - videoFirstTime
+    let outputPTS = CMTimeConvertScale(
+      elapsedTime, timescale: 60, method: .roundTowardPositiveInfinity)
+
+    videoTranscoder.send(imageBuffer: pixelBuffer, pts: outputPTS) { (status, infoFlags, sbuf) in
       if let sampleBuffer = sbuf {
-        try? sampleBuffer.setOutputPresentationTimeStamp(pts)
+        try? sampleBuffer.setOutputPresentationTimeStamp(outputPTS)
         try? videoWriter.send(sampleBuffer: sampleBuffer)
       }
     }
@@ -230,86 +246,20 @@ class SampleHandler: RPBroadcastSampleHandler {
     sampleBuffer: CMSampleBuffer,
     pts: CMTime
   ) throws {
-    var blockBufferOut: CMBlockBuffer?
-    var audioBufferList = AudioBufferList()
-    CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-      sampleBuffer,
-      bufferListSizeNeededOut: nil,
-      bufferListOut: &audioBufferList,
-      bufferListSize: MemoryLayout<AudioBufferList>.size,
-      blockBufferAllocator: kCFAllocatorDefault,
-      blockBufferMemoryAllocator: kCFAllocatorDefault,
-      flags: 0,
-      blockBufferOut: &blockBufferOut
-    )
+    try sampleBuffer.withAudioBufferList { (_, blockBuffer) in
+      var sampleTiming = try sampleBuffer.sampleTimingInfo(at: 0)
+      sampleTiming.presentationTimeStamp = pts
+      sampleTiming.decodeTimeStamp = .invalid
 
-    guard
-      let format = CMSampleBufferGetFormatDescription(sampleBuffer),
-      let audioStreamBasicDesc = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee,
-      audioStreamBasicDesc.mFormatID == kAudioFormatLinearPCM,
-      let data = audioBufferList.mBuffers.mData
-    else {
-      logger.error("Audio input sample could not be gotten!")
-      return
+      let outputSampleBuffer = try CMSampleBuffer(
+        dataBuffer: blockBuffer,
+        formatDescription: sampleBuffer.formatDescription,
+        numSamples: sampleBuffer.numSamples,
+        sampleTimings: [sampleTiming],
+        sampleSizes: []
+      )
+
+      try audioWriter.send(sampleBuffer: outputSampleBuffer)
     }
-
-    let isSignedInteger = audioStreamBasicDesc.mFormatFlags & kAudioFormatFlagIsSignedInteger != 0
-    let isMono = audioStreamBasicDesc.mChannelsPerFrame == 1
-    let isStereo = audioStreamBasicDesc.mChannelsPerFrame == 2
-    let isBigEndian = audioStreamBasicDesc.mFormatFlags & kAudioFormatFlagIsBigEndian != 0
-    let bytesPerSample = Int(audioStreamBasicDesc.mBytesPerFrame) / (isStereo ? 2 : 1)
-    let inputSampleRate = Int(audioStreamBasicDesc.mSampleRate)
-    if isStereo && isSignedInteger && bytesPerSample == 2 && !isBigEndian {
-      try audioResampler.append(
-        stereoInt16Buffer: data.assumingMemoryBound(to: Int16.self),
-        numInputSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
-        inputSampleRate: inputSampleRate,
-        pts: pts
-      )
-    } else if isMono && isSignedInteger && bytesPerSample == 2 && !isBigEndian {
-      try audioResampler.append(
-        monoInt16Buffer: data.assumingMemoryBound(to: Int16.self),
-        numInputSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 2,
-        inputSampleRate: inputSampleRate,
-        pts: pts
-      )
-    } else if isStereo && isSignedInteger && bytesPerSample == 2 && isBigEndian {
-      try audioResampler.append(
-        stereoInt16BufferWithSwap: data.assumingMemoryBound(to: Int16.self),
-        numInputSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 4,
-        inputSampleRate: inputSampleRate,
-        pts: pts
-      )
-    } else if isMono && isSignedInteger && bytesPerSample == 2 && isBigEndian {
-      try audioResampler.append(
-        monoInt16BufferWithSwap: data.assumingMemoryBound(to: Int16.self),
-        numInputSamples: Int(audioBufferList.mBuffers.mDataByteSize) / 2,
-        inputSampleRate: inputSampleRate,
-        pts: pts
-      )
-    } else {
-      logger.warning("Audio sample format is not supported!")
-    }
-
-    let audioResamplerFrame = audioResampler.getCurrentFrame()
-
-    let buffer = UnsafeMutableRawBufferPointer(audioResamplerFrame.data)
-    let blockBuffer = try CMBlockBuffer(buffer: buffer, allocator: kCFAllocatorNull)
-
-    let sampleTiming = CMSampleTimingInfo(
-      duration: audioResampler.duration,
-      presentationTimeStamp: pts,
-      decodeTimeStamp: .invalid
-    )
-
-    let samplerBuffer = try CMSampleBuffer(
-      dataBuffer: blockBuffer,
-      formatDescription: audioResampler.outputFormatDesc,
-      numSamples: audioResamplerFrame.numSamples,
-      sampleTimings: [sampleTiming],
-      sampleSizes: []
-    )
-
-    try audioWriter.send(sampleBuffer: sampleBuffer)
   }
 }
