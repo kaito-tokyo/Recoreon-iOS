@@ -6,12 +6,17 @@ import ReplayKit
 
 enum SampleHandlerError: CustomNSError {
   case audioWriterRetrievalFailed
+  case videoFrameNotReceived
 
   var errorUserInfo: [String: Any] {
     switch self {
     case .audioWriterRetrievalFailed:
       return [
         NSLocalizedFailureReasonErrorKey: "Could not get audio writers!"
+      ]
+    case .videoFrameNotReceived:
+      return [
+        NSLocalizedFailureReasonErrorKey: "Could not receive video frames!"
       ]
     }
   }
@@ -144,6 +149,11 @@ class SampleHandler: RPBroadcastSampleHandler {
       let micAudioWriter = micAudioWriter
     else {
       finishBroadcastWithError(SampleHandlerError.audioWriterRetrievalFailed)
+      return
+    }
+
+    if videoWriter.segmentIndex == 0 && appAudioWriter.segmentIndex > 1 {
+      finishBroadcastWithError(SampleHandlerError.videoFrameNotReceived)
       return
     }
 

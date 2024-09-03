@@ -15,7 +15,7 @@ private class FragmentedVideoWriterDelegate: NSObject, AVAssetWriterDelegate {
   private let outputFilePrefix: String
   private let dateTimeFormatter: ISO8601DateFormatter
 
-  private var segmentIndex = 0
+  private(set) var segmentIndex = 0
   private var lastSeparableSegmentReport: AVAssetSegmentReport?
   private var lastSeparableSegmentURL: URL?
 
@@ -133,6 +133,10 @@ public class FragmentedVideoWriter {
 
   public var playlistURL: URL {
     delegate.playlistURL
+  }
+
+  public var segmentIndex: Int {
+    delegate.segmentIndex
   }
 
   private let outputDirectoryURL: URL

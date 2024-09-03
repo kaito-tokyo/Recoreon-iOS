@@ -12,7 +12,7 @@ private class FragmentedAudioWriterDelegate: NSObject, AVAssetWriterDelegate {
   private let outputDirectoryURL: URL
   private let outputFilePrefix: String
 
-  private var segmentIndex = 0
+  private(set) var segmentIndex = 0
 
   init(outputDirectoryURL: URL, outputFilePrefix: String) throws {
     playlistURL = outputDirectoryURL.appending(
@@ -96,6 +96,10 @@ private class FragmentedAudioWriterDelegate: NSObject, AVAssetWriterDelegate {
 public class FragmentedAudioWriter {
   public var playlistURL: URL {
     delegate.playlistURL
+  }
+
+  public var segmentIndex: Int {
+    delegate.segmentIndex
   }
 
   private let outputDirectoryURL: URL
