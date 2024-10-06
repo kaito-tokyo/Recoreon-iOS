@@ -35,6 +35,7 @@ class SampleHandler: RPBroadcastSampleHandler {
   var micAudioWriter: FragmentedAudioWriter?
 
   var videoFirstTime: CMTime = .invalid
+  var micAudioFirstTime: CMTime = .invalid
 
   override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
     let width = 888
@@ -172,7 +173,10 @@ class SampleHandler: RPBroadcastSampleHandler {
     case RPSampleBufferType.audioMic:
       let devicePTS = sampleBuffer.presentationTimeStamp
       guard videoFirstTime != .invalid else { return }
-      let outputPTS = devicePTS - videoFirstTime
+      if micAudioFirstTime == .invalid {
+        micAudioFirstTime = devicePTS
+      }
+      let outputPTS = devicePTS - micAudioFirstTime
 
       do {
         try write(
