@@ -40,21 +40,9 @@ final class FragmentedAudioWriterTests: XCTestCase {
             mBitsPerChannel: 16,
             mReserved: 0
         )
-
-        let outputAudioStreamBasicDescription = AudioStreamBasicDescription(
-            mSampleRate: Float64(sampleRate),
-            mFormatID: kAudioFormatMPEG4AAC,
-            mFormatFlags: 0,
-            mBytesPerPacket: 0,
-            mFramesPerPacket: 1024,
-            mBytesPerFrame: 0,
-            mChannelsPerFrame: 2,
-            mBitsPerChannel: 0,
-            mReserved: 0
-        )
-
-        let outputFormatDesc = try CMFormatDescription(
-            audioStreamBasicDescription: outputAudioStreamBasicDescription
+        
+        let inputAudioFormatDesc = try CMFormatDescription(
+            audioStreamBasicDescription: inputAudioStreamBasicDescription
         )
 
         let dummyAppAudioGenerator = try DummyAudioGenerator(
@@ -82,12 +70,6 @@ final class FragmentedAudioWriterTests: XCTestCase {
 
             var audioBufferList = audioFrame.audioBufferList
 
-            let sampleTiming = CMSampleTimingInfo(
-                duration: CMTime(value: 1, timescale: CMTimeScale(sampleRate)),
-                presentationTimeStamp: audioFrame.pts,
-                decodeTimeStamp: .invalid,
-            )
-
             var sampleBufferOut: CMSampleBuffer?
             let err1 = CMAudioSampleBufferCreateWithPacketDescriptions(
                 allocator: nil,
@@ -95,7 +77,7 @@ final class FragmentedAudioWriterTests: XCTestCase {
                 dataReady: false,
                 makeDataReadyCallback: nil,
                 refcon: nil,
-                formatDescription: outputFormatDesc,
+                formatDescription: inputAudioFormatDesc,
                 sampleCount: Int(audioBufferList.mNumberBuffers),
                 presentationTimeStamp: audioFrame.pts,
                 packetDescriptions: nil,
@@ -103,6 +85,7 @@ final class FragmentedAudioWriterTests: XCTestCase {
             )
 
             guard err1 == noErr, let sampleBuffer = sampleBufferOut else {
+                print(err1)
                 XCTFail("Could not create CMSampleBuffer for AudioBufferList!")
                 return
             }
@@ -115,6 +98,7 @@ final class FragmentedAudioWriterTests: XCTestCase {
                 bufferList: &audioBufferList
             )
             guard err2 == noErr else {
+                print(err2)
                 XCTFail("Could not load AudioBufferList to CMSampleBuffer!")
                 return
             }
