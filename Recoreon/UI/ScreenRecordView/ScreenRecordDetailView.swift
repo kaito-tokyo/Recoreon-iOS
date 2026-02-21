@@ -165,23 +165,6 @@ struct ScreenRecordDetailView: View {
           }
           .accessibilityIdentifier("PreviewButton")
 
-          Button {
-            withAnimation {
-              path.append(
-                ScreenRecordEncoderViewRoute(
-                  screenRecordEntry: screenRecordEntry
-                )
-              )
-            }
-          } label: {
-            NavigationLink {
-              EmptyView()
-            } label: {
-              Label("Encode", systemImage: "film")
-            }
-          }
-          .accessibilityIdentifier("EncodeButton")
-
           ShareLink(item: screenRecordEntry.url)
 
           Button {
@@ -220,10 +203,6 @@ struct ScreenRecordDetailView: View {
         recoreonServices: recoreonServices,
         screenRecordEntry: route.screenRecordEntry
       )
-    }
-    .navigationDestination(for: ScreenRecordEncoderViewRoute.self) { route in
-      ScreenRecordEncoderView(
-        recoreonServices: recoreonServices, screenRecordEntry: route.screenRecordEntry)
     }
     .navigationDestination(for: RecordNoteEditorViewRoute.self) { route in
       RecordNoteEditorView(

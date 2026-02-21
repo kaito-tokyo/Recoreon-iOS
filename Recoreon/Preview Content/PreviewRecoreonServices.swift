@@ -3,7 +3,6 @@ import RecoreonCommon
 
 struct PreviewRecoreonServices: RecoreonServices {
   let appGroupsPreferenceService: AppGroupsPreferenceService
-  let encodeService: EncodeService
   let recordNoteService: RecordNoteService
   let recoreonPathService: RecoreonPathService
   let screenRecordService: ScreenRecordService
@@ -13,8 +12,6 @@ struct PreviewRecoreonServices: RecoreonServices {
     let recoreonPathService = RecoreonPathService(fileManager: fileManager, isUITest: true)
 
     appGroupsPreferenceService = AppGroupsPreferenceService()
-    encodeService = PreviewEncodeService(
-      fileManager: fileManager, recoreonPathService: recoreonPathService)
     recordNoteService = DefaultRecordNoteService(recoreonPathService: recoreonPathService)
     self.recoreonPathService = recoreonPathService
     screenRecordService = DefaultScreenRecordService(
