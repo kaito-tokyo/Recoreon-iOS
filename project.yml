@@ -2,7 +2,7 @@
 name: "Recoreon"
 
 options:
-  bundleIdPrefix: com.github.umireon
+  bundleIdPrefix: tokyo.kaito
   deploymentTarget:
     iOS: "17.4"
 
@@ -91,7 +91,7 @@ targets:
       - package: "Logging"
     settings:
       SWIFT_OBJC_BRIDGING_HEADER: "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension-Bridging-Header.h"
-      PRODUCT_BUNDLE_IDENTIFIER: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension"
+      PRODUCT_BUNDLE_IDENTIFIER: "tokyo.kaito.Recoreon.RecoreonBroadcastUploadExtension"
       SKIP_INSTALL: true
     info:
       path: "RecoreonBroadcastUploadExtension/Info.plist"
@@ -108,7 +108,7 @@ targets:
       path: "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension.entitlements"
       properties:
         com.apple.security.application-groups:
-          - "group.com.github.umireon.Recoreon"
+          - "group.tokyo.kaito.Recoreon"
 
   Recoreon:
     type: "application"
@@ -151,7 +151,7 @@ targets:
       path: "Recoreon/Recoreon.entitlements"
       properties:
         com.apple.security.application-groups:
-          - "group.com.github.umireon.Recoreon"
+          - "group.tokyo.kaito.Recoreon"
 
   RecoreonTests:
     type: "bundle.unit-test"
