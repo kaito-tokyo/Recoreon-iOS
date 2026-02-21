@@ -2,6 +2,11 @@ import ProjectDescription
 
 let project = Project(
     name: "Recoreon",
+    settings: .settings(
+        base: SettingsDictionary().automaticCodeSigning(
+            devTeam: "4HMJS6J4MZ"
+        ),
+    ),
     targets: [
         .target(
             name: "Recoreon",
@@ -24,7 +29,7 @@ let project = Project(
             dependencies: [
                 .target(name: "RecoreonCommon"),
                 .target(name: "RecoreonBroadcastUploadExtension"),
-                .package(product: "HLSServer"),
+                .external(name: "HLSServer"),
             ],
         ),
 
@@ -39,7 +44,7 @@ let project = Project(
                 "RecoreonTests/Sources"
             ],
             dependencies: [
-                .target(name: "Recoreon"),
+                .target(name: "Recoreon")
             ],
             settings: .settings(
                 base: SettingsDictionary().swiftObjcBridgingHeaderPath(
@@ -59,7 +64,7 @@ let project = Project(
                 "RecoreonUITests/Sources"
             ],
             dependencies: [
-                .target(name: "Recoreon"),
+                .target(name: "Recoreon")
             ],
             settings: .settings(
                 base: SettingsDictionary().swiftObjcBridgingHeaderPath(
@@ -80,7 +85,7 @@ let project = Project(
             dependencies: [
                 .target(name: "FragmentedRecordWriter"),
                 .target(name: "RecoreonCommon"),
-                .package(product: "Logging"),
+                .external(name: "Logging"),
             ]
         ),
 
@@ -112,6 +117,5 @@ let project = Project(
                 "RecoreonCommon/Sources"
             ],
         ),
-    ]
+    ],
 )
-
