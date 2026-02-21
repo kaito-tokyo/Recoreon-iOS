@@ -15,7 +15,7 @@
     {
       "target" : {
         "containerPath" : "container:Recoreon.xcodeproj",
-        "identifier" : "22C3CD102AF240B40039750A",
+        "identifier" : "71A4E81DBB3CC6AF23DE9932",
         "name" : "RecoreonUITests"
       }
     }

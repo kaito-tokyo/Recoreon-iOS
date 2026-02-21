@@ -1,6 +1,5 @@
 import Foundation
 import RecoreonCommon
-import ffmpegkit
 
 struct DefaultScreenRecordService: ScreenRecordService {
   private let fileManager: FileManager
@@ -23,39 +22,6 @@ struct DefaultScreenRecordService: ScreenRecordService {
         size: attrs?[.size] as? UInt64 ?? 0,
         creationDate: attrs?[.creationDate] as? Date ?? Date(timeIntervalSince1970: 0),
         summaryBody: recordSummaryBody ?? ""
-      )
-    }
-  }
-
-  func remuxPreviewVideo(screenRecordEntry: ScreenRecordEntry) async -> URL? {
-    let recordID = recoreonPathService.getRecordID(screenRecordURL: screenRecordEntry.url)
-    let previewVideoURL = recoreonPathService.generatePreviewVideoURL(recordID: recordID)
-
-    if fileManager.fileExists(atPath: previewVideoURL.path(percentEncoded: false)) {
-      return previewVideoURL
-    }
-
-    let arguments = [
-      "-i",
-      screenRecordEntry.url.path(),
-      "-c:v",
-      "copy",
-      "-c:a",
-      "copy",
-      previewVideoURL.path(),
-    ]
-
-    return await withCheckedContinuation { continuation in
-      FFmpegKit.execute(
-        withArgumentsAsync: arguments,
-        withCompleteCallback: { session in
-          let ret = session?.getReturnCode()
-          if ReturnCode.isSuccess(ret) {
-            continuation.resume(returning: previewVideoURL)
-          } else {
-            continuation.resume(returning: nil)
-          }
-        }
       )
     }
   }

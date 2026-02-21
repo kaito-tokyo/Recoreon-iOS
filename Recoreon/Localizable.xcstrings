@@ -2,6 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "2x Speed Low Quality" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -12,6 +13,7 @@
       }
     },
     "4x Speed Low Quality" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -52,6 +54,7 @@
       }
     },
     "Encode" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -62,6 +65,7 @@
       }
     },
     "Encoder operations" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -72,6 +76,7 @@
       }
     },
     "Encoding progress" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -82,6 +87,7 @@
       }
     },
     "Encoding settings" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -132,6 +138,7 @@
       }
     },
     "Low Quality" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -182,6 +189,7 @@
       }
     },
     "Preset" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
