@@ -10,7 +10,7 @@ struct RecoreonBroadcastPickerRepresentable: UIViewRepresentable {
 
   func makeUIView(context: Context) -> some UIView {
     let picker = RPSystemBroadcastPickerView()
-    picker.preferredExtension = "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension"
+    picker.preferredExtension = "com.tokyo.kaito.Recoreon.RecoreonBroadcastUploadExtension"
     picker.showsMicrophoneButton = true
     if let button = picker.subviews.first as? UIButton {
       button.frame = CGRect(origin: .zero, size: picker.bounds.size)

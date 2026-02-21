@@ -1,1 +1,1 @@
-let appGroupsIdentifier = "group.com.github.umireon.Recoreon"
+let appGroupsIdentifier = "group.tokyo.kaito.Recoreon"

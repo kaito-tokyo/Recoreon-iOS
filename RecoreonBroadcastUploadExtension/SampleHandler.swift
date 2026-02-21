@@ -21,7 +21,7 @@ class SampleHandler: RPBroadcastSampleHandler {
   let recoreonPathService = RecoreonPathService(fileManager: FileManager.default)
   let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults
 
-  let logger = Logger(label: "com.github.umireon.Recoreon.RecoreonBroadcastUploadExtension")
+  let logger = Logger(label: "tokyo.kaito.Recoreon.RecoreonBroadcastUploadExtension")
 
   var firstVideoFrameArrived = false
 
