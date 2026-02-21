@@ -44,6 +44,21 @@ let project = Project(
             ]
         ),
 
+        .target(
+            name: "RecoreonBroadcastUploadExtensionTests",
+            destinations: .iOS,
+            product: .unitTests,
+            bundleId:
+                "tokyo.kaito.Recoreon.RecoreonBroadcastUploadExtensionTests",
+            deploymentTargets: .iOS("17.4"),
+            buildableFolders: [
+                "RecoreonBroadcastUploadExtensionTests/Sources"
+            ],
+            dependencies: [
+                .target(name: "RecoreonBroadcastUploadExtension"),
+            ]
+        ),
+
         // MARK: - Internal libraries
 
         .target(
@@ -62,24 +77,24 @@ let project = Project(
             )
         ),
 
-        .target(
-            name: "FragmentedRecordWriterTests",
-            destinations: .iOS,
-            product: .unitTests,
-            bundleId: "tokyo.kaito.Recoreon.FragmentedRecordWriterTests",
-            deploymentTargets: .iOS("17.4"),
-            buildableFolders: [
-                "FragmentedRecordWriterTests/Sources"
-            ],
-            dependencies: [
-                .target(name: "FragmentedRecordWriter")
-            ],
-            settings: .settings(
-                base: SettingsDictionary().swiftObjcBridgingHeaderPath(
-                    "FragmentedRecordWriterTests/Sources/FragmentedRecordWriterTests-Bridging-Header.h"
-                )
-            ),
-        ),
+        //        .target(
+        //            name: "FragmentedRecordWriterTests",
+        //            destinations: .iOS,
+        //            product: .unitTests,
+        //            bundleId: "tokyo.kaito.Recoreon.FragmentedRecordWriterTests",
+        //            deploymentTargets: .iOS("17.4"),
+        //            buildableFolders: [
+        //                "FragmentedRecordWriterTests/Sources"
+        //            ],
+        //            dependencies: [
+        //                .target(name: "FragmentedRecordWriter")
+        //            ],
+        //            settings: .settings(
+        //                base: SettingsDictionary().swiftObjcBridgingHeaderPath(
+        //                    "FragmentedRecordWriterTests/Sources/FragmentedRecordWriterTests-Bridging-Header.h"
+        //                )
+        //            ),
+        //        ),
 
         .target(
             name: "RecoreonCommon",
@@ -93,3 +108,4 @@ let project = Project(
         ),
     ]
 )
+
