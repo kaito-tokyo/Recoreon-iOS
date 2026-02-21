@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#import "../FragmentedRecordWriter/FragmentedRecordWriter-Bridging-Header.h"
+#import "../../FragmentedRecordWriter/Sources/FragmentedRecordWriter-Bridging-Header.h"
 
 static inline void fillLumaPlane(uint8_t *__nonnull lumaData, long width,
                                  long height, long bytesPerRow,
