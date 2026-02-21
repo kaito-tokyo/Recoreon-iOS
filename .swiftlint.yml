@@ -1,9 +1,0 @@
----
-excluded:
-  - "**/DerivedSources/**"
-disabled_rules:
-  - trailing_comma
-  - inclusive_language
-  - identifier_name
-  - function_body_length
-  - function_parameter_count

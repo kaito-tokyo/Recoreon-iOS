@@ -1,3 +1,3 @@
 import ProjectDescription
 
-let tuist = Tuist(project: .xcode())
+let tuist = Tuist(project: .tuist())
