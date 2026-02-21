@@ -29,10 +29,6 @@ settings:
   CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: false
 
 packages:
-  FFmpegKit:
-    url: "https://github.com/kaito-tokyo/ffmpeg-kit-spm.git"
-    from: "6.0.3"
-
   Logging:
     url: "https://github.com/apple/swift-log.git"
     from: "1.6.1"
@@ -64,14 +60,6 @@ targets:
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
 
-  ScreenRecordWriter:
-    type: "library.static"
-    platform: "iOS"
-    sources:
-      - "ScreenRecordWriter"
-    dependencies:
-      - package: "FFmpegKit"
-
   RecoreonCommon:
     type: "library.static"
     platform: "iOS"
@@ -85,9 +73,7 @@ targets:
       - "RecoreonBroadcastUploadExtension"
     dependencies:
       - target: "FragmentedRecordWriter"
-      - target: "ScreenRecordWriter"
       - target: "RecoreonCommon"
-      - package: "FFmpegKit"
       - package: "Logging"
     settings:
       SWIFT_OBJC_BRIDGING_HEADER: "RecoreonBroadcastUploadExtension/RecoreonBroadcastUploadExtension-Bridging-Header.h"
@@ -118,7 +104,6 @@ targets:
     dependencies:
       - target: "RecoreonCommon"
       - target: "RecoreonBroadcastUploadExtension"
-      - package: "FFmpegKit"
       - package: "HLSServer"
     settings:
       DEVELOPMENT_ASSET_PATHS: '"Recoreon/Preview Content"'
@@ -160,8 +145,6 @@ targets:
       - "RecoreonTests"
     dependencies:
       - target: "Recoreon"
-      - target: "ScreenRecordWriter"
-      - package: "FFmpegKit"
     settings:
       SWIFT_OBJC_BRIDGING_HEADER: "RecoreonTests/RecoreonTests-Bridging-Header.h"
     info:
