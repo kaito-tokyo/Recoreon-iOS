@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.github.umireon.Recoreon</string>
+		<string>group.tokyo.kaito.Recoreon</string>
 	</array>
 </dict>
 </plist>
