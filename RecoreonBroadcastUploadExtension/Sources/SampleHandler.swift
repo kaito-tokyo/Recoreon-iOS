@@ -28,10 +28,8 @@ class SampleHandler: RPBroadcastSampleHandler {
   var videoTranscoder: RealtimeVideoTranscoder?
   var videoWriter: FragmentedVideoWriter?
 
-  var appAudioResampler: AudioResampler?
   var appAudioWriter: FragmentedAudioWriter?
 
-  var micAudioResampler: AudioResampler?
   var micAudioWriter: FragmentedAudioWriter?
 
   var videoFirstTime: CMTime = .invalid
@@ -64,8 +62,6 @@ class SampleHandler: RPBroadcastSampleHandler {
       self.videoTranscoder = videoTranscoder
       self.videoWriter = videoWriter
 
-      let appAudioResampler = try AudioResampler(outputSampleRate: appSampleRate)
-
       let appOutputSettings: [String: Any] = [
         AVFormatIDKey: kAudioFormatMPEG4AAC,
         AVSampleRateKey: appSampleRate,
@@ -78,10 +74,7 @@ class SampleHandler: RPBroadcastSampleHandler {
         outputSettings: appOutputSettings
       )
 
-      self.appAudioResampler = appAudioResampler
       self.appAudioWriter = appAudioWriter
-
-      let micAudioResampler = try AudioResampler(outputSampleRate: micSampleRate)
 
       let micOutputSettings: [String: Any] = [
         AVFormatIDKey: kAudioFormatMPEG4AAC,
@@ -95,7 +88,6 @@ class SampleHandler: RPBroadcastSampleHandler {
         outputSettings: micOutputSettings
       )
 
-      self.micAudioResampler = micAudioResampler
       self.micAudioWriter = micAudioWriter
 
       let masterPlaylistWriter = MasterPlaylistWriter()
@@ -138,9 +130,7 @@ class SampleHandler: RPBroadcastSampleHandler {
     guard
       let videoTranscoder = videoTranscoder,
       let videoWriter = videoWriter,
-      let appAudioResampler = appAudioResampler,
       let appAudioWriter = appAudioWriter,
-      let micAudioResampler = micAudioResampler,
       let micAudioWriter = micAudioWriter
     else {
       finishBroadcastWithError(SampleHandlerError.audioWriterRetrievalFailed)
@@ -162,7 +152,6 @@ class SampleHandler: RPBroadcastSampleHandler {
       do {
         try write(
           audioWriter: appAudioWriter,
-          audioResampler: appAudioResampler,
           sampleBuffer: sampleBuffer,
           pts: outputPTS
         )
@@ -177,7 +166,6 @@ class SampleHandler: RPBroadcastSampleHandler {
       do {
         try write(
           audioWriter: micAudioWriter,
-          audioResampler: micAudioResampler,
           sampleBuffer: sampleBuffer,
           pts: outputPTS
         )
@@ -242,7 +230,6 @@ class SampleHandler: RPBroadcastSampleHandler {
 
   func write(
     audioWriter: FragmentedAudioWriter,
-    audioResampler: AudioResampler,
     sampleBuffer: CMSampleBuffer,
     pts: CMTime
   ) throws {
