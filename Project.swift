@@ -29,6 +29,46 @@ let project = Project(
         ),
 
         .target(
+            name: "RecoreonTests",
+            destinations: .iOS,
+            product: .unitTests,
+            bundleId:
+                "tokyo.kaito.Recoreon.RecoreonTests",
+            deploymentTargets: .iOS("17.4"),
+            buildableFolders: [
+                "RecoreonTests/Sources"
+            ],
+            dependencies: [
+                .target(name: "Recoreon"),
+            ],
+            settings: .settings(
+                base: SettingsDictionary().swiftObjcBridgingHeaderPath(
+                    "RecoreonTests/Sources/RecoreonTests-Bridging-Header.h"
+                )
+            )
+        ),
+
+        .target(
+            name: "RecoreonUITests",
+            destinations: .iOS,
+            product: .uiTests,
+            bundleId:
+                "tokyo.kaito.Recoreon.RecoreonUITests",
+            deploymentTargets: .iOS("17.4"),
+            buildableFolders: [
+                "RecoreonUITests/Sources"
+            ],
+            dependencies: [
+                .target(name: "Recoreon"),
+            ],
+            settings: .settings(
+                base: SettingsDictionary().swiftObjcBridgingHeaderPath(
+                    "RecoreonTests/Sources/RecoreonTests-Bridging-Header.h"
+                )
+            )
+        ),
+
+        .target(
             name: "RecoreonBroadcastUploadExtension",
             destinations: .iOS,
             product: .appExtension,
@@ -41,21 +81,6 @@ let project = Project(
                 .target(name: "FragmentedRecordWriter"),
                 .target(name: "RecoreonCommon"),
                 .package(product: "Logging"),
-            ]
-        ),
-
-        .target(
-            name: "RecoreonBroadcastUploadExtensionTests",
-            destinations: .iOS,
-            product: .unitTests,
-            bundleId:
-                "tokyo.kaito.Recoreon.RecoreonBroadcastUploadExtensionTests",
-            deploymentTargets: .iOS("17.4"),
-            buildableFolders: [
-                "RecoreonBroadcastUploadExtensionTests/Sources"
-            ],
-            dependencies: [
-                .target(name: "RecoreonBroadcastUploadExtension"),
             ]
         ),
 
@@ -76,25 +101,6 @@ let project = Project(
                 )
             )
         ),
-
-        //        .target(
-        //            name: "FragmentedRecordWriterTests",
-        //            destinations: .iOS,
-        //            product: .unitTests,
-        //            bundleId: "tokyo.kaito.Recoreon.FragmentedRecordWriterTests",
-        //            deploymentTargets: .iOS("17.4"),
-        //            buildableFolders: [
-        //                "FragmentedRecordWriterTests/Sources"
-        //            ],
-        //            dependencies: [
-        //                .target(name: "FragmentedRecordWriter")
-        //            ],
-        //            settings: .settings(
-        //                base: SettingsDictionary().swiftObjcBridgingHeaderPath(
-        //                    "FragmentedRecordWriterTests/Sources/FragmentedRecordWriterTests-Bridging-Header.h"
-        //                )
-        //            ),
-        //        ),
 
         .target(
             name: "RecoreonCommon",
