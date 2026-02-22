@@ -36,3 +36,7 @@ jobs:
       - name: Tuist Build
         shell: bash
         run: tuist build
+
+      - name: Tuist Test
+        shell: bash
+        run: tuist test
