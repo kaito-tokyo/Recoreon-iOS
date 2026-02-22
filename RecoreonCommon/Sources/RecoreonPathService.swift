@@ -17,11 +17,11 @@ public struct RecoreonPathService {
   public init(fileManager: FileManager, isUITest: Bool = false) {
     self.fileManager = fileManager
 
-#if DEBUG
-    let isPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
-#else
-    let isPreview = false
-#endif
+    #if DEBUG
+      let isPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+    #else
+      let isPreview = false
+    #endif
 
     appGroupsDir = fileManager.containerURL(
       forSecurityApplicationGroupIdentifier: appGroupsIdentifier

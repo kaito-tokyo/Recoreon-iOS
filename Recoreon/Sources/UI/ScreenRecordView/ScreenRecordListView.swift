@@ -261,99 +261,99 @@ struct ScreenRecordListView: View {
 }
 
 #if DEBUG
-struct ScreenRecordListViewContainer: View {
-  let recoreonServices: RecoreonServices
-  @StateObject var screenRecordStore: ScreenRecordStore
-  @State var path = NavigationPath()
+  struct ScreenRecordListViewContainer: View {
+    let recoreonServices: RecoreonServices
+    @StateObject var screenRecordStore: ScreenRecordStore
+    @State var path = NavigationPath()
 
-  init(
-    recoreonServices: RecoreonServices,
-    screenRecordStore: ScreenRecordStore
-  ) {
-    self.recoreonServices = recoreonServices
-    _screenRecordStore = StateObject(wrappedValue: screenRecordStore)
+    init(
+      recoreonServices: RecoreonServices,
+      screenRecordStore: ScreenRecordStore
+    ) {
+      self.recoreonServices = recoreonServices
+      _screenRecordStore = StateObject(wrappedValue: screenRecordStore)
+    }
+
+    var body: some View {
+      NavigationStack(path: $path) {
+        ScreenRecordListView(
+          recoreonServices: recoreonServices,
+          path: $path
+        )
+      }
+    }
   }
 
-  var body: some View {
-    NavigationStack(path: $path) {
-      ScreenRecordListView(
+  #Preview("There are no ongoing records") {
+    let recoreonServices = PreviewRecoreonServices()
+    recoreonServices.deployAllAssets()
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: recoreonServices.screenRecordService
+    )
+
+    let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
+
+    appGroupsUserDefaults.set(
+      Date().timeIntervalSince1970 - 10,
+      forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
+    appGroupsUserDefaults.set(
+      screenRecordStore.screenRecordEntries[0].url.absoluteString,
+      forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
+    )
+
+    return NavigationStack {
+      ScreenRecordListViewContainer(
         recoreonServices: recoreonServices,
-        path: $path
+        screenRecordStore: screenRecordStore
       )
     }
   }
-}
 
-#Preview("There are no ongoing records") {
-  let recoreonServices = PreviewRecoreonServices()
-  recoreonServices.deployAllAssets()
-  let screenRecordStore = ScreenRecordStore(
-    screenRecordService: recoreonServices.screenRecordService
-  )
-
-  let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
-
-  appGroupsUserDefaults.set(
-    Date().timeIntervalSince1970 - 10,
-    forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
-  appGroupsUserDefaults.set(
-    screenRecordStore.screenRecordEntries[0].url.absoluteString,
-    forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
-  )
-
-  return NavigationStack {
-    ScreenRecordListViewContainer(
-      recoreonServices: recoreonServices,
-      screenRecordStore: screenRecordStore
+  #Preview("There is a ongoing record") {
+    let recoreonServices = PreviewRecoreonServices()
+    recoreonServices.deployAllAssets()
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: recoreonServices.screenRecordService
     )
-  }
-}
 
-#Preview("There is a ongoing record") {
-  let recoreonServices = PreviewRecoreonServices()
-  recoreonServices.deployAllAssets()
-  let screenRecordStore = ScreenRecordStore(
-    screenRecordService: recoreonServices.screenRecordService
-  )
+    let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
 
-  let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
-
-  appGroupsUserDefaults.set(
-    Date().timeIntervalSince1970 + 1000,
-    forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
-  appGroupsUserDefaults.set(
-    screenRecordStore.screenRecordEntries[0].url.absoluteString,
-    forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
-  )
-
-  return NavigationStack {
-    ScreenRecordListViewContainer(
-      recoreonServices: recoreonServices,
-      screenRecordStore: screenRecordStore
+    appGroupsUserDefaults.set(
+      Date().timeIntervalSince1970 + 1000,
+      forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
+    appGroupsUserDefaults.set(
+      screenRecordStore.screenRecordEntries[0].url.absoluteString,
+      forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
     )
+
+    return NavigationStack {
+      ScreenRecordListViewContainer(
+        recoreonServices: recoreonServices,
+        screenRecordStore: screenRecordStore
+      )
+    }
   }
-}
 
-#Preview("There is no videos") {
-  let recoreonServices = PreviewRecoreonServices()
-  recoreonServices.recoreonPathService.wipe()
-  let screenRecordStore = ScreenRecordStore(
-    screenRecordService: recoreonServices.screenRecordService
-  )
-
-  let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
-
-  appGroupsUserDefaults.removeObject(
-    forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
-  appGroupsUserDefaults.removeObject(
-    forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
-  )
-
-  return NavigationStack {
-    ScreenRecordListViewContainer(
-      recoreonServices: recoreonServices,
-      screenRecordStore: screenRecordStore
+  #Preview("There is no videos") {
+    let recoreonServices = PreviewRecoreonServices()
+    recoreonServices.recoreonPathService.wipe()
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: recoreonServices.screenRecordService
     )
+
+    let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
+
+    appGroupsUserDefaults.removeObject(
+      forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey)
+    appGroupsUserDefaults.removeObject(
+      forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
+    )
+
+    return NavigationStack {
+      ScreenRecordListViewContainer(
+        recoreonServices: recoreonServices,
+        screenRecordStore: screenRecordStore
+      )
+    }
   }
-}
 #endif

@@ -15,10 +15,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v4"
-
-      - name: "Install swift-format"
-        run: "brew install swift-format"
+        uses: "actions/checkout@v6"
 
       - name: "Run swift-format"
-        run: ".github/scripts/check-swift-format.sh"
+        run: "xcrun swift-format lint -r ."
