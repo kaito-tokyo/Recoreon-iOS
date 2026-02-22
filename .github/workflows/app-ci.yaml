@@ -13,6 +13,9 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  TUIST_TEST_DEVICE: iPhone 16
+
 jobs:
   build-and-test:
     name: Build and Test
