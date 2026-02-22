@@ -192,95 +192,95 @@ struct ScreenRecordDetailView: View {
 }
 
 #if DEBUG
-struct ScreenRecordDetailViewContainer: View {
-  let recoreonServices: RecoreonServices
-  @StateObject var screenRecordStore: ScreenRecordStore
-  @State var path: NavigationPath
-  let screenRecordEntry: ScreenRecordEntry
+  struct ScreenRecordDetailViewContainer: View {
+    let recoreonServices: RecoreonServices
+    @StateObject var screenRecordStore: ScreenRecordStore
+    @State var path: NavigationPath
+    let screenRecordEntry: ScreenRecordEntry
 
-  init(
-    recoreonServices: RecoreonServices,
-    screenRecordStore: ScreenRecordStore,
-    path: NavigationPath,
-    screenRecordEntry: ScreenRecordEntry
-  ) {
-    self.recoreonServices = recoreonServices
-    _screenRecordStore = StateObject(wrappedValue: screenRecordStore)
-    _path = State(initialValue: path)
-    self.screenRecordEntry = screenRecordEntry
-  }
+    init(
+      recoreonServices: RecoreonServices,
+      screenRecordStore: ScreenRecordStore,
+      path: NavigationPath,
+      screenRecordEntry: ScreenRecordEntry
+    ) {
+      self.recoreonServices = recoreonServices
+      _screenRecordStore = StateObject(wrappedValue: screenRecordStore)
+      _path = State(initialValue: path)
+      self.screenRecordEntry = screenRecordEntry
+    }
 
-  var body: some View {
-    TabView {
-      NavigationStack(path: $path) {
-        ScreenRecordDetailView(
-          recoreonServices: recoreonServices,
-          path: $path,
-          screenRecordStore: screenRecordStore,
-          screenRecordEntry: screenRecordEntry
-        )
+    var body: some View {
+      TabView {
+        NavigationStack(path: $path) {
+          ScreenRecordDetailView(
+            recoreonServices: recoreonServices,
+            path: $path,
+            screenRecordStore: screenRecordStore,
+            screenRecordEntry: screenRecordEntry
+          )
+        }
       }
     }
   }
-}
 
-#Preview("The recording is finished") {
-  let recoreonServices = PreviewRecoreonServices()
-  recoreonServices.deployAllAssets()
+  #Preview("The recording is finished") {
+    let recoreonServices = PreviewRecoreonServices()
+    recoreonServices.deployAllAssets()
 
-  let screenRecordService = recoreonServices.screenRecordService
-  let screenRecordEntries = screenRecordService.listScreenRecordEntries()
-  let screenRecordEntry = screenRecordEntries[0]
-  let path: NavigationPath = NavigationPath()
-  let screenRecordStore = ScreenRecordStore(
-    screenRecordService: screenRecordService
-  )
+    let screenRecordService = recoreonServices.screenRecordService
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries()
+    let screenRecordEntry = screenRecordEntries[0]
+    let path: NavigationPath = NavigationPath()
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: screenRecordService
+    )
 
-  let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
-  appGroupsUserDefaults.set(
-    Date().timeIntervalSince1970 - 10,
-    forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey
-  )
-  appGroupsUserDefaults.set(
-    screenRecordEntry.url.absoluteString,
-    forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
-  )
+    let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
+    appGroupsUserDefaults.set(
+      Date().timeIntervalSince1970 - 10,
+      forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey
+    )
+    appGroupsUserDefaults.set(
+      screenRecordEntry.url.absoluteString,
+      forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
+    )
 
-  return ScreenRecordDetailViewContainer(
-    recoreonServices: recoreonServices,
-    screenRecordStore: screenRecordStore,
-    path: path,
-    screenRecordEntry: screenRecordEntry
-  )
-}
+    return ScreenRecordDetailViewContainer(
+      recoreonServices: recoreonServices,
+      screenRecordStore: screenRecordStore,
+      path: path,
+      screenRecordEntry: screenRecordEntry
+    )
+  }
 
-#Preview("The recording is ongoing") {
-  let recoreonServices = PreviewRecoreonServices()
-  recoreonServices.deployAllAssets()
+  #Preview("The recording is ongoing") {
+    let recoreonServices = PreviewRecoreonServices()
+    recoreonServices.deployAllAssets()
 
-  let screenRecordService = recoreonServices.screenRecordService
-  let screenRecordEntries = screenRecordService.listScreenRecordEntries()
-  let screenRecordEntry = screenRecordEntries[0]
-  let path: NavigationPath = NavigationPath()
-  let screenRecordStore = ScreenRecordStore(
-    screenRecordService: screenRecordService
-  )
+    let screenRecordService = recoreonServices.screenRecordService
+    let screenRecordEntries = screenRecordService.listScreenRecordEntries()
+    let screenRecordEntry = screenRecordEntries[0]
+    let path: NavigationPath = NavigationPath()
+    let screenRecordStore = ScreenRecordStore(
+      screenRecordService: screenRecordService
+    )
 
-  let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
-  appGroupsUserDefaults.set(
-    Date().timeIntervalSince1970 + 1000,
-    forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey
-  )
-  appGroupsUserDefaults.set(
-    screenRecordEntry.url.absoluteString,
-    forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
-  )
+    let appGroupsUserDefaults = AppGroupsPreferenceService.userDefaults!
+    appGroupsUserDefaults.set(
+      Date().timeIntervalSince1970 + 1000,
+      forKey: AppGroupsPreferenceService.ongoingRecordingTimestampKey
+    )
+    appGroupsUserDefaults.set(
+      screenRecordEntry.url.absoluteString,
+      forKey: AppGroupsPreferenceService.ongoingRecordingURLAbsoluteStringKey
+    )
 
-  return ScreenRecordDetailViewContainer(
-    recoreonServices: recoreonServices,
-    screenRecordStore: screenRecordStore,
-    path: path,
-    screenRecordEntry: screenRecordEntry
-  )
-}
+    return ScreenRecordDetailViewContainer(
+      recoreonServices: recoreonServices,
+      screenRecordStore: screenRecordStore,
+      path: path,
+      screenRecordEntry: screenRecordEntry
+    )
+  }
 #endif
