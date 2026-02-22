@@ -12,7 +12,7 @@ struct DefaultRecordNoteService: RecordNoteService {
     let recordNoteURLs = recoreonPathService.listRecordNoteURLs(
       screenRecordURL: screenRecordEntry.url)
     return recordNoteURLs.map { url in
-      let body = try? String(contentsOf: url)
+      let body = try? String(contentsOf: url, encoding: .utf8)
       return RecordNoteEntry(url: url, body: body ?? "")
     }
   }
