@@ -243,17 +243,17 @@ struct ScreenRecordListView: View {
     .toolbar {
       EditButton()
     }
-    .onChange(of: editMode.isEditing) { newValue in
+    .onChange(of: editMode.isEditing) { oldValue, newValue in
       if newValue == false {
         selectedScreenRecordEntries.removeAll()
       }
     }
-    .onChange(of: scenePhase) { newValue in
+    .onChange(of: scenePhase) { _, newValue in
       if newValue == .active {
         screenRecordStore.update()
       }
     }
-    .onChange(of: path) { _ in
+    .onChange(of: path) { _, _ in
       screenRecordStore.update()
     }
     .environment(\.editMode, $editMode)
@@ -357,3 +357,4 @@ struct ScreenRecordListView: View {
     }
   }
 #endif
+

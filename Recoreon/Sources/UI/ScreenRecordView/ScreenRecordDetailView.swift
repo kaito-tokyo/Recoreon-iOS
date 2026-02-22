@@ -60,7 +60,7 @@ struct ScreenRecordDetailView: View {
   func recordNoteList() -> some View {
     return Section(header: Text("Notes")) {
       TextField("Enter the summary...", text: $editingRecordSummaryBody)
-        .onChange(of: editingRecordSummaryBody) { newValue in
+        .onChange(of: editingRecordSummaryBody) { _, newValue in
           let recordSummaryURL = recoreonServices.recordNoteService.generateRecordSummaryURL(
             screenRecordEntry: screenRecordEntry
           )
@@ -119,17 +119,17 @@ struct ScreenRecordDetailView: View {
       ) {
       }
     }
-    .onChange(of: scenePhase) { newValue in
-      if scenePhase == .active && newValue == .inactive {
+    .onChange(of: scenePhase) { oldValue, newValue in
+      if oldValue == .active && newValue == .inactive {
         recordNoteStore.saveAllNotes()
       }
     }
-    .onChange(of: isPresented) { newValue in
+    .onChange(of: isPresented) { _, newValue in
       if newValue == false {
         recordNoteStore.saveAllNotes()
       }
     }
-    .onChange(of: path) { _ in
+    .onChange(of: path, initial: false) {
       recordNoteStore.saveAllNotes()
     }
   }
@@ -284,3 +284,4 @@ struct ScreenRecordDetailView: View {
     )
   }
 #endif
+

@@ -30,20 +30,20 @@ struct RecordNoteEditorView: View {
       TextField("Enter the note text here...", text: $editingNoteBody, axis: .vertical)
     }
     .navigationTitle(recordNoteEntry.url.lastPathComponent)
-    .onChange(of: editingNoteBody) { _ in
-      recordNoteStore.putNote(recordNoteURL: recordNoteEntry.url, body: editingNoteBody)
+    .onChange(of: editingNoteBody) { _, newValue in
+      recordNoteStore.putNote(recordNoteURL: recordNoteEntry.url, body: newValue)
     }
-    .onChange(of: scenePhase) { newValue in
-      if scenePhase == .active && newValue == .inactive {
+    .onChange(of: scenePhase) { oldValue, newValue in
+      if oldValue == .active && newValue == .inactive {
         recordNoteStore.saveAllNotes()
       }
     }
-    .onChange(of: isPresented) { newValue in
+    .onChange(of: isPresented) { _, newValue in
       if newValue == false {
         recordNoteStore.saveAllNotes()
       }
     }
-    .onChange(of: path) { _ in
+    .onChange(of: path) { _, _ in
       recordNoteStore.saveAllNotes()
     }
   }
@@ -123,3 +123,4 @@ struct RecordNoteEditorView: View {
     )
   }
 #endif
+
