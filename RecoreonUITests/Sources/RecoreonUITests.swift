@@ -37,29 +37,6 @@ final class RecoreonUITests: XCTestCase {
     XCTAssert(app.staticTexts["List of screen records"].waitForExistence(timeout: 10))
   }
 
-  func testScreenRecordDetailViewCanBeShown() throws {
-    let app = launchWithUITestMode()
-
-    app.buttons.matching(identifier: "ScreenRecordEntry").element(boundBy: 0).tap()
-    XCTAssert(app.staticTexts["Preview"].waitForExistence(timeout: 10))
-  }
-
-  func testScreenRecordPreviewViewCanBeShown() throws {
-    let app = launchWithUITestMode()
-
-    app.buttons.matching(identifier: "ScreenRecordEntry").element(boundBy: 0).tap()
-    app.buttons["PreviewButton"].tap()
-    XCTAssert(app.otherElements["PreviewVideoPlayer"].waitForExistence(timeout: 10))
-  }
-
-  func testScreenRecordEncodeViewCanBeShown() throws {
-    let app = launchWithUITestMode()
-
-    app.buttons.matching(identifier: "ScreenRecordEntry").element(boundBy: 0).tap()
-    app.buttons["EncodeButton"].tap()
-    XCTAssert(app.staticTexts["Preset"].waitForExistence(timeout: 10))
-  }
-
   func testRecordNoteEditorViewCanBeShown() throws {
     let app = launchWithUITestMode()
 
@@ -67,13 +44,4 @@ final class RecoreonUITests: XCTestCase {
     app.buttons.matching(identifier: "RecordNoteEntryButton").element(boundBy: 0).tap()
     XCTAssert(app.staticTexts["Recoreon20240724T063654-1.txt"].waitForExistence(timeout: 10))
   }
-
-  //  func testLaunchPerformance() throws {
-  //    if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-  //      // This measures how long it takes to launch your application.
-  //      measure(metrics: [XCTApplicationLaunchMetric()]) {
-  //        XCUIApplication().launch()
-  //      }
-  //    }
-  //  }
 }

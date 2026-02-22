@@ -7,7 +7,7 @@ let project = Project(
   name: "Recoreon",
   settings: .settings(
     base: [
-      "INFOPLIST_KEY_CFBundleDisplayName": .string(displayName)
+      "INFOPLIST_KEY_CFBundleDisplayName": .string(displayName),
     ]
     .automaticCodeSigning(
       devTeam: "4HMJS6J4MZ"
