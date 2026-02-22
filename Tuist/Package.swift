@@ -13,6 +13,5 @@ let package = Package(
     name: "Recoreon",
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", exact: "1.6.1"),
-        .package(path: "../Packages/HLSServer"),
     ]
 )

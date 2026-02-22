@@ -148,23 +148,6 @@ struct ScreenRecordDetailView: View {
           .foregroundStyle(Color.white)
       } else {
         Section {
-          Button {
-            withAnimation {
-              path.append(
-                ScreenRecordPreviewViewRoute(
-                  screenRecordEntry: screenRecordEntry
-                )
-              )
-            }
-          } label: {
-            NavigationLink {
-              EmptyView()
-            } label: {
-              Label("Preview", systemImage: "play")
-            }
-          }
-          .accessibilityIdentifier("PreviewButton")
-
           ShareLink(item: screenRecordEntry.url)
 
           Button {
@@ -198,12 +181,6 @@ struct ScreenRecordDetailView: View {
       recordNoteList()
     }
     .navigationTitle(screenRecordEntry.url.lastPathComponent)
-    .navigationDestination(for: ScreenRecordPreviewViewRoute.self) { route in
-      ScreenRecordPreviewView(
-        recoreonServices: recoreonServices,
-        screenRecordEntry: route.screenRecordEntry
-      )
-    }
     .navigationDestination(for: RecordNoteEditorViewRoute.self) { route in
       RecordNoteEditorView(
         path: $path,
