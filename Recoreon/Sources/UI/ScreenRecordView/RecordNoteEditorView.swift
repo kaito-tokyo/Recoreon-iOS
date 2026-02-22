@@ -38,12 +38,12 @@ struct RecordNoteEditorView: View {
         recordNoteStore.saveAllNotes()
       }
     }
-    .onChange(of: isPresented) { newValue in
+    .onChange(of: isPresented) { _, newValue in
       if newValue == false {
         recordNoteStore.saveAllNotes()
       }
     }
-    .onChange(of: path) { _ in
+    .onChange(of: path) { _, _ in
       recordNoteStore.saveAllNotes()
     }
   }
