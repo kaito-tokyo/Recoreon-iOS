@@ -149,7 +149,7 @@ public class FragmentedAudioWriter {
       let isSucceeded = audioInput.append(sampleBuffer)
       if !isSucceeded {
         print(assetWriter.status.rawValue)
-        print(assetWriter.error)
+        print(assetWriter.error ?? "Unknown error")
       }
     } else {
       print(
