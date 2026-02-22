@@ -253,7 +253,7 @@ struct ScreenRecordListView: View {
         screenRecordStore.update()
       }
     }
-    .onChange(of: screenRecordStore.screenRecordEntries) { _, _ in
+    .onChange(of: path) { _, _ in
       screenRecordStore.update()
     }
     .environment(\.editMode, $editMode)
