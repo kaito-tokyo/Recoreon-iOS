@@ -1,9 +1,11 @@
-#!/bin/bash
-set -euo pipefail
+#!/bin/sh
 
-export HOMEBREW_NO_AUTO_UPDATE=1
-export HOMEBREW_NO_INSTALL_CLEANUP=1
+# Mise installation taken from https://mise.jdx.dev/continuous-integration.html#xcode-cloud
+curl https://mise.run | sh # Install Mise
+export PATH="$HOME/.local/bin:$PATH"
 
-brew install xcodegen
+mise install # Installs the version from .mise.toml
 
-( cd .. && xcodegen generate )
+# Runs the version of Tuist indicated in the .mise.toml file {#runs-the-version-of-tuist-indicated-in-the-misetoml-file}
+mise exec -- tuist install --path ../ # `--path` needed as this is run from within the `ci_scripts` directory
+mise exec -- tuist generate -p ../ --no-open # `-p` needed as this is run from within the `ci_scripts` directory
