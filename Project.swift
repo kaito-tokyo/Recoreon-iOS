@@ -26,6 +26,7 @@ let project = Project(
         with: [
           "CFBundleDisplayName": .string(displayName),
           "CFBundleShortVersionString": "$(MARKETING_VERSION)",
+          "ITSAppUsesNonExemptEncryption": false,
           "UILaunchScreen": [:],
         ]
       ),
